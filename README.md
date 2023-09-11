@@ -2,25 +2,25 @@
 
 Aluno: Jose Carlos de Almeida Machado
 
-Welcome to the Starry Night printer!
-        *      * *  *    
-      *        
-             *        *                                   *  *       * **  *   *                  * 
-   
-       *           
-             *         *                *  
-                    
-*  * *                                *         *                          *        *      * 
-    
-                    *                          *                               *                     *           *   *        **       **  **           *                
-   *            
-                  *           *         *  *          *                    *                       *    *              *              **    *            * *          **    
-        
-     *        *                  * *         *            *    *  
-  *                       
- *                         
-  *        **        *     *                  *  **  *               * *    *     
-     
-        *      *   *                     
-   *               *        *       *         
-number of threads = 20
+       Welcome to the Starry Night printer!
+               *      * *  *    
+             *        
+                    *        *                                   *  *       * **  *   *                  * 
+          
+              *           
+                    *         *                *  
+                           
+       *  * *                                *         *                          *        *      * 
+           
+                           *                          *                               *                     *           *   *        **       **  **           *                
+          *            
+                         *           *         *  *          *                    *                       *    *              *              **    *            * *          **    
+               
+            *        *                  * *         *            *    *  
+         *                       
+        *                         
+         *        **        *     *                  *  **  *               * *    *     
+            
+               *      *   *                     
+          *               *        *       *         
+       number of threads = 20
