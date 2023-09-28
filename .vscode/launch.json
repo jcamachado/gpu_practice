@@ -74,7 +74,17 @@
                 }
             ],
             "preLaunchTask": "C/C++: g++ OpenACC build active file"
-        }
+        },
+        {
+            "name": "CUDA Launch",
+            "type": "cuda-gdb",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/${fileBasenameNoExtension}",
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "CUDA Build",
+            "stopAtEntry": false,
+          }
+        
     ],
     "version": "2.0.0"
 }
