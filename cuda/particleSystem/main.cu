@@ -7,28 +7,11 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include "particle.h"
-#include "jaxeUtils.h"
-
-#define GRAVITY glm::vec3(0.0f, -9.8f, 0.0f)
+#include "jaxeUtils/jx_utils.h"
 
 using namespace std;
 
 vector<particle> particles;
-
-void init_particles() {
-    srand(time(NULL));
-    for (int i = 0; i < 1000; i++) {
-        glm::vec3 pos(randomInt(-10, 10),  2 * randomInt(0, 100) - 2, randomInt(-45, -40));
-        glm::vec3 vel(0.0f, 0.0f, 0.0f);
-        // glm::vec3 acc(0.0f, -9.8f, 0.0f);
-        glm::vec4 color(1.0f, 1.0f, 1.0f, 1.0f);
-        float size = 0.1f;
-        float mass = 1.0f;
-        particle p(pos, vel, color, size, mass);
-        particles.push_back(p);
-    }
-}
 
 void draw_particles() {
     glLoadIdentity();                 // Reset the model-view matrix
@@ -43,7 +26,8 @@ void draw_particles() {
 void update_particles(float dt) {
     // Ideally, summing update would receive a sum of forces
     for (int i = 0; i < particles.size(); i++) {
-        particles[i].update(dt, GRAVITY);
+        particles[i].applyForce(weightForce(particles[i].mass));
+        particles[i].update(dt);
     }
 }
 
@@ -141,7 +125,7 @@ int main() {
     
 
     // Initialize particles
-    init_particles();
+    particles = generateParticles();
 
     // Loop until the user closes the window
     while (!glfwWindowShouldClose(window)) {
