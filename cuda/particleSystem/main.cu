@@ -38,6 +38,7 @@ __global__ void update_particles_kernel(particle* particles, float dt, int num_p
     }
 }
 void update_particles(float dt) {
+    particle* d_particles;
     cudaMalloc(&d_particles, particles.size() * sizeof(particle));
     cudaMemcpy(d_particles, particles.data(), particles.size() * sizeof(particle), cudaMemcpyHostToDevice);
 
