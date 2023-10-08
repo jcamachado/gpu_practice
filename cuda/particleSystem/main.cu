@@ -23,12 +23,30 @@ void draw_particles() {
     glEnd();
 }
 
-void update_particles(float dt) {
-    // Ideally, summing update would receive a sum of forces
-    for (int i = 0; i < particles.size(); i++) {
+// void update_particles(float dt) {
+//     // Ideally, summing update would receive a sum of forces
+//     for (int i = 0; i < particles.size(); i++) {
+//         particles[i].applyForce(weightForce(particles[i].mass));
+//         particles[i].update(dt);
+//     }
+// }
+__global__ void update_particles_kernel(particle* particles, float dt, int num_particles) {
+    int i = blockIdx.x * blockDim.x + threadIdx.x;
+    if (i < num_particles) {
         particles[i].applyForce(weightForce(particles[i].mass));
         particles[i].update(dt);
     }
+}
+void update_particles(float dt) {
+    cudaMalloc(&d_particles, particles.size() * sizeof(particle));
+    cudaMemcpy(d_particles, particles.data(), particles.size() * sizeof(particle), cudaMemcpyHostToDevice);
+
+    int block_size = 256;
+    int num_blocks = (particles.size() + block_size - 1) / block_size;
+    update_particles_kernel<<<num_blocks, block_size>>>(d_particles, dt, particles.size());
+
+    cudaMemcpy(particles.data(), d_particles, particles.size() * sizeof(particle), cudaMemcpyDeviceToHost);
+    cudaFree(d_particles);
 }
 
 void drawCube(float scale=1.0f, bool isWireframe=true) {

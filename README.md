@@ -5,6 +5,7 @@ gcc 11.4.0 x64
 gnu 17
 gnu++ 14
 nvcc 11.5.119
+NVIDIA-SMI 535.104.05             Driver Version: 535.104.05   CUDA Version: 12.2
 
 Aluno: Jose Carlos de Almeida Machado
 

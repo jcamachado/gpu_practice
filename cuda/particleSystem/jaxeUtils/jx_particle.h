@@ -1,6 +1,10 @@
+//Abstracao da particula
 
 // Std. Includes
 #include <vector>
+
+//cuda
+#include <cuda_runtime.h>
 
 // GL Includes
 #include <glm/glm.hpp>
@@ -16,9 +20,8 @@ public:
     
     float mass;
 
-
     // particle(glm::vec3 pos, glm::vec3 vel, glm::vec3 acc, glm::vec4 colr , float s) {
-    particle(glm::vec3 pos, glm::vec3 vel, glm::vec4 colr , float siz, float mas, int life=100) {
+    __host__ __device__  particle(glm::vec3 pos, glm::vec3 vel, glm::vec4 colr , float siz, float mas, int life=100) {
         position = pos;
         velocity = vel;
         // acceleration = acc;
@@ -27,19 +30,26 @@ public:
         mass = mas;
         lifeTime = life;
     }
-    void applyForce(glm::vec3 force) {
+    __device__ void applyForce(glm::vec3 force) {
         acceleration += force;
     }
 
-    void update(float dt) {
+    // void update(float dt) {
+    //     velocity += acceleration * dt;
+    //     position += velocity * dt;
+    // }
+
+    __host__ __device__ void update(float dt) {
         // pensando como a funcao de euler, 
         // newPosition = oldPosition + dt * (Forcas/massa)
         // onde forcas/massa = derivEval
         velocity += acceleration * dt;
         position += velocity * dt;
 
-        lifeTime--;
+        // lifeTime--;
         acceleration *=0; //reset acceleration, its not cumulative
     }
+
+
     
 };

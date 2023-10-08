@@ -3,10 +3,12 @@
 #include <vector>
 #include "jx_particle.h"
 #include "jx_math.h"
+#include "jx_geometry.h"
 
-#define NPARTICLES 1000
+#define NPARTICLES 1000000
 
 using namespace std;
+// talvez separar generator de painter
 
 vector<particle> generateParticles(int amount=NPARTICLES) {
     vector<particle> particles;
@@ -23,3 +25,4 @@ vector<particle> generateParticles(int amount=NPARTICLES) {
     }
     return particles;
 }
+
