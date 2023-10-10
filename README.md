@@ -13,10 +13,11 @@ Aluno: Jose Carlos de Almeida Machado
 Hello, aqui vou disponibilizar codigos feitos para treinar CUDA e prog. paralela.
 
 
-Aula 1 e 2: ./openmp/ e ./openacc
+Aula 1 e 2: ./openmp - 1/ e ./openacc - 2
 
 Aula 3: Esqueleto - ./cuda/particleSystem/*
 
 Aula 4 - Soma de matrizes: ./cuda/matrixSum, processamento de imagem (tornar Grayscale) ./cuda/imageShorteningParallel.cu
 
+Aula 5 - Shared Memory - ./cuda/exercicios de aula/sharedMem1.cu 
 
