@@ -18,6 +18,8 @@
         "string": "cpp",
         "unordered_map": "cpp",
         "vector": "cpp",
-        "chrono": "cpp"
+        "chrono": "cpp",
+        "iosfwd": "cpp",
+        "__config": "cpp"
     }
 }
