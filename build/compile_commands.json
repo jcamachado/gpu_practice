@@ -1,0 +1,12 @@
+[
+{
+  "directory": "/home/jaxe/Repositories/gpu_study/gpu_practice/build",
+  "command": "/usr/bin/g++   -g -o CMakeFiles/my_particle_system.dir/src/main.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/main.cpp",
+  "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/main.cpp"
+},
+{
+  "directory": "/home/jaxe/Repositories/gpu_study/gpu_practice/build",
+  "command": "/usr/bin/gcc   -g -o CMakeFiles/my_particle_system.dir/src/glad.c.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/glad.c",
+  "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/glad.c"
+}
+]

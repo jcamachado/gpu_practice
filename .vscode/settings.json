@@ -20,6 +20,11 @@
         "vector": "cpp",
         "chrono": "cpp",
         "iosfwd": "cpp",
-        "__config": "cpp"
-    }
+        "__config": "cpp",
+        "iostream": "cpp",
+        "glad.h": "c",
+        "stdlib.h": "c"
+    },
+    "cmake.configureOnOpen": true,
+    "cmake.sourceDirectory": "/home/jaxe/Repositories/gpu_study/gpu_practice/openglpractice"
 }
