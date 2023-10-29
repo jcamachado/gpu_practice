@@ -21,3 +21,5 @@ Aula 4 - Soma de matrizes: ./cuda/matrixSum, processamento de imagem (tornar Gra
 
 Aula 5 - Shared Memory - ./cuda/exercicios de aula/sharedMem1.cu 
 
+Aula 6 - Reduce with Shared Memory - ./cuda/exercicios de aula/reduce.cu 
+

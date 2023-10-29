@@ -5,7 +5,7 @@
 #include "jx_math.h"
 #include "jx_geometry.h"
 
-#define NPARTICLES 1000000
+#define NPARTICLES 100000
 
 using namespace std;
 // talvez separar generator de painter
