@@ -6,6 +6,10 @@ add_executable(my_particle_system
     src/main.cpp 
     lib/glad/glad.h 
     src/glad.c
+    src/shader.h
+    src/shader.cpp
+    assets/vertex_core.glsl
+    assets/fragment_core.glsl
 )
 
 

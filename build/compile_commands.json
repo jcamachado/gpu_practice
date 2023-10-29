@@ -8,5 +8,10 @@
   "directory": "/home/jaxe/Repositories/gpu_study/gpu_practice/build",
   "command": "/usr/bin/gcc   -g -o CMakeFiles/my_particle_system.dir/src/glad.c.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/glad.c",
   "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/glad.c"
+},
+{
+  "directory": "/home/jaxe/Repositories/gpu_study/gpu_practice/build",
+  "command": "/usr/bin/g++   -g -o CMakeFiles/my_particle_system.dir/src/shader.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/shader.cpp",
+  "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/shader.cpp"
 }
 ]

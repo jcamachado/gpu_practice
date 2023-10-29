@@ -3,6 +3,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/my_particle_system.dir/src/glad.c.o.d"
   "CMakeFiles/my_particle_system.dir/src/main.cpp.o"
   "CMakeFiles/my_particle_system.dir/src/main.cpp.o.d"
+  "CMakeFiles/my_particle_system.dir/src/shader.cpp.o"
+  "CMakeFiles/my_particle_system.dir/src/shader.cpp.o.d"
   "my_particle_system"
   "my_particle_system.pdb"
 )
