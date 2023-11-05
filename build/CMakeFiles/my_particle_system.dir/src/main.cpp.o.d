@@ -347,4 +347,6 @@ CMakeFiles/my_particle_system.dir/src/main.cpp.o: \
  /usr/include/glm/ext/vector_uint1.hpp \
  /usr/include/glm/ext/vector_uint1_sized.hpp /usr/include/c++/11/cstring \
  /usr/include/string.h /usr/include/strings.h \
- /usr/include/glm/gtc/type_ptr.inl /usr/local/include/GLFW/glfw3.h
+ /usr/include/glm/gtc/type_ptr.inl /usr/local/include/GLFW/glfw3.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/../lib/stb/stb_image.h \
+ /usr/include/c++/11/stdlib.h

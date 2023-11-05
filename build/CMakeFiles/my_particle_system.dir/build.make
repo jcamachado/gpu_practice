@@ -83,10 +83,24 @@ CMakeFiles/my_particle_system.dir/src/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/my_particle_system.dir/src/main.cpp.s"
 	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/jaxe/Repositories/gpu_study/gpu_practice/src/main.cpp -o CMakeFiles/my_particle_system.dir/src/main.cpp.s
 
+CMakeFiles/my_particle_system.dir/lib/stb.cpp.o: CMakeFiles/my_particle_system.dir/flags.make
+CMakeFiles/my_particle_system.dir/lib/stb.cpp.o: ../lib/stb.cpp
+CMakeFiles/my_particle_system.dir/lib/stb.cpp.o: CMakeFiles/my_particle_system.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/jaxe/Repositories/gpu_study/gpu_practice/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/my_particle_system.dir/lib/stb.cpp.o"
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/my_particle_system.dir/lib/stb.cpp.o -MF CMakeFiles/my_particle_system.dir/lib/stb.cpp.o.d -o CMakeFiles/my_particle_system.dir/lib/stb.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/lib/stb.cpp
+
+CMakeFiles/my_particle_system.dir/lib/stb.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/my_particle_system.dir/lib/stb.cpp.i"
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/jaxe/Repositories/gpu_study/gpu_practice/lib/stb.cpp > CMakeFiles/my_particle_system.dir/lib/stb.cpp.i
+
+CMakeFiles/my_particle_system.dir/lib/stb.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/my_particle_system.dir/lib/stb.cpp.s"
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/jaxe/Repositories/gpu_study/gpu_practice/lib/stb.cpp -o CMakeFiles/my_particle_system.dir/lib/stb.cpp.s
+
 CMakeFiles/my_particle_system.dir/src/glad.c.o: CMakeFiles/my_particle_system.dir/flags.make
 CMakeFiles/my_particle_system.dir/src/glad.c.o: ../src/glad.c
 CMakeFiles/my_particle_system.dir/src/glad.c.o: CMakeFiles/my_particle_system.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/jaxe/Repositories/gpu_study/gpu_practice/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/my_particle_system.dir/src/glad.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/jaxe/Repositories/gpu_study/gpu_practice/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object CMakeFiles/my_particle_system.dir/src/glad.c.o"
 	/usr/bin/gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/my_particle_system.dir/src/glad.c.o -MF CMakeFiles/my_particle_system.dir/src/glad.c.o.d -o CMakeFiles/my_particle_system.dir/src/glad.c.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/glad.c
 
 CMakeFiles/my_particle_system.dir/src/glad.c.i: cmake_force
@@ -100,7 +114,7 @@ CMakeFiles/my_particle_system.dir/src/glad.c.s: cmake_force
 CMakeFiles/my_particle_system.dir/src/shader.cpp.o: CMakeFiles/my_particle_system.dir/flags.make
 CMakeFiles/my_particle_system.dir/src/shader.cpp.o: ../src/shader.cpp
 CMakeFiles/my_particle_system.dir/src/shader.cpp.o: CMakeFiles/my_particle_system.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/jaxe/Repositories/gpu_study/gpu_practice/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/my_particle_system.dir/src/shader.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/jaxe/Repositories/gpu_study/gpu_practice/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/my_particle_system.dir/src/shader.cpp.o"
 	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/my_particle_system.dir/src/shader.cpp.o -MF CMakeFiles/my_particle_system.dir/src/shader.cpp.o.d -o CMakeFiles/my_particle_system.dir/src/shader.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/shader.cpp
 
 CMakeFiles/my_particle_system.dir/src/shader.cpp.i: cmake_force
@@ -114,6 +128,7 @@ CMakeFiles/my_particle_system.dir/src/shader.cpp.s: cmake_force
 # Object files for target my_particle_system
 my_particle_system_OBJECTS = \
 "CMakeFiles/my_particle_system.dir/src/main.cpp.o" \
+"CMakeFiles/my_particle_system.dir/lib/stb.cpp.o" \
 "CMakeFiles/my_particle_system.dir/src/glad.c.o" \
 "CMakeFiles/my_particle_system.dir/src/shader.cpp.o"
 
@@ -121,11 +136,12 @@ my_particle_system_OBJECTS = \
 my_particle_system_EXTERNAL_OBJECTS =
 
 my_particle_system: CMakeFiles/my_particle_system.dir/src/main.cpp.o
+my_particle_system: CMakeFiles/my_particle_system.dir/lib/stb.cpp.o
 my_particle_system: CMakeFiles/my_particle_system.dir/src/glad.c.o
 my_particle_system: CMakeFiles/my_particle_system.dir/src/shader.cpp.o
 my_particle_system: CMakeFiles/my_particle_system.dir/build.make
 my_particle_system: CMakeFiles/my_particle_system.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/jaxe/Repositories/gpu_study/gpu_practice/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable my_particle_system"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/jaxe/Repositories/gpu_study/gpu_practice/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable my_particle_system"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/my_particle_system.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

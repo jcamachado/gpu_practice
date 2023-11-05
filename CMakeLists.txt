@@ -5,6 +5,8 @@ cmake_policy(SET CMP0072 NEW)
 add_executable(my_particle_system 
     src/main.cpp 
     lib/glad/glad.h 
+    lib/stb/stb_image.h 
+    lib/stb.cpp 
     src/glad.c
     src/shader.h
     src/shader.cpp

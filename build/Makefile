@@ -129,6 +129,30 @@ my_particle_system/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/build
 .PHONY : my_particle_system/fast
 
+lib/stb.o: lib/stb.cpp.o
+.PHONY : lib/stb.o
+
+# target to build an object file
+lib/stb.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/lib/stb.cpp.o
+.PHONY : lib/stb.cpp.o
+
+lib/stb.i: lib/stb.cpp.i
+.PHONY : lib/stb.i
+
+# target to preprocess a source file
+lib/stb.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/lib/stb.cpp.i
+.PHONY : lib/stb.cpp.i
+
+lib/stb.s: lib/stb.cpp.s
+.PHONY : lib/stb.s
+
+# target to generate assembly for a file
+lib/stb.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/lib/stb.cpp.s
+.PHONY : lib/stb.cpp.s
+
 src/glad.o: src/glad.c.o
 .PHONY : src/glad.o
 
@@ -210,6 +234,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... my_particle_system"
+	@echo "... lib/stb.o"
+	@echo "... lib/stb.i"
+	@echo "... lib/stb.s"
 	@echo "... src/glad.o"
 	@echo "... src/glad.i"
 	@echo "... src/glad.s"
