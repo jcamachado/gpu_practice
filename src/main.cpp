@@ -18,6 +18,7 @@
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height); // Callback function for window resizing
 void processInput(GLFWwindow *window); // Function for processing input
+float mixValue = 0.5f;
 
 int main(){
 
@@ -189,8 +190,8 @@ int main(){
         glActiveTexture(GL_TEXTURE0); // Activate texture
         glBindTexture(GL_TEXTURE_2D, texture1); // Bind texture to unit 0
 
-        // glActiveTexture(GL_TEXTURE1); // Activate texture
-        // glBindTexture(GL_TEXTURE_2D, texture2);  // Bind texture to unit 1 removing previous bond from unit 0 to texture2
+        glActiveTexture(GL_TEXTURE1); // Activate texture
+        glBindTexture(GL_TEXTURE_2D, texture2);  // Bind texture to unit 1 removing previous bond from unit 0 to texture2
 
         trans = rotate(trans, glm::radians((float)glfwGetTime()/100.0f), glm::vec3(0.0f,0.0f,1.0f));
         shader.activate(); //The subsequent changes are applied to the matrix just before the draw call
@@ -199,6 +200,8 @@ int main(){
         //draw shapes
         glBindVertexArray(VAO); // Bind VAO
         shader.activate(); //apply shader
+        shader.setFloat("mixValue", mixValue); // Set mix value uniform
+        
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); // Draw triangle
 
         // trans2 = rotate(trans2, glm::radians((float)glfwGetTime()/-100.0f), glm::vec3(0.0f,0.0f,1.0f));
@@ -230,5 +233,19 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height){ // Ca
 void processInput   (GLFWwindow *window){ // Function for processing input
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){ // Check if escape key is pressed
         glfwSetWindowShouldClose(window, true); // Set window to close
+    }
+
+    // change mixValue
+    if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS){ // Check if up arrow key is pressed
+        mixValue += 0.05f; // Increase mix value
+        if(mixValue >= 1.0f){ // Check if mix value is greater than 1
+            mixValue = 1.0f; // Set mix value to 1
+        }
+    }
+    if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS){ // Check if down arrow key is pressed
+        mixValue -= 0.05f; // Decrease mix value
+        if(mixValue <= 0.0f){ // Check if mix value is less than 0
+            mixValue = 0.0f; // Set mix value to 0
+        }
     }
 }
