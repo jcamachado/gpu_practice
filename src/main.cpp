@@ -16,9 +16,18 @@
 #include <GLFW/glfw3.h>
 #include "../lib/stb/stb_image.h" // include glad to get all the required OpenGL headers
 
+#include "io/Joystick.h"
+#include "io/Keyboard.h"
+#include "io/Mouse.h"
+
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height); // Callback function for window resizing
 void processInput(GLFWwindow *window); // Function for processing input
 float mixValue = 0.5f;
+
+
+glm::mat4 transform = glm::mat4(1.0f); // Create identity matrix (no transformation)
+Joystick mainJ(0);
 
 int main(){
 
@@ -58,6 +67,12 @@ int main(){
 
     glViewport(0,0,800,600); // Set viewport
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); // Set callback function for window resizing
+
+    glfwSetKeyCallback(window, Keyboard::keyCallback); // Set callback function for keyboard input
+    glfwSetCursorPosCallback(window, Mouse::cursorPositionCallback); // Set callback function for mouse movement
+    glfwSetMouseButtonCallback(window, Mouse::mouseButtonCallback); // Set callback function for mouse buttons
+    glfwSetScrollCallback(window, Mouse::mouseScrollCallback); // Set callback function for mouse scroll
+
 
     Shader shader("assets/vertex_core.glsl", "assets/fragment_core.glsl");
     Shader shader2("assets/vertex_core.glsl", "assets/fragment_core2.glsl");
@@ -181,6 +196,13 @@ int main(){
     // shader2.activate();
     // shader2.setMat4("transform", trans);
 
+    mainJ.update();
+    if (mainJ.isPresent()){ 
+        std::cout << "Joystick connected" << std::endl;
+    }else{
+        std::cout << "Joystick not connected" << std::endl;
+    }
+
     while (!glfwWindowShouldClose(window)){ // Check if window should close
         processInput(window); // Process input
 
@@ -201,6 +223,7 @@ int main(){
         glBindVertexArray(VAO); // Bind VAO
         shader.activate(); //apply shader
         shader.setFloat("mixValue", mixValue); // Set mix value uniform
+        shader.setMat4("transform", transform);
         
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); // Draw triangle
 
@@ -231,21 +254,63 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height){ // Ca
 }
 
 void processInput   (GLFWwindow *window){ // Function for processing input
-    if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){ // Check if escape key is pressed
+    if(Keyboard::key(GLFW_KEY_ESCAPE) || mainJ.buttonState(GLFW_JOYSTICK_BTN_RIGHT)){ // Check if escape key is pressed
         glfwSetWindowShouldClose(window, true); // Set window to close
     }
 
     // change mixValue
-    if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS){ // Check if up arrow key is pressed
+    if(Keyboard::keyWentUp(GLFW_KEY_UP)){
         mixValue += 0.05f; // Increase mix value
-        if(mixValue >= 1.0f){ // Check if mix value is greater than 1
+        if(mixValue > 1.0f){ // Check if mix value is greater than 1
             mixValue = 1.0f; // Set mix value to 1
         }
     }
-    if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS){ // Check if down arrow key is pressed
+    if(Keyboard::keyWentDown(GLFW_KEY_DOWN)){
         mixValue -= 0.05f; // Decrease mix value
-        if(mixValue <= 0.0f){ // Check if mix value is less than 0
+        if(mixValue < 0.0f){ // Check if mix value is less than 0
             mixValue = 0.0f; // Set mix value to 0
         }
     }
+
+    if(Keyboard::key(GLFW_KEY_W)){
+        transform = glm::translate(transform, glm::vec3(0.0f, 0.1f, 0.0f)); // Move up
+    }
+    if(Keyboard::key(GLFW_KEY_S)){
+        transform = glm::translate(transform, glm::vec3(0.0f, -0.1f, 0.0f)); // Move down
+    }
+    if(Keyboard::key(GLFW_KEY_A)){
+        transform = glm::translate(transform, glm::vec3(-0.1f, 0.0f, 0.0f)); // Move left
+    }
+    if(Keyboard::key(GLFW_KEY_D)){
+        transform = glm::translate(transform, glm::vec3(0.1f, 0.0f, 0.0f)); // Move right
+    }
+
+    mainJ.update();
+
+    /*
+        if using Joystick
+    */
+   /*
+   float lx = mainJ.axesState(GLFW_JOYSTICK_AXES_LEFT_STICK_X);
+   float ly = mainJ.axesState(GLFW_JOYSTICK_AXES_LEFT_STICK_Y);
+
+   if(std::abs(lx)>0.05f){// This value is the denser threshold(O quanto pro lado esta o stick)
+         transform = glm::translate(transform, glm::vec3(lx/10.0f, 0.0f, 0.0f)); // Move up
+   }
+    if(std::abs(ly)>0.05f){ 
+            transform = glm::translate(transform, glm::vec3(0.0f, ly/10.0f, 0.0f)); // Move up
+    }
+
+    //triggers starts at -1 -1 and goes to 1 1
+    float rt = mainJ.axesState(GLFW_JOYSTICK_AXES_RIGHT_TRIGGER) / 2.0f + 0.5f;
+    float lt = -mainJ.axesState(GLFW_JOYSTICK_AXES_LEFT_TRIGGER) / 2.0f + 0.5f;
+    if (rt>0.05f){
+        transform = glm::scale(transform, glm::vec3(1+ rt/10.0f, 1+ rt/10.0f, 0.0f));
+    }
+
+    if (lt>0.05f){
+        transform = glm::scale(transform, glm::vec3(lt/10.0f, lt/10.0f, 0.0f));
+    }
+
+    */
 }
