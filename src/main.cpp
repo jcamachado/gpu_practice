@@ -16,9 +16,9 @@
 #include <GLFW/glfw3.h>
 #include "../lib/stb/stb_image.h" // include glad to get all the required OpenGL headers
 
-#include "io/Joystick.h"
-#include "io/Keyboard.h"
-#include "io/Mouse.h"
+#include "io/joystick.h"
+#include "io/keyboard.h"
+#include "io/mouse.h"
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height); // Callback function for window resizing
@@ -29,6 +29,10 @@ float mixValue = 0.5f;
 glm::mat4 transform = glm::mat4(1.0f); // Create identity matrix (no transformation)
 // glm::mat4 mouseTransform = glm::mat4(1.0f); // Create identity matrix (no transformation)
 Joystick mainJ(0);
+unsigned int SCR_WIDTH = 800, SCR_HEIGHT = 600;
+float x, y, z;
+float theta = 45.0f;
+
 
 int main(){
 
@@ -48,7 +52,7 @@ int main(){
 
 
 
-    GLFWwindow* window = glfwCreateWindow(800, 600, "LearnOpenGL", NULL, NULL); // Create window
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL); // Create window
     glfwMakeContextCurrent( window ); // Set window as current context
 
 
@@ -66,7 +70,7 @@ int main(){
     }
 
 
-    glViewport(0,0,800,600); // Set viewport
+    glViewport(0,0, SCR_WIDTH, SCR_HEIGHT); // Set viewport
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); // Set callback function for window resizing
 
     glfwSetKeyCallback(window, Keyboard::keyCallback); // Set callback function for keyboard input
@@ -126,39 +130,27 @@ int main(){
         -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
     };
     
-    //This is what makes the cube to be rendered as a cube, linking the vertices colors to the vertices, 
-    // textures ,and so on. The order of the vertices is important
-    
+
     // VAO is the vertex array object, it stores the vertex attribute calls
     // VBO is the vertex buffer object, it stores the vertex data
-    // EBO is the element buffer object, it stores the indices
 
     // VAO and VBO
-    // VAO, VBO and EBO are bound by the shader program
+    // VAO, VBOare bound by the shader program
 
     unsigned int VAO, VBO; // Create VAO and VBO
     glGenBuffers(1, &VBO); // Generate VBO
     glGenVertexArrays(1, &VAO); // Generate VAO
-    // glGenBuffers(1, &EBO); // Generate EBO (Element Buffer Object)
 
     // Bind VAO and VBO
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW); // Set vertex data
 
-    // Bind EBO (put index array in EBO)
-    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW); // Set element data
-
     // Set vertex attributes pointers
     
     //positions, 0 is the first attribute, 6 is the stride, ja que vertices agora tem 6 floats por linha (vertex + color)
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0); // Set vertex attribute pointer
     glEnableVertexAttribArray(0); // Enable vertex attribute pointer, index 0
-
-    //colors 1 is the second attribute
-    // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float))); // Set vertex attribute pointer
-    // glEnableVertexAttribArray(1); // Enable vertex attribute pointer, index 1
 
     //texture coordinates, 8 floats per vertex, offset 6 floats 2 3d vectors to go through
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3*sizeof(float))); // Set vertex attribute pointer
@@ -206,11 +198,6 @@ int main(){
     shader.setInt("texture2", 1); // Set texture uniform
 
 
-    transform = rotate (transform, glm::radians(45.0f), glm::vec3(1.0f,0.0f,0.0f));
-    transform = rotate (transform, glm::radians(45.0f), glm::vec3(0.0f,1.0f,0.0f));
-    shader.activate();
-    shader.setMat4("transform", transform);
-
     mainJ.update();
     if (mainJ.isPresent()){ 
         std::cout << "Joystick connected" << std::endl;
@@ -218,6 +205,9 @@ int main(){
         std::cout << "Joystick not connected" << std::endl;
     }
 
+    x = 0.0f;
+    y = 0.0f;
+    z = 3.0f;
     while (!glfwWindowShouldClose(window)){ // Check if window should close
         processInput(window); // Process input
 
@@ -230,27 +220,30 @@ int main(){
         glActiveTexture(GL_TEXTURE1); // Activate texture
         glBindTexture(GL_TEXTURE_2D, texture2);  // Bind texture to unit 1 removing previous bond from unit 0 to texture2
 
-        transform = rotate(transform, glm::radians((float)glfwGetTime()/100.0f), glm::vec3(0.0f,0.0f,1.0f));
-        shader.activate(); //The subsequent changes are applied to the matrix just before the draw call
-        shader.setMat4("transform", transform);
-
         //draw shapes
         glBindVertexArray(VAO); // Bind VAO
+
+        //create transformation for screen
+        glm::mat4 model = glm::mat4(1.0f);
+        glm::mat4 view = glm::mat4(1.0f);        
+        glm::mat4 projection = glm::mat4(1.0f);
+
+        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(-55.0f), glm::vec3(0.5f)); // Rotate model
+        view = glm::translate(view, glm::vec3(-x, -y, -z)); // Translate view
+
+        // the parameters are the field of view, the aspect ratio, the near clipping plane and the far clipping plane
+        projection = glm::perspective(glm::radians(theta), (float)SCR_WIDTH/(float)SCR_HEIGHT, 0.1f, 100.0f); // Create perspective projection
+
         shader.activate(); //apply shader
-        shader.setMat4("transform", transform);
+        shader.setMat4("model", model);
+        shader.setMat4("view", view);
+        shader.setMat4("projection", projection);
+
         shader.setFloat("mixValue", mixValue); // Set mix value uniform
+
+        model = glm::rotate(model, (float)glfwGetTime()/100.0f, glm::vec3(0.5f, 1.0f, 0.0f)); // Rotate model
         
-        // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); // Draw triangles
-
         glDrawArrays(GL_TRIANGLES, 0, 36); 
-
-        // trans2 = rotate(trans2, glm::radians((float)glfwGetTime()/-100.0f), glm::vec3(0.0f,0.0f,1.0f));
-        // shader2.activate(); 
-        // shader2.setMat4("transform", trans2);
-
-        //draw second triangle, moving offset
-        // shader2.activate();
-        // glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void*)((3*sizeof(unsigned int)))); // Draw triangle
 
         glBindVertexArray(0); // Bind VAO
 
@@ -270,6 +263,8 @@ int main(){
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height){ // Callback function for window resizing
     glViewport(0,0,width,height);
+    SCR_WIDTH = width;
+    SCR_HEIGHT = height;
 }
 
 void processInput   (GLFWwindow *window){ // Function for processing input
@@ -292,17 +287,32 @@ void processInput   (GLFWwindow *window){ // Function for processing input
     }
 
     if(Keyboard::key(GLFW_KEY_W)){
-        transform = glm::translate(transform, glm::vec3(0.0f, 0.1f, 0.0f)); // Move up
+        y -= 0.1f;
     }
     if(Keyboard::key(GLFW_KEY_S)){
-        transform = glm::translate(transform, glm::vec3(0.0f, -0.1f, 0.0f)); // Move down
+        y += 0.1f;
     }
     if(Keyboard::key(GLFW_KEY_A)){
-        transform = glm::translate(transform, glm::vec3(-0.1f, 0.0f, 0.0f)); // Move left
+        x += 0.1f;
     }
     if(Keyboard::key(GLFW_KEY_D)){
-        transform = glm::translate(transform, glm::vec3(0.1f, 0.0f, 0.0f)); // Move right
+        x -= 0.1f;
     }
+    if(Keyboard::key(GLFW_KEY_Q)){
+        z += 0.1f;
+    }
+    if(Keyboard::key(GLFW_KEY_E)){
+        z -= 0.1f;
+    }
+    if(Keyboard::key(GLFW_KEY_Z)){
+        if(theta < 89.0f)
+            theta += 0.1f;
+    }
+    if(Keyboard::key(GLFW_KEY_X)){
+        if(theta > 10.0f)
+            theta -= 0.1f;
+    }
+
 
     mainJ.update();
 
@@ -313,11 +323,11 @@ void processInput   (GLFWwindow *window){ // Function for processing input
    float lx = mainJ.axesState(GLFW_JOYSTICK_AXES_LEFT_STICK_X);
    float ly = mainJ.axesState(GLFW_JOYSTICK_AXES_LEFT_STICK_Y);
 
-   if(std::abs(lx)>0.05f){// This value is the denser threshold(O quanto pro lado esta o stick)
-         transform = glm::translate(transform, glm::vec3(lx/10.0f, 0.0f, 0.0f)); // Move up
-   }
+    if(std::abs(lx)>0.05f){// This value is the denser threshold(O quanto pro lado esta o stick)
+        x += lx/5.0f;
+    }
     if(std::abs(ly)>0.05f){ 
-            transform = glm::translate(transform, glm::vec3(0.0f, ly/10.0f, 0.0f)); // Move up
+        y += ly/5.0f;
     }
 
     //triggers starts at -1 -1 and goes to 1 1
@@ -336,11 +346,11 @@ void processInput   (GLFWwindow *window){ // Function for processing input
         if using mouse
     */
 	// if (Mouse::button(GLFW_MOUSE_BUTTON_LEFT)) {
-	// 	double x = Mouse::getMouseX();
-	// 	double y = Mouse::getMouseY();
+	// 	double _x = Mouse::getMouseX();
+	// 	double _y = Mouse::getMouseY();
 	// 	std::cout << x << ' ' << y << std::endl;
-	// 	transform = glm::mat4(1.0f);
-	// 	transform = glm::translate(transform, glm::vec3(x, y, 0.0f));
+    //     x = -_x/SCR_WIDTH;
+    //     y = _y/SCR_HEIGHT;
 	// }
 
 	mainJ.update();

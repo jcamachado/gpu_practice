@@ -9,13 +9,11 @@ layout (location = 1) in vec2 aTexCoord;
 // out vec3 ourColor; //This is an attribute
 out vec2 TexCoord;
 
-uniform mat4 transform;
-// uniform mat4 mouseTransform;
-
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
 
 void main() {
-    // gl_Position = mouseTransform * vec4(aPos, 1.0); //Order Matters!
-    gl_Position = transform * vec4(aPos, 1.0); //Order Matters!
-    // ourColor = aColor; //Attribute receives value from buffer
+    gl_Position = projection * view * model * vec4(aPos, 1.0); //Order Matters!
     TexCoord = aTexCoord;
 }

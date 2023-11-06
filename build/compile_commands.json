@@ -21,17 +21,22 @@
 },
 {
   "directory": "/home/jaxe/Repositories/gpu_study/gpu_practice/build",
-  "command": "/usr/bin/g++   -g -o CMakeFiles/my_particle_system.dir/src/io/Keyboard.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/Keyboard.cpp",
-  "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/io/Keyboard.cpp"
+  "command": "/usr/bin/g++   -g -o CMakeFiles/my_particle_system.dir/src/io/keyboard.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/keyboard.cpp",
+  "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/io/keyboard.cpp"
 },
 {
   "directory": "/home/jaxe/Repositories/gpu_study/gpu_practice/build",
-  "command": "/usr/bin/g++   -g -o CMakeFiles/my_particle_system.dir/src/io/Mouse.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/Mouse.cpp",
-  "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/io/Mouse.cpp"
+  "command": "/usr/bin/g++   -g -o CMakeFiles/my_particle_system.dir/src/io/mouse.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/mouse.cpp",
+  "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/io/mouse.cpp"
 },
 {
   "directory": "/home/jaxe/Repositories/gpu_study/gpu_practice/build",
-  "command": "/usr/bin/g++   -g -o CMakeFiles/my_particle_system.dir/src/io/Joystick.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/Joystick.cpp",
-  "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/io/Joystick.cpp"
+  "command": "/usr/bin/g++   -g -o CMakeFiles/my_particle_system.dir/src/io/joystick.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/joystick.cpp",
+  "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/io/joystick.cpp"
+},
+{
+  "directory": "/home/jaxe/Repositories/gpu_study/gpu_practice/build",
+  "command": "/usr/bin/g++   -g -o CMakeFiles/my_particle_system.dir/src/io/camera.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/camera.cpp",
+  "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/io/camera.cpp"
 }
 ]

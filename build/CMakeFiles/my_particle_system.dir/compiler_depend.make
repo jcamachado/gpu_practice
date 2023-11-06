@@ -198,9 +198,12 @@ CMakeFiles/my_particle_system.dir/src/glad.c.o: ../src/glad.c \
   /usr/include/dlfcn.h \
   /usr/include/x86_64-linux-gnu/bits/dlfcn.h
 
-CMakeFiles/my_particle_system.dir/src/io/Joystick.cpp.o: ../src/io/Joystick.cpp \
+CMakeFiles/my_particle_system.dir/src/io/camera.cpp.o: ../src/io/camera.cpp \
+  /usr/include/stdc-predef.h
+
+CMakeFiles/my_particle_system.dir/src/io/joystick.cpp.o: ../src/io/joystick.cpp \
   /usr/include/stdc-predef.h \
-  ../src/io/Joystick.h \
+  ../src/io/joystick.h \
   ../lib/glad/glad.h \
   /usr/include/KHR/khrplatform.h \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/stdint.h \
@@ -223,9 +226,9 @@ CMakeFiles/my_particle_system.dir/src/io/Joystick.cpp.o: ../src/io/Joystick.cpp 
   /usr/local/include/GLFW/glfw3.h \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h
 
-CMakeFiles/my_particle_system.dir/src/io/Keyboard.cpp.o: ../src/io/Keyboard.cpp \
+CMakeFiles/my_particle_system.dir/src/io/keyboard.cpp.o: ../src/io/keyboard.cpp \
   /usr/include/stdc-predef.h \
-  ../src/io/Keyboard.h \
+  ../src/io/keyboard.h \
   ../lib/glad/glad.h \
   /usr/include/KHR/khrplatform.h \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/stdint.h \
@@ -248,9 +251,9 @@ CMakeFiles/my_particle_system.dir/src/io/Keyboard.cpp.o: ../src/io/Keyboard.cpp 
   /usr/local/include/GLFW/glfw3.h \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h
 
-CMakeFiles/my_particle_system.dir/src/io/Mouse.cpp.o: ../src/io/Mouse.cpp \
+CMakeFiles/my_particle_system.dir/src/io/mouse.cpp.o: ../src/io/mouse.cpp \
   /usr/include/stdc-predef.h \
-  ../src/io/Mouse.h \
+  ../src/io/mouse.h \
   ../lib/glad/glad.h \
   /usr/include/KHR/khrplatform.h \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/stdint.h \
@@ -693,10 +696,10 @@ CMakeFiles/my_particle_system.dir/src/main.cpp.o: ../src/main.cpp \
   /usr/local/include/GLFW/glfw3.h \
   ../lib/stb/stb_image.h \
   /usr/include/c++/11/stdlib.h \
-  ../src/io/Joystick.h \
+  ../src/io/joystick.h \
   ../lib/glad/glad.h \
-  ../src/io/Keyboard.h \
-  ../src/io/Mouse.h
+  ../src/io/keyboard.h \
+  ../src/io/mouse.h
 
 CMakeFiles/my_particle_system.dir/src/shader.cpp.o: ../src/shader.cpp \
   /usr/include/stdc-predef.h \
@@ -1123,8 +1126,6 @@ CMakeFiles/my_particle_system.dir/src/shader.cpp.o: ../src/shader.cpp \
 
 /usr/include/glm/ext/vector_float1.hpp:
 
-/usr/include/glm/ext/vector_bool1.hpp:
-
 /usr/include/glm/gtc/epsilon.inl:
 
 /usr/include/glm/ext/quaternion_transform.inl:
@@ -1183,6 +1184,8 @@ CMakeFiles/my_particle_system.dir/src/shader.cpp.o: ../src/shader.cpp \
 
 /usr/include/glm/ext/matrix_float4x4_precision.hpp:
 
+/usr/include/glm/ext/matrix_float4x4.hpp:
+
 /usr/include/glm/ext/quaternion_common.inl:
 
 /usr/include/glm/ext/matrix_double4x4_precision.hpp:
@@ -1192,8 +1195,6 @@ CMakeFiles/my_particle_system.dir/src/shader.cpp.o: ../src/shader.cpp \
 /usr/include/glm/ext/quaternion_float.hpp:
 
 /usr/include/glm/mat4x4.hpp:
-
-/usr/include/glm/ext/matrix_float4x3.hpp:
 
 /usr/include/glm/ext/matrix_float4x2.hpp:
 
@@ -1218,8 +1219,6 @@ CMakeFiles/my_particle_system.dir/src/shader.cpp.o: ../src/shader.cpp \
 /usr/include/glm/detail/type_mat3x4.hpp:
 
 /usr/include/glm/ext/matrix_double3x4.hpp:
-
-/usr/include/glm/mat3x4.hpp:
 
 /usr/include/glm/ext/matrix_float3x3_precision.hpp:
 
@@ -1399,8 +1398,6 @@ CMakeFiles/my_particle_system.dir/src/shader.cpp.o: ../src/shader.cpp \
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/stdint.h:
 
-../src/io/Mouse.cpp:
-
 /usr/include/c++/11/cwchar:
 
 /usr/include/x86_64-linux-gnu/bits/math-vector.h:
@@ -1417,7 +1414,9 @@ CMakeFiles/my_particle_system.dir/src/shader.cpp.o: ../src/shader.cpp \
 
 /usr/include/x86_64-linux-gnu/bits/waitflags.h:
 
-/usr/include/c++/11/tr1/ell_integral.tcc:
+/usr/include/glm/mat3x4.hpp:
+
+../src/io/camera.cpp:
 
 /usr/include/x86_64-linux-gnu/bits/posix1_lim.h:
 
@@ -1585,10 +1584,6 @@ CMakeFiles/my_particle_system.dir/src/shader.cpp.o: ../src/shader.cpp \
 
 /usr/include/x86_64-linux-gnu/bits/types/__FILE.h:
 
-/usr/include/glm/exponential.hpp:
-
-/usr/include/x86_64-linux-gnu/bits/types/clock_t.h:
-
 /usr/include/c++/11/tr1/bessel_function.tcc:
 
 /usr/include/x86_64-linux-gnu/bits/time64.h:
@@ -1687,6 +1682,10 @@ CMakeFiles/my_particle_system.dir/src/shader.cpp.o: ../src/shader.cpp \
 
 /usr/include/c++/11/bits/std_abs.h:
 
+/usr/include/glm/ext/vector_bool1.hpp:
+
+../src/io/joystick.cpp:
+
 /usr/include/x86_64-linux-gnu/bits/types/__fpos64_t.h:
 
 /usr/include/glm/ext/vector_float3.hpp:
@@ -1709,6 +1708,8 @@ CMakeFiles/my_particle_system.dir/src/shader.cpp.o: ../src/shader.cpp \
 
 /usr/include/c++/11/ext/new_allocator.h:
 
+/usr/include/x86_64-linux-gnu/bits/types/time_t.h:
+
 /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h:
 
 /usr/include/glm/detail/type_vec4.hpp:
@@ -1728,6 +1729,10 @@ CMakeFiles/my_particle_system.dir/src/shader.cpp.o: ../src/shader.cpp \
 /usr/include/sched.h:
 
 ../src/glad.c:
+
+/usr/include/glm/ext/matrix_float4x3.hpp:
+
+../src/io/joystick.h:
 
 /usr/include/glm/ext/matrix_float3x4_precision.hpp:
 
@@ -1755,19 +1760,31 @@ CMakeFiles/my_particle_system.dir/src/shader.cpp.o: ../src/shader.cpp \
 
 /usr/include/c++/11/bits/basic_ios.h:
 
-/usr/include/x86_64-linux-gnu/bits/types/time_t.h:
-
-../src/io/Joystick.cpp:
-
-../src/io/Joystick.h:
-
 /usr/local/include/GLFW/glfw3.h:
 
-/usr/include/glm/ext/matrix_float4x4.hpp:
+../src/io/keyboard.cpp:
 
-../src/io/Keyboard.cpp:
+/usr/include/c++/11/tr1/ell_integral.tcc:
 
-../src/io/Keyboard.h:
+../src/io/keyboard.h:
+
+/usr/include/glm/detail/type_half.inl:
+
+/usr/include/c++/11/bits/nested_exception.h:
+
+/usr/include/glm/exponential.hpp:
+
+/usr/include/x86_64-linux-gnu/bits/types/clock_t.h:
+
+../src/io/mouse.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h:
+
+/usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h:
+
+/usr/include/c++/11/string_view:
 
 /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h:
 
@@ -1825,6 +1842,8 @@ CMakeFiles/my_particle_system.dir/src/shader.cpp.o: ../src/shader.cpp \
 
 /usr/include/c++/11/bits/range_access.h:
 
+../src/io/mouse.cpp:
+
 /usr/include/c++/11/cstddef:
 
 /usr/include/glm/ext/matrix_float4x3_precision.hpp:
@@ -1873,14 +1892,6 @@ CMakeFiles/my_particle_system.dir/src/shader.cpp.o: ../src/shader.cpp \
 
 /usr/include/c++/11/bits/alloc_traits.h:
 
-/usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h:
-
-/usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h:
-
-/usr/include/c++/11/string_view:
-
 /usr/include/c++/11/bits/functional_hash.h:
 
 /usr/include/c++/11/bits/move.h:
@@ -1890,8 +1901,6 @@ CMakeFiles/my_particle_system.dir/src/shader.cpp.o: ../src/shader.cpp \
 /usr/include/c++/11/bits/string_view.tcc:
 
 /usr/include/c++/11/ext/string_conversions.h:
-
-../src/io/Mouse.h:
 
 /usr/include/c++/11/bits/exception_ptr.h:
 
@@ -1914,10 +1923,6 @@ CMakeFiles/my_particle_system.dir/src/shader.cpp.o: ../src/shader.cpp \
 /usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h:
 
 /usr/include/c++/11/typeinfo:
-
-/usr/include/glm/detail/type_half.inl:
-
-/usr/include/c++/11/bits/nested_exception.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/mm_malloc.h:
 

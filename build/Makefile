@@ -177,77 +177,101 @@ src/glad.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/glad.c.s
 .PHONY : src/glad.c.s
 
-src/io/Joystick.o: src/io/Joystick.cpp.o
-.PHONY : src/io/Joystick.o
+src/io/camera.o: src/io/camera.cpp.o
+.PHONY : src/io/camera.o
 
 # target to build an object file
-src/io/Joystick.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/io/Joystick.cpp.o
-.PHONY : src/io/Joystick.cpp.o
+src/io/camera.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/io/camera.cpp.o
+.PHONY : src/io/camera.cpp.o
 
-src/io/Joystick.i: src/io/Joystick.cpp.i
-.PHONY : src/io/Joystick.i
+src/io/camera.i: src/io/camera.cpp.i
+.PHONY : src/io/camera.i
 
 # target to preprocess a source file
-src/io/Joystick.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/io/Joystick.cpp.i
-.PHONY : src/io/Joystick.cpp.i
+src/io/camera.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/io/camera.cpp.i
+.PHONY : src/io/camera.cpp.i
 
-src/io/Joystick.s: src/io/Joystick.cpp.s
-.PHONY : src/io/Joystick.s
+src/io/camera.s: src/io/camera.cpp.s
+.PHONY : src/io/camera.s
 
 # target to generate assembly for a file
-src/io/Joystick.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/io/Joystick.cpp.s
-.PHONY : src/io/Joystick.cpp.s
+src/io/camera.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/io/camera.cpp.s
+.PHONY : src/io/camera.cpp.s
 
-src/io/Keyboard.o: src/io/Keyboard.cpp.o
-.PHONY : src/io/Keyboard.o
+src/io/joystick.o: src/io/joystick.cpp.o
+.PHONY : src/io/joystick.o
 
 # target to build an object file
-src/io/Keyboard.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/io/Keyboard.cpp.o
-.PHONY : src/io/Keyboard.cpp.o
+src/io/joystick.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/io/joystick.cpp.o
+.PHONY : src/io/joystick.cpp.o
 
-src/io/Keyboard.i: src/io/Keyboard.cpp.i
-.PHONY : src/io/Keyboard.i
+src/io/joystick.i: src/io/joystick.cpp.i
+.PHONY : src/io/joystick.i
 
 # target to preprocess a source file
-src/io/Keyboard.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/io/Keyboard.cpp.i
-.PHONY : src/io/Keyboard.cpp.i
+src/io/joystick.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/io/joystick.cpp.i
+.PHONY : src/io/joystick.cpp.i
 
-src/io/Keyboard.s: src/io/Keyboard.cpp.s
-.PHONY : src/io/Keyboard.s
+src/io/joystick.s: src/io/joystick.cpp.s
+.PHONY : src/io/joystick.s
 
 # target to generate assembly for a file
-src/io/Keyboard.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/io/Keyboard.cpp.s
-.PHONY : src/io/Keyboard.cpp.s
+src/io/joystick.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/io/joystick.cpp.s
+.PHONY : src/io/joystick.cpp.s
 
-src/io/Mouse.o: src/io/Mouse.cpp.o
-.PHONY : src/io/Mouse.o
+src/io/keyboard.o: src/io/keyboard.cpp.o
+.PHONY : src/io/keyboard.o
 
 # target to build an object file
-src/io/Mouse.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/io/Mouse.cpp.o
-.PHONY : src/io/Mouse.cpp.o
+src/io/keyboard.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/io/keyboard.cpp.o
+.PHONY : src/io/keyboard.cpp.o
 
-src/io/Mouse.i: src/io/Mouse.cpp.i
-.PHONY : src/io/Mouse.i
+src/io/keyboard.i: src/io/keyboard.cpp.i
+.PHONY : src/io/keyboard.i
 
 # target to preprocess a source file
-src/io/Mouse.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/io/Mouse.cpp.i
-.PHONY : src/io/Mouse.cpp.i
+src/io/keyboard.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/io/keyboard.cpp.i
+.PHONY : src/io/keyboard.cpp.i
 
-src/io/Mouse.s: src/io/Mouse.cpp.s
-.PHONY : src/io/Mouse.s
+src/io/keyboard.s: src/io/keyboard.cpp.s
+.PHONY : src/io/keyboard.s
 
 # target to generate assembly for a file
-src/io/Mouse.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/io/Mouse.cpp.s
-.PHONY : src/io/Mouse.cpp.s
+src/io/keyboard.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/io/keyboard.cpp.s
+.PHONY : src/io/keyboard.cpp.s
+
+src/io/mouse.o: src/io/mouse.cpp.o
+.PHONY : src/io/mouse.o
+
+# target to build an object file
+src/io/mouse.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/io/mouse.cpp.o
+.PHONY : src/io/mouse.cpp.o
+
+src/io/mouse.i: src/io/mouse.cpp.i
+.PHONY : src/io/mouse.i
+
+# target to preprocess a source file
+src/io/mouse.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/io/mouse.cpp.i
+.PHONY : src/io/mouse.cpp.i
+
+src/io/mouse.s: src/io/mouse.cpp.s
+.PHONY : src/io/mouse.s
+
+# target to generate assembly for a file
+src/io/mouse.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/io/mouse.cpp.s
+.PHONY : src/io/mouse.cpp.s
 
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
@@ -312,15 +336,18 @@ help:
 	@echo "... src/glad.o"
 	@echo "... src/glad.i"
 	@echo "... src/glad.s"
-	@echo "... src/io/Joystick.o"
-	@echo "... src/io/Joystick.i"
-	@echo "... src/io/Joystick.s"
-	@echo "... src/io/Keyboard.o"
-	@echo "... src/io/Keyboard.i"
-	@echo "... src/io/Keyboard.s"
-	@echo "... src/io/Mouse.o"
-	@echo "... src/io/Mouse.i"
-	@echo "... src/io/Mouse.s"
+	@echo "... src/io/camera.o"
+	@echo "... src/io/camera.i"
+	@echo "... src/io/camera.s"
+	@echo "... src/io/joystick.o"
+	@echo "... src/io/joystick.i"
+	@echo "... src/io/joystick.s"
+	@echo "... src/io/keyboard.o"
+	@echo "... src/io/keyboard.i"
+	@echo "... src/io/keyboard.s"
+	@echo "... src/io/mouse.o"
+	@echo "... src/io/mouse.i"
+	@echo "... src/io/mouse.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

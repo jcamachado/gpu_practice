@@ -1,4 +1,4 @@
-#include "Joystick.h"
+#include "joystick.h"
 
 Joystick::Joystick(int _id){
     id = getId(_id);

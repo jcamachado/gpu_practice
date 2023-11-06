@@ -1,4 +1,4 @@
-#include "Mouse.h"
+#include "mouse.h"
 
 
 double Mouse::x = 0;

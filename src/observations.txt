@@ -1,0 +1,11 @@
+OPTICAL NOTION 
+The higher the field of view, the smaller objects will appear. 45o degrees FoV makes a cube looks larger then a 90o degrees FoV.
+
+MATRIX MATH
+Matrix multiplication order for objects onto the screen
+//position
+//obj coords           placed in context           camera                what we see
+//local   -----model----> world ------------view--> view ---projection--> clip   
+//Multiplication must be transformation * model * position
+//projection * view * model * position 
+//transformation multiplication order is scale, rotate, translate 

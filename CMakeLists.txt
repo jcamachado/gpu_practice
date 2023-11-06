@@ -12,12 +12,14 @@ add_executable(my_particle_system
     src/glad.c
     src/shader.h
     src/shader.cpp
-    src/io/Keyboard.h
-    src/io/Keyboard.cpp
-    src/io/Mouse.h
-    src/io/Mouse.cpp
-    src/io/Joystick.h
-    src/io/Joystick.cpp
+    src/io/keyboard.h
+    src/io/keyboard.cpp
+    src/io/mouse.h
+    src/io/mouse.cpp
+    src/io/joystick.h
+    src/io/joystick.cpp
+    src/io/camera.h
+    src/io/camera.cpp
 )
 
 

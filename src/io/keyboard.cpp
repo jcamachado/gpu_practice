@@ -1,4 +1,4 @@
-#include "Keyboard.h"
+#include "keyboard.h"
 
 bool Keyboard::keys[GLFW_KEY_LAST] = {0};
 bool Keyboard::keysChanged[GLFW_KEY_LAST] = {0};

@@ -350,7 +350,7 @@ CMakeFiles/my_particle_system.dir/src/main.cpp.o: \
  /usr/include/glm/gtc/type_ptr.inl /usr/local/include/GLFW/glfw3.h \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/../lib/stb/stb_image.h \
  /usr/include/c++/11/stdlib.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/Joystick.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/joystick.h \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/../../lib/glad/glad.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/Keyboard.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/Mouse.h
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/keyboard.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/mouse.h
