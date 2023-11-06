@@ -125,12 +125,57 @@ CMakeFiles/my_particle_system.dir/src/shader.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/my_particle_system.dir/src/shader.cpp.s"
 	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/jaxe/Repositories/gpu_study/gpu_practice/src/shader.cpp -o CMakeFiles/my_particle_system.dir/src/shader.cpp.s
 
+CMakeFiles/my_particle_system.dir/src/io/Keyboard.cpp.o: CMakeFiles/my_particle_system.dir/flags.make
+CMakeFiles/my_particle_system.dir/src/io/Keyboard.cpp.o: ../src/io/Keyboard.cpp
+CMakeFiles/my_particle_system.dir/src/io/Keyboard.cpp.o: CMakeFiles/my_particle_system.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/jaxe/Repositories/gpu_study/gpu_practice/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/my_particle_system.dir/src/io/Keyboard.cpp.o"
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/my_particle_system.dir/src/io/Keyboard.cpp.o -MF CMakeFiles/my_particle_system.dir/src/io/Keyboard.cpp.o.d -o CMakeFiles/my_particle_system.dir/src/io/Keyboard.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/Keyboard.cpp
+
+CMakeFiles/my_particle_system.dir/src/io/Keyboard.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/my_particle_system.dir/src/io/Keyboard.cpp.i"
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/Keyboard.cpp > CMakeFiles/my_particle_system.dir/src/io/Keyboard.cpp.i
+
+CMakeFiles/my_particle_system.dir/src/io/Keyboard.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/my_particle_system.dir/src/io/Keyboard.cpp.s"
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/Keyboard.cpp -o CMakeFiles/my_particle_system.dir/src/io/Keyboard.cpp.s
+
+CMakeFiles/my_particle_system.dir/src/io/Mouse.cpp.o: CMakeFiles/my_particle_system.dir/flags.make
+CMakeFiles/my_particle_system.dir/src/io/Mouse.cpp.o: ../src/io/Mouse.cpp
+CMakeFiles/my_particle_system.dir/src/io/Mouse.cpp.o: CMakeFiles/my_particle_system.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/jaxe/Repositories/gpu_study/gpu_practice/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/my_particle_system.dir/src/io/Mouse.cpp.o"
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/my_particle_system.dir/src/io/Mouse.cpp.o -MF CMakeFiles/my_particle_system.dir/src/io/Mouse.cpp.o.d -o CMakeFiles/my_particle_system.dir/src/io/Mouse.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/Mouse.cpp
+
+CMakeFiles/my_particle_system.dir/src/io/Mouse.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/my_particle_system.dir/src/io/Mouse.cpp.i"
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/Mouse.cpp > CMakeFiles/my_particle_system.dir/src/io/Mouse.cpp.i
+
+CMakeFiles/my_particle_system.dir/src/io/Mouse.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/my_particle_system.dir/src/io/Mouse.cpp.s"
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/Mouse.cpp -o CMakeFiles/my_particle_system.dir/src/io/Mouse.cpp.s
+
+CMakeFiles/my_particle_system.dir/src/io/Joystick.cpp.o: CMakeFiles/my_particle_system.dir/flags.make
+CMakeFiles/my_particle_system.dir/src/io/Joystick.cpp.o: ../src/io/Joystick.cpp
+CMakeFiles/my_particle_system.dir/src/io/Joystick.cpp.o: CMakeFiles/my_particle_system.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/jaxe/Repositories/gpu_study/gpu_practice/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/my_particle_system.dir/src/io/Joystick.cpp.o"
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/my_particle_system.dir/src/io/Joystick.cpp.o -MF CMakeFiles/my_particle_system.dir/src/io/Joystick.cpp.o.d -o CMakeFiles/my_particle_system.dir/src/io/Joystick.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/Joystick.cpp
+
+CMakeFiles/my_particle_system.dir/src/io/Joystick.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/my_particle_system.dir/src/io/Joystick.cpp.i"
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/Joystick.cpp > CMakeFiles/my_particle_system.dir/src/io/Joystick.cpp.i
+
+CMakeFiles/my_particle_system.dir/src/io/Joystick.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/my_particle_system.dir/src/io/Joystick.cpp.s"
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/Joystick.cpp -o CMakeFiles/my_particle_system.dir/src/io/Joystick.cpp.s
+
 # Object files for target my_particle_system
 my_particle_system_OBJECTS = \
 "CMakeFiles/my_particle_system.dir/src/main.cpp.o" \
 "CMakeFiles/my_particle_system.dir/lib/stb.cpp.o" \
 "CMakeFiles/my_particle_system.dir/src/glad.c.o" \
-"CMakeFiles/my_particle_system.dir/src/shader.cpp.o"
+"CMakeFiles/my_particle_system.dir/src/shader.cpp.o" \
+"CMakeFiles/my_particle_system.dir/src/io/Keyboard.cpp.o" \
+"CMakeFiles/my_particle_system.dir/src/io/Mouse.cpp.o" \
+"CMakeFiles/my_particle_system.dir/src/io/Joystick.cpp.o"
 
 # External object files for target my_particle_system
 my_particle_system_EXTERNAL_OBJECTS =
@@ -139,9 +184,12 @@ my_particle_system: CMakeFiles/my_particle_system.dir/src/main.cpp.o
 my_particle_system: CMakeFiles/my_particle_system.dir/lib/stb.cpp.o
 my_particle_system: CMakeFiles/my_particle_system.dir/src/glad.c.o
 my_particle_system: CMakeFiles/my_particle_system.dir/src/shader.cpp.o
+my_particle_system: CMakeFiles/my_particle_system.dir/src/io/Keyboard.cpp.o
+my_particle_system: CMakeFiles/my_particle_system.dir/src/io/Mouse.cpp.o
+my_particle_system: CMakeFiles/my_particle_system.dir/src/io/Joystick.cpp.o
 my_particle_system: CMakeFiles/my_particle_system.dir/build.make
 my_particle_system: CMakeFiles/my_particle_system.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/jaxe/Repositories/gpu_study/gpu_practice/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable my_particle_system"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/jaxe/Repositories/gpu_study/gpu_practice/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Linking CXX executable my_particle_system"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/my_particle_system.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
