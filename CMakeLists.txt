@@ -4,14 +4,20 @@ cmake_policy(SET CMP0072 NEW)
 
 add_executable(my_particle_system 
     src/main.cpp 
+    assets/vertex_core.glsl
+    assets/fragment_core.glsl
     lib/glad/glad.h 
     lib/stb/stb_image.h 
     lib/stb.cpp 
     src/glad.c
     src/shader.h
     src/shader.cpp
-    assets/vertex_core.glsl
-    assets/fragment_core.glsl
+    src/io/Keyboard.h
+    src/io/Keyboard.cpp
+    src/io/Mouse.h
+    src/io/Mouse.cpp
+    src/io/Joystick.h
+    src/io/Joystick.cpp
 )
 
 
