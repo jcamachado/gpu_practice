@@ -71,7 +71,9 @@
         "cfenv": "cpp",
         "cinttypes": "cpp",
         "typeinfo": "cpp",
-        "__nullptr": "cpp"
+        "__nullptr": "cpp",
+        "__locale": "cpp",
+        "__bit_reference": "cpp"
     },
     "cmake.configureOnOpen": true,
     // "cmake.sourceDirectory": "/home/jaxe/Repositories/gpu_study/gpu_practice"

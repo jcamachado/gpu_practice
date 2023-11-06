@@ -27,6 +27,7 @@ float mixValue = 0.5f;
 
 
 glm::mat4 transform = glm::mat4(1.0f); // Create identity matrix (no transformation)
+// glm::mat4 mouseTransform = glm::mat4(1.0f); // Create identity matrix (no transformation)
 Joystick mainJ(0);
 
 int main(){
@@ -73,52 +74,72 @@ int main(){
     glfwSetMouseButtonCallback(window, Mouse::mouseButtonCallback); // Set callback function for mouse buttons
     glfwSetScrollCallback(window, Mouse::mouseScrollCallback); // Set callback function for mouse scroll
 
+    glEnable(GL_DEPTH_TEST); // Enable depth testing
+
 
     Shader shader("assets/vertex_core.glsl", "assets/fragment_core.glsl");
     Shader shader2("assets/vertex_core.glsl", "assets/fragment_core2.glsl");
 
-    // float vertices[] = { 
-    //     //position              colors // Color interpolates through range!
-    //     -0.25f, -0.5f, 0.0f,    1.0f, 1.0f, 0.5f,
-    //      0.15f,  0.0f, 0.0f,    0.5f, 1.0f, 0.75f,
-    //      0.0f,   0.5f, 0.0f,    0.6f, 1.0f, 0.2f,
-    //      0.5f,  -0.4f, 0.0f,    1.0f, 0.2f, 1.0f,
+    //each face of the cube have to have a texture
+    float vertices[] = {
+        //positions          //texture coords
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
 
-    //     // //second triangle
-    //     // 0.5f, -0.5f, 0.0f,
-    //     // 0.25f, 0.5f, 0.0f,
-    //     // 0.1f, -0.5f, 0.0f,
-    // };
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
 
-    //VBO will receive the texture coordinates
-    //colors Interpolates through range!
-    float vertices[] = { 
-        //position              colors              texture coords (2D)
-        -0.5f, -0.5f, 0.0f,     1.0f, 1.0f, 0.5f,   0.0f, 0.0f, //bottom left
-        -0.5f,  0.5f, 0.0f,     0.5f, 1.0f, 0.75f,  0.0f, 1.0f, //top left
-         0.5f, -0.5f, 0.0f,     0.6f, 1.0f, 0.2f,   1.0f, 0.0f, //bottom right
-         0.5f,  0.5f, 0.0f,     1.0f, 0.2f, 1.0f,   1.0f, 1.0f, //top right
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
 
-        // //second triangle
-        // 0.5f, -0.5f, 0.0f,
-        // 0.25f, 0.5f, 0.0f,
-        // 0.1f, -0.5f, 0.0f,
-    };
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
 
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
 
-    unsigned int indices[] = { // Create indices
-        0,1,2, // first triangle
-        3,1,2// second triangle
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
     };
     
+    //This is what makes the cube to be rendered as a cube, linking the vertices colors to the vertices, 
+    // textures ,and so on. The order of the vertices is important
     
+    // VAO is the vertex array object, it stores the vertex attribute calls
+    // VBO is the vertex buffer object, it stores the vertex data
+    // EBO is the element buffer object, it stores the indices
+
     // VAO and VBO
     // VAO, VBO and EBO are bound by the shader program
 
-    unsigned int VAO, VBO, EBO; // Create VAO and VBO
+    unsigned int VAO, VBO; // Create VAO and VBO
     glGenBuffers(1, &VBO); // Generate VBO
     glGenVertexArrays(1, &VAO); // Generate VAO
-    glGenBuffers(1, &EBO); // Generate EBO (Element Buffer Object)
+    // glGenBuffers(1, &EBO); // Generate EBO (Element Buffer Object)
 
     // Bind VAO and VBO
     glBindVertexArray(VAO);
@@ -126,22 +147,22 @@ int main(){
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW); // Set vertex data
 
     // Bind EBO (put index array in EBO)
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW); // Set element data
+    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW); // Set element data
 
     // Set vertex attributes pointers
     
     //positions, 0 is the first attribute, 6 is the stride, ja que vertices agora tem 6 floats por linha (vertex + color)
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0); // Set vertex attribute pointer
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0); // Set vertex attribute pointer
     glEnableVertexAttribArray(0); // Enable vertex attribute pointer, index 0
 
     //colors 1 is the second attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float))); // Set vertex attribute pointer
-    glEnableVertexAttribArray(1); // Enable vertex attribute pointer, index 1
+    // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float))); // Set vertex attribute pointer
+    // glEnableVertexAttribArray(1); // Enable vertex attribute pointer, index 1
 
     //texture coordinates, 8 floats per vertex, offset 6 floats 2 3d vectors to go through
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6*sizeof(float))); // Set vertex attribute pointer
-    glEnableVertexAttribArray(2); // Enable vertex attribute pointer, index 2
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3*sizeof(float))); // Set vertex attribute pointer
+    glEnableVertexAttribArray(1); // Enable vertex attribute pointer, index 2
 
     //Textures
     unsigned int texture1, texture2;
@@ -185,16 +206,10 @@ int main(){
     shader.setInt("texture2", 1); // Set texture uniform
 
 
-    glm::mat4 trans = glm::mat4(1.0f); // Create identity matrix (no transformation)
-    trans = rotate (trans, glm::radians(45.0f), glm::vec3(0.0f,0.0f,1.0f));
+    transform = rotate (transform, glm::radians(45.0f), glm::vec3(1.0f,0.0f,0.0f));
+    transform = rotate (transform, glm::radians(45.0f), glm::vec3(0.0f,1.0f,0.0f));
     shader.activate();
-    shader.setMat4("transform", trans);
-
-    // glm::mat4 trans2 = glm::mat4(1.0f); // Create identity matrix (no transformation)
-    // // trans2 = scale (trans2, glm::vec3(1.5f));
-    // // trans2 = rotate (trans2, glm::radians(15.0f), glm::vec3(0.0f,0.0f,1.0f));
-    // shader2.activate();
-    // shader2.setMat4("transform", trans);
+    shader.setMat4("transform", transform);
 
     mainJ.update();
     if (mainJ.isPresent()){ 
@@ -207,7 +222,7 @@ int main(){
         processInput(window); // Process input
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f); // Window background color
-        glClear(GL_COLOR_BUFFER_BIT); // Clear color buffer
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear color buffer
 
         glActiveTexture(GL_TEXTURE0); // Activate texture
         glBindTexture(GL_TEXTURE_2D, texture1); // Bind texture to unit 0
@@ -215,17 +230,19 @@ int main(){
         glActiveTexture(GL_TEXTURE1); // Activate texture
         glBindTexture(GL_TEXTURE_2D, texture2);  // Bind texture to unit 1 removing previous bond from unit 0 to texture2
 
-        trans = rotate(trans, glm::radians((float)glfwGetTime()/100.0f), glm::vec3(0.0f,0.0f,1.0f));
+        transform = rotate(transform, glm::radians((float)glfwGetTime()/100.0f), glm::vec3(0.0f,0.0f,1.0f));
         shader.activate(); //The subsequent changes are applied to the matrix just before the draw call
-        shader.setMat4("transform", trans);
+        shader.setMat4("transform", transform);
 
         //draw shapes
         glBindVertexArray(VAO); // Bind VAO
         shader.activate(); //apply shader
-        shader.setFloat("mixValue", mixValue); // Set mix value uniform
         shader.setMat4("transform", transform);
+        shader.setFloat("mixValue", mixValue); // Set mix value uniform
         
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); // Draw triangle
+        // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); // Draw triangles
+
+        glDrawArrays(GL_TRIANGLES, 0, 36); 
 
         // trans2 = rotate(trans2, glm::radians((float)glfwGetTime()/-100.0f), glm::vec3(0.0f,0.0f,1.0f));
         // shader2.activate(); 
@@ -244,7 +261,9 @@ int main(){
     glfwTerminate(); // Terminate glfw
     glDeleteVertexArrays(1, &VAO); // Delete VAO
     glDeleteBuffers(1, &VBO); // Delete VBO
-    glDeleteBuffers(1, &EBO); // Delete EBO
+    // glDeleteBuffers(1, &EBO); // Delete EBO
+
+    glfwTerminate(); // Terminate glfw
 
     return 0;
 }
@@ -311,6 +330,19 @@ void processInput   (GLFWwindow *window){ // Function for processing input
     if (lt>0.05f){
         transform = glm::scale(transform, glm::vec3(lt/10.0f, lt/10.0f, 0.0f));
     }
-
     */
-}
+
+    /*
+        if using mouse
+    */
+	// if (Mouse::button(GLFW_MOUSE_BUTTON_LEFT)) {
+	// 	double x = Mouse::getMouseX();
+	// 	double y = Mouse::getMouseY();
+	// 	std::cout << x << ' ' << y << std::endl;
+	// 	transform = glm::mat4(1.0f);
+	// 	transform = glm::translate(transform, glm::vec3(x, y, 0.0f));
+	// }
+
+	mainJ.update();
+
+} 

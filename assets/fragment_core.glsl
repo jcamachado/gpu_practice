@@ -1,7 +1,7 @@
 #version 330 core
 out vec4 FragColor;
 
-in vec3 ourColor; //Attribute received from vertex_core shader
+// in vec3 ourColor; //Attribute received from vertex_core shader
 in vec2 TexCoord;
 
 uniform sampler2D texture1;
