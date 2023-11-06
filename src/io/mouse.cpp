@@ -59,13 +59,13 @@ double Mouse::getDX(){
     double _dx = dx;
 
     dx = 0;
-    return dx;
+    return _dx;
 }
 double Mouse::getDY(){
     double _dy = dy;
 
     dy = 0;
-    return dy;
+    return _dy;
 }
 
 double Mouse::getScrollDX(){

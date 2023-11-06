@@ -353,4 +353,5 @@ CMakeFiles/my_particle_system.dir/src/main.cpp.o: \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/joystick.h \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/../../lib/glad/glad.h \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/keyboard.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/mouse.h
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/mouse.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/camera.h

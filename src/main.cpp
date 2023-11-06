@@ -1,17 +1,3 @@
-// #include <iostream>
-// #include "../lib/glad/glad.h" // GLAD is for loading OpenGL functions
-// #include <GLFW/glfw3.h>
-// #include <glm/glm.hpp> // GLM is for matrix math
-// #include <glm/gtc/matrix_transform.hpp>
-// #include <glm/gtc/type_ptr.hpp>
-
-// #include <fstream>
-// #include <sstream>
-// #include <streambuf>
-// #include <string>
-
-// #include "shader.h"
-
 #include "shader.h" //Including majority of the OpenGL headers
 #include <GLFW/glfw3.h>
 #include "../lib/stb/stb_image.h" // include glad to get all the required OpenGL headers
@@ -19,19 +5,27 @@
 #include "io/joystick.h"
 #include "io/keyboard.h"
 #include "io/mouse.h"
-
+#include "io/camera.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height); // Callback function for window resizing
-void processInput(GLFWwindow *window); // Function for processing input
+void processInput(GLFWwindow *window, double dt); // Function for processing input
 float mixValue = 0.5f;
 
 
 glm::mat4 transform = glm::mat4(1.0f); // Create identity matrix (no transformation)
-// glm::mat4 mouseTransform = glm::mat4(1.0f); // Create identity matrix (no transformation)
 Joystick mainJ(0);
 unsigned int SCR_WIDTH = 800, SCR_HEIGHT = 600;
+
+Camera cameras[2] = {
+    Camera(glm::vec3(0.0f, 0.0f, 3.0f)),
+    Camera(glm::vec3(10.0f, 10.0f, 10.0f))
+};
+int activeCamera = 0;
+
+float deltaTime = 0.0f; // Time between current frame and last frame
+float lastFrame = 0.0f; // Time of last frame
 float x, y, z;
-float theta = 45.0f;
+
 
 
 int main(){
@@ -74,15 +68,18 @@ int main(){
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); // Set callback function for window resizing
 
     glfwSetKeyCallback(window, Keyboard::keyCallback); // Set callback function for keyboard input
+    
     glfwSetCursorPosCallback(window, Mouse::cursorPositionCallback); // Set callback function for mouse movement
     glfwSetMouseButtonCallback(window, Mouse::mouseButtonCallback); // Set callback function for mouse buttons
     glfwSetScrollCallback(window, Mouse::mouseScrollCallback); // Set callback function for mouse scroll
 
-    glEnable(GL_DEPTH_TEST); // Enable depth testing
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // Disable cursor, to look like a fps camera
+
 
 
     Shader shader("assets/vertex_core.glsl", "assets/fragment_core.glsl");
     Shader shader2("assets/vertex_core.glsl", "assets/fragment_core2.glsl");
+    glEnable(GL_DEPTH_TEST); // Enable depth testing
 
     //each face of the cube have to have a texture
     float vertices[] = {
@@ -209,7 +206,10 @@ int main(){
     y = 0.0f;
     z = 3.0f;
     while (!glfwWindowShouldClose(window)){ // Check if window should close
-        processInput(window); // Process input
+        double currentTime = glfwGetTime();
+        deltaTime = currentTime - lastFrame;
+        lastFrame = currentTime;
+        processInput(window, deltaTime); // Process input
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f); // Window background color
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear color buffer
@@ -229,10 +229,11 @@ int main(){
         glm::mat4 projection = glm::mat4(1.0f);
 
         model = glm::rotate(model, (float)glfwGetTime() * glm::radians(-55.0f), glm::vec3(0.5f)); // Rotate model
-        view = glm::translate(view, glm::vec3(-x, -y, -z)); // Translate view
+        // view = glm::translate(view, glm::vec3(-x, -y, -z)); // Translate view
+        view = cameras[activeCamera].getViewMatrix();
 
         // the parameters are the field of view, the aspect ratio, the near clipping plane and the far clipping plane
-        projection = glm::perspective(glm::radians(theta), (float)SCR_WIDTH/(float)SCR_HEIGHT, 0.1f, 100.0f); // Create perspective projection
+        projection = glm::perspective(glm::radians(cameras[activeCamera].zoom), (float)SCR_WIDTH/(float)SCR_HEIGHT, 0.1f, 100.0f); // Create perspective projection
 
         shader.activate(); //apply shader
         shader.setMat4("model", model);
@@ -267,7 +268,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height){ // Ca
     SCR_HEIGHT = height;
 }
 
-void processInput   (GLFWwindow *window){ // Function for processing input
+void processInput(GLFWwindow *window, double dt){ // Function for processing input
     if(Keyboard::key(GLFW_KEY_ESCAPE) || mainJ.buttonState(GLFW_JOYSTICK_BTN_RIGHT)){ // Check if escape key is pressed
         glfwSetWindowShouldClose(window, true); // Set window to close
     }
@@ -285,34 +286,39 @@ void processInput   (GLFWwindow *window){ // Function for processing input
             mixValue = 0.0f; // Set mix value to 0
         }
     }
-
-    if(Keyboard::key(GLFW_KEY_W)){
-        y -= 0.1f;
-    }
-    if(Keyboard::key(GLFW_KEY_S)){
-        y += 0.1f;
-    }
-    if(Keyboard::key(GLFW_KEY_A)){
-        x += 0.1f;
-    }
-    if(Keyboard::key(GLFW_KEY_D)){
-        x -= 0.1f;
-    }
-    if(Keyboard::key(GLFW_KEY_Q)){
-        z += 0.1f;
-    }
-    if(Keyboard::key(GLFW_KEY_E)){
-        z -= 0.1f;
-    }
-    if(Keyboard::key(GLFW_KEY_Z)){
-        if(theta < 89.0f)
-            theta += 0.1f;
-    }
-    if(Keyboard::key(GLFW_KEY_X)){
-        if(theta > 10.0f)
-            theta -= 0.1f;
+    if(Keyboard::keyWentDown(GLFW_KEY_TAB)){
+        activeCamera = activeCamera == 0 ? 1 : 0;
     }
 
+    //move camera
+    if (Keyboard::key(GLFW_KEY_W)){
+        cameras[activeCamera].updateCameraPosition(CameraDirection::FORWARD, dt);
+    }
+    if (Keyboard::key(GLFW_KEY_S)){
+        cameras[activeCamera].updateCameraPosition(CameraDirection::BACKWARD, dt);
+    }
+    if (Keyboard::key(GLFW_KEY_D)){
+        cameras[activeCamera].updateCameraPosition(CameraDirection::RIGHT, dt);
+    }
+    if (Keyboard::key(GLFW_KEY_A)){
+        cameras[activeCamera].updateCameraPosition(CameraDirection::LEFT, dt);
+    }
+    if (Keyboard::key(GLFW_KEY_SPACE)){
+        cameras[activeCamera].updateCameraPosition(CameraDirection::UP, dt);
+    }
+    if (Keyboard::key(GLFW_KEY_LEFT_SHIFT)){
+        cameras[activeCamera].updateCameraPosition(CameraDirection::DOWN, dt);
+    }
+
+    double dx = Mouse::getDX(), dy = Mouse::getDY();
+    if (dx != 0 || dy != 0){
+        cameras[activeCamera].updateCameraDirection(dx, dy);
+    }
+
+    double scrollDy = Mouse::getScrollDY();
+    if (scrollDy != 0){
+        cameras[activeCamera].updateCameraZoom(scrollDy);
+    }
 
     mainJ.update();
 
