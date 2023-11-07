@@ -1,8 +1,8 @@
 CMakeFiles/my_particle_system.dir/src/main.cpp.o: \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/main.cpp \
  /usr/include/stdc-predef.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/shader.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/../lib/glad/glad.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/shader.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/../../lib/glad/glad.h \
  /usr/include/KHR/khrplatform.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stdint.h /usr/include/stdint.h \
  /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
@@ -347,11 +347,24 @@ CMakeFiles/my_particle_system.dir/src/main.cpp.o: \
  /usr/include/glm/ext/vector_uint1.hpp \
  /usr/include/glm/ext/vector_uint1_sized.hpp /usr/include/c++/11/cstring \
  /usr/include/string.h /usr/include/strings.h \
- /usr/include/glm/gtc/type_ptr.inl /usr/local/include/GLFW/glfw3.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/../lib/stb/stb_image.h \
+ /usr/include/glm/gtc/type_ptr.inl \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/texture.h \
+ /usr/local/include/GLFW/glfw3.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/../../lib/stb/stb_image.h \
  /usr/include/c++/11/stdlib.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/cube.hpp \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/../model.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/../../../lib/glad/glad.h \
+ /usr/include/c++/11/vector /usr/include/c++/11/bits/stl_uninitialized.h \
+ /usr/include/c++/11/bits/stl_vector.h \
+ /usr/include/c++/11/bits/stl_bvector.h \
+ /usr/include/c++/11/bits/vector.tcc \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/../mesh.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/../shader.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/../texture.h \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/joystick.h \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/../../lib/glad/glad.h \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/keyboard.h \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/mouse.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/camera.h
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/camera.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/screen.h

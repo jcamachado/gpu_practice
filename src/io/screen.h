@@ -1,0 +1,36 @@
+#ifndef SCREEN_H
+#define SCREEN_H
+
+#include "../../lib/glad/glad.h"
+#include <GLFW/glfw3.h>
+// #include <glad/glad.h>
+
+//This class is responsible for creating the window and handling input and output
+//It doesnt care about rendering
+//Thats why its in the io folder
+class Screen {
+    public:
+        Screen();
+
+        static unsigned int SCR_WIDTH;
+        static unsigned int SCR_HEIGHT;
+        
+        static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
+
+        bool init();
+        void setParameters();
+
+        //main loop
+        void update();
+        void newFrame();
+
+        //window closing accessor and modifier
+        bool shouldClose();
+        void setShouldClose(bool value);
+
+    private:
+        GLFWwindow* window;
+};
+
+
+#endif

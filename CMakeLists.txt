@@ -3,15 +3,27 @@ project(my_particle_system VERSION 0.1.0)
 cmake_policy(SET CMP0072 NEW)
 
 add_executable(my_particle_system 
-    src/main.cpp 
-    assets/vertex_core.glsl
-    assets/fragment_core.glsl
+    assets/object.fs
+    assets/object.vs
+
     lib/glad/glad.h 
     lib/stb/stb_image.h 
     lib/stb.cpp 
+    
     src/glad.c
-    src/shader.h
-    src/shader.cpp
+    src/main.cpp 
+
+    src/graphics/shader.h
+    src/graphics/shader.cpp
+    src/graphics/texture.h
+    src/graphics/texture.cpp
+    src/graphics/mesh.h
+    src/graphics/mesh.cpp
+    src/graphics/model.h
+    src/graphics/model.cpp
+
+    src/graphics/models/cube.hpp
+
     src/io/keyboard.h
     src/io/keyboard.cpp
     src/io/mouse.h
@@ -20,6 +32,8 @@ add_executable(my_particle_system
     src/io/joystick.cpp
     src/io/camera.h
     src/io/camera.cpp
+    src/io/screen.h
+    src/io/screen.cpp
 )
 
 

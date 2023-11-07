@@ -2,7 +2,14 @@
 //.h eh feito principalmente pros imports e definicoes de funcoes
 //o .cpp eh feito principalmente pra implementar as funcoes definidas no .h
 
+Shader::Shader(){
+}
+
 Shader::Shader(const char* vertexShaderPath, const char* fragmentShaderPath){
+    generate(vertexShaderPath, fragmentShaderPath);
+}
+
+void Shader::generate(const char* vertexShaderPath, const char* fragmentShaderPath){
     int success;
     char infoLog[512];
 

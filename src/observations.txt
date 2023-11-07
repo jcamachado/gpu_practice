@@ -8,6 +8,10 @@ pointing front (roll)
 pointing east (pitch)
 pointing down (yaw) 
 
+GRAPHICS
+MODELS are divided into units called MESHES (A section of the model)
+So in a body, the Meshes could be the head, limbs and so on. 
+
 MATRIX MATH
 Matrix multiplication order for objects onto the screen
 //position
@@ -16,5 +20,25 @@ Matrix multiplication order for objects onto the screen
 //Multiplication must be transformation * model * position
 //projection * view * model * position 
 //transformation multiplication order is scale, rotate, translate 
+Procurar sobre as matrizes de transformacao
 
 cross function, to get the ortogonal vector between 2 vectors
+
+.fs fragment shader
+.vs vector shader
+
+
+// VAO is the vertex array object, it stores the vertex attribute calls
+// VBO is the vertex buffer object, it stores the vertex data
+//EBO is the Element buffer object It's a type of buffer object that you can store indices in, which you can then use to render primitives in OpenGL.
+
+
+//Optimization note
+Usar O.O. eh mais facil de usar e implementar, mas para fins de otimizacao, eh recomendado usar Component Oriented Programming
+
+//C++ tips
+for(Mesh mesh : meshes){
+        meshes.render(shader);
+    }
+for (tipo unidade: lista)
+uso de for por lista parecido com Python

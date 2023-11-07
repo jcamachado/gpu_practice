@@ -1,11 +1,6 @@
 [
 {
   "directory": "/home/jaxe/Repositories/gpu_study/gpu_practice/build",
-  "command": "/usr/bin/g++   -g -o CMakeFiles/my_particle_system.dir/src/main.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/main.cpp",
-  "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/main.cpp"
-},
-{
-  "directory": "/home/jaxe/Repositories/gpu_study/gpu_practice/build",
   "command": "/usr/bin/g++   -g -o CMakeFiles/my_particle_system.dir/lib/stb.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/lib/stb.cpp",
   "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/lib/stb.cpp"
 },
@@ -16,8 +11,28 @@
 },
 {
   "directory": "/home/jaxe/Repositories/gpu_study/gpu_practice/build",
-  "command": "/usr/bin/g++   -g -o CMakeFiles/my_particle_system.dir/src/shader.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/shader.cpp",
-  "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/shader.cpp"
+  "command": "/usr/bin/g++   -g -o CMakeFiles/my_particle_system.dir/src/main.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/main.cpp",
+  "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/main.cpp"
+},
+{
+  "directory": "/home/jaxe/Repositories/gpu_study/gpu_practice/build",
+  "command": "/usr/bin/g++   -g -o CMakeFiles/my_particle_system.dir/src/graphics/shader.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/shader.cpp",
+  "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/shader.cpp"
+},
+{
+  "directory": "/home/jaxe/Repositories/gpu_study/gpu_practice/build",
+  "command": "/usr/bin/g++   -g -o CMakeFiles/my_particle_system.dir/src/graphics/texture.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/texture.cpp",
+  "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/texture.cpp"
+},
+{
+  "directory": "/home/jaxe/Repositories/gpu_study/gpu_practice/build",
+  "command": "/usr/bin/g++   -g -o CMakeFiles/my_particle_system.dir/src/graphics/mesh.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/mesh.cpp",
+  "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/mesh.cpp"
+},
+{
+  "directory": "/home/jaxe/Repositories/gpu_study/gpu_practice/build",
+  "command": "/usr/bin/g++   -g -o CMakeFiles/my_particle_system.dir/src/graphics/model.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/model.cpp",
+  "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/model.cpp"
 },
 {
   "directory": "/home/jaxe/Repositories/gpu_study/gpu_practice/build",
@@ -38,5 +53,10 @@
   "directory": "/home/jaxe/Repositories/gpu_study/gpu_practice/build",
   "command": "/usr/bin/g++   -g -o CMakeFiles/my_particle_system.dir/src/io/camera.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/camera.cpp",
   "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/io/camera.cpp"
+},
+{
+  "directory": "/home/jaxe/Repositories/gpu_study/gpu_practice/build",
+  "command": "/usr/bin/g++   -g -o CMakeFiles/my_particle_system.dir/src/io/screen.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/screen.cpp",
+  "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/io/screen.cpp"
 }
 ]
