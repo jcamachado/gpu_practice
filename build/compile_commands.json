@@ -36,6 +36,11 @@
 },
 {
   "directory": "/home/jaxe/Repositories/gpu_study/gpu_practice/build",
+  "command": "/usr/bin/g++   -g -o CMakeFiles/my_particle_system.dir/src/graphics/material.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/material.cpp",
+  "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/material.cpp"
+},
+{
+  "directory": "/home/jaxe/Repositories/gpu_study/gpu_practice/build",
   "command": "/usr/bin/g++   -g -o CMakeFiles/my_particle_system.dir/src/io/keyboard.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/keyboard.cpp",
   "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/io/keyboard.cpp"
 },

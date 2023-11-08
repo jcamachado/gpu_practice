@@ -5,6 +5,7 @@ cmake_policy(SET CMP0072 NEW)
 add_executable(my_particle_system 
     assets/object.fs
     assets/object.vs
+    assets/lamp.fs
 
     lib/glad/glad.h 
     lib/stb/stb_image.h 
@@ -21,8 +22,11 @@ add_executable(my_particle_system
     src/graphics/mesh.cpp
     src/graphics/model.h
     src/graphics/model.cpp
+    src/graphics/material.h
+    src/graphics/material.cpp
 
     src/graphics/models/cube.hpp
+    src/graphics/models/lamp.hpp
 
     src/io/keyboard.h
     src/io/keyboard.cpp

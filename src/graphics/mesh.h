@@ -13,6 +13,7 @@
 
 struct Vertex{
     glm::vec3 pos;
+    glm::vec3 normal;
     glm::vec2 texCoord;
 
     static std::vector<struct Vertex> genList(float* vertices, int nVertices);

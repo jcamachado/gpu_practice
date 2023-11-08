@@ -22,6 +22,11 @@ Matrix multiplication order for objects onto the screen
 //transformation multiplication order is scale, rotate, translate 
 Procurar sobre as matrizes de transformacao
 
+Takes the normal vector and updates its position based on the possibly updated model position
+Normal = mat3(transpose(inverse(model))) * aNormal; //Normal in world space
+float diff = max(dot(norm, lightDir), 0.0); //when light is perpendicular to the normal, dot product is 0
+
+
 cross function, to get the ortogonal vector between 2 vectors
 
 .fs fragment shader

@@ -20,7 +20,7 @@ class Model {
         Model();
         void init();
         void render(Shader shader);
-        void cleanup();
+        void cleanup(); 
 };
 
 #endif

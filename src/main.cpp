@@ -3,12 +3,14 @@
 #include "graphics/texture.h" // Also includes other OpenGL headers and stb_image.h 
 
 #include "graphics/models/cube.hpp" // Also includes other OpenGL headers
+#include "graphics/models/lamp.hpp"
 
 #include "io/joystick.h"
 #include "io/keyboard.h"
 #include "io/mouse.h"
 #include "io/camera.h"
 #include "io/screen.h"
+
 
 void processInput(double dt); // Function for processing input
 float mixValue = 0.5f;
@@ -60,9 +62,19 @@ int main(){
     screen.setParameters();
 
     Shader shader("assets/object.vs", "assets/object.fs");
+    Shader lampShader("assets/object.vs", "assets/lamp.fs");
 
-    Cube cube(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.75f));
+    Cube cube(Material::mix(Material::ruby, Material::emerald) , glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.75f));
     cube.init();
+
+    Lamp lamp(glm::vec3(1.0f), 
+        glm::vec3(1.0f), 
+        glm::vec3(1.0f), 
+        glm::vec3(1.0f), 
+        glm::vec3(-3.0f, -0.5f, -0.5f), 
+        glm::vec3(0.25f)
+    );
+    lamp.init();
 
     mainJ.update();
     if (mainJ.isPresent()){ 
@@ -79,7 +91,13 @@ int main(){
         screen.update(); 
 
         shader.activate(); //apply shader
-        shader.setFloat("mixValue", mixValue); // Set mix value uniform in object.fs
+        shader.set3Float("light.position", lamp.pos);
+        shader.set3Float("viewPos", cameras[activeCamera].cameraPos);
+
+        shader.set3Float("light.ambient", lamp.ambient);
+        shader.set3Float("light.diffuse", lamp.diffuse);
+        shader.set3Float("light.specular", lamp.specular);
+
 
         //create transformation for screen
         glm::mat4 view = glm::mat4(1.0f);        
@@ -96,10 +114,18 @@ int main(){
 
         cube.render(shader);
 
+        lampShader.activate(); 
+        lampShader.setMat4("view", view);
+        lampShader.setMat4("projection", projection);
+
+        lamp.render(lampShader);
+
         // Swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         screen.newFrame(); 
     }
 
+    cube.cleanup();
+    lamp.cleanup();
     glfwTerminate(); // Terminate glfw
 
     return 0;

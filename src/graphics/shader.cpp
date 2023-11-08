@@ -74,6 +74,14 @@ GLuint Shader::compileShader (const char* filepath, GLenum type){ // Function fo
     return ret; // Return compiled shader
 }
 
+void Shader::set3Float(const std::string& name, float v1, float v2, float v3){
+    glUniform3f(glGetUniformLocation(id, name.c_str()), v1, v2, v3);
+}
+
+void Shader::set3Float(const std::string& name, glm::vec3 value){
+    set3Float(name, value.x, value.y, value.z);
+}
+
 void Shader::setMat4(const std::string& name, glm::mat4 value){
     //name eh o nome da variavel no shader, ex: "transform"
     //ou seja, value sera a matrix de transformacao aplicada ao shader atraves da variavel "transform"

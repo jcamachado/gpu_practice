@@ -362,6 +362,9 @@ CMakeFiles/my_particle_system.dir/src/main.cpp.o: \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/../mesh.h \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/../shader.h \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/../texture.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/../material.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/lamp.hpp \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/cube.hpp \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/joystick.h \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/../../lib/glad/glad.h \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/keyboard.h \
