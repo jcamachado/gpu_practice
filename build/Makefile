@@ -177,6 +177,30 @@ src/glad.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/glad.c.s
 .PHONY : src/glad.c.s
 
+src/graphics/light.o: src/graphics/light.cpp.o
+.PHONY : src/graphics/light.o
+
+# target to build an object file
+src/graphics/light.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/graphics/light.cpp.o
+.PHONY : src/graphics/light.cpp.o
+
+src/graphics/light.i: src/graphics/light.cpp.i
+.PHONY : src/graphics/light.i
+
+# target to preprocess a source file
+src/graphics/light.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/graphics/light.cpp.i
+.PHONY : src/graphics/light.cpp.i
+
+src/graphics/light.s: src/graphics/light.cpp.s
+.PHONY : src/graphics/light.s
+
+# target to generate assembly for a file
+src/graphics/light.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/graphics/light.cpp.s
+.PHONY : src/graphics/light.cpp.s
+
 src/graphics/material.o: src/graphics/material.cpp.o
 .PHONY : src/graphics/material.o
 
@@ -456,6 +480,9 @@ help:
 	@echo "... src/glad.o"
 	@echo "... src/glad.i"
 	@echo "... src/glad.s"
+	@echo "... src/graphics/light.o"
+	@echo "... src/graphics/light.i"
+	@echo "... src/graphics/light.s"
 	@echo "... src/graphics/material.o"
 	@echo "... src/graphics/material.i"
 	@echo "... src/graphics/material.s"

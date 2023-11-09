@@ -10,6 +10,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/jaxe/Repositories/gpu_study/gpu_practice/src/glad.c" "CMakeFiles/my_particle_system.dir/src/glad.c.o" "gcc" "CMakeFiles/my_particle_system.dir/src/glad.c.o.d"
   "/home/jaxe/Repositories/gpu_study/gpu_practice/lib/stb.cpp" "CMakeFiles/my_particle_system.dir/lib/stb.cpp.o" "gcc" "CMakeFiles/my_particle_system.dir/lib/stb.cpp.o.d"
+  "/home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/light.cpp" "CMakeFiles/my_particle_system.dir/src/graphics/light.cpp.o" "gcc" "CMakeFiles/my_particle_system.dir/src/graphics/light.cpp.o.d"
   "/home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/material.cpp" "CMakeFiles/my_particle_system.dir/src/graphics/material.cpp.o" "gcc" "CMakeFiles/my_particle_system.dir/src/graphics/material.cpp.o.d"
   "/home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/mesh.cpp" "CMakeFiles/my_particle_system.dir/src/graphics/mesh.cpp.o" "gcc" "CMakeFiles/my_particle_system.dir/src/graphics/mesh.cpp.o.d"
   "/home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/model.cpp" "CMakeFiles/my_particle_system.dir/src/graphics/model.cpp.o" "gcc" "CMakeFiles/my_particle_system.dir/src/graphics/model.cpp.o.d"

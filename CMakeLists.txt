@@ -24,6 +24,8 @@ add_executable(my_particle_system
     src/graphics/model.cpp
     src/graphics/material.h
     src/graphics/material.cpp
+    src/graphics/light.h
+    src/graphics/light.cpp
 
     src/graphics/models/cube.hpp
     src/graphics/models/lamp.hpp

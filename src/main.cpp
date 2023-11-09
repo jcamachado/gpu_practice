@@ -64,14 +64,14 @@ int main(){
     Shader shader("assets/object.vs", "assets/object.fs");
     Shader lampShader("assets/object.vs", "assets/lamp.fs");
 
-    Cube cube(Material::mix(Material::ruby, Material::emerald) , glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.75f));
+    Cube cube(Material::mix(Material::gold, Material::emerald), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.75f));
     cube.init();
 
     Lamp lamp(glm::vec3(1.0f), 
         glm::vec3(1.0f), 
         glm::vec3(1.0f), 
         glm::vec3(1.0f), 
-        glm::vec3(-3.0f, -0.5f, -0.5f), 
+        glm::vec3(-1.0f, -0.5f, -0.5f), 
         glm::vec3(0.25f)
     );
     lamp.init();
@@ -91,12 +91,9 @@ int main(){
         screen.update(); 
 
         shader.activate(); //apply shader
-        shader.set3Float("light.position", lamp.pos);
         shader.set3Float("viewPos", cameras[activeCamera].cameraPos);
 
-        shader.set3Float("light.ambient", lamp.ambient);
-        shader.set3Float("light.diffuse", lamp.diffuse);
-        shader.set3Float("light.specular", lamp.specular);
+        lamp.pointLight.render(shader); //lamp now third party its light position and data
 
 
         //create transformation for screen
