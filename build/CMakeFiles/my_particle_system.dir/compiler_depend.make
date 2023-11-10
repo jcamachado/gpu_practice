@@ -3133,6 +3133,7 @@ CMakeFiles/my_particle_system.dir/src/main.cpp.o: ../src/main.cpp \
   ../src/graphics/models/lamp.hpp \
   ../src/graphics/models/cube.hpp \
   ../src/graphics/light.h \
+  ../src/graphics/light.h \
   ../src/io/joystick.h \
   ../lib/glad/glad.h \
   ../src/io/keyboard.h \

@@ -1,3 +1,0 @@
-/home/jaxe/Repositories/gpu_study/gpu_practice/CMakeFiles/my_particle_system.dir
-/home/jaxe/Repositories/gpu_study/gpu_practice/CMakeFiles/edit_cache.dir
-/home/jaxe/Repositories/gpu_study/gpu_practice/CMakeFiles/rebuild_cache.dir

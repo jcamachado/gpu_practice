@@ -73,7 +73,8 @@
         "typeinfo": "cpp",
         "__nullptr": "cpp",
         "__locale": "cpp",
-        "__bit_reference": "cpp"
+        "__bit_reference": "cpp",
+        "ios": "cpp"
     },
     "cmake.configureOnOpen": true,
     // "cmake.sourceDirectory": "/home/jaxe/Repositories/gpu_study/gpu_practice"
