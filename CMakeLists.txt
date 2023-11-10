@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.0.0)
 project(my_particle_system VERSION 0.1.0)
 cmake_policy(SET CMP0072 NEW)
 
+add_subdirectory(lib/assimp-5.3.1)
+
 add_executable(my_particle_system 
     assets/object.fs
     assets/object.vs
@@ -46,4 +48,5 @@ add_executable(my_particle_system
 target_link_libraries(my_particle_system 
     glfw 
     GL
+    assimp
 )
