@@ -4,6 +4,10 @@
 #include "../../lib/glad/glad.h"
 #include <GLFW/glfw3.h>
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -14,13 +18,27 @@
 
 class Model {
     public:
+        glm::vec3 pos;
+        glm::vec3 size;
+        
+
+        Model(glm::vec3 pos = glm::vec3(0.0f), glm::vec3 size  = glm::vec3(1.0f), bool noTextures = false);
+        void init();
+        void loadModel(std::string path);
+        void render(Shader shader);
+        void cleanup();
+    protected:
+        bool noTextures;
+
         std::vector<Mesh> meshes;
         std::string directory;
 
-        Model();
-        void init();
-        void render(Shader shader);
-        void cleanup(); 
+        // Stores the textures loaded so far, optimization so textures arent loaded more than once.
+        std::vector<Texture> textures_loaded;
+        //ai here stands for assimp 
+        void processNode(aiNode *node, const aiScene *scene);
+        Mesh processMesh(aiMesh *mesh, const aiScene *scene);
+        std::vector<Texture> loadTextures(aiMaterial *mat, aiTextureType type);
 };
 
 #endif

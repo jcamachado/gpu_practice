@@ -300,6 +300,8 @@ my_particle_system: CMakeFiles/my_particle_system.dir/src/io/joystick.cpp.o
 my_particle_system: CMakeFiles/my_particle_system.dir/src/io/camera.cpp.o
 my_particle_system: CMakeFiles/my_particle_system.dir/src/io/screen.cpp.o
 my_particle_system: CMakeFiles/my_particle_system.dir/build.make
+my_particle_system: lib/assimp-5.3.1/bin/libassimpd.so.5.3.0
+my_particle_system: lib/assimp-5.3.1/contrib/zlib/libzlibstaticd.a
 my_particle_system: CMakeFiles/my_particle_system.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/jaxe/Repositories/gpu_study/gpu_practice/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Linking CXX executable my_particle_system"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/my_particle_system.dir/link.txt --verbose=$(VERBOSE)

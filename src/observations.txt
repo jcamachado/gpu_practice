@@ -88,3 +88,6 @@ for(Mesh mesh : meshes){
     }
 for (tipo unidade: lista)
 uso de for por lista parecido com Python
+
+header - .h
+source - .cpp

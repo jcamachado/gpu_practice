@@ -1,0 +1,214 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.0.0"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						1
+					]
+				},
+				{
+					"build" : "lib/assimp-5.3.1",
+					"childIndexes" : 
+					[
+						2,
+						3,
+						4
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-lib.assimp-5.3.1-Debug-12afecc63a395cfc3b96.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.10"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 1,
+					"source" : "lib/assimp-5.3.1",
+					"targetIndexes" : 
+					[
+						2
+					]
+				},
+				{
+					"build" : "lib/assimp-5.3.1/contrib/zlib",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-lib.assimp-5.3.1.contrib.zlib-Debug-43a982c6a98966daaa49.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.10.0"
+					},
+					"parentIndex" : 1,
+					"projectIndex" : 2,
+					"source" : "lib/assimp-5.3.1/contrib/zlib",
+					"targetIndexes" : 
+					[
+						4
+					]
+				},
+				{
+					"build" : "lib/assimp-5.3.1/code",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-lib.assimp-5.3.1.code-Debug-b7a0dc16947ca728cff5.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.10"
+					},
+					"parentIndex" : 1,
+					"projectIndex" : 1,
+					"source" : "lib/assimp-5.3.1/code",
+					"targetIndexes" : 
+					[
+						0
+					]
+				},
+				{
+					"build" : "lib/assimp-5.3.1/test",
+					"childIndexes" : 
+					[
+						5
+					],
+					"jsonFile" : "directory-lib.assimp-5.3.1.test-Debug-6464dca9e0b1016e64e7.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.10"
+					},
+					"parentIndex" : 1,
+					"projectIndex" : 1,
+					"source" : "lib/assimp-5.3.1/test",
+					"targetIndexes" : 
+					[
+						3
+					]
+				},
+				{
+					"build" : "lib/assimp-5.3.1/test/headercheck",
+					"jsonFile" : "directory-lib.assimp-5.3.1.test.headercheck-Debug-ac41e7c1f0512d00d4ad.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.10"
+					},
+					"parentIndex" : 4,
+					"projectIndex" : 1,
+					"source" : "lib/assimp-5.3.1/test/headercheck"
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"childIndexes" : 
+					[
+						1
+					],
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "my_particle_system",
+					"targetIndexes" : 
+					[
+						1
+					]
+				},
+				{
+					"childIndexes" : 
+					[
+						2
+					],
+					"directoryIndexes" : 
+					[
+						1,
+						3,
+						4,
+						5
+					],
+					"name" : "Assimp",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						0,
+						2,
+						3
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						2
+					],
+					"name" : "zlib",
+					"parentIndex" : 1,
+					"targetIndexes" : 
+					[
+						4
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 3,
+					"id" : "assimp::@58a5a3d819c9669ba2b9",
+					"jsonFile" : "target-assimp-Debug-9f3d3225d8ca3617943f.json",
+					"name" : "assimp",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "my_particle_system::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-my_particle_system-Debug-7a9682d6b63f9f80dafe.json",
+					"name" : "my_particle_system",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "uninstall::@51f8287cc04a4158c6ac",
+					"jsonFile" : "target-uninstall-Debug-407405e61945716020a1.json",
+					"name" : "uninstall",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 4,
+					"id" : "unit::@b2d2b1a05dce0a230d24",
+					"jsonFile" : "target-unit-Debug-eaaa66f2a2d3135ad020.json",
+					"name" : "unit",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "zlibstatic::@6d6e33cbb96a5451bde4",
+					"jsonFile" : "target-zlibstatic-Debug-8526ca5f6462df69e90a.json",
+					"name" : "zlibstatic",
+					"projectIndex" : 2
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/jaxe/Repositories/gpu_study/gpu_practice/build",
+		"source" : "/home/jaxe/Repositories/gpu_study/gpu_practice"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

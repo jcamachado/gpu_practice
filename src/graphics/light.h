@@ -13,9 +13,9 @@ struct PointLight {
     float k1; // linear
     float k2; // quadratic
 
-    glm::vec3 ambient;
-    glm::vec3 diffuse;
-    glm::vec3 specular;
+    glm::vec4 ambient;
+    glm::vec4 diffuse;
+    glm::vec4 specular;
 
 
     void render(Shader shader, int idx);
@@ -26,9 +26,9 @@ struct PointLight {
 struct DirLight {
     glm::vec3 direction;
 
-    glm::vec3 ambient;
-    glm::vec3 diffuse;
-    glm::vec3 specular;
+    glm::vec4 ambient;
+    glm::vec4 diffuse;
+    glm::vec4 specular;
 
 
     void render(Shader shader);
@@ -46,9 +46,9 @@ struct SpotLight {
     float cutOff; // inner line cone where the light is stronger
     float outerCutOff; //from inner cut to outer cut off, the light weakens and limits the light cone
 
-    glm::vec3 ambient;
-    glm::vec3 diffuse;
-    glm::vec3 specular;
+    glm::vec4 ambient;
+    glm::vec4 diffuse;
+    glm::vec4 specular;
 
     void render(Shader shader, int idx);
 };
