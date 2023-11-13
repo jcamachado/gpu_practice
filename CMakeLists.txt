@@ -31,6 +31,7 @@ add_executable(my_particle_system
 
     src/graphics/models/cube.hpp
     src/graphics/models/lamp.hpp
+    src/graphics/models/gun.hpp
 
     src/io/keyboard.h
     src/io/keyboard.cpp

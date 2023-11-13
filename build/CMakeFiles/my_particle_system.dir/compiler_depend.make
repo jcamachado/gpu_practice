@@ -3507,6 +3507,10 @@ CMakeFiles/my_particle_system.dir/src/main.cpp.o: ../src/main.cpp \
   ../src/graphics/models/lamp.hpp \
   ../src/graphics/models/cube.hpp \
   ../src/graphics/light.h \
+  ../src/graphics/models/gun.hpp \
+  ../src/io/camera.h \
+  ../src/io/keyboard.h \
+  ../lib/glad/glad.h \
   ../src/graphics/light.h \
   ../src/graphics/model.h \
   ../src/io/joystick.h \
@@ -3576,6 +3580,8 @@ CMakeFiles/my_particle_system.dir/src/main.cpp.o: ../src/main.cpp \
 ../lib/assimp-5.3.1/include/assimp/material.inl:
 
 ../lib/assimp-5.3.1/include/assimp/light.h:
+
+../src/graphics/models/gun.hpp:
 
 ../lib/assimp-5.3.1/include/assimp/aabb.h:
 
