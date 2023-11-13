@@ -3,18 +3,20 @@
 Model::Model(glm::vec3 pos, glm::vec3 size, bool noTextures)
     : pos(pos), size(size), noTextures(noTextures)  {}
 
-void Model::init(){}
-
 void Model::render(Shader shader){
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, pos);
     model = glm::scale(model, size);
+    // model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0));
     shader.setMat4("model", model);
 
     shader.setFloat("material.shininess", 0.5f);
 
-    for(Mesh mesh : meshes){
-        mesh.render(shader);
+    // for(Mesh mesh : meshes){
+    //     mesh.render(shader);
+    // }
+    for(unsigned int i = 0; i < meshes.size(); i++){
+        meshes[i].render(shader);
     }
 }
 
@@ -82,8 +84,10 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene){
                 mesh->mTextureCoords[0][i].x, 
                 mesh->mTextureCoords[0][i].y
             );
+
         } else {
             vertex.texCoord = glm::vec2(0.0f);
+
         }
         vertices.push_back(vertex);
     }
@@ -101,6 +105,7 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene){
         aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
 
         if(noTextures){
+            
             // diffuse color
             aiColor4D diff(1.0f);
             aiGetMaterialColor(material, AI_MATKEY_COLOR_DIFFUSE, &diff);
@@ -110,29 +115,30 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene){
             aiGetMaterialColor(material, AI_MATKEY_COLOR_SPECULAR, &spec);
 
             return Mesh(vertices, indices, diff, spec);
-
+        }
         //diffuse maps
+        
         std::vector<Texture> diffuseMaps = loadTextures(material, aiTextureType_DIFFUSE);
         textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
         
         //specular maps
         std::vector<Texture> specularMaps = loadTextures(material, aiTextureType_SPECULAR);
         textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-        }
-        return Mesh(vertices, indices, textures);
     }
+        return Mesh(vertices, indices, textures);
 }
 
 std::vector<Texture> Model::loadTextures(aiMaterial *mat, aiTextureType type){
     std::vector<Texture> textures;
+
     for(unsigned int i = 0; i < mat->GetTextureCount(type); i++) {
         aiString str;
         mat->GetTexture(type, i, &str);
-        std::cout << "Loading texture at " << str.C_Str() << std::endl;
         
         // prevent duplicate loading
         // check if texture was loaded before and if so, continue to next iteration: skip loading a new texture
         bool skip = false;
+
         for(unsigned int j = 0; j < textures_loaded.size(); j++) {
             if(std::strcmp(textures_loaded[j].path.data(), str.C_Str()) == 0) {
                 textures.push_back(textures_loaded[j]);

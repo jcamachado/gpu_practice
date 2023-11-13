@@ -66,8 +66,8 @@ int main(){
     Shader shader("assets/object.vs", "assets/object.fs");
     Shader lampShader("assets/object.vs", "assets/lamp.fs");
 
-    Model m(glm::vec3(0.0f, 0.0f, -5.0f), glm::vec3(0.05f), true);
-    m.loadModel("assets/models/m4a1/scene.gltf");
+    Model m(glm::vec3(0.0f, 0.0f, -5.0f), glm::vec3(0.05f), false);
+    m.loadModel("assets/models/lotr_troll/scene.gltf");
 
     DirLight dirLight{
         glm::vec3(-0.2f, -1.0f, -0.3f), 

@@ -22,8 +22,8 @@ class Model {
         glm::vec3 size;
         
 
+        Model() {}
         Model(glm::vec3 pos = glm::vec3(0.0f), glm::vec3 size  = glm::vec3(1.0f), bool noTextures = false);
-        void init();
         void loadModel(std::string path);
         void render(Shader shader);
         void cleanup();
