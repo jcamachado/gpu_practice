@@ -8,6 +8,10 @@ add_executable(my_particle_system
     assets/lamp.fs
     assets/object.fs
     assets/object.vs
+    
+    assets/instanced/box.fs
+    assets/instanced/box.vs
+    assets/instanced/instanced.vs
 
     assets/models/sphere/scene.gltf
     assets/models/m4a1/scene.gltf
@@ -32,6 +36,7 @@ add_executable(my_particle_system
     src/graphics/texture.h
     src/graphics/texture.cpp
 
+    src/graphics/models/box.hpp
     src/graphics/models/cube.hpp
     src/graphics/models/lamp.hpp
     src/graphics/models/gun.hpp

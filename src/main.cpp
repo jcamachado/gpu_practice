@@ -5,6 +5,7 @@
 #include "graphics/shader.h" //Including majority of the OpenGL headers
 #include "graphics/texture.h" // Also includes other OpenGL headers and stb_image.h 
 
+#include "graphics/models/box.hpp" 
 #include "graphics/models/cube.hpp" // Also includes other OpenGL headers
 #include "graphics/models/lamp.hpp"
 #include "graphics/models/gun.hpp"
@@ -31,6 +32,8 @@ double dt = 0.0f; // Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
 
 bool flashLightOn = false;
+
+Box box;
 SphereArray launchObjects; 
 
 int main(){
@@ -64,10 +67,13 @@ int main(){
 
     // Shaders
     Shader shader("assets/object.vs", "assets/object.fs");
-    Shader lampShader("assets/object.vs", "assets/lamp.fs");
+    Shader lampShader("assets/instanced/instanced.vs", "assets/lamp.fs");
+    Shader launchShader("assets/instanced/instanced.vs", "assets/object.fs");
+    Shader boxShader("assets/instanced/box.vs", "assets/instanced/box.fs");
 
     // Models
     launchObjects.init();
+    box.init();
 
     // Lights
     DirLight dirLight{
@@ -83,20 +89,12 @@ int main(){
         glm::vec3(-4.0f,  2.0f, -12.0f),
         glm::vec3(0.0f,  0.0f, -3.0f)
     };
-    // Lamp lamps[4];
-    // for (unsigned int i = 0; i < 4; i++) {
-    //     lamps[i] = Lamp(glm::vec3(1.0f),
-    //         ambient, diffuse, specular,
-    //         k0, k1, k2,
-    //         pointLightPositions[i], glm::vec3(0.25f));
-    //     lamps[i].init();
-    // }
-
+    
     glm::vec4 ambient(0.05f, 0.05f, 0.05f, 1.0f);
     glm::vec4 diffuse(0.8f, 0.8f, 0.8f, 1.0f);
-    glm::vec4 specular(1.0f, 1.0f, 1.0f, 1.0f);
+    glm::vec4 specular(1.0f);
     float k0 = 1.0f;
-    float k1 = 0.07f;
+    float k1 = 0.09f;
     float k2 = 0.032f;
 
 
@@ -108,11 +106,8 @@ int main(){
             pointLightPositions[i],
             k0, k1, k2,
             ambient, diffuse, specular
-     });
+        });
     }
-
-
-
     SpotLight s = {
         Camera::defaultCamera.cameraPos,
         Camera::defaultCamera.cameraFront,
@@ -122,14 +117,15 @@ int main(){
         glm::cos(glm::radians(12.5f)),
         glm::cos(glm::radians(20.0f)),
         glm::vec4(0.0f, 0.0f, 0.0f, 1.0f),
-        glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
-        glm::vec4(1.0f, 1.0f, 1.0f, 1.0f)
+        glm::vec4(1.0f),
+        glm::vec4(1.0f)
     };
-        
-    mainJ.update();
-    if (mainJ.isPresent()){ 
-        std::cout << "Joystick connected" << std::endl;
-    }
+
+    // joystick recognition
+    // mainJ.update();
+    // if (mainJ.isPresent()){ 
+    //     std::cout << "Joystick connected" << std::endl;
+    // }
 
     while (!screen.shouldClose()){ // Check if window should close
         double currentTime = glfwGetTime();
@@ -139,33 +135,37 @@ int main(){
         // Process input
         processInput(dt); 
 
-        //render
+        //update screen values
         screen.update(); 
 
         //draw shapes
         shader.activate(); //apply shader
-        shader.set3Float("viewPos", Camera::defaultCamera.cameraPos);
+        launchShader.activate(); //apply shader
 
-        // dirLight.direction = glm::vec3(
-        //     glm::rotate(glm::mat4(1.0f),
-        //     glm::radians(1.0f), 
-        //     glm::vec3(0.5, 1.0, 0.0)) * glm::vec4(dirLight.direction, 1.0f));
+        shader.set3Float("viewPos", Camera::defaultCamera.cameraPos);
+        launchShader.set3Float("viewPos", Camera::defaultCamera.cameraPos);
+
         dirLight.render(shader);
+        dirLight.render(launchShader);
 
         for(unsigned int i = 0; i < 4; i++){
             lamps.lightInstances[i].render(shader, i);
+            lamps.lightInstances[i].render(launchShader, i);
         }
         
         shader.setInt("nPointLights", 4);
+        launchShader.setInt("nPointLights", 4);
 
         if (flashLightOn){
             s.position = Camera::defaultCamera.cameraPos;
             s.direction = Camera::defaultCamera.cameraFront;
             s.render(shader, 0);
             shader.setInt("nSpotLights", 1);
+            launchShader.setInt("nSpotLights", 1);
         }
         else {
             shader.setInt("nSpotLights", 0);
+            launchShader.setInt("nSpotLights", 0);
         }
 
         //create transformation for screen
@@ -197,7 +197,9 @@ int main(){
 
 
         if (launchObjects.instances.size() > 0){
-            launchObjects.render(shader, dt);
+            launchShader.setMat4("view", view);
+            launchShader.setMat4("projection", projection);
+            launchObjects.render(launchShader, dt);
         }
 
         lampShader.activate(); 
@@ -205,12 +207,21 @@ int main(){
         lampShader.setMat4("projection", projection);
         lamps.render(lampShader, dt);
 
+        //render boxes
+        if (box.offsets.size() > 0){
+            //if instances exist
+            boxShader.activate();
+            boxShader.setMat4("view", view);
+            boxShader.setMat4("projection", projection);
+            box.render(boxShader);
+        }
+
         // Swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         screen.newFrame(); 
     }
 
     lamps.cleanup();
-
+    box.cleanup();
     launchObjects.cleanup();
 
     glfwTerminate(); // Terminate glfw
@@ -220,7 +231,8 @@ int main(){
 
 void launchItem(float dt){
     RigidBody rb(1.0f, Camera::defaultCamera.cameraPos);
-    rb.applyImpulse(Camera::defaultCamera.cameraFront, 10000.0f, dt);
+    rb.transferEnergy(100.0f, Camera::defaultCamera.cameraFront);
+    // rb.applyImpulse( Camera::defaultCamera.cameraFront, 10000.0f, dt );
     rb.applyAcceleration(Environment::gravity);
     launchObjects.instances.push_back(rb);
 }
@@ -232,7 +244,6 @@ void processInput(double dt){ // Function for processing input
     if(Keyboard::keyWentUp(GLFW_KEY_L)){
         flashLightOn = !flashLightOn;
     }
-
 
     //move camera
     if (Keyboard::key(GLFW_KEY_W)){
@@ -256,6 +267,10 @@ void processInput(double dt){ // Function for processing input
 
     if (Keyboard::keyWentDown(GLFW_KEY_F)){
         launchItem(dt);
+    }
+    if (Keyboard::keyWentDown(GLFW_KEY_I)){
+        box.offsets.push_back(glm::vec3(box.offsets.size() * 1.0f));
+        box.sizes.push_back(glm::vec3(box.sizes.size()*0.5f));
     }
 
     /*
@@ -285,6 +300,6 @@ void processInput(double dt){ // Function for processing input
     }
     */
 
-	mainJ.update();
+	// mainJ.update();
 
 } 

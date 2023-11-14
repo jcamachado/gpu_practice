@@ -4,6 +4,7 @@
 #include "../model.h"
 #include "../material.h"
 
+//does not use ebo because the normal vectors are not the same for each side
 class Cube : public Model {
     public:
         Material material;
@@ -68,9 +69,6 @@ class Cube : public Model {
             // flagSpec.load();
 
             meshes.push_back(Mesh(Vertex::genList(vertices, nVertices), indices));
-        }
-        void render (Shader shader, float dt, bool setModel = true){
-            Model::render(shader, dt);
         }
 };
 

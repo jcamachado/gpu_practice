@@ -1,5 +1,7 @@
 #include "mesh.h"
 
+#include <iostream>
+
 std::vector<Vertex> Vertex::genList(float* vertices, int nVertices){
     // 5 floats per vertex, 3 for position, 2 for texture coordinates
     std::vector<Vertex> ret(nVertices);
@@ -8,7 +10,7 @@ std::vector<Vertex> Vertex::genList(float* vertices, int nVertices){
     
     for(int i=0; i<nVertices; i++){
         ret[i].pos = glm::vec3(
-            vertices[i*stride], 
+            vertices[i*stride+0], 
             vertices[i*stride+1], 
             vertices[i*stride+2]
         );
@@ -24,11 +26,9 @@ std::vector<Vertex> Vertex::genList(float* vertices, int nVertices){
             vertices[i*stride+7]
         );
     }
+
     return ret;
-
 }
-
-Mesh::Mesh(){}
 
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures)
     :
@@ -52,7 +52,7 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, aiCo
 }
 
 
-void Mesh::render(Shader shader){
+void Mesh::render(Shader shader, bool doRender){
     if(noTextures){
         //materials
         shader.set4Float("material.diffuse", diffuse);
@@ -82,16 +82,18 @@ void Mesh::render(Shader shader){
         }
     }
 
+    if(doRender){
+        // Bind VAO
+        glBindVertexArray(VAO);
 
-    
-    // Bind VAO
-    glBindVertexArray(VAO);
+        // Draw
+        glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
 
-    // Draw
-    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-    glBindVertexArray(0);
+        glActiveTexture(GL_TEXTURE0); // Reset texture unit
+    }
 
-    glActiveTexture(GL_TEXTURE0); // Reset texture unit
+
 }
 
 void Mesh::cleanup(){

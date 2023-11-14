@@ -1,12 +1,15 @@
 #include "model.h"
 
+#include "../physics/environment.h"
+
+#include <iostream>
 
 Model::Model(glm::vec3 pos, glm::vec3 size, bool noTextures)
     : size(size), noTextures(noTextures)  {
         rb.pos = pos;
     }
 
-void Model::render(Shader shader, float dt, bool setModel){
+void Model::render(Shader shader, float dt, bool setModel, bool doRender){
     rb.update(dt);
 
     if(setModel){
@@ -20,7 +23,7 @@ void Model::render(Shader shader, float dt, bool setModel){
     shader.setFloat("material.shininess", 0.5f);
 
     for(Mesh mesh : meshes){
-        mesh.render(shader);
+        mesh.render(shader, doRender);
     }
     // for(unsigned int i = 0; i < meshes.size(); i++){
     //     meshes[i].render(shader);

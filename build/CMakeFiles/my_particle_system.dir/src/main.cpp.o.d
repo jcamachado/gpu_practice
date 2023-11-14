@@ -409,6 +409,9 @@ CMakeFiles/my_particle_system.dir/src/main.cpp.o: \
  /usr/local/include/GLFW/glfw3.h \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/../../lib/stb/stb_image.h \
  /usr/include/c++/11/stdlib.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/box.hpp \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/../../../lib/glad/glad.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/../shader.h \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/cube.hpp \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/../model.h \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/../../../lib/glad/glad.h \

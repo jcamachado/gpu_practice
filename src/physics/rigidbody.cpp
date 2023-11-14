@@ -1,10 +1,12 @@
 #include "rigidbody.h"
+#include <iostream>
 
 RigidBody::RigidBody(float mass, glm::vec3 pos, glm::vec3 velocity, glm::vec3 acceleration)
     : mass(mass), pos(pos), velocity(velocity), acceleration(acceleration) {}
 
 
 void RigidBody::update(float dt){
+
     pos += velocity * dt + 0.5f * acceleration * (dt * dt);
     velocity += acceleration * dt;
 }
@@ -33,16 +35,16 @@ void RigidBody::applyImpulse(glm::vec3 direction, float magnitude, float dt){
     applyImpulse(direction * magnitude, dt);
 }
 
-void RigidBody::transferEnergy(float joules){
+void RigidBody::transferEnergy(float joules, glm::vec3 direction){
     if(joules == 0){
         return;
     
     }
     //comes from formula KE = 1/2 * m * v^2
-    float deltaV = sqrt(2 * abs(joules) / mass);
+    glm::vec3 deltaV = ((float)sqrt(2 * abs(joules) / mass)) * direction;
     velocity += joules > 0 ? deltaV : -deltaV;
 
-    float velocityMagnitude = glm::length(velocity);
-    float newVelocityMagnitude = sqrt(2 * joules / mass);
-    velocity = glm::normalize(velocity) * newVelocityMagnitude;
+    // float velocityMagnitude = glm::length(velocity);
+    // float newVelocityMagnitude = sqrt(2 * joules / mass);
+    // velocity = glm::normalize(velocity) * newVelocityMagnitude;
 }
