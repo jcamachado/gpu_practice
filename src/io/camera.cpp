@@ -1,20 +1,23 @@
 #include "camera.h"
 
 Camera::Camera(glm::vec3 position)
-    : cameraPos(position),
+        : cameraPos(position),
         worldUp(glm::vec3(0.0f, 1.0f, 0.0f)),
         yaw(0.0f),
         pitch(0.0f),
         speed(2.5f),
+        sensitivity(1.0f),
         zoom(45.0f),
-        sensitivity(0.1f),
-        cameraFront(glm::vec3(1.0f, 0.0f, 0.0f)){
+        cameraFront(glm::vec3(1.0f, 0.0f, 0.0f))
+{
     updateCameraVectors();
 }
 
 void Camera::updateCameraDirection(double dx, double dy) {
-    yaw += dx * sensitivity;
-    pitch += dy * sensitivity;
+    // yaw += dx * sensitivity;
+    yaw += dx;
+    // pitch += dy * sensitivity;
+    pitch += dy;
     if (pitch > 89.0f) {
         pitch = 89.0f;
     }
@@ -25,7 +28,7 @@ void Camera::updateCameraDirection(double dx, double dy) {
 }
 
 void Camera::updateCameraPosition(CameraDirection direction, double dt) {
-    float velocity = speed * (float)dt;
+    float velocity = (float)dt * speed;
 
     switch(direction) {
         case CameraDirection::FORWARD:
@@ -57,10 +60,10 @@ void Camera::updateCameraZoom(double dy) {
     if (zoom >= 1.0f && zoom <= 45.0f) {
         zoom -= dy;
     }
-    if (zoom <= 1.0f) {
+    else if (zoom < 1.0f) {
         zoom = 1.0f;
     }
-    if (zoom >= 45.0f) {
+    else  { // zoom > 45.0f
         zoom = 45.0f;
     }
 }
@@ -69,6 +72,10 @@ glm::mat4 Camera::getViewMatrix() {
     return glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 }
 
+
+float Camera::getZoom() {
+    return zoom;
+}
 
 void Camera::updateCameraVectors() {
     glm::vec3 direction;
@@ -80,8 +87,4 @@ void Camera::updateCameraVectors() {
     
     cameraRight = glm::normalize(glm::cross(cameraFront, worldUp));
     cameraUp = glm::normalize(glm::cross(cameraRight, cameraFront));
-}
-
-float Camera::getZoom() {
-    return zoom;
 }

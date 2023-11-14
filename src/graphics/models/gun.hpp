@@ -6,17 +6,17 @@
 class Gun : public Model {
     public:
         Gun()
-            : Model(glm::vec3(0.0f), glm::vec3(0.05f), true) {}
+            : Model(glm::vec3(0.0f), glm::vec3(1/300.0f), true) {}
         
-        void render(Shader shader, bool setModel = false ){
+        void render(Shader shader, float dt, bool setModel = false ){
             glm::mat4 model = glm::mat4(1.0f);
             
             glm::vec3 down = glm::cross(Camera::defaultCamera.cameraFront, Camera::defaultCamera.cameraRight);
             //set position
-            pos = Camera::defaultCamera.cameraPos + 
-            glm::vec3((Camera::defaultCamera.cameraFront * 2.0f)) - 
-            glm::vec3((Camera::defaultCamera.cameraUp * 0.90f));
-            model = glm::translate(model, pos);
+            rb.pos = Camera::defaultCamera.cameraPos + 
+            glm::vec3((Camera::defaultCamera.cameraFront * 0.17f)) - 
+            glm::vec3((Camera::defaultCamera.cameraUp * 0.0605f));
+            model = glm::translate(model, rb.pos);
             
             //rotate around cameraRight using dot product
             float theta = acos(glm::dot(Camera::defaultCamera.worldUp, Camera::defaultCamera.cameraFront)/ 
@@ -32,13 +32,13 @@ class Gun : public Model {
             
 
 
-            if(Keyboard::key(GLFW_KEY_SPACE)){
+            if(Keyboard::key(GLFW_KEY_B)){
                 std::cout << Camera::defaultCamera.cameraPos.x << 
                 " " << Camera::defaultCamera.cameraPos.y <<
                 " " << Camera::defaultCamera.cameraPos.z <<
-                " " << pos.x <<
-                " " << pos.y <<
-                " " << pos.z << std::endl;
+                " " << rb.pos.x <<
+                " " << rb.pos.y <<
+                " " << rb.pos.z << std::endl;
 
             }
 
@@ -47,7 +47,7 @@ class Gun : public Model {
 
             shader.setMat4("model", model);
 
-            Model::render(shader, false);
+            Model::render(shader, dt, false);
 
         }
 

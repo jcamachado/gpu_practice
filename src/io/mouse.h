@@ -3,6 +3,7 @@
 
 #include "../../lib/glad/glad.h" // include glad to get all the required OpenGL headers
 #include <GLFW/glfw3.h>
+#include "camera.h"
 
 class Mouse {
     public:

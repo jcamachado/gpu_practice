@@ -1,11 +1,11 @@
-CMakeFiles/my_particle_system.dir/src/io/screen.cpp.o: \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/screen.cpp \
+CMakeFiles/my_particle_system.dir/src/physics/environment.cpp.o: \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/physics/environment.cpp \
  /usr/include/stdc-predef.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/screen.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/../../lib/glad/glad.h \
- /usr/include/KHR/khrplatform.h \
- /usr/lib/gcc/x86_64-linux-gnu/11/include/stdint.h /usr/include/stdint.h \
- /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/physics/environment.h \
+ /usr/include/glm/glm.hpp /usr/include/glm/detail/_fixes.hpp \
+ /usr/include/c++/11/cmath \
+ /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
+ /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \
  /usr/include/features.h /usr/include/features-time64.h \
  /usr/include/x86_64-linux-gnu/bits/wordsize.h \
  /usr/include/x86_64-linux-gnu/bits/timesize.h \
@@ -13,25 +13,14 @@ CMakeFiles/my_particle_system.dir/src/io/screen.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/long-double.h \
  /usr/include/x86_64-linux-gnu/gnu/stubs.h \
  /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
- /usr/include/x86_64-linux-gnu/bits/types.h \
- /usr/include/x86_64-linux-gnu/bits/typesizes.h \
- /usr/include/x86_64-linux-gnu/bits/time64.h \
- /usr/include/x86_64-linux-gnu/bits/wchar.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-intn.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /usr/local/include/GLFW/glfw3.h \
- /usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/keyboard.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/mouse.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/camera.h \
- /usr/include/glm/glm.hpp /usr/include/glm/detail/_fixes.hpp \
- /usr/include/c++/11/cmath \
- /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
- /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/cpu_defines.h \
  /usr/include/c++/11/pstl/pstl_config.h \
  /usr/include/c++/11/bits/cpp_type_traits.h \
  /usr/include/c++/11/ext/type_traits.h /usr/include/math.h \
+ /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
+ /usr/include/x86_64-linux-gnu/bits/types.h \
+ /usr/include/x86_64-linux-gnu/bits/typesizes.h \
+ /usr/include/x86_64-linux-gnu/bits/time64.h \
  /usr/include/x86_64-linux-gnu/bits/math-vector.h \
  /usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h \
  /usr/include/x86_64-linux-gnu/bits/floatn.h \
@@ -44,6 +33,7 @@ CMakeFiles/my_particle_system.dir/src/io/screen.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/mathcalls-narrow.h \
  /usr/include/x86_64-linux-gnu/bits/iscanonical.h \
  /usr/include/c++/11/bits/std_abs.h /usr/include/stdlib.h \
+ /usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h \
  /usr/include/x86_64-linux-gnu/bits/waitflags.h \
  /usr/include/x86_64-linux-gnu/bits/waitstatus.h \
  /usr/include/x86_64-linux-gnu/bits/types/locale_t.h \
@@ -52,7 +42,8 @@ CMakeFiles/my_particle_system.dir/src/io/screen.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/types/clock_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/clockid_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/time_t.h \
- /usr/include/x86_64-linux-gnu/bits/types/timer_t.h /usr/include/endian.h \
+ /usr/include/x86_64-linux-gnu/bits/types/timer_t.h \
+ /usr/include/x86_64-linux-gnu/bits/stdint-intn.h /usr/include/endian.h \
  /usr/include/x86_64-linux-gnu/bits/endian.h \
  /usr/include/x86_64-linux-gnu/bits/endianness.h \
  /usr/include/x86_64-linux-gnu/bits/byteswap.h \
@@ -99,6 +90,9 @@ CMakeFiles/my_particle_system.dir/src/io/screen.cpp.o: \
  /usr/include/glm/detail/setup.hpp /usr/include/c++/11/cassert \
  /usr/include/assert.h /usr/include/c++/11/cstddef \
  /usr/include/glm/simd/platform.h /usr/include/c++/11/cstdint \
+ /usr/lib/gcc/x86_64-linux-gnu/11/include/stdint.h /usr/include/stdint.h \
+ /usr/include/x86_64-linux-gnu/bits/wchar.h \
+ /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
  /usr/include/c++/11/climits \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/limits.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/syslimits.h \
@@ -220,16 +214,4 @@ CMakeFiles/my_particle_system.dir/src/io/screen.cpp.o: \
  /usr/include/glm/packing.hpp /usr/include/glm/detail/func_packing.inl \
  /usr/include/glm/detail/type_half.hpp \
  /usr/include/glm/detail/type_half.inl /usr/include/glm/integer.hpp \
- /usr/include/glm/detail/func_integer.inl \
- /usr/include/glm/gtc/matrix_transform.hpp \
- /usr/include/glm/ext/matrix_projection.hpp \
- /usr/include/glm/gtc/constants.hpp \
- /usr/include/glm/ext/scalar_constants.hpp \
- /usr/include/glm/ext/scalar_constants.inl \
- /usr/include/glm/gtc/constants.inl \
- /usr/include/glm/ext/matrix_projection.inl \
- /usr/include/glm/ext/matrix_clip_space.hpp \
- /usr/include/glm/ext/matrix_clip_space.inl \
- /usr/include/glm/ext/matrix_transform.hpp \
- /usr/include/glm/ext/matrix_transform.inl \
- /usr/include/glm/gtc/matrix_transform.inl
+ /usr/include/glm/detail/func_integer.inl

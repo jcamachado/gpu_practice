@@ -69,6 +69,9 @@ class Cube : public Model {
 
             meshes.push_back(Mesh(Vertex::genList(vertices, nVertices), indices));
         }
+        void render (Shader shader, float dt, bool setModel = true){
+            Model::render(shader, dt);
+        }
 };
 
 #endif

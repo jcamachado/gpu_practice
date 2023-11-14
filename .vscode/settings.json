@@ -81,7 +81,8 @@
         "any": "cpp",
         "complex": "cpp",
         "regex": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "stack": "cpp"
     },
     "cmake.configureOnOpen": true,
     // "cmake.sourceDirectory": "/home/jaxe/Repositories/gpu_study/gpu_practice"

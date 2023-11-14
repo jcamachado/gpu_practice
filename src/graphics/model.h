@@ -15,17 +15,19 @@
 
 #include "mesh.h"
 
+#include "../physics/rigidbody.h"
+
 
 class Model {
     public:
-        glm::vec3 pos;
+        RigidBody rb;
         glm::vec3 size;
         
 
         Model() {}
         Model(glm::vec3 pos = glm::vec3(0.0f), glm::vec3 size  = glm::vec3(1.0f), bool noTextures = false);
         void loadModel(std::string path);
-        void render(Shader shader, bool setModel = true);
+        void render(Shader shader, float dt, bool setModel = true);
         void cleanup();
     protected:
         bool noTextures;

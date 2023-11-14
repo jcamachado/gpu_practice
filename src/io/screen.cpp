@@ -14,7 +14,8 @@ void Screen::framebufferSizeCallback(GLFWwindow* window, int width, int height) 
     SCR_HEIGHT = height;
 }
 
-Screen::Screen(): window(nullptr) {}
+Screen::Screen()
+    : window(nullptr) {}
 
 bool Screen::init(){
     window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Particle System", NULL, NULL);
@@ -32,11 +33,10 @@ void Screen::setParameters() {
 
     glfwSetKeyCallback(window, Keyboard::keyCallback); // Set callback function for keyboard input
     
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // Disable cursor, to look like a fps camera
     glfwSetCursorPosCallback(window, Mouse::cursorPositionCallback); // Set callback function for mouse movement
     glfwSetMouseButtonCallback(window, Mouse::mouseButtonCallback); // Set callback function for mouse buttons
     glfwSetScrollCallback(window, Mouse::mouseScrollCallback); // Set callback function for mouse scroll
-
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // Disable cursor, to look like a fps camera
 
     glEnable(GL_DEPTH_TEST); // Enable depth testing
 }

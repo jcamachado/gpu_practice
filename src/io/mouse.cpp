@@ -30,6 +30,8 @@ void Mouse::cursorPositionCallback(GLFWwindow* window, double _x, double _y){
     dy = lastY - y; // reversed since y-coordinates go from bottom to top
     lastX = x;
     lastY = y;
+
+    Camera::defaultCamera.updateCameraDirection(dx, dy);
 }
 void Mouse::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods){
     if(action != GLFW_RELEASE){
@@ -43,9 +45,8 @@ void Mouse::mouseButtonCallback(GLFWwindow* window, int button, int action, int 
     buttonsChanged[button] = action != GLFW_REPEAT;
 }
 
-void Mouse::mouseScrollCallback(GLFWwindow* window, double _dx, double _dy){
-    scrollDX = _dx;
-    scrollDY = _dy;
+void Mouse::mouseScrollCallback(GLFWwindow* window, double dx, double dy){
+    Camera::defaultCamera.updateCameraZoom(dy);
 }
 
 
@@ -56,28 +57,9 @@ double Mouse::getMouseY(){
     return y;
 }
 double Mouse::getDX(){
-    double _dx = dx;
-
-    dx = 0;
-    return _dx;
-}
-double Mouse::getDY(){
-    double _dy = dy;
-
-    dy = 0;
-    return _dy;
-}
-
-double Mouse::getScrollDX(){
-    double dx = scrollDX;
-
-    scrollDX = 0;
     return dx;
 }
-double Mouse::getScrollDY(){
-    double dy = scrollDY;
-
-    scrollDY = 0;
+double Mouse::getDY(){
     return dy;
 }
 

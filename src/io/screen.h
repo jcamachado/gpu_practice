@@ -8,14 +8,16 @@
 //This class is responsible for creating the window and handling input and output
 //It doesnt care about rendering
 //Thats why its in the io folder
+
+
 class Screen {
     public:
-        Screen();
-
         static unsigned int SCR_WIDTH;
         static unsigned int SCR_HEIGHT;
         
         static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
+        
+        Screen();
 
         bool init();
         void setParameters();

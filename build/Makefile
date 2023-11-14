@@ -562,6 +562,54 @@ src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
+src/physics/environment.o: src/physics/environment.cpp.o
+.PHONY : src/physics/environment.o
+
+# target to build an object file
+src/physics/environment.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/physics/environment.cpp.o
+.PHONY : src/physics/environment.cpp.o
+
+src/physics/environment.i: src/physics/environment.cpp.i
+.PHONY : src/physics/environment.i
+
+# target to preprocess a source file
+src/physics/environment.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/physics/environment.cpp.i
+.PHONY : src/physics/environment.cpp.i
+
+src/physics/environment.s: src/physics/environment.cpp.s
+.PHONY : src/physics/environment.s
+
+# target to generate assembly for a file
+src/physics/environment.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/physics/environment.cpp.s
+.PHONY : src/physics/environment.cpp.s
+
+src/physics/rigidbody.o: src/physics/rigidbody.cpp.o
+.PHONY : src/physics/rigidbody.o
+
+# target to build an object file
+src/physics/rigidbody.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/physics/rigidbody.cpp.o
+.PHONY : src/physics/rigidbody.cpp.o
+
+src/physics/rigidbody.i: src/physics/rigidbody.cpp.i
+.PHONY : src/physics/rigidbody.i
+
+# target to preprocess a source file
+src/physics/rigidbody.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/physics/rigidbody.cpp.i
+.PHONY : src/physics/rigidbody.cpp.i
+
+src/physics/rigidbody.s: src/physics/rigidbody.cpp.s
+.PHONY : src/physics/rigidbody.s
+
+# target to generate assembly for a file
+src/physics/rigidbody.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/physics/rigidbody.cpp.s
+.PHONY : src/physics/rigidbody.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -621,6 +669,12 @@ help:
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+	@echo "... src/physics/environment.o"
+	@echo "... src/physics/environment.i"
+	@echo "... src/physics/environment.s"
+	@echo "... src/physics/rigidbody.o"
+	@echo "... src/physics/rigidbody.i"
+	@echo "... src/physics/rigidbody.s"
 .PHONY : help
 
 

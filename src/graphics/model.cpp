@@ -1,12 +1,17 @@
 #include "model.h"
 
-Model::Model(glm::vec3 pos, glm::vec3 size, bool noTextures)
-    : pos(pos), size(size), noTextures(noTextures)  {}
 
-void Model::render(Shader shader, bool setModel){
+Model::Model(glm::vec3 pos, glm::vec3 size, bool noTextures)
+    : size(size), noTextures(noTextures)  {
+        rb.pos = pos;
+    }
+
+void Model::render(Shader shader, float dt, bool setModel){
+    rb.update(dt);
+
     if(setModel){
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, pos);
+        model = glm::translate(model, rb.pos);
         model = glm::scale(model, size);
         // model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0));
         shader.setMat4("model", model);

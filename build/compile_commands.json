@@ -16,13 +16,13 @@
 },
 {
   "directory": "/home/jaxe/Repositories/gpu_study/gpu_practice/build",
-  "command": "/usr/bin/g++  -I/home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include -I/home/jaxe/Repositories/gpu_study/gpu_practice/build/lib/assimp-5.3.1/code/../include -g -o CMakeFiles/my_particle_system.dir/src/graphics/shader.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/shader.cpp",
-  "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/shader.cpp"
+  "command": "/usr/bin/g++  -I/home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include -I/home/jaxe/Repositories/gpu_study/gpu_practice/build/lib/assimp-5.3.1/code/../include -g -o CMakeFiles/my_particle_system.dir/src/graphics/light.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/light.cpp",
+  "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/light.cpp"
 },
 {
   "directory": "/home/jaxe/Repositories/gpu_study/gpu_practice/build",
-  "command": "/usr/bin/g++  -I/home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include -I/home/jaxe/Repositories/gpu_study/gpu_practice/build/lib/assimp-5.3.1/code/../include -g -o CMakeFiles/my_particle_system.dir/src/graphics/texture.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/texture.cpp",
-  "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/texture.cpp"
+  "command": "/usr/bin/g++  -I/home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include -I/home/jaxe/Repositories/gpu_study/gpu_practice/build/lib/assimp-5.3.1/code/../include -g -o CMakeFiles/my_particle_system.dir/src/graphics/material.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/material.cpp",
+  "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/material.cpp"
 },
 {
   "directory": "/home/jaxe/Repositories/gpu_study/gpu_practice/build",
@@ -36,13 +36,23 @@
 },
 {
   "directory": "/home/jaxe/Repositories/gpu_study/gpu_practice/build",
-  "command": "/usr/bin/g++  -I/home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include -I/home/jaxe/Repositories/gpu_study/gpu_practice/build/lib/assimp-5.3.1/code/../include -g -o CMakeFiles/my_particle_system.dir/src/graphics/material.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/material.cpp",
-  "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/material.cpp"
+  "command": "/usr/bin/g++  -I/home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include -I/home/jaxe/Repositories/gpu_study/gpu_practice/build/lib/assimp-5.3.1/code/../include -g -o CMakeFiles/my_particle_system.dir/src/graphics/shader.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/shader.cpp",
+  "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/shader.cpp"
 },
 {
   "directory": "/home/jaxe/Repositories/gpu_study/gpu_practice/build",
-  "command": "/usr/bin/g++  -I/home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include -I/home/jaxe/Repositories/gpu_study/gpu_practice/build/lib/assimp-5.3.1/code/../include -g -o CMakeFiles/my_particle_system.dir/src/graphics/light.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/light.cpp",
-  "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/light.cpp"
+  "command": "/usr/bin/g++  -I/home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include -I/home/jaxe/Repositories/gpu_study/gpu_practice/build/lib/assimp-5.3.1/code/../include -g -o CMakeFiles/my_particle_system.dir/src/graphics/texture.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/texture.cpp",
+  "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/texture.cpp"
+},
+{
+  "directory": "/home/jaxe/Repositories/gpu_study/gpu_practice/build",
+  "command": "/usr/bin/g++  -I/home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include -I/home/jaxe/Repositories/gpu_study/gpu_practice/build/lib/assimp-5.3.1/code/../include -g -o CMakeFiles/my_particle_system.dir/src/io/camera.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/camera.cpp",
+  "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/io/camera.cpp"
+},
+{
+  "directory": "/home/jaxe/Repositories/gpu_study/gpu_practice/build",
+  "command": "/usr/bin/g++  -I/home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include -I/home/jaxe/Repositories/gpu_study/gpu_practice/build/lib/assimp-5.3.1/code/../include -g -o CMakeFiles/my_particle_system.dir/src/io/joystick.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/joystick.cpp",
+  "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/io/joystick.cpp"
 },
 {
   "directory": "/home/jaxe/Repositories/gpu_study/gpu_practice/build",
@@ -56,18 +66,18 @@
 },
 {
   "directory": "/home/jaxe/Repositories/gpu_study/gpu_practice/build",
-  "command": "/usr/bin/g++  -I/home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include -I/home/jaxe/Repositories/gpu_study/gpu_practice/build/lib/assimp-5.3.1/code/../include -g -o CMakeFiles/my_particle_system.dir/src/io/joystick.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/joystick.cpp",
-  "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/io/joystick.cpp"
-},
-{
-  "directory": "/home/jaxe/Repositories/gpu_study/gpu_practice/build",
-  "command": "/usr/bin/g++  -I/home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include -I/home/jaxe/Repositories/gpu_study/gpu_practice/build/lib/assimp-5.3.1/code/../include -g -o CMakeFiles/my_particle_system.dir/src/io/camera.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/camera.cpp",
-  "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/io/camera.cpp"
-},
-{
-  "directory": "/home/jaxe/Repositories/gpu_study/gpu_practice/build",
   "command": "/usr/bin/g++  -I/home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include -I/home/jaxe/Repositories/gpu_study/gpu_practice/build/lib/assimp-5.3.1/code/../include -g -o CMakeFiles/my_particle_system.dir/src/io/screen.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/screen.cpp",
   "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/io/screen.cpp"
+},
+{
+  "directory": "/home/jaxe/Repositories/gpu_study/gpu_practice/build",
+  "command": "/usr/bin/g++  -I/home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include -I/home/jaxe/Repositories/gpu_study/gpu_practice/build/lib/assimp-5.3.1/code/../include -g -o CMakeFiles/my_particle_system.dir/src/physics/rigidbody.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/physics/rigidbody.cpp",
+  "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/physics/rigidbody.cpp"
+},
+{
+  "directory": "/home/jaxe/Repositories/gpu_study/gpu_practice/build",
+  "command": "/usr/bin/g++  -I/home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include -I/home/jaxe/Repositories/gpu_study/gpu_practice/build/lib/assimp-5.3.1/code/../include -g -o CMakeFiles/my_particle_system.dir/src/physics/environment.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/physics/environment.cpp",
+  "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/physics/environment.cpp"
 },
 {
   "directory": "/home/jaxe/Repositories/gpu_study/gpu_practice/build/lib/assimp-5.3.1/contrib/zlib",

@@ -27,6 +27,10 @@ file(REMOVE_RECURSE
   "CMakeFiles/my_particle_system.dir/src/io/screen.cpp.o.d"
   "CMakeFiles/my_particle_system.dir/src/main.cpp.o"
   "CMakeFiles/my_particle_system.dir/src/main.cpp.o.d"
+  "CMakeFiles/my_particle_system.dir/src/physics/environment.cpp.o"
+  "CMakeFiles/my_particle_system.dir/src/physics/environment.cpp.o.d"
+  "CMakeFiles/my_particle_system.dir/src/physics/rigidbody.cpp.o"
+  "CMakeFiles/my_particle_system.dir/src/physics/rigidbody.cpp.o.d"
   "my_particle_system"
   "my_particle_system.pdb"
 )
