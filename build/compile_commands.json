@@ -16,6 +16,11 @@
 },
 {
   "directory": "/home/jaxe/Repositories/gpu_study/gpu_practice/build",
+  "command": "/usr/bin/g++  -I/home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include -I/home/jaxe/Repositories/gpu_study/gpu_practice/build/lib/assimp-5.3.1/code/../include -g -o CMakeFiles/my_particle_system.dir/src/algorithms/bounds.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/algorithms/bounds.cpp",
+  "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/algorithms/bounds.cpp"
+},
+{
+  "directory": "/home/jaxe/Repositories/gpu_study/gpu_practice/build",
   "command": "/usr/bin/g++  -I/home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include -I/home/jaxe/Repositories/gpu_study/gpu_practice/build/lib/assimp-5.3.1/code/../include -g -o CMakeFiles/my_particle_system.dir/src/graphics/light.cpp.o -c /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/light.cpp",
   "file": "/home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/light.cpp"
 },

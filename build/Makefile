@@ -250,6 +250,30 @@ lib/stb.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/lib/stb.cpp.s
 .PHONY : lib/stb.cpp.s
 
+src/algorithms/bounds.o: src/algorithms/bounds.cpp.o
+.PHONY : src/algorithms/bounds.o
+
+# target to build an object file
+src/algorithms/bounds.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/algorithms/bounds.cpp.o
+.PHONY : src/algorithms/bounds.cpp.o
+
+src/algorithms/bounds.i: src/algorithms/bounds.cpp.i
+.PHONY : src/algorithms/bounds.i
+
+# target to preprocess a source file
+src/algorithms/bounds.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/algorithms/bounds.cpp.i
+.PHONY : src/algorithms/bounds.cpp.i
+
+src/algorithms/bounds.s: src/algorithms/bounds.cpp.s
+.PHONY : src/algorithms/bounds.s
+
+# target to generate assembly for a file
+src/algorithms/bounds.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/algorithms/bounds.cpp.s
+.PHONY : src/algorithms/bounds.cpp.s
+
 src/glad.o: src/glad.c.o
 .PHONY : src/glad.o
 
@@ -630,6 +654,9 @@ help:
 	@echo "... lib/stb.o"
 	@echo "... lib/stb.i"
 	@echo "... lib/stb.s"
+	@echo "... src/algorithms/bounds.o"
+	@echo "... src/algorithms/bounds.i"
+	@echo "... src/algorithms/bounds.s"
 	@echo "... src/glad.o"
 	@echo "... src/glad.i"
 	@echo "... src/glad.s"

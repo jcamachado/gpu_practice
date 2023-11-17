@@ -64,6 +64,7 @@ int main(){
     }
 
     screen.setParameters();
+    //render troll
 
     // Shaders
     Shader shader("assets/object.vs", "assets/object.fs");
@@ -96,6 +97,10 @@ int main(){
     float k0 = 1.0f;
     float k1 = 0.09f;
     float k2 = 0.032f;
+
+    Model troll(glm::vec3(5.0f), glm::vec3(0.05f));
+    troll.loadModel("assets/models/lotr_troll/scene.gltf");
+
 
 
     LampArray lamps;
@@ -142,29 +147,43 @@ int main(){
         shader.activate(); //apply shader
         launchShader.activate(); //apply shader
 
+        shader.activate(); //apply shader
         shader.set3Float("viewPos", Camera::defaultCamera.cameraPos);
+        launchShader.activate(); //apply shader
         launchShader.set3Float("viewPos", Camera::defaultCamera.cameraPos);
 
+        shader.activate(); //apply shader
         dirLight.render(shader);
+        launchShader.activate(); //apply shader
         dirLight.render(launchShader);
 
+
         for(unsigned int i = 0; i < 4; i++){
+            shader.activate();
             lamps.lightInstances[i].render(shader, i);
+            launchShader.activate();
             lamps.lightInstances[i].render(launchShader, i);
         }
         
+        shader.activate(); //apply shader
         shader.setInt("nPointLights", 4);
+        launchShader.activate();
         launchShader.setInt("nPointLights", 4);
-
+        
         if (flashLightOn){
             s.position = Camera::defaultCamera.cameraPos;
             s.direction = Camera::defaultCamera.cameraFront;
+            shader.activate(); //apply shader
             s.render(shader, 0);
             shader.setInt("nSpotLights", 1);
+            launchShader.activate();
+            s.render(launchShader, 0);
             launchShader.setInt("nSpotLights", 1);
         }
         else {
+            shader.activate(); //apply shader
             shader.setInt("nSpotLights", 0);
+            launchShader.activate();
             launchShader.setInt("nSpotLights", 0);
         }
 
@@ -180,8 +199,10 @@ int main(){
             (float)Screen::SCR_WIDTH/(float)Screen::SCR_HEIGHT, 0.1f, 100.0f
         ); // Create perspective projection
 
+        shader.activate(); //apply shader
         shader.setMat4("view", view);
         shader.setMat4("projection", projection);
+        troll.render(shader , dt);
 
         std::stack<int> removeObjects;
         for (int i = 0; i<launchObjects.instances.size(); i++){
@@ -197,6 +218,7 @@ int main(){
 
 
         if (launchObjects.instances.size() > 0){
+            launchShader.activate();
             launchShader.setMat4("view", view);
             launchShader.setMat4("projection", projection);
             launchObjects.render(launchShader, dt);
@@ -223,6 +245,7 @@ int main(){
     lamps.cleanup();
     box.cleanup();
     launchObjects.cleanup();
+    troll.cleanup();
 
     glfwTerminate(); // Terminate glfw
 
