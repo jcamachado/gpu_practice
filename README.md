@@ -23,3 +23,20 @@ Aula 5 - Shared Memory - ./cuda/exercicios de aula/sharedMem1.cu
 
 Aula 6 - Reduce with Shared Memory - ./cuda/exercicios de aula/reduce.cu 
 
+Aula 8 - Sent separately
+
+
+
+===== 
+
+OpenGL
+
+Assimp is not uploaded (just indication where to place its files)
+Follow this to get to the correct path (also, the assimp-M-m-n folder is the original downloaded one, the other was composed just like on the video below suggests from building) 
+https://www.youtube.com/watch?v=oci7xJEg6sU&list=PLysLvOneEETPlOI_PI4mJnocqIpr2cSHS&index=19
+
+Models so far:
+1 - https://sketchfab.com/3d-models/lotr-troll-for-animatingrigging-f4d777fd41d045fb8692f19f07b998fe
+2 - https://sketchfab.com/3d-models/low-poly-m4a1-8cab1cbeb82c4396a154f9fc8771417b
+3 - https://sketchfab.com/3d-models/sphere-b31b12ffa93a40f48c9d991b6f168f4d
+

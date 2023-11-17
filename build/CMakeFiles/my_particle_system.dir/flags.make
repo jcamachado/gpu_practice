@@ -5,13 +5,13 @@
 # compile CXX with /usr/bin/g++
 C_DEFINES = 
 
-C_INCLUDES = 
+C_INCLUDES = -I/home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include -I/home/jaxe/Repositories/gpu_study/gpu_practice/build/lib/assimp-5.3.1/code/../include
 
 C_FLAGS = -g
 
 CXX_DEFINES = 
 
-CXX_INCLUDES = 
+CXX_INCLUDES = -I/home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include -I/home/jaxe/Repositories/gpu_study/gpu_practice/build/lib/assimp-5.3.1/code/../include
 
 CXX_FLAGS = -g
 

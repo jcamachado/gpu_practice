@@ -1,25 +1,42 @@
-// #include <iostream>
-// #include "../lib/glad/glad.h" // GLAD is for loading OpenGL functions
-// #include <GLFW/glfw3.h>
-// #include <glm/glm.hpp> // GLM is for matrix math
-// #include <glm/gtc/matrix_transform.hpp>
-// #include <glm/gtc/type_ptr.hpp>
+// TODO put all mutually used headers in a single header file
+#include <vector>
+#include <stack>
 
-// #include <fstream>
-// #include <sstream>
-// #include <streambuf>
-// #include <string>
+#include "graphics/shader.h" //Including majority of the OpenGL headers
+#include "graphics/texture.h" // Also includes other OpenGL headers and stb_image.h 
 
-// #include "shader.h"
+#include "graphics/models/box.hpp" 
+#include "graphics/models/cube.hpp" // Also includes other OpenGL headers
+#include "graphics/models/lamp.hpp"
+#include "graphics/models/gun.hpp"
+#include "graphics/models/sphere.hpp"
+#include "graphics/light.h"
+#include "graphics/model.h"
 
-#include "shader.h"
-#include <GLFW/glfw3.h>
+#include "io/joystick.h"
+#include "io/keyboard.h"
+#include "io/mouse.h"
+#include "io/camera.h"
+#include "io/screen.h"
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height); // Callback function for window resizing
-void processInput(GLFWwindow *window); // Function for processing input
+#include "physics/environment.h"
+
+void processInput(double dt); // Function for processing input
+
+Screen screen;
+
+Joystick mainJ(0);
+Camera Camera::defaultCamera(glm::vec3(0.0f, 0.0f, 0.0f));
+
+double dt = 0.0f; // Time between current frame and last frame
+float lastFrame = 0.0f; // Time of last frame
+
+bool flashLightOn = false;
+
+Box box;
+SphereArray launchObjects; 
 
 int main(){
-
     int success;
     char infoLog[512];
 
@@ -34,132 +51,255 @@ int main(){
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // Set OpenGL forward compatibility to true    
 #endif
 
-
-
-    GLFWwindow* window = glfwCreateWindow(800, 600, "LearnOpenGL", NULL, NULL); // Create window
-    glfwMakeContextCurrent( window ); // Set window as current context
-
-
-    if (window == NULL){ // Check if window was created
+    if(!screen.init()){
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
         return -1;
     }
 
-    glfwMakeContextCurrent( window ); // Set window as current context
     if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)){ // Check if glad was loaded
         std::cout << "Failed to initialize GLAD" << std::endl;
         glfwTerminate();
         return -1;
     }
 
+    screen.setParameters();
 
-    glViewport(0,0,800,600); // Set viewport
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); // Set callback function for window resizing
+    // Shaders
+    Shader shader("assets/object.vs", "assets/object.fs");
+    Shader lampShader("assets/instanced/instanced.vs", "assets/lamp.fs");
+    Shader launchShader("assets/instanced/instanced.vs", "assets/object.fs");
+    Shader boxShader("assets/instanced/box.vs", "assets/instanced/box.fs");
 
-    Shader shader("assets/vertex_core.glsl", "assets/fragment_core.glsl");
-    Shader shader2("assets/vertex_core.glsl", "assets/fragment_core2.glsl");
+    // Models
+    launchObjects.init();
+    box.init();
 
-    float vertices[] = { 
-        //position              colors // Color interpolates through range!
-        -0.25f, -0.5f, 0.0f,    1.0f, 1.0f, 0.5f,
-         0.15f,  0.0f, 0.0f,    0.5f, 1.0f, 0.75f,
-         0.0f,   0.5f, 0.0f,    0.6f, 1.0f, 0.2f,
-         0.5f,  -0.4f, 0.0f,    1.0f, 0.2f, 1.0f,
-
-        // //second triangle
-        // 0.5f, -0.5f, 0.0f,
-        // 0.25f, 0.5f, 0.0f,
-        // 0.1f, -0.5f, 0.0f,
+    // Lights
+    DirLight dirLight{
+        glm::vec3(-0.2f, -1.0f, -0.3f), 
+        glm::vec4(0.1f, 0.1f, 0.1f, 1.0f), 
+        glm::vec4(0.4f, 0.4f, 0.4f, 1.0f),
+        glm::vec4(0.5f, 0.5f, 0.5f, 1.0f)
     };
 
-    unsigned int indices[] = { // Create indices
-        0,1,2, // first triangle
-        3,1,2// second triangle
+    glm::vec3 pointLightPositions[] = {
+        glm::vec3(0.7f,  0.2f,  2.0f),
+        glm::vec3(2.3f, -3.3f, -4.0f),
+        glm::vec3(-4.0f,  2.0f, -12.0f),
+        glm::vec3(0.0f,  0.0f, -3.0f)
     };
     
-    // VAO and VBO
-    // VAO, VBO and EBO are bound by the shader program
-
-    unsigned int VAO, VBO, EBO; // Create VAO and VBO
-    glGenBuffers(1, &VBO); // Generate VBO
-    glGenVertexArrays(1, &VAO); // Generate VAO
-    glGenBuffers(1, &EBO); // Generate EBO (Element Buffer Object)
-
-    // Bind VAO and VBO
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW); // Set vertex data
-
-    // Bind EBO (put index array in EBO)
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW); // Set element data
-
-    // Set vertex attributes pointers
-    
-    //positions, 0 is the first attribute, 6 is the stride, ja que vertices agora tem 6 floats por linha (vertex + color)
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0); // Set vertex attribute pointer
-    glEnableVertexAttribArray(0); // Enable vertex attribute pointer, index 0
-
-    //colors 1 is the second attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3*sizeof(float))); // Set vertex attribute pointer
-    glEnableVertexAttribArray(1); // Enable vertex attribute pointer, index 1
+    glm::vec4 ambient(0.05f, 0.05f, 0.05f, 1.0f);
+    glm::vec4 diffuse(0.8f, 0.8f, 0.8f, 1.0f);
+    glm::vec4 specular(1.0f);
+    float k0 = 1.0f;
+    float k1 = 0.09f;
+    float k2 = 0.032f;
 
 
-    glm::mat4 trans = glm::mat4(1.0f); // Create identity matrix (no transformation)
-    trans = rotate (trans, glm::radians(45.0f), glm::vec3(0.0f,0.0f,1.0f));
-    shader.activate();
-    shader.setMat4("transform", trans);
+    LampArray lamps;
+    lamps.init();
 
-    glm::mat4 trans2 = glm::mat4(1.0f); // Create identity matrix (no transformation)
-    trans2 = scale (trans2, glm::vec3(1.5f));
-    trans2 = rotate (trans2, glm::radians(15.0f), glm::vec3(0.0f,0.0f,1.0f));
-    shader2.activate();
-    shader2.setMat4("transform", trans);
+    for (unsigned int i = 0; i < 4; i++) {
+        lamps.lightInstances.push_back({
+            pointLightPositions[i],
+            k0, k1, k2,
+            ambient, diffuse, specular
+        });
+    }
+    SpotLight s = {
+        Camera::defaultCamera.cameraPos,
+        Camera::defaultCamera.cameraFront,
+        1.0f,
+        0.07f,
+        0.032f,
+        glm::cos(glm::radians(12.5f)),
+        glm::cos(glm::radians(20.0f)),
+        glm::vec4(0.0f, 0.0f, 0.0f, 1.0f),
+        glm::vec4(1.0f),
+        glm::vec4(1.0f)
+    };
 
-    while (!glfwWindowShouldClose(window)){ // Check if window should close
-        processInput(window); // Process input
+    // joystick recognition
+    // mainJ.update();
+    // if (mainJ.isPresent()){ 
+    //     std::cout << "Joystick connected" << std::endl;
+    // }
 
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f); // Window background color
-        glClear(GL_COLOR_BUFFER_BIT); // Clear color buffer
+    while (!screen.shouldClose()){ // Check if window should close
+        double currentTime = glfwGetTime();
+        dt = currentTime - lastFrame;
+        lastFrame = currentTime;
+        
+        // Process input
+        processInput(dt); 
 
-        trans = rotate(trans, glm::radians((float)glfwGetTime()/100.0f), glm::vec3(0.0f,0.0f,1.0f));
-        shader.activate(); //The subsequent changes are applied to the matrix just before the draw call
-        shader.setMat4("transform", trans);
+        //update screen values
+        screen.update(); 
 
         //draw shapes
-        glBindVertexArray(VAO); // Bind VAO
         shader.activate(); //apply shader
-        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0); // Draw triangle
+        launchShader.activate(); //apply shader
 
-        trans2 = rotate(trans2, glm::radians((float)glfwGetTime()/-100.0f), glm::vec3(0.0f,0.0f,1.0f));
-        shader2.activate(); 
-        shader2.setMat4("transform", trans2);
+        shader.set3Float("viewPos", Camera::defaultCamera.cameraPos);
+        launchShader.set3Float("viewPos", Camera::defaultCamera.cameraPos);
 
-        //draw second triangle, moving offset
-        shader2.activate();
-        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void*)((3*sizeof(unsigned int)))); // Draw triangle
+        dirLight.render(shader);
+        dirLight.render(launchShader);
 
-        glBindVertexArray(0); // Bind VAO
+        for(unsigned int i = 0; i < 4; i++){
+            lamps.lightInstances[i].render(shader, i);
+            lamps.lightInstances[i].render(launchShader, i);
+        }
+        
+        shader.setInt("nPointLights", 4);
+        launchShader.setInt("nPointLights", 4);
 
-        glfwSwapBuffers(window); // Swap buffers
-        glfwPollEvents(); // Check for events
+        if (flashLightOn){
+            s.position = Camera::defaultCamera.cameraPos;
+            s.direction = Camera::defaultCamera.cameraFront;
+            s.render(shader, 0);
+            shader.setInt("nSpotLights", 1);
+            launchShader.setInt("nSpotLights", 1);
+        }
+        else {
+            shader.setInt("nSpotLights", 0);
+            launchShader.setInt("nSpotLights", 0);
+        }
+
+        //create transformation for screen
+        glm::mat4 view = glm::mat4(1.0f);        
+        glm::mat4 projection = glm::mat4(1.0f);
+
+        view = Camera::defaultCamera.getViewMatrix();
+
+        // the parameters are the field of view, the aspect ratio, the near clipping plane and the far clipping plane
+        projection = glm::perspective(
+            glm::radians(Camera::defaultCamera.getZoom()), 
+            (float)Screen::SCR_WIDTH/(float)Screen::SCR_HEIGHT, 0.1f, 100.0f
+        ); // Create perspective projection
+
+        shader.setMat4("view", view);
+        shader.setMat4("projection", projection);
+
+        std::stack<int> removeObjects;
+        for (int i = 0; i<launchObjects.instances.size(); i++){
+            if(glm::length(Camera::defaultCamera.cameraPos - launchObjects.instances[i].pos) > 50.0f){
+                removeObjects.push(i);
+                continue;
+            }
+        }
+        for (int i = 0; i<removeObjects.size(); i++){
+            launchObjects.instances.erase(launchObjects.instances.begin() + removeObjects.top());
+            removeObjects.pop();
+        }
+
+
+        if (launchObjects.instances.size() > 0){
+            launchShader.setMat4("view", view);
+            launchShader.setMat4("projection", projection);
+            launchObjects.render(launchShader, dt);
+        }
+
+        lampShader.activate(); 
+        lampShader.setMat4("view", view);
+        lampShader.setMat4("projection", projection);
+        lamps.render(lampShader, dt);
+
+        //render boxes
+        if (box.offsets.size() > 0){
+            //if instances exist
+            boxShader.activate();
+            boxShader.setMat4("view", view);
+            boxShader.setMat4("projection", projection);
+            box.render(boxShader);
+        }
+
+        // Swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
+        screen.newFrame(); 
     }
 
+    lamps.cleanup();
+    box.cleanup();
+    launchObjects.cleanup();
+
     glfwTerminate(); // Terminate glfw
-    glDeleteVertexArrays(1, &VAO); // Delete VAO
-    glDeleteBuffers(1, &VBO); // Delete VBO
-    glDeleteBuffers(1, &EBO); // Delete EBO
 
     return 0;
 }
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height){ // Callback function for window resizing
-    glViewport(0,0,width,height);
+void launchItem(float dt){
+    RigidBody rb(1.0f, Camera::defaultCamera.cameraPos);
+    rb.transferEnergy(100.0f, Camera::defaultCamera.cameraFront);
+    // rb.applyImpulse( Camera::defaultCamera.cameraFront, 10000.0f, dt );
+    rb.applyAcceleration(Environment::gravity);
+    launchObjects.instances.push_back(rb);
 }
 
-void processInput   (GLFWwindow *window){ // Function for processing input
-    if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){ // Check if escape key is pressed
-        glfwSetWindowShouldClose(window, true); // Set window to close
+void processInput(double dt){ // Function for processing input
+    if(Keyboard::key(GLFW_KEY_ESCAPE) || mainJ.buttonState(GLFW_JOYSTICK_BTN_RIGHT)){ // Check if escape key is pressed
+        screen.setShouldClose(true); // Set window to close
     }
-}
+    if(Keyboard::keyWentUp(GLFW_KEY_L)){
+        flashLightOn = !flashLightOn;
+    }
+
+    //move camera
+    if (Keyboard::key(GLFW_KEY_W)){
+        Camera::defaultCamera.updateCameraPosition(CameraDirection::FORWARD, dt);
+    }
+    if (Keyboard::key(GLFW_KEY_S)){
+        Camera::defaultCamera.updateCameraPosition(CameraDirection::BACKWARD, dt);
+    }
+    if (Keyboard::key(GLFW_KEY_D)){
+        Camera::defaultCamera.updateCameraPosition(CameraDirection::RIGHT, dt);
+    }
+    if (Keyboard::key(GLFW_KEY_A)){
+        Camera::defaultCamera.updateCameraPosition(CameraDirection::LEFT, dt);
+    }
+    if (Keyboard::key(GLFW_KEY_SPACE)){
+        Camera::defaultCamera.updateCameraPosition(CameraDirection::UP, dt);
+    }
+    if (Keyboard::key(GLFW_KEY_LEFT_SHIFT)){
+        Camera::defaultCamera.updateCameraPosition(CameraDirection::DOWN, dt);
+    }
+
+    if (Keyboard::keyWentDown(GLFW_KEY_F)){
+        launchItem(dt);
+    }
+    if (Keyboard::keyWentDown(GLFW_KEY_I)){
+        box.offsets.push_back(glm::vec3(box.offsets.size() * 1.0f));
+        box.sizes.push_back(glm::vec3(box.sizes.size()*0.5f));
+    }
+
+    /*
+        provavelmente deprecated
+        if using Joystick
+    */
+   /*
+   float lx = mainJ.axesState(GLFW_JOYSTICK_AXES_LEFT_STICK_X);
+   float ly = mainJ.axesState(GLFW_JOYSTICK_AXES_LEFT_STICK_Y);
+
+    if(std::abs(lx)>0.05f){// This value is the denser threshold(O quanto pro lado esta o stick)
+        x += lx/5.0f;
+    }
+    if(std::abs(ly)>0.05f){ 
+        y += ly/5.0f;
+    }
+
+    //triggers starts at -1 -1 and goes to 1 1
+    float rt = mainJ.axesState(GLFW_JOYSTICK_AXES_RIGHT_TRIGGER) / 2.0f + 0.5f;
+    float lt = -mainJ.axesState(GLFW_JOYSTICK_AXES_LEFT_TRIGGER) / 2.0f + 0.5f;
+    if (rt>0.05f){
+        transform = glm::scale(transform, glm::vec3(1+ rt/10.0f, 1+ rt/10.0f, 0.0f));
+    }
+
+    if (lt>0.05f){
+        transform = glm::scale(transform, glm::vec3(lt/10.0f, lt/10.0f, 0.0f));
+    }
+    */
+
+	// mainJ.update();
+
+} 
