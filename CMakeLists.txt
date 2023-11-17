@@ -23,6 +23,9 @@ add_executable(my_particle_system
     src/glad.c
     src/main.cpp 
 
+    src/algorithms/bounds.h
+    src/algorithms/bounds.cpp
+
     src/graphics/light.h
     src/graphics/light.cpp
     src/graphics/material.h
