@@ -1,6 +1,8 @@
 file(REMOVE_RECURSE
   "CMakeFiles/my_particle_system.dir/lib/stb.cpp.o"
   "CMakeFiles/my_particle_system.dir/lib/stb.cpp.o.d"
+  "CMakeFiles/my_particle_system.dir/src/algorithms/bounds.cpp.o"
+  "CMakeFiles/my_particle_system.dir/src/algorithms/bounds.cpp.o.d"
   "CMakeFiles/my_particle_system.dir/src/glad.c.o"
   "CMakeFiles/my_particle_system.dir/src/glad.c.o.d"
   "CMakeFiles/my_particle_system.dir/src/graphics/light.cpp.o"

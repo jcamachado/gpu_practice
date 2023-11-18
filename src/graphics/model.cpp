@@ -4,12 +4,14 @@
 
 #include <iostream>
 
-Model::Model(glm::vec3 pos, glm::vec3 size, bool noTextures)
-    : size(size), noTextures(noTextures)  {
+Model::Model(BoundTypes boundType, glm::vec3 pos, glm::vec3 size, bool noTextures)
+    : boundType(boundType),
+    size(size), 
+    noTextures(noTextures)  {
         rb.pos = pos;
     }
 
-void Model::render(Shader shader, float dt, bool setModel, bool doRender){
+void Model::render(Shader shader, float dt, Box *box, bool setModel, bool doRender){
     rb.update(dt);
 
     if(setModel){
@@ -23,7 +25,7 @@ void Model::render(Shader shader, float dt, bool setModel, bool doRender){
     shader.setFloat("material.shininess", 0.5f);
 
     for(Mesh mesh : meshes){
-        mesh.render(shader, doRender);
+        mesh.render(shader, rb.pos, size, box, doRender);
     }
     // for(unsigned int i = 0; i < meshes.size(); i++){
     //     meshes[i].render(shader);
@@ -69,6 +71,11 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene){
     std::vector<unsigned int> indices;
     std::vector<Texture> textures;
 
+    BoundingRegion br(boundType);
+    // ~0: bit complement of int zero cast into float, which is the max float
+    // this is for every value in each axis
+    glm::vec3 min((float)(~0));         //min point = max float
+    glm::vec3 max(-(float)(~0));        //max point
     // process vertices
     for(unsigned int i = 0; i < mesh->mNumVertices; i++) {
         Vertex vertex;
@@ -78,6 +85,17 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene){
             mesh->mVertices[i].y, 
             mesh->mVertices[i].z
         );
+
+        for(int j=0; j<3; j++){
+            // if smaller than min
+            if(vertex.pos[j] < min[j]){
+                min[j] = vertex.pos[j];
+            }
+            // if larger than max
+            if(vertex.pos[j] > max[j]){
+                max[j] = vertex.pos[j];
+            }
+        }
 
         //  normal vectors 
         vertex.normal = glm::vec3(
@@ -102,6 +120,31 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene){
         vertices.push_back(vertex);
     }
 
+    // process min/max for bounding region BR
+    if (boundType == BoundTypes::AABB){
+        // min and max are already calculated
+        br.min = min;
+        br.max = max;
+    }else{
+        // calculate center and radius
+        br.center = BoundingRegion(min, max).calculateCenter();
+        float maxRadiusSquare = 0.0f;
+        for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
+            float radiusSquared = 0.0f; //distance for this vertex
+            for (int j = 0; j < 3; j++) {
+                radiusSquared += (vertices[i].pos[j] - br.center[j]) * (vertices[i].pos[j] - br.center[j]);
+            }
+            if (radiusSquared > maxRadiusSquare) {
+                // if this distance is larger than the current max, set it as the new max
+                // if a^2 > b^2, then |a| > |b
+                maxRadiusSquare = radiusSquared;
+            }
+        }
+        // calling here sqrt is more efficient than calling it everytime
+        br.radius = sqrt(maxRadiusSquare);
+    }
+
+
     // process indices
     for(unsigned int i = 0; i < mesh->mNumFaces; i++) {
         aiFace face = mesh->mFaces[i];
@@ -124,7 +167,7 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene){
             aiColor4D spec(1.0f);
             aiGetMaterialColor(material, AI_MATKEY_COLOR_SPECULAR, &spec);
 
-            return Mesh(vertices, indices, diff, spec);
+            return Mesh(br, vertices, indices, diff, spec);
         }
         //diffuse maps
         
@@ -135,7 +178,7 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene){
         std::vector<Texture> specularMaps = loadTextures(material, aiTextureType_SPECULAR);
         textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
     }
-        return Mesh(vertices, indices, textures);
+        return Mesh(br, vertices, indices, textures);
 }
 
 std::vector<Texture> Model::loadTextures(aiMaterial *mat, aiTextureType type){

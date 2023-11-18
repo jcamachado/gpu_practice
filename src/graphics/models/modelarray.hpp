@@ -6,6 +6,7 @@
 //loading it every time we want to use it.
 
 #include "../model.h"
+#include "box.hpp"
 
 #define UPPER_BOUND 100 //3d vectors, max number of instances
 
@@ -67,7 +68,7 @@ class ModelArray{
             }
         }
 
-        void render(Shader shader, float dt, bool setLists = true){
+        void render(Shader shader, float dt, Box *box, bool setLists = true){
             if(setLists){
                 positions.clear();
                 sizes.clear();
@@ -82,28 +83,32 @@ class ModelArray{
 
             shader.setMat4("model", glm::mat4(1.0f)); //reset model matrix to identity matrix
 
-            model.render(shader, dt, false, false);
+            model.render(shader, dt, nullptr, false, false);
 
             //if more than UPPER_BOUND instances, only render UPPER_BOUND 
-            int size = std::min(UPPER_BOUND, (int)positions.size()); 
+            int instances = std::min(UPPER_BOUND, (int)positions.size()); 
             
             //if instances exist, update data in VBOs
-            if(size!=0){
+            if(instances!=0){
 
                 glBindBuffer(GL_ARRAY_BUFFER, posVBO);
                 //faster than glBufferData
-                glBufferSubData(GL_ARRAY_BUFFER, 0, size * 3 * sizeof(float), &positions[0]);
+                glBufferSubData(GL_ARRAY_BUFFER, 0, instances * 3 * sizeof(float), &positions[0]);
                 
                 glBindBuffer(GL_ARRAY_BUFFER, sizeVBO);
-                glBufferSubData(GL_ARRAY_BUFFER, 0, size * 3 * sizeof(float), &sizes[0]);
+                glBufferSubData(GL_ARRAY_BUFFER, 0, instances * 3 * sizeof(float), &sizes[0]);
 
                 glBindBuffer(GL_ARRAY_BUFFER, 0);
             }
             //render instanced data
             for(unsigned int i = 0, length = model.meshes.size(); i<length; i++){
+                for (unsigned int j = 0; j < instances; j++){
+                    box->addInstance(model.meshes[i].br, positions[j], sizes[j]);
+                }
+
                 glBindVertexArray(model.meshes[i].VAO);
                 //same as glDrawElements but passes size = number of instances
-                glDrawElementsInstanced(GL_TRIANGLES, model.meshes[i].indices.size(), GL_UNSIGNED_INT, 0, size);
+                glDrawElementsInstanced(GL_TRIANGLES, model.meshes[i].indices.size(), GL_UNSIGNED_INT, 0, instances);
                 glBindVertexArray(0);
             }
         }
