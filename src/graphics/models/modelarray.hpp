@@ -13,6 +13,8 @@
 //VAO is generated from each mesh
 //VBO is generated from each vertex
 template <class T> 
+
+//many VAOs, one for each mesh, but only one VBO for each vertex(?)
 class ModelArray{
     public:
         
@@ -24,47 +26,32 @@ class ModelArray{
 
             //this is for whole objects
             //generate positions VBO
-            glGenBuffers(1, &posVBO);
-            glBindBuffer(GL_ARRAY_BUFFER, posVBO);
-            //allocate memory for positions VBO
-            glBufferData(GL_ARRAY_BUFFER, UPPER_BOUND * 3 * sizeof(float), NULL, GL_DYNAMIC_DRAW);
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-
+            posVBO = BufferObject(GL_ARRAY_BUFFER);
+            posVBO.generate();
+            posVBO.bind();
+            posVBO.setData<glm::vec3>(UPPER_BOUND, NULL, GL_DYNAMIC_DRAW);
             //generate sizes VBO
-            glGenBuffers(1, &sizeVBO);
-            glBindBuffer(GL_ARRAY_BUFFER, sizeVBO);
-            //allocate memory for sizes VBO
-            glBufferData(GL_ARRAY_BUFFER, UPPER_BOUND * 3 * sizeof(float), NULL, GL_DYNAMIC_DRAW);
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            sizeVBO = BufferObject(GL_ARRAY_BUFFER);
+            sizeVBO.generate();
+            sizeVBO.bind();
+            sizeVBO.setData<glm::vec3>(UPPER_BOUND, NULL, GL_DYNAMIC_DRAW);
 
             //set attribute pointers for each mesh
             for(unsigned int i=0, size = model.meshes.size(); i<size; i++){
-                glBindVertexArray(model.meshes[i].VAO);
-                
-                //set attribute pointers for positions
-                glBindBuffer(GL_ARRAY_BUFFER, posVBO);
-                //Since normal and texcoord on mesh occupy the 1 and 2 positions in the shaders, 
-                //we will keep counting from 3 and 4
-                //since we have different vbos for positions and sizes, the offset will be 3
-                //if they were combined, the offset would be 6 
-                glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-                glEnableVertexAttribArray(3);
+                model.meshes[i].VAO.bind();
+                // set vertex attribute pointers
+                // positions
+                posVBO.bind();
+                // 1st param: 0, 1 and 2 are used for normal mesh (i believe he refers to mesh.cpp)
+                // 2nd param and 3rd are related, so 3 GL_FLOATs
+                // 4th param: stride is 1 glm::vec3 (related to template)
+                // 6th param: reset every 1 instance
+                posVBO.setAttrPointer<glm::vec3>(3, 3, GL_FLOAT, 1, 0, 1); 
+                // size
+                sizeVBO.bind();
+                sizeVBO.setAttrPointer<glm::vec3>(4, 3, GL_FLOAT, 1, 0, 1);
 
-                //sizes
-                glBindBuffer(GL_ARRAY_BUFFER, sizeVBO);
-                glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-                glEnableVertexAttribArray(4);
-
-                glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-                //different from before, now we want to get it on every instance of the object
-                //not every vertex. We will say to openGL to draw the entire object and then get the next
-                //model position and size
-
-                glVertexAttribDivisor(3, 1); //reset _3rd_ attribute every _1_ instance
-                glVertexAttribDivisor(4, 1); //reset _4th_ attribute every _1_ instance
-
-                glBindVertexArray(0);
+                ArrayObject::clear();
             }
         }
 
@@ -89,15 +76,14 @@ class ModelArray{
             
             //if instances exist, update data in VBOs
             if(instances!=0){
+                // reset VBO data
+                posVBO.bind();
+                posVBO.updateData<glm::vec3>(0, instances, &positions[0]);
 
-                glBindBuffer(GL_ARRAY_BUFFER, posVBO);
-                //faster than glBufferData
-                glBufferSubData(GL_ARRAY_BUFFER, 0, instances * 3 * sizeof(float), &positions[0]);
-                
-                glBindBuffer(GL_ARRAY_BUFFER, sizeVBO);
-                glBufferSubData(GL_ARRAY_BUFFER, 0, instances * 3 * sizeof(float), &sizes[0]);
+                sizeVBO.bind();
+                sizeVBO.updateData<glm::vec3>(0, instances, &sizes[0]);
 
-                glBindBuffer(GL_ARRAY_BUFFER, 0);
+                sizeVBO.clear(); // it could be posVBO.clear() as well, since they have the same type of the array buffers
             }
             //render instanced data
             for(unsigned int i = 0, length = model.meshes.size(); i<length; i++){
@@ -105,10 +91,9 @@ class ModelArray{
                     box->addInstance(model.meshes[i].br, positions[j], sizes[j]);
                 }
 
-                glBindVertexArray(model.meshes[i].VAO);
-                //same as glDrawElements but passes size = number of instances
-                glDrawElementsInstanced(GL_TRIANGLES, model.meshes[i].indices.size(), GL_UNSIGNED_INT, 0, instances);
-                glBindVertexArray(0);
+                model.meshes[i].VAO.bind();
+                model.meshes[i].VAO.draw(GL_TRIANGLES, model.meshes[i].indices.size(), GL_UNSIGNED_INT, 0, instances);
+                ArrayObject::clear();
             }
         }
 
@@ -118,12 +103,14 @@ class ModelArray{
 
         void cleanup(){
             model.cleanup();
+            posVBO.cleanup();
+            sizeVBO.cleanup();
         }
     protected:
         T model;
 
-        unsigned int posVBO;
-        unsigned int sizeVBO;
+        BufferObject posVBO;
+        BufferObject sizeVBO;
         std::vector<glm::vec3> positions;
         std::vector<glm::vec3> sizes;
 
