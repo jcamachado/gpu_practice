@@ -97,7 +97,7 @@ int main(){
     float k1 = 0.09f;
     float k2 = 0.032f;
 
-    Model troll(BoundTypes::AABB, glm::vec3(5.0f), glm::vec3(0.05f));
+    Model troll(BoundTypes::AABB, glm::vec3(0.0f), glm::vec3(0.05f));
     troll.loadModel("assets/models/lotr_troll/scene.gltf");
 
 
@@ -132,6 +132,9 @@ int main(){
     // }
 
     while (!screen.shouldClose()){ // Check if window should close
+        box.positions.clear();
+        box.sizes.clear();
+
         double currentTime = glfwGetTime();
         dt = currentTime - lastFrame;
         lastFrame = currentTime;
@@ -227,7 +230,7 @@ int main(){
         lamps.render(lampShader, dt, &box);
 
         //render boxes
-        if (box.offsets.size() > 0){
+        if (box.positions.size() > 0){
             //if instances exist
             boxShader.activate();
             boxShader.setMat4("view", view);

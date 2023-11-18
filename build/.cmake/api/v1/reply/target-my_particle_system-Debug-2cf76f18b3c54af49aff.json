@@ -25,13 +25,13 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 7,
+				"line" : 9,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 67,
+				"line" : 70,
 				"parent" : 0
 			}
 		]
@@ -64,17 +64,17 @@
 				14,
 				16,
 				18,
-				20,
-				22,
-				24,
-				26,
-				34,
-				36,
-				38,
-				40,
-				42,
-				44,
-				46
+				21,
+				23,
+				25,
+				27,
+				29,
+				37,
+				39,
+				41,
+				43,
+				45,
+				47
 			]
 		},
 		{
@@ -189,22 +189,23 @@
 				15,
 				17,
 				19,
-				21,
-				23,
-				25,
-				27,
+				20,
+				22,
+				24,
+				26,
 				28,
-				29,
 				30,
 				31,
 				32,
 				33,
+				34,
 				35,
-				37,
-				39,
-				41,
-				43,
-				45
+				36,
+				38,
+				40,
+				42,
+				44,
+				46
 			]
 		},
 		{
@@ -217,17 +218,17 @@
 				14,
 				16,
 				18,
-				20,
-				22,
-				24,
-				26,
-				34,
-				36,
-				38,
-				40,
-				42,
-				44,
-				46
+				21,
+				23,
+				25,
+				27,
+				29,
+				37,
+				39,
+				41,
+				43,
+				45,
+				47
 			]
 		}
 	],
@@ -303,6 +304,17 @@
 		},
 		{
 			"backtrace" : 1,
+			"path" : "src/scene.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/scene.cpp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 1,
 			"path" : "src/algorithms/bounds.h",
 			"sourceGroupIndex" : 1
 		},
@@ -322,6 +334,11 @@
 			"compileGroupIndex" : 0,
 			"path" : "src/graphics/light.cpp",
 			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/graphics/glmemory.hpp",
+			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
@@ -450,17 +467,6 @@
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "src/io/mouse.cpp",
-			"sourceGroupIndex" : 2
-		},
-		{
-			"backtrace" : 1,
-			"path" : "src/io/screen.h",
-			"sourceGroupIndex" : 1
-		},
-		{
-			"backtrace" : 1,
-			"compileGroupIndex" : 0,
-			"path" : "src/io/screen.cpp",
 			"sourceGroupIndex" : 2
 		},
 		{

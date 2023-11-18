@@ -538,30 +538,6 @@ src/io/mouse.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/io/mouse.cpp.s
 .PHONY : src/io/mouse.cpp.s
 
-src/io/screen.o: src/io/screen.cpp.o
-.PHONY : src/io/screen.o
-
-# target to build an object file
-src/io/screen.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/io/screen.cpp.o
-.PHONY : src/io/screen.cpp.o
-
-src/io/screen.i: src/io/screen.cpp.i
-.PHONY : src/io/screen.i
-
-# target to preprocess a source file
-src/io/screen.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/io/screen.cpp.i
-.PHONY : src/io/screen.cpp.i
-
-src/io/screen.s: src/io/screen.cpp.s
-.PHONY : src/io/screen.s
-
-# target to generate assembly for a file
-src/io/screen.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/io/screen.cpp.s
-.PHONY : src/io/screen.cpp.s
-
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
 
@@ -634,6 +610,30 @@ src/physics/rigidbody.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/physics/rigidbody.cpp.s
 .PHONY : src/physics/rigidbody.cpp.s
 
+src/scene.o: src/scene.cpp.o
+.PHONY : src/scene.o
+
+# target to build an object file
+src/scene.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/scene.cpp.o
+.PHONY : src/scene.cpp.o
+
+src/scene.i: src/scene.cpp.i
+.PHONY : src/scene.i
+
+# target to preprocess a source file
+src/scene.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/scene.cpp.i
+.PHONY : src/scene.cpp.i
+
+src/scene.s: src/scene.cpp.s
+.PHONY : src/scene.s
+
+# target to generate assembly for a file
+src/scene.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/scene.cpp.s
+.PHONY : src/scene.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -690,9 +690,6 @@ help:
 	@echo "... src/io/mouse.o"
 	@echo "... src/io/mouse.i"
 	@echo "... src/io/mouse.s"
-	@echo "... src/io/screen.o"
-	@echo "... src/io/screen.i"
-	@echo "... src/io/screen.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
@@ -702,6 +699,9 @@ help:
 	@echo "... src/physics/rigidbody.o"
 	@echo "... src/physics/rigidbody.i"
 	@echo "... src/physics/rigidbody.s"
+	@echo "... src/scene.o"
+	@echo "... src/scene.i"
+	@echo "... src/scene.s"
 .PHONY : help
 
 

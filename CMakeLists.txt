@@ -24,6 +24,8 @@ add_executable(my_particle_system
     
     src/glad.c
     src/main.cpp 
+    src/scene.h 
+    src/scene.cpp 
 
     src/algorithms/bounds.h
     src/algorithms/bounds.cpp
@@ -57,8 +59,6 @@ add_executable(my_particle_system
     src/io/keyboard.cpp
     src/io/mouse.h
     src/io/mouse.cpp
-    src/io/screen.h
-    src/io/screen.cpp
 
     src/physics/rigidbody.h
     src/physics/rigidbody.cpp

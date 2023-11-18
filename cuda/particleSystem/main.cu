@@ -113,12 +113,12 @@ int main() {
 
     // Create a windowed mode window and its OpenGL context
     GLFWwindow* window = glfwCreateWindow(1920, 1080, "Particle System", NULL, NULL);
+
     if (!window) {
         std::cerr << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
         return -1;
     }
-
     // Make the window's context current (must be done before initializing GLEW)
     glfwMakeContextCurrent(window);
 
