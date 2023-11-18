@@ -12,7 +12,7 @@ class Sphere : public Model{
             }
 
         void init(){
-            loadModel("assets/models/m4a1/scene.gltf");
+            loadModel("assets/models/sphere/scene.gltf");
         }
 };
 
