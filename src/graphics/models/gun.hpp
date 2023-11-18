@@ -29,18 +29,6 @@ class Gun : public Model {
             theta = acos(glm::dot(glm::vec2(1.0f, 0.0f), front2d)/ glm::length(front2d));
             model = glm::rotate(model, Camera::defaultCamera.cameraFront.z < 0 ? theta : -theta, Camera::defaultCamera.worldUp);
 
-            
-
-
-            if(Keyboard::key(GLFW_KEY_B)){
-                std::cout << Camera::defaultCamera.cameraPos.x << 
-                " " << Camera::defaultCamera.cameraPos.y <<
-                " " << Camera::defaultCamera.cameraPos.z <<
-                " " << rb.pos.x <<
-                " " << rb.pos.y <<
-                " " << rb.pos.z << std::endl;
-
-            }
 
             //scale 
             model = glm::scale(model, size);

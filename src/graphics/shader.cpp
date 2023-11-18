@@ -74,18 +74,9 @@ GLuint Shader::compileShader (const char* filepath, GLenum type){ // Function fo
     return ret; // Return compiled shader
 }
 
-void Shader::set3Float(const std::string& name, float v1, float v2, float v3){
-    glUniform3f(glGetUniformLocation(id, name.c_str()), v1, v2, v3);
-}
 
-void Shader::set3Float(const std::string& name, glm::vec3 value){
-    set3Float(name, value.x, value.y, value.z);
-}
-
-void Shader::setMat4(const std::string& name, glm::mat4 value){
-    //name eh o nome da variavel no shader, ex: "transform"
-    //ou seja, value sera a matrix de transformacao aplicada ao shader atraves da variavel "transform"
-    glUniformMatrix4fv(glGetUniformLocation(id, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+void Shader::setBool(const std::string& name, bool value){
+    glUniform1i(glGetUniformLocation(id, name.c_str()), (int)value);
 }
 
 void Shader::setInt(const std::string& name, int value){
@@ -95,6 +86,15 @@ void Shader::setInt(const std::string& name, int value){
 void Shader::setFloat(const std::string& name, float value){
     glUniform1f(glGetUniformLocation(id, name.c_str()), value);
 }
+
+void Shader::set3Float(const std::string& name, float v1, float v2, float v3){
+    glUniform3f(glGetUniformLocation(id, name.c_str()), v1, v2, v3);
+}
+
+void Shader::set3Float(const std::string& name, glm::vec3 v){
+    glUniform3f(glGetUniformLocation(id, name.c_str()), v.x, v.y, v.z);
+}
+
 
 void Shader::set4Float(const std::string& name, float v1, float v2, float v3, float v4){
     glUniform4f(glGetUniformLocation(id, name.c_str()), v1, v2, v3, v4);
@@ -108,7 +108,8 @@ void Shader::set4Float(const std::string& name, glm::vec4 v){
     glUniform4f(glGetUniformLocation(id, name.c_str()), v.x, v.y, v.z, v.w);
 }
 
-void Shader::setBool(const std::string& name, bool value){
-    glUniform1i(glGetUniformLocation(id, name.c_str()), (int)value);
+void Shader::setMat4(const std::string& name, glm::mat4 v){
+    //name eh o nome da variavel no shader, ex: "transform"
+    //ou seja, value sera a matrix de transformacao aplicada ao shader atraves da variavel "transform"
+    glUniformMatrix4fv(glGetUniformLocation(id, name.c_str()), 1, GL_FALSE, glm::value_ptr(v));
 }
-

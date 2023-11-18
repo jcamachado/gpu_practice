@@ -146,9 +146,7 @@ int main(){
         shader.activate(); //apply shader
         launchShader.activate(); //apply shader
 
-        shader.activate(); //apply shader
         shader.set3Float("viewPos", Camera::defaultCamera.cameraPos);
-        launchShader.activate(); //apply shader
         launchShader.set3Float("viewPos", Camera::defaultCamera.cameraPos);
 
         shader.activate(); //apply shader

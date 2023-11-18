@@ -80,7 +80,6 @@ class ModelArray{
             }
             //optimization, passing the calculations of translations and scaling into the vbo
             // so the gpu can do the calculations (the cuda cores)
-
             shader.setMat4("model", glm::mat4(1.0f)); //reset model matrix to identity matrix
 
             model.render(shader, dt, nullptr, false, false);
