@@ -33,7 +33,6 @@ float lastFrame = 0.0f; // Time of last frame
 
 bool flashLightOn = false;
 
-Box box;
 SphereArray launchObjects; 
 
 int main(){
@@ -64,7 +63,6 @@ int main(){
     }
 
     screen.setParameters();
-    //render troll
 
     // Shaders
     Shader shader("assets/object.vs", "assets/object.fs");
@@ -74,6 +72,7 @@ int main(){
 
     // Models
     launchObjects.init();
+    Box box;
     box.init();
 
     // Lights
@@ -98,7 +97,7 @@ int main(){
     float k1 = 0.09f;
     float k2 = 0.032f;
 
-    Model troll(glm::vec3(5.0f), glm::vec3(0.05f));
+    Model troll(BoundTypes::AABB, glm::vec3(5.0f), glm::vec3(0.05f));
     troll.loadModel("assets/models/lotr_troll/scene.gltf");
 
 
@@ -202,7 +201,7 @@ int main(){
         shader.activate(); //apply shader
         shader.setMat4("view", view);
         shader.setMat4("projection", projection);
-        troll.render(shader , dt);
+        troll.render(shader, dt, &box);
 
         std::stack<int> removeObjects;
         for (int i = 0; i<launchObjects.instances.size(); i++){
@@ -221,13 +220,13 @@ int main(){
             launchShader.activate();
             launchShader.setMat4("view", view);
             launchShader.setMat4("projection", projection);
-            launchObjects.render(launchShader, dt);
+            launchObjects.render(launchShader, dt, &box);
         }
 
         lampShader.activate(); 
         lampShader.setMat4("view", view);
         lampShader.setMat4("projection", projection);
-        lamps.render(lampShader, dt);
+        lamps.render(lampShader, dt, &box);
 
         //render boxes
         if (box.offsets.size() > 0){
@@ -290,10 +289,6 @@ void processInput(double dt){ // Function for processing input
 
     if (Keyboard::keyWentDown(GLFW_KEY_F)){
         launchItem(dt);
-    }
-    if (Keyboard::keyWentDown(GLFW_KEY_I)){
-        box.offsets.push_back(glm::vec3(box.offsets.size() * 1.0f));
-        box.sizes.push_back(glm::vec3(box.sizes.size()*0.5f));
     }
 
     /*

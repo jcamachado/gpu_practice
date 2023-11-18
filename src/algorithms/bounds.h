@@ -9,6 +9,7 @@ enum class BoundTypes {
     SPHERE = 0x01 // 0x01 = 1 
 };
 
+// Bounding box per mesh
 class BoundingRegion {
     public:
         BoundTypes type;

@@ -46,7 +46,7 @@ bool BoundingRegion::containsRegion(BoundingRegion br) {
     // if both are spheres, combination of centers and br.radius is less than (this) radius
         return glm::length(center - br.center) + br.radius < radius;
     }
-    else if (type == BoundTypes::AABB && br.type == BoundTypes::SPHERE) {
+    else{
     // if this is a box and br is a sphere, check if the sphere is inside the box
         if(!containsPoint(br.center)) {
             return false;

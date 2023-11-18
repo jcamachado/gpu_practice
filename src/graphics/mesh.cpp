@@ -30,8 +30,9 @@ std::vector<Vertex> Vertex::genList(float* vertices, int nVertices){
     return ret;
 }
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures)
+Mesh::Mesh(BoundingRegion br, std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures)
     :
+    br(br),
     vertices(vertices),
     indices(indices),
     textures(textures),
@@ -40,8 +41,9 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
     setup();
 }
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, aiColor4D diffuse, aiColor4D specular)
+Mesh::Mesh(BoundingRegion br, std::vector<Vertex> vertices, std::vector<unsigned int> indices, aiColor4D diffuse, aiColor4D specular)
     :
+    br(br),
     vertices(vertices),
     indices(indices),
     diffuse(diffuse),
@@ -52,7 +54,7 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, aiCo
 }
 
 
-void Mesh::render(Shader shader, bool doRender){
+void Mesh::render(Shader shader, glm::vec3 pos, glm::vec3 size, Box *box, bool doRender){
     if(noTextures){
         //materials
         shader.set4Float("material.diffuse", diffuse);
@@ -83,6 +85,8 @@ void Mesh::render(Shader shader, bool doRender){
     }
 
     if(doRender){
+        box->addInstance(br, pos, size);
+
         // Bind VAO
         glBindVertexArray(VAO);
 

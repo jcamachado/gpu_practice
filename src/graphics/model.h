@@ -16,6 +16,8 @@
 #include "mesh.h"
 
 #include "../physics/rigidbody.h"
+#include "../algorithms/bounds.h"
+#include "models/box.hpp"
 
 
 class Model {
@@ -23,12 +25,14 @@ class Model {
         RigidBody rb;
         glm::vec3 size;
         
+        BoundTypes boundType;
+        
+
         std::vector<Mesh> meshes;
 
-        Model() {}
-        Model(glm::vec3 pos = glm::vec3(0.0f), glm::vec3 size  = glm::vec3(1.0f), bool noTextures = false);
+        Model(BoundTypes boundType, glm::vec3 pos = glm::vec3(0.0f), glm::vec3 size  = glm::vec3(1.0f), bool noTextures = false);
         void loadModel(std::string path);
-        void render(Shader shader, float dt, bool setModel = true, bool doRender = true);
+        void render(Shader shader, float dt, Box *box, bool setModel = true, bool doRender = true);
         void cleanup();
     protected:
         bool noTextures;
