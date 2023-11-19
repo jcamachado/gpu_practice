@@ -44,6 +44,7 @@ class Mouse {
         static double scrollDY;
 
         static bool firstMouse;
+        
         static bool buttons[];
         static bool buttonsChanged[];
 

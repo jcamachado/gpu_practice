@@ -439,14 +439,20 @@ CMakeFiles/my_particle_system.dir/src/main.cpp.o: \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/../../io/camera.h \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/../../io/keyboard.h \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/../../io/../../lib/glad/glad.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/../../scene.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/../../../lib/glad/glad.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/../../graphics/light.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/../../graphics/shader.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/../../io/camera.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/../../io/keyboard.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/../../io/mouse.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/../../io/camera.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/../../algorithms/states.hpp \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/sphere.hpp \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/light.h \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/model.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/physics/environment.h \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/joystick.h \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/../../lib/glad/glad.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/keyboard.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/mouse.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/camera.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/camera.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/screen.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/physics/environment.h
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/algorithms/states.hpp \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/scene.h
