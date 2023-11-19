@@ -209,6 +209,5 @@ void processInput(double dt){ // Function for processing input
         if (Keyboard::keyWentDown(GLFW_KEY_1 + i)){
             States::toggle(&scene.activePointLights, i);
         }
-
     }
 } 

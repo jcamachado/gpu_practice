@@ -274,6 +274,30 @@ src/algorithms/bounds.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/algorithms/bounds.cpp.s
 .PHONY : src/algorithms/bounds.cpp.s
 
+src/algorithms/octree.o: src/algorithms/octree.cpp.o
+.PHONY : src/algorithms/octree.o
+
+# target to build an object file
+src/algorithms/octree.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/algorithms/octree.cpp.o
+.PHONY : src/algorithms/octree.cpp.o
+
+src/algorithms/octree.i: src/algorithms/octree.cpp.i
+.PHONY : src/algorithms/octree.i
+
+# target to preprocess a source file
+src/algorithms/octree.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/algorithms/octree.cpp.i
+.PHONY : src/algorithms/octree.cpp.i
+
+src/algorithms/octree.s: src/algorithms/octree.cpp.s
+.PHONY : src/algorithms/octree.s
+
+# target to generate assembly for a file
+src/algorithms/octree.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/algorithms/octree.cpp.s
+.PHONY : src/algorithms/octree.cpp.s
+
 src/glad.o: src/glad.c.o
 .PHONY : src/glad.o
 
@@ -657,6 +681,9 @@ help:
 	@echo "... src/algorithms/bounds.o"
 	@echo "... src/algorithms/bounds.i"
 	@echo "... src/algorithms/bounds.s"
+	@echo "... src/algorithms/octree.o"
+	@echo "... src/algorithms/octree.i"
+	@echo "... src/algorithms/octree.s"
 	@echo "... src/glad.o"
 	@echo "... src/glad.i"
 	@echo "... src/glad.s"

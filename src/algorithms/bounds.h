@@ -28,7 +28,7 @@ class BoundingRegion {
         */
 
         //initialize with type
-        BoundingRegion(BoundTypes type);
+        BoundingRegion(BoundTypes type = BoundTypes::AABB);
 
         //initialize as sphere
         BoundingRegion(glm::vec3 center, float radius);

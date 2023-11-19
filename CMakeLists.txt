@@ -29,6 +29,9 @@ add_executable(my_particle_system
 
     src/algorithms/bounds.h
     src/algorithms/bounds.cpp
+    src/algorithms/list.hpp
+    src/algorithms/octree.h
+    src/algorithms/octree.cpp
 
     src/graphics/light.h
     src/graphics/light.cpp
