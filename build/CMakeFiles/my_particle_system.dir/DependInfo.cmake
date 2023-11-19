@@ -21,10 +21,10 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/jaxe/Repositories/gpu_study/gpu_practice/src/io/joystick.cpp" "CMakeFiles/my_particle_system.dir/src/io/joystick.cpp.o" "gcc" "CMakeFiles/my_particle_system.dir/src/io/joystick.cpp.o.d"
   "/home/jaxe/Repositories/gpu_study/gpu_practice/src/io/keyboard.cpp" "CMakeFiles/my_particle_system.dir/src/io/keyboard.cpp.o" "gcc" "CMakeFiles/my_particle_system.dir/src/io/keyboard.cpp.o.d"
   "/home/jaxe/Repositories/gpu_study/gpu_practice/src/io/mouse.cpp" "CMakeFiles/my_particle_system.dir/src/io/mouse.cpp.o" "gcc" "CMakeFiles/my_particle_system.dir/src/io/mouse.cpp.o.d"
-  "/home/jaxe/Repositories/gpu_study/gpu_practice/src/io/screen.cpp" "CMakeFiles/my_particle_system.dir/src/io/screen.cpp.o" "gcc" "CMakeFiles/my_particle_system.dir/src/io/screen.cpp.o.d"
   "/home/jaxe/Repositories/gpu_study/gpu_practice/src/main.cpp" "CMakeFiles/my_particle_system.dir/src/main.cpp.o" "gcc" "CMakeFiles/my_particle_system.dir/src/main.cpp.o.d"
   "/home/jaxe/Repositories/gpu_study/gpu_practice/src/physics/environment.cpp" "CMakeFiles/my_particle_system.dir/src/physics/environment.cpp.o" "gcc" "CMakeFiles/my_particle_system.dir/src/physics/environment.cpp.o.d"
   "/home/jaxe/Repositories/gpu_study/gpu_practice/src/physics/rigidbody.cpp" "CMakeFiles/my_particle_system.dir/src/physics/rigidbody.cpp.o" "gcc" "CMakeFiles/my_particle_system.dir/src/physics/rigidbody.cpp.o.d"
+  "/home/jaxe/Repositories/gpu_study/gpu_practice/src/scene.cpp" "CMakeFiles/my_particle_system.dir/src/scene.cpp.o" "gcc" "CMakeFiles/my_particle_system.dir/src/scene.cpp.o.d"
   )
 
 # Targets to which this target links.

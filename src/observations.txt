@@ -91,3 +91,6 @@ uso de for por lista parecido com Python
 
 header - .h
 source - .cpp
+
+regarding class ArrayObject:
+When you bind a VAO in modern opengl, what happens is that you bind a vao and everything you do to a buffer object while that vao is bound, then if you call glBindvertexarray object when you are drawing, opgl knows to go to those buffers that you performed operations on while that certain VAO was bound, so thats why we dont define the individual buffers everytime we call draw. That is modern opengl

@@ -7,10 +7,12 @@
 class Sphere : public Model{
     public:
         Sphere(glm::vec3 pos = glm::vec3(0.0f), glm::vec3 size = glm::vec3(1.0f))
-            : Model(BoundTypes::SPHERE, pos, size, true) {}
+            : Model(BoundTypes::SPHERE, pos, size, true) {
+                rb.mass = 1.0f;
+            }
 
         void init(){
-            loadModel("assets/models/m4a1/scene.gltf");
+            loadModel("assets/models/sphere/scene.gltf");
         }
 };
 

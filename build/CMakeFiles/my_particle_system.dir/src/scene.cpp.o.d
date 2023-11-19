@@ -1,8 +1,8 @@
-CMakeFiles/my_particle_system.dir/src/graphics/mesh.cpp.o: \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/mesh.cpp \
+CMakeFiles/my_particle_system.dir/src/scene.cpp.o: \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/scene.cpp \
  /usr/include/stdc-predef.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/mesh.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/../../lib/glad/glad.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/scene.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/../lib/glad/glad.h \
  /usr/include/KHR/khrplatform.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stdint.h /usr/include/stdint.h \
  /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
@@ -233,7 +233,9 @@ CMakeFiles/my_particle_system.dir/src/graphics/mesh.cpp.o: \
  /usr/include/glm/detail/type_half.hpp \
  /usr/include/glm/detail/type_half.inl /usr/include/glm/integer.hpp \
  /usr/include/glm/detail/func_integer.inl \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/light.h \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/shader.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/../../lib/glad/glad.h \
  /usr/include/c++/11/string /usr/include/c++/11/bits/stringfwd.h \
  /usr/include/c++/11/bits/char_traits.h \
  /usr/include/c++/11/bits/postypes.h /usr/include/c++/11/cwchar \
@@ -404,16 +406,10 @@ CMakeFiles/my_particle_system.dir/src/graphics/mesh.cpp.o: \
  /usr/include/glm/ext/vector_uint1.hpp \
  /usr/include/glm/ext/vector_uint1_sized.hpp \
  /usr/include/glm/gtc/type_ptr.inl \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/texture.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/../../lib/stb/stb_image.h \
- /usr/include/c++/11/stdlib.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/glmemory.hpp \
- /usr/include/c++/11/map /usr/include/c++/11/bits/stl_tree.h \
- /usr/include/c++/11/bits/stl_map.h \
- /usr/include/c++/11/bits/stl_multimap.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/box.hpp \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/../../../lib/glad/glad.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/../glmemory.hpp \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/../shader.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/../../algorithms/bounds.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/../algorithms/bounds.h
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/shader.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/camera.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/keyboard.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/../../lib/glad/glad.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/mouse.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/camera.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/algorithms/states.hpp

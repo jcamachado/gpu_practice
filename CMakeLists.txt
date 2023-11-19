@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.0.0)
 project(my_particle_system VERSION 0.1.0)
 cmake_policy(SET CMP0072 NEW)
 
+find_package(OpenGL 3.3 REQUIRED)
+
 add_subdirectory(lib/assimp-5.3.1)
 
 add_executable(my_particle_system 
@@ -22,12 +24,15 @@ add_executable(my_particle_system
     
     src/glad.c
     src/main.cpp 
+    src/scene.h 
+    src/scene.cpp 
 
     src/algorithms/bounds.h
     src/algorithms/bounds.cpp
 
     src/graphics/light.h
     src/graphics/light.cpp
+    src/graphics/glmemory.hpp
     src/graphics/material.h
     src/graphics/material.cpp
     src/graphics/mesh.h
@@ -54,8 +59,6 @@ add_executable(my_particle_system
     src/io/keyboard.cpp
     src/io/mouse.h
     src/io/mouse.cpp
-    src/io/screen.h
-    src/io/screen.cpp
 
     src/physics/rigidbody.h
     src/physics/rigidbody.cpp

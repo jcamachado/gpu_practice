@@ -38,12 +38,12 @@ struct SpotLight {
     vec3 position;
     vec3 direction;
 
+    float cutOff;
+    float outerCutOff;
+
     float k0;
     float k1;
     float k2;
-
-    float cutOff;
-    float outerCutOff;
 
     vec4 ambient;
     vec4 diffuse;
