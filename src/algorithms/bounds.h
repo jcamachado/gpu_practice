@@ -26,8 +26,6 @@ class BoundingRegion {
         /*
             Constructors
         */
-
-        //initialize with type
         BoundingRegion(BoundTypes type = BoundTypes::AABB);
 
         //initialize as sphere
@@ -39,26 +37,20 @@ class BoundingRegion {
         /*
             Calculating values for the region
         */
-
-        // center
         glm::vec3 calculateCenter();
 
-        // calculate dimensions
-        glm::vec3 calculateDimensions(); //vectors that go to min and max of the box
+        glm::vec3 calculateDimensions();        //vectors that go from min and max of the box
 
         /*
             Testing methods
         */
+        bool containsPoint(glm::vec3 point);    //test if point is inside
 
-        //test if point is inside
-        bool containsPoint(glm::vec3 point);   
-
-        //test if region is completely inside of a region (necessario for octree)
-        bool containsRegion(BoundingRegion br);
+        bool containsRegion(BoundingRegion br); //test if region is completely inside of region (necessario for octree)
         
-        //test if region intersects with another region
-        bool intersectsWith(BoundingRegion br);
+        bool intersectsWith(BoundingRegion br); //test if region intersects with another region
 
+        bool operator==(BoundingRegion br);     // Operator overload
 };
 
 #endif

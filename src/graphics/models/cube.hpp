@@ -9,8 +9,8 @@ class Cube : public Model {
     public:
         Material material;
 
-        Cube(glm::vec3 pos = glm::vec3(0.0f), glm::vec3 size  = glm::vec3(1.0f))
-            : Model(BoundTypes::AABB, pos, size) {}
+        Cube(unsigned int maxNumInstances)
+            : Model("cube", BoundTypes::AABB, maxNumInstances, CONST_INSTANCES | NO_TEX) {}
         void init(){
             int nVertices = 36;
              //each face of the cube have to have a texture
@@ -59,17 +59,15 @@ class Cube : public Model {
                 -0.5f,  0.5f, -0.5f,	 0.0f,  1.0f,  0.0f,	0.0f, 1.0f
             };
             std::vector<unsigned int> indices(nVertices);
-            for(int i=0; i<nVertices; i++){
+            for(unsigned int i=0; i<nVertices; i++){
                 indices[i] = i;
             }
-
-            // Texture flag("assets/flag.png", "material.diffuse");
-            // flag.load();
-            // Texture flagSpec("assets/flag_specular.png", "material.specular");
-            // flagSpec.load();
             BoundingRegion br(glm::vec3(-0.5f), glm::vec3(0.5f));
 
-            meshes.push_back(Mesh(br, Vertex::genList(vertices, nVertices), indices));
+            Mesh ret(br, {});
+            ret.loadData(Vertex::genList(vertices, nVertices), indices);
+
+            meshes.push_back(ret);
         }
 };
 

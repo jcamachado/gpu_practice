@@ -16,7 +16,7 @@ void Scene::frameBufferSizeCallback(GLFWwindow* window, int width, int height) {
     Constructors
 */
 
-Scene::Scene() {}
+Scene::Scene() : currentId("aaaaaaaa") {}
 
 Scene::Scene(int glfwVersionMajor, 
     int glfwVersionMinor, 
@@ -28,7 +28,8 @@ Scene::Scene(int glfwVersionMajor,
     title(title),
     activeCamera(-1),
     activePointLights(0),
-    activeSpotLights(0) {
+    activeSpotLights(0),
+    currentId("aaaaaaaa") {
 
     Scene::scrWidth = scrWidth;
     Scene::scrHeight = scrHeight;
@@ -114,14 +115,16 @@ void Scene::processInput(float dt){
         // Active camera exists
 
         // Set camera direction
-        // if (!(Mouse::getDX() == 0 && Mouse::getDY() == 0)){ // to save resources
-        cameras[activeCamera]->updateCameraDirection(Mouse::getDX(), Mouse::getDY());
-        // }
+        double dx = Mouse::getDX(), dy = Mouse::getDY();
+        if (dx != 0 || dy != 0){
+            cameras[activeCamera]->updateCameraDirection(dx, dy);
+        }
 
         // Set camera zoom
-        // if (Mouse::getScrollDY() != 0){                 // to save resources
-        cameras[activeCamera]->updateCameraZoom(Mouse::getScrollDY());
-        // }
+        double scrollDY = Mouse::getScrollDY();
+        if (scrollDY != 0) {
+            cameras[activeCamera]->updateCameraZoom(scrollDY);
+        }
 
         // Set camera position
         if (Keyboard::key(GLFW_KEY_W)){
@@ -194,8 +197,7 @@ void Scene::newFrame(){
     glfwPollEvents();
 }
 
-// Set uniform shader variables (lighting, etc)
-void Scene::render(Shader shader, bool applyLighting){
+void Scene::renderShader(Shader shader, bool applyLighting){
     // Activate shader
     shader.activate();
 
@@ -235,10 +237,19 @@ void Scene::render(Shader shader, bool applyLighting){
     }
 }
 
+void Scene::renderInstances(std::string modelId, Shader shader, float dt){
+        models[modelId]->render(shader, dt, this);
+}
+
 /*
     Cleanup method
 */
 void Scene::cleanup(){
+    // Cleanup models
+    for (auto& pair : models){
+        pair.second->cleanup();
+    }
+
     glfwTerminate();
 }
 
@@ -266,3 +277,61 @@ void Scene::setWindowColor(float r, float g, float b, float a){
     bgColor[2] = b;
     bgColor[3] = a;
 }
+
+/*
+    Models/Instances methods
+*/
+std::string Scene::generateId(){
+    for (int i = currentId.length()-1; i >= 0; i--){
+        if((int)currentId[i] != (int) 'z') {
+            currentId[i] = (char)(((int)currentId[i]) + 1);
+            break;
+        }
+        else{
+            currentId[i] = 'a';
+        }
+    }
+    return currentId;
+}
+
+std::string Scene::generateInstance(std::string modelId, glm::vec3 size, float mass, glm::vec3 pos){
+    unsigned int idx = models[modelId]->generateInstance(size, mass, pos);
+    if (idx != -1) {
+        // Instance was created successfully
+        std::string id = generateId();
+        models[modelId]->instances[idx].instanceId = id;
+        instances[id] = { modelId, idx };
+        return id;
+    }
+    return "";
+}
+
+
+void Scene::initInstances(){
+    for (auto& pair : models){
+        pair.second->initInstances();
+    }
+}
+
+void Scene::loadModels(){
+    for (auto& pair : models){
+        pair.second->init();
+    }
+}
+
+void Scene::registerModel(Model* model){
+    models[model->id] = model;
+}
+
+void Scene::removeInstance(std::string instanceId){
+    /*
+        Remove all locations
+        -Scene::instances
+        -Model::instances
+    */
+    std::string targetModel = instances[instanceId].first;
+    unsigned int targetIdx = instances[instanceId].second;
+    models[targetModel]->removeInstance(targetIdx);
+    instances.erase(instanceId);
+}
+

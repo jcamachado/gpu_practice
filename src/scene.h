@@ -5,10 +5,12 @@
 #include "../lib/glad/glad.h"
 #include <GLFW/glfw3.h>
 
+#include <map>
 #include <vector>
 
 #include <glm/glm.hpp>
 
+#include "graphics/model.h"
 #include "graphics/light.h"
 #include "graphics/shader.h"
 
@@ -16,11 +18,20 @@
 #include "io/camera.h"
 #include "io/keyboard.h"
 #include "io/mouse.h"
+// #include "io/joystick.h"
 
 #include "algorithms/states.hpp"
 
+/*
+    Forward declaration
+*/
+class Model; 
 class Scene {
     public:
+        std::map<std::string, Model*> models;   // List of models in scene to access from, e.g., the main file
+        // (instanceId, (modelId, instanceIdx)
+        std::map<std::string, std::pair<std::string, unsigned int>> instances;
+
         /*
             Callbacks
         */
@@ -45,17 +56,15 @@ class Scene {
         /*
             Main loop methods
         */
-        // Process input
-        void processInput(float dt);
-        
-        // Update screen before each frame
-        void update();
-
-        // Update screen before after each frame
-        void newFrame();
-
-        // Set uniform shader variables (lighting, etc)
-        void render(Shader shader, bool applyLighting = true);
+        void processInput(float dt);                                    // Process input
+        void update();                                                  // Update screen before each frame
+        void newFrame();                                                // Update screen before after each frame
+        void renderShader(Shader shader, bool applyLighting = true);    // Set uniform shader variables (lighting, etc)
+        void renderInstances(                                           // Render all instances of a model
+            std::string modelId, 
+            Shader shader, 
+            float dt
+        );                           
 
         /*
             Cleanup method
@@ -73,6 +82,23 @@ class Scene {
         */
         void setShouldClose(bool shouldClose);
         void setWindowColor(float r, float g, float b, float a);
+
+        /*
+            Models/Instances methods and variables
+        */
+        std::string currentId;                                          // Has to be 8 chars long, from aaaaaaaa to zzzzzzzz
+        
+        std::string generateId();
+        std::string generateInstance(
+            std::string modelId, 
+            glm::vec3 size, 
+            float mass, 
+            glm::vec3 pos
+        );
+        void initInstances();                                           // Will call model.initInstances()
+        void loadModels();                                              // Will call model.init()
+        void registerModel(Model* model);
+        void removeInstance(std::string instanceId);
 
         /*
             Lights

@@ -30,31 +30,50 @@ std::vector<Vertex> Vertex::genList(float* vertices, int nVertices){
     return ret;
 }
 
-Mesh::Mesh(BoundingRegion br, std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures)
-    :
-    br(br),
-    vertices(vertices),
-    indices(indices),
-    textures(textures),
-    noTextures(false)
-    {
-    setup();
+// Default constructor
+Mesh::Mesh() {}
+ 
+// Initialize as textured object
+Mesh::Mesh(BoundingRegion br, std::vector<Texture> textures)
+    : br(br), textures(textures), noTextures(false) {}
+ 
+// Initialize as material object
+Mesh::Mesh(BoundingRegion br, aiColor4D diff, aiColor4D spec)
+    : br(br), diffuse(diff), specular(spec), noTextures(true) {}
+
+// Load vertex and index data
+void Mesh::loadData(std::vector<Vertex> _vertices, std::vector<unsigned int> _indices) {
+    this->vertices = _vertices;
+    this->indices = _indices;
+ 
+    // Bind VAO
+    VAO.generate();
+    VAO.bind();
+ 
+    // Generate/Set EBO
+    VAO["EBO"] = BufferObject(GL_ELEMENT_ARRAY_BUFFER);
+    VAO["EBO"].generate();
+    VAO["EBO"].bind();
+    VAO["EBO"].setData<GLuint>(this->indices.size(), &this->indices[0], GL_STATIC_DRAW);
+ 
+    // Load data into vertex buffers
+    VAO["VBO"] = BufferObject(GL_ARRAY_BUFFER);
+    VAO["VBO"].generate();
+    VAO["VBO"].bind();
+    VAO["VBO"].setData<Vertex>(this->vertices.size(), &this->vertices[0], GL_STATIC_DRAW);
+ 
+    // Set the vertex attribute pointers
+    VAO["VBO"].bind();
+    VAO["VBO"].setAttrPointer<GLfloat>(0, 3, GL_FLOAT, 8, 0);   // Vertex Positions
+    VAO["VBO"].setAttrPointer<GLfloat>(1, 3, GL_FLOAT, 8, 3);   // Normal ray
+    VAO["VBO"].setAttrPointer<GLfloat>(2, 3, GL_FLOAT, 8, 6);   // Vertex texture coords
+    
+    VAO["VBO"].clear();
+ 
+    ArrayObject::clear();
 }
 
-Mesh::Mesh(BoundingRegion br, std::vector<Vertex> vertices, std::vector<unsigned int> indices, aiColor4D diffuse, aiColor4D specular)
-    :
-    br(br),
-    vertices(vertices),
-    indices(indices),
-    diffuse(diffuse),
-    specular(specular),
-    noTextures(true)
-    {
-    setup();
-}
-
-
-void Mesh::render(Shader shader, glm::vec3 pos, glm::vec3 size, Box *box, bool doRender){
+void Mesh::render(Shader shader, unsigned int numInstances){
     if(noTextures){
         //materials
         shader.set4Float("material.diffuse", diffuse);
@@ -67,8 +86,11 @@ void Mesh::render(Shader shader, glm::vec3 pos, glm::vec3 size, Box *box, bool d
         unsigned int specularIdx = 0;
 
         for(unsigned int i = 0; i < textures.size(); i++){
-            glActiveTexture(GL_TEXTURE0 + i); // Activate proper texture unit before binding
-            // Retrieve texture info (the N in diffuse_textureN)
+            /*
+                Activate proper texture unit before binding
+                Retrieve texture info (the N in diffuse_textureN)
+            */
+            glActiveTexture(GL_TEXTURE0 + i);
             std::string name;
             switch(textures[i].type){
                 case aiTextureType_DIFFUSE:
@@ -84,27 +106,18 @@ void Mesh::render(Shader shader, glm::vec3 pos, glm::vec3 size, Box *box, bool d
         }
     }
 
-    if(doRender){
-        box->addInstance(br, pos, size);
-
-        // Bind VAO
-        VAO.bind();
-        // Draw
-        VAO.draw(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-        ArrayObject::clear();
-
-        // reset
-        glActiveTexture(GL_TEXTURE0); // Reset texture unit
-    }
-
-
+    VAO.bind();                                                                 // Bind VAO
+    VAO.draw(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0, numInstances);   // Draw
+    ArrayObject::clear();
+    glActiveTexture(GL_TEXTURE0);                                               // Reset texture unit
 }
 
 
 void Mesh::setup(){
-    // // VAO and VBO
-    // // VAO, VBO are bound by the shader program
-
+    /*
+        VAO and VBO
+        VAO, VBO are bound by the shader program
+    */
     // bind VAO
     VAO.generate();
     VAO.bind();
@@ -135,7 +148,6 @@ void Mesh::setup(){
     VAO["VBO"].clear();
 
     ArrayObject::clear();
-
 }
 
 void Mesh::cleanup(){

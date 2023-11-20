@@ -421,4 +421,16 @@ CMakeFiles/my_particle_system.dir/src/graphics/model.cpp.o: \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/../../algorithms/bounds.h \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/../algorithms/bounds.h \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/../physics/rigidbody.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/../scene.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/../../lib/glad/glad.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/../graphics/model.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/../graphics/light.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/../graphics/shader.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/../graphics/shader.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/../io/camera.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/../io/keyboard.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/../io/../../lib/glad/glad.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/../io/mouse.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/../io/camera.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/../algorithms/states.hpp \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/../physics/environment.h

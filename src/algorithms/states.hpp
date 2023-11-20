@@ -6,10 +6,13 @@
 // unsigned int uses 4 bytes
 
 namespace States {
-    // ex: states = 10001101
+    /*
+        Ex: states = 10001101
+        each bit is a state
+    */
 
     template <typename T>
-    bool isActive(T* states, int target){ // check state; target is the index
+    bool isIndexActive(T* states, int target){              // Check state; target is the index
         /*
             ex: 
             target = 6
@@ -26,13 +29,12 @@ namespace States {
             --------
             00001000 == 00001000
         */
-
-        return ((*states & (1 << target))==(1<<target));
+        return (*states & (1 << target)) == (1 << target);
     }
 
-    // activate state
+    
     template<typename T>
-    void activate(T* states, int target) {
+    void activateIndex(T* states, int target) {            // Activate state
         /*
             ex: 
             target = 4
@@ -45,9 +47,9 @@ namespace States {
         *states |= (1 << target);
     }
 
-    // uniquely activate state (no other state is active)
+                                                            
     template<typename T>
-    void uniquelyActivate(T* states, int target) {
+    void uniquelyActivateIndex(T* states, int target) {     // No other state is active
         /*
             ex: 
             target = 4
@@ -57,13 +59,13 @@ namespace States {
             --------
             00010000
         */
-        activate<T>(states, target); // activate state
-        *states &= (1 << target); // deactivate all other states
+        activateIndex<T>(states, target);                   // Activate state
+        *states &= (1 << target);                           // Deactivate all other states
     }
 
     // deactivate state
     template<typename T>
-    void deactivate(T* states, int target) {
+    void deactivateIndex(T* states, int target) {
         /*
             ex: 
             target = 4
@@ -78,7 +80,7 @@ namespace States {
 
     // toggle state
     template<typename T>
-    void toggle(T* states, int target) {
+    void toggleIndex(T* states, int target) {
         /*
             ex: 
             target = 4
@@ -89,6 +91,35 @@ namespace States {
             10011101
         */
         *states ^= (1 << target);
+    }
+    // check state
+    template<typename T>
+    bool isActive(T* states, T state) {
+        return (*states & state) == state;
+    }
+ 
+    // activate state
+    template<typename T>
+    void activate(T* states, T state) {
+        *states |= state;
+    }
+ 
+    // uniquely activate state (no others can be active)
+    template<typename T>
+    void uniquelyActivate(T* states, T state) {
+        *states &= state;
+    }
+ 
+    // deactivate state
+    template<typename T>
+    void deactivate(T* states, T state) {
+        *states &= ~state;
+    }
+ 
+    // toggle state
+    template<typename T>
+    void toggle(T* states, T state) {
+        *states ^= state;
     }
 
 };

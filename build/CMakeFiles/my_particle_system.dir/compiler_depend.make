@@ -2522,6 +2522,18 @@ CMakeFiles/my_particle_system.dir/src/graphics/model.cpp.o: ../src/graphics/mode
   ../src/algorithms/bounds.h \
   ../src/algorithms/bounds.h \
   ../src/physics/rigidbody.h \
+  ../src/scene.h \
+  ../lib/glad/glad.h \
+  ../src/graphics/model.h \
+  ../src/graphics/light.h \
+  ../src/graphics/shader.h \
+  ../src/graphics/shader.h \
+  ../src/io/camera.h \
+  ../src/io/keyboard.h \
+  ../lib/glad/glad.h \
+  ../src/io/mouse.h \
+  ../src/io/camera.h \
+  ../src/algorithms/states.hpp \
   ../src/physics/environment.h
 
 CMakeFiles/my_particle_system.dir/src/graphics/shader.cpp.o: ../src/graphics/shader.cpp \
@@ -3971,10 +3983,11 @@ CMakeFiles/my_particle_system.dir/src/io/mouse.cpp.o: ../src/io/mouse.cpp \
 
 CMakeFiles/my_particle_system.dir/src/main.cpp.o: ../src/main.cpp \
   /usr/include/stdc-predef.h \
-  /usr/include/c++/11/vector \
-  /usr/include/c++/11/bits/stl_algobase.h \
-  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
-  /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \
+  ../lib/glad/glad.h \
+  /usr/include/KHR/khrplatform.h \
+  /usr/lib/gcc/x86_64-linux-gnu/11/include/stdint.h \
+  /usr/include/stdint.h \
+  /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
   /usr/include/features.h \
   /usr/include/features-time64.h \
   /usr/include/x86_64-linux-gnu/bits/wordsize.h \
@@ -3983,68 +3996,29 @@ CMakeFiles/my_particle_system.dir/src/main.cpp.o: ../src/main.cpp \
   /usr/include/x86_64-linux-gnu/bits/long-double.h \
   /usr/include/x86_64-linux-gnu/gnu/stubs.h \
   /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
-  /usr/include/x86_64-linux-gnu/c++/11/bits/cpu_defines.h \
-  /usr/include/c++/11/pstl/pstl_config.h \
-  /usr/include/c++/11/bits/functexcept.h \
-  /usr/include/c++/11/bits/exception_defines.h \
-  /usr/include/c++/11/bits/cpp_type_traits.h \
-  /usr/include/c++/11/ext/type_traits.h \
-  /usr/include/c++/11/ext/numeric_traits.h \
-  /usr/include/c++/11/bits/stl_pair.h \
-  /usr/include/c++/11/bits/move.h \
-  /usr/include/c++/11/type_traits \
-  /usr/include/c++/11/bits/stl_iterator_base_types.h \
-  /usr/include/c++/11/bits/stl_iterator_base_funcs.h \
-  /usr/include/c++/11/bits/concept_check.h \
-  /usr/include/c++/11/debug/assertions.h \
-  /usr/include/c++/11/bits/stl_iterator.h \
-  /usr/include/c++/11/bits/ptr_traits.h \
-  /usr/include/c++/11/debug/debug.h \
-  /usr/include/c++/11/bits/predefined_ops.h \
-  /usr/include/c++/11/bits/allocator.h \
-  /usr/include/x86_64-linux-gnu/c++/11/bits/c++allocator.h \
-  /usr/include/c++/11/ext/new_allocator.h \
-  /usr/include/c++/11/new \
-  /usr/include/c++/11/bits/exception.h \
-  /usr/include/c++/11/bits/memoryfwd.h \
-  /usr/include/c++/11/bits/stl_construct.h \
-  /usr/include/c++/11/bits/stl_uninitialized.h \
-  /usr/include/c++/11/ext/alloc_traits.h \
-  /usr/include/c++/11/bits/alloc_traits.h \
-  /usr/include/c++/11/bits/stl_vector.h \
-  /usr/include/c++/11/initializer_list \
-  /usr/include/c++/11/bits/stl_bvector.h \
-  /usr/include/c++/11/bits/functional_hash.h \
-  /usr/include/c++/11/bits/hash_bytes.h \
-  /usr/include/c++/11/bits/range_access.h \
-  /usr/include/c++/11/bits/vector.tcc \
-  /usr/include/c++/11/stack \
-  /usr/include/c++/11/deque \
-  /usr/include/c++/11/bits/stl_deque.h \
-  /usr/include/c++/11/bits/deque.tcc \
-  /usr/include/c++/11/bits/stl_stack.h \
-  /usr/include/c++/11/bits/uses_allocator.h \
-  ../src/graphics/shader.h \
-  ../lib/glad/glad.h \
-  /usr/include/KHR/khrplatform.h \
-  /usr/lib/gcc/x86_64-linux-gnu/11/include/stdint.h \
-  /usr/include/stdint.h \
-  /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
   /usr/include/x86_64-linux-gnu/bits/types.h \
   /usr/include/x86_64-linux-gnu/bits/typesizes.h \
   /usr/include/x86_64-linux-gnu/bits/time64.h \
   /usr/include/x86_64-linux-gnu/bits/wchar.h \
   /usr/include/x86_64-linux-gnu/bits/stdint-intn.h \
   /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
-  /usr/include/c++/11/string \
+  /usr/local/include/GLFW/glfw3.h \
+  /usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h \
+  /usr/include/c++/11/iostream \
+  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
+  /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \
+  /usr/include/x86_64-linux-gnu/c++/11/bits/cpu_defines.h \
+  /usr/include/c++/11/pstl/pstl_config.h \
+  /usr/include/c++/11/ostream \
+  /usr/include/c++/11/ios \
+  /usr/include/c++/11/iosfwd \
   /usr/include/c++/11/bits/stringfwd.h \
-  /usr/include/c++/11/bits/char_traits.h \
+  /usr/include/c++/11/bits/memoryfwd.h \
   /usr/include/c++/11/bits/postypes.h \
   /usr/include/c++/11/cwchar \
   /usr/include/wchar.h \
   /usr/include/x86_64-linux-gnu/bits/floatn.h \
   /usr/include/x86_64-linux-gnu/bits/floatn-common.h \
-  /usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/stdarg.h \
   /usr/include/x86_64-linux-gnu/bits/types/wint_t.h \
   /usr/include/x86_64-linux-gnu/bits/types/mbstate_t.h \
@@ -4053,22 +4027,43 @@ CMakeFiles/my_particle_system.dir/src/main.cpp.o: ../src/main.cpp \
   /usr/include/x86_64-linux-gnu/bits/types/FILE.h \
   /usr/include/x86_64-linux-gnu/bits/types/locale_t.h \
   /usr/include/x86_64-linux-gnu/bits/types/__locale_t.h \
+  /usr/include/c++/11/exception \
+  /usr/include/c++/11/bits/exception.h \
+  /usr/include/c++/11/bits/exception_ptr.h \
+  /usr/include/c++/11/bits/exception_defines.h \
+  /usr/include/c++/11/bits/cxxabi_init_exception.h \
+  /usr/include/c++/11/typeinfo \
+  /usr/include/c++/11/bits/hash_bytes.h \
+  /usr/include/c++/11/new \
+  /usr/include/c++/11/bits/move.h \
+  /usr/include/c++/11/type_traits \
+  /usr/include/c++/11/bits/nested_exception.h \
+  /usr/include/c++/11/bits/char_traits.h \
+  /usr/include/c++/11/bits/stl_algobase.h \
+  /usr/include/c++/11/bits/functexcept.h \
+  /usr/include/c++/11/bits/cpp_type_traits.h \
+  /usr/include/c++/11/ext/type_traits.h \
+  /usr/include/c++/11/ext/numeric_traits.h \
+  /usr/include/c++/11/bits/stl_pair.h \
+  /usr/include/c++/11/bits/stl_iterator_base_types.h \
+  /usr/include/c++/11/bits/stl_iterator_base_funcs.h \
+  /usr/include/c++/11/bits/concept_check.h \
+  /usr/include/c++/11/debug/assertions.h \
+  /usr/include/c++/11/bits/stl_iterator.h \
+  /usr/include/c++/11/bits/ptr_traits.h \
+  /usr/include/c++/11/debug/debug.h \
+  /usr/include/c++/11/bits/predefined_ops.h \
   /usr/include/c++/11/cstdint \
   /usr/include/c++/11/bits/localefwd.h \
   /usr/include/x86_64-linux-gnu/c++/11/bits/c++locale.h \
   /usr/include/c++/11/clocale \
   /usr/include/locale.h \
   /usr/include/x86_64-linux-gnu/bits/locale.h \
-  /usr/include/c++/11/iosfwd \
   /usr/include/c++/11/cctype \
   /usr/include/ctype.h \
   /usr/include/x86_64-linux-gnu/bits/endian.h \
   /usr/include/x86_64-linux-gnu/bits/endianness.h \
-  /usr/include/c++/11/bits/ostream_insert.h \
-  /usr/include/c++/11/bits/cxxabi_forced.h \
-  /usr/include/c++/11/bits/stl_function.h \
-  /usr/include/c++/11/backward/binders.h \
-  /usr/include/c++/11/bits/basic_string.h \
+  /usr/include/c++/11/bits/ios_base.h \
   /usr/include/c++/11/ext/atomicity.h \
   /usr/include/x86_64-linux-gnu/c++/11/bits/gthr.h \
   /usr/include/x86_64-linux-gnu/c++/11/bits/gthr-default.h \
@@ -4100,7 +4095,23 @@ CMakeFiles/my_particle_system.dir/src/main.cpp.o: ../src/main.cpp \
   /usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h \
   /usr/include/x86_64-linux-gnu/c++/11/bits/atomic_word.h \
   /usr/include/x86_64-linux-gnu/sys/single_threaded.h \
+  /usr/include/c++/11/bits/locale_classes.h \
+  /usr/include/c++/11/string \
+  /usr/include/c++/11/bits/allocator.h \
+  /usr/include/x86_64-linux-gnu/c++/11/bits/c++allocator.h \
+  /usr/include/c++/11/ext/new_allocator.h \
+  /usr/include/c++/11/bits/ostream_insert.h \
+  /usr/include/c++/11/bits/cxxabi_forced.h \
+  /usr/include/c++/11/bits/stl_function.h \
+  /usr/include/c++/11/backward/binders.h \
+  /usr/include/c++/11/bits/range_access.h \
+  /usr/include/c++/11/initializer_list \
+  /usr/include/c++/11/bits/basic_string.h \
+  /usr/include/c++/11/ext/alloc_traits.h \
+  /usr/include/c++/11/bits/alloc_traits.h \
+  /usr/include/c++/11/bits/stl_construct.h \
   /usr/include/c++/11/string_view \
+  /usr/include/c++/11/bits/functional_hash.h \
   /usr/include/c++/11/bits/string_view.tcc \
   /usr/include/c++/11/ext/string_conversions.h \
   /usr/include/c++/11/cstdlib \
@@ -4134,16 +4145,6 @@ CMakeFiles/my_particle_system.dir/src/main.cpp.o: ../src/main.cpp \
   /usr/include/x86_64-linux-gnu/bits/types/error_t.h \
   /usr/include/c++/11/bits/charconv.h \
   /usr/include/c++/11/bits/basic_string.tcc \
-  /usr/include/c++/11/fstream \
-  /usr/include/c++/11/istream \
-  /usr/include/c++/11/ios \
-  /usr/include/c++/11/exception \
-  /usr/include/c++/11/bits/exception_ptr.h \
-  /usr/include/c++/11/bits/cxxabi_init_exception.h \
-  /usr/include/c++/11/typeinfo \
-  /usr/include/c++/11/bits/nested_exception.h \
-  /usr/include/c++/11/bits/ios_base.h \
-  /usr/include/c++/11/bits/locale_classes.h \
   /usr/include/c++/11/bits/locale_classes.tcc \
   /usr/include/c++/11/system_error \
   /usr/include/x86_64-linux-gnu/c++/11/bits/error_constants.h \
@@ -4160,32 +4161,22 @@ CMakeFiles/my_particle_system.dir/src/main.cpp.o: ../src/main.cpp \
   /usr/include/x86_64-linux-gnu/c++/11/bits/ctype_inline.h \
   /usr/include/c++/11/bits/locale_facets.tcc \
   /usr/include/c++/11/bits/basic_ios.tcc \
-  /usr/include/c++/11/ostream \
   /usr/include/c++/11/bits/ostream.tcc \
+  /usr/include/c++/11/istream \
   /usr/include/c++/11/bits/istream.tcc \
-  /usr/include/c++/11/bits/codecvt.h \
-  /usr/include/x86_64-linux-gnu/c++/11/bits/basic_file.h \
-  /usr/include/x86_64-linux-gnu/c++/11/bits/c++io.h \
-  /usr/include/c++/11/bits/fstream.tcc \
-  /usr/include/c++/11/sstream \
-  /usr/include/c++/11/bits/sstream.tcc \
-  /usr/include/c++/11/iostream \
-  ../lib/assimp-5.3.1/include/assimp/scene.h \
-  ../lib/assimp-5.3.1/include/assimp/types.h \
-  /usr/lib/gcc/x86_64-linux-gnu/11/include/limits.h \
-  /usr/lib/gcc/x86_64-linux-gnu/11/include/syslimits.h \
-  /usr/include/limits.h \
-  /usr/include/x86_64-linux-gnu/bits/posix1_lim.h \
-  /usr/include/x86_64-linux-gnu/bits/local_lim.h \
-  /usr/include/linux/limits.h \
-  /usr/include/x86_64-linux-gnu/bits/posix2_lim.h \
-  /usr/include/x86_64-linux-gnu/bits/xopen_lim.h \
-  /usr/include/x86_64-linux-gnu/bits/uio_lim.h \
-  /usr/include/string.h \
-  /usr/include/strings.h \
-  ../lib/assimp-5.3.1/include/assimp/defs.h \
-  ../lib/assimp-5.3.1/include/assimp/config.h \
-  ../lib/assimp-5.3.1/include/assimp/vector2.h \
+  /usr/include/c++/11/stack \
+  /usr/include/c++/11/deque \
+  /usr/include/c++/11/bits/stl_uninitialized.h \
+  /usr/include/c++/11/bits/stl_deque.h \
+  /usr/include/c++/11/bits/deque.tcc \
+  /usr/include/c++/11/bits/stl_stack.h \
+  /usr/include/c++/11/bits/uses_allocator.h \
+  /usr/include/c++/11/vector \
+  /usr/include/c++/11/bits/stl_vector.h \
+  /usr/include/c++/11/bits/stl_bvector.h \
+  /usr/include/c++/11/bits/vector.tcc \
+  /usr/include/glm/glm.hpp \
+  /usr/include/glm/detail/_fixes.hpp \
   /usr/include/c++/11/cmath \
   /usr/include/math.h \
   /usr/include/x86_64-linux-gnu/bits/math-vector.h \
@@ -4211,62 +4202,21 @@ CMakeFiles/my_particle_system.dir/src/main.cpp.o: ../src/main.cpp \
   /usr/include/c++/11/tr1/poly_hermite.tcc \
   /usr/include/c++/11/tr1/poly_laguerre.tcc \
   /usr/include/c++/11/tr1/riemann_zeta.tcc \
-  ../lib/assimp-5.3.1/include/assimp/vector3.h \
-  ../lib/assimp-5.3.1/include/assimp/color4.h \
-  ../lib/assimp-5.3.1/include/assimp/matrix3x3.h \
-  ../lib/assimp-5.3.1/include/assimp/matrix4x4.h \
-  ../lib/assimp-5.3.1/include/assimp/quaternion.h \
-  /usr/include/c++/11/cstring \
-  ../lib/assimp-5.3.1/include/assimp/vector2.inl \
-  ../lib/assimp-5.3.1/include/assimp/vector3.inl \
-  ../lib/assimp-5.3.1/include/assimp/color4.inl \
-  ../lib/assimp-5.3.1/include/assimp/matrix3x3.inl \
-  /usr/include/c++/11/algorithm \
-  /usr/include/c++/11/utility \
-  /usr/include/c++/11/bits/stl_relops.h \
-  /usr/include/c++/11/bits/stl_algo.h \
-  /usr/include/c++/11/bits/algorithmfwd.h \
-  /usr/include/c++/11/bits/stl_heap.h \
-  /usr/include/c++/11/bits/stl_tempbuf.h \
-  /usr/include/c++/11/bits/uniform_int_dist.h \
-  /usr/include/c++/11/pstl/glue_algorithm_defs.h \
-  /usr/include/c++/11/functional \
-  /usr/include/c++/11/tuple \
-  /usr/include/c++/11/array \
-  /usr/include/c++/11/bits/invoke.h \
-  /usr/include/c++/11/bits/refwrap.h \
-  /usr/include/c++/11/bits/std_function.h \
-  /usr/include/c++/11/unordered_map \
-  /usr/include/c++/11/ext/aligned_buffer.h \
-  /usr/include/c++/11/bits/hashtable.h \
-  /usr/include/c++/11/bits/hashtable_policy.h \
-  /usr/include/c++/11/bits/enable_special_members.h \
-  /usr/include/c++/11/bits/node_handle.h \
-  /usr/include/c++/11/bits/unordered_map.h \
-  /usr/include/c++/11/bits/erase_if.h \
-  /usr/include/c++/11/pstl/execution_defs.h \
-  ../lib/assimp-5.3.1/include/assimp/matrix4x4.inl \
-  ../lib/assimp-5.3.1/include/assimp/MathFunctions.h \
-  ../lib/assimp-5.3.1/include/assimp/quaternion.inl \
-  ../lib/assimp-5.3.1/include/assimp/texture.h \
-  ../lib/assimp-5.3.1/include/assimp/Compiler/pushpack1.h \
-  ../lib/assimp-5.3.1/include/assimp/Compiler/poppack1.h \
-  ../lib/assimp-5.3.1/include/assimp/mesh.h \
-  ../lib/assimp-5.3.1/include/assimp/aabb.h \
-  ../lib/assimp-5.3.1/include/assimp/light.h \
-  ../lib/assimp-5.3.1/include/assimp/camera.h \
-  ../lib/assimp-5.3.1/include/assimp/material.h \
-  ../lib/assimp-5.3.1/include/assimp/material.inl \
-  ../lib/assimp-5.3.1/include/assimp/anim.h \
-  ../lib/assimp-5.3.1/include/assimp/metadata.h \
-  /usr/include/glm/glm.hpp \
-  /usr/include/glm/detail/_fixes.hpp \
   /usr/include/glm/detail/setup.hpp \
   /usr/include/c++/11/cassert \
   /usr/include/assert.h \
   /usr/include/c++/11/cstddef \
   /usr/include/glm/simd/platform.h \
   /usr/include/c++/11/climits \
+  /usr/lib/gcc/x86_64-linux-gnu/11/include/limits.h \
+  /usr/lib/gcc/x86_64-linux-gnu/11/include/syslimits.h \
+  /usr/include/limits.h \
+  /usr/include/x86_64-linux-gnu/bits/posix1_lim.h \
+  /usr/include/x86_64-linux-gnu/bits/local_lim.h \
+  /usr/include/linux/limits.h \
+  /usr/include/x86_64-linux-gnu/bits/posix2_lim.h \
+  /usr/include/x86_64-linux-gnu/bits/xopen_lim.h \
+  /usr/include/x86_64-linux-gnu/bits/uio_lim.h \
   /usr/include/c++/11/cfloat \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/float.h \
   /usr/include/glm/fwd.hpp \
@@ -4400,20 +4350,93 @@ CMakeFiles/my_particle_system.dir/src/main.cpp.o: ../src/main.cpp \
   /usr/include/glm/detail/type_half.inl \
   /usr/include/glm/integer.hpp \
   /usr/include/glm/detail/func_integer.inl \
-  /usr/include/glm/gtc/type_ptr.hpp \
-  /usr/include/glm/gtc/quaternion.hpp \
+  /usr/include/glm/gtc/matrix_transform.hpp \
+  /usr/include/glm/ext/matrix_projection.hpp \
   /usr/include/glm/gtc/constants.hpp \
   /usr/include/glm/ext/scalar_constants.hpp \
   /usr/include/glm/ext/scalar_constants.inl \
   /usr/include/glm/gtc/constants.inl \
-  /usr/include/glm/gtc/matrix_transform.hpp \
-  /usr/include/glm/ext/matrix_projection.hpp \
   /usr/include/glm/ext/matrix_projection.inl \
   /usr/include/glm/ext/matrix_clip_space.hpp \
   /usr/include/glm/ext/matrix_clip_space.inl \
   /usr/include/glm/ext/matrix_transform.hpp \
   /usr/include/glm/ext/matrix_transform.inl \
   /usr/include/glm/gtc/matrix_transform.inl \
+  ../src/scene.h \
+  /usr/include/c++/11/map \
+  /usr/include/c++/11/bits/stl_tree.h \
+  /usr/include/c++/11/ext/aligned_buffer.h \
+  /usr/include/c++/11/bits/node_handle.h \
+  /usr/include/c++/11/bits/stl_map.h \
+  /usr/include/c++/11/tuple \
+  /usr/include/c++/11/utility \
+  /usr/include/c++/11/bits/stl_relops.h \
+  /usr/include/c++/11/array \
+  /usr/include/c++/11/bits/invoke.h \
+  /usr/include/c++/11/bits/stl_multimap.h \
+  /usr/include/c++/11/bits/erase_if.h \
+  ../src/graphics/model.h \
+  ../lib/glad/glad.h \
+  ../lib/assimp-5.3.1/include/assimp/Importer.hpp \
+  ../lib/assimp-5.3.1/include/assimp/types.h \
+  /usr/include/string.h \
+  /usr/include/strings.h \
+  ../lib/assimp-5.3.1/include/assimp/defs.h \
+  ../lib/assimp-5.3.1/include/assimp/config.h \
+  ../lib/assimp-5.3.1/include/assimp/vector2.h \
+  ../lib/assimp-5.3.1/include/assimp/vector3.h \
+  ../lib/assimp-5.3.1/include/assimp/color4.h \
+  ../lib/assimp-5.3.1/include/assimp/matrix3x3.h \
+  ../lib/assimp-5.3.1/include/assimp/matrix4x4.h \
+  ../lib/assimp-5.3.1/include/assimp/quaternion.h \
+  /usr/include/c++/11/cstring \
+  ../lib/assimp-5.3.1/include/assimp/vector2.inl \
+  ../lib/assimp-5.3.1/include/assimp/vector3.inl \
+  ../lib/assimp-5.3.1/include/assimp/color4.inl \
+  ../lib/assimp-5.3.1/include/assimp/matrix3x3.inl \
+  /usr/include/c++/11/algorithm \
+  /usr/include/c++/11/bits/stl_algo.h \
+  /usr/include/c++/11/bits/algorithmfwd.h \
+  /usr/include/c++/11/bits/stl_heap.h \
+  /usr/include/c++/11/bits/stl_tempbuf.h \
+  /usr/include/c++/11/bits/uniform_int_dist.h \
+  /usr/include/c++/11/pstl/glue_algorithm_defs.h \
+  /usr/include/c++/11/functional \
+  /usr/include/c++/11/bits/refwrap.h \
+  /usr/include/c++/11/bits/std_function.h \
+  /usr/include/c++/11/unordered_map \
+  /usr/include/c++/11/bits/hashtable.h \
+  /usr/include/c++/11/bits/hashtable_policy.h \
+  /usr/include/c++/11/bits/enable_special_members.h \
+  /usr/include/c++/11/bits/unordered_map.h \
+  /usr/include/c++/11/pstl/execution_defs.h \
+  ../lib/assimp-5.3.1/include/assimp/matrix4x4.inl \
+  ../lib/assimp-5.3.1/include/assimp/MathFunctions.h \
+  ../lib/assimp-5.3.1/include/assimp/quaternion.inl \
+  ../lib/assimp-5.3.1/include/assimp/scene.h \
+  ../lib/assimp-5.3.1/include/assimp/texture.h \
+  ../lib/assimp-5.3.1/include/assimp/Compiler/pushpack1.h \
+  ../lib/assimp-5.3.1/include/assimp/Compiler/poppack1.h \
+  ../lib/assimp-5.3.1/include/assimp/mesh.h \
+  ../lib/assimp-5.3.1/include/assimp/aabb.h \
+  ../lib/assimp-5.3.1/include/assimp/light.h \
+  ../lib/assimp-5.3.1/include/assimp/camera.h \
+  ../lib/assimp-5.3.1/include/assimp/material.h \
+  ../lib/assimp-5.3.1/include/assimp/material.inl \
+  ../lib/assimp-5.3.1/include/assimp/anim.h \
+  ../lib/assimp-5.3.1/include/assimp/metadata.h \
+  ../lib/assimp-5.3.1/include/assimp/postprocess.h \
+  ../src/graphics/mesh.h \
+  ../src/graphics/shader.h \
+  /usr/include/c++/11/fstream \
+  /usr/include/c++/11/bits/codecvt.h \
+  /usr/include/x86_64-linux-gnu/c++/11/bits/basic_file.h \
+  /usr/include/x86_64-linux-gnu/c++/11/bits/c++io.h \
+  /usr/include/c++/11/bits/fstream.tcc \
+  /usr/include/c++/11/sstream \
+  /usr/include/c++/11/bits/sstream.tcc \
+  /usr/include/glm/gtc/type_ptr.hpp \
+  /usr/include/glm/gtc/quaternion.hpp \
   /usr/include/glm/ext/vector_relational.hpp \
   /usr/include/glm/ext/vector_relational.inl \
   /usr/include/glm/detail/type_float.hpp \
@@ -4450,57 +4473,40 @@ CMakeFiles/my_particle_system.dir/src/main.cpp.o: ../src/main.cpp \
   /usr/include/glm/ext/vector_uint1_sized.hpp \
   /usr/include/glm/gtc/type_ptr.inl \
   ../src/graphics/texture.h \
-  /usr/local/include/GLFW/glfw3.h \
   ../lib/stb/stb_image.h \
   /usr/include/c++/11/stdlib.h \
+  ../src/graphics/glmemory.hpp \
   ../src/graphics/models/box.hpp \
   ../lib/glad/glad.h \
   ../src/graphics/glmemory.hpp \
-  ../lib/glad/glad.h \
-  /usr/include/c++/11/map \
-  /usr/include/c++/11/bits/stl_tree.h \
-  /usr/include/c++/11/bits/stl_map.h \
-  /usr/include/c++/11/bits/stl_multimap.h \
   ../src/graphics/shader.h \
   ../src/algorithms/bounds.h \
-  ../src/graphics/models/cube.hpp \
-  ../src/graphics/model.h \
-  ../lib/assimp-5.3.1/include/assimp/Importer.hpp \
-  ../lib/assimp-5.3.1/include/assimp/postprocess.h \
-  ../src/graphics/mesh.h \
-  ../src/graphics/shader.h \
-  ../src/graphics/texture.h \
-  ../src/graphics/glmemory.hpp \
-  ../src/graphics/models/box.hpp \
   ../src/algorithms/bounds.h \
   ../src/physics/rigidbody.h \
-  ../src/graphics/material.h \
-  ../src/graphics/models/lamp.hpp \
-  ../src/graphics/light.h \
-  ../src/graphics/models/cube.hpp \
-  ../src/graphics/models/modelarray.hpp \
-  ../src/graphics/models/box.hpp \
-  ../src/graphics/models/gun.hpp \
-  ../src/io/camera.h \
-  ../src/io/keyboard.h \
-  ../lib/glad/glad.h \
   ../src/scene.h \
-  ../lib/glad/glad.h \
   ../src/graphics/light.h \
   ../src/graphics/shader.h \
   ../src/io/camera.h \
   ../src/io/keyboard.h \
+  ../lib/glad/glad.h \
   ../src/io/mouse.h \
   ../src/io/camera.h \
   ../src/algorithms/states.hpp \
-  ../src/graphics/models/sphere.hpp \
-  ../src/graphics/light.h \
+  ../src/graphics/texture.h \
+  ../src/graphics/models/box.hpp \
+  ../src/graphics/models/cube.hpp \
   ../src/graphics/model.h \
-  ../src/physics/environment.h \
+  ../src/graphics/material.h \
+  ../src/graphics/models/gun.hpp \
+  ../src/io/camera.h \
+  ../src/io/keyboard.h \
+  ../src/scene.h \
+  ../src/graphics/models/lamp.hpp \
+  ../src/graphics/models/cube.hpp \
+  ../src/graphics/light.h \
+  ../src/graphics/models/sphere.hpp \
   ../src/io/joystick.h \
-  ../lib/glad/glad.h \
-  ../src/algorithms/states.hpp \
-  ../src/scene.h
+  ../src/physics/environment.h
 
 CMakeFiles/my_particle_system.dir/src/physics/environment.cpp.o: ../src/physics/environment.cpp \
   /usr/include/stdc-predef.h \
@@ -5005,12 +5011,10 @@ CMakeFiles/my_particle_system.dir/src/physics/rigidbody.cpp.o: ../src/physics/ri
   /usr/include/glm/detail/type_half.inl \
   /usr/include/glm/integer.hpp \
   /usr/include/glm/detail/func_integer.inl \
-  /usr/include/c++/11/iostream \
-  /usr/include/c++/11/ostream \
-  /usr/include/c++/11/ios \
-  /usr/include/c++/11/iosfwd \
+  /usr/include/c++/11/string \
   /usr/include/c++/11/bits/stringfwd.h \
   /usr/include/c++/11/bits/memoryfwd.h \
+  /usr/include/c++/11/bits/char_traits.h \
   /usr/include/c++/11/bits/postypes.h \
   /usr/include/c++/11/cwchar \
   /usr/include/wchar.h \
@@ -5020,23 +5024,26 @@ CMakeFiles/my_particle_system.dir/src/physics/rigidbody.cpp.o: ../src/physics/ri
   /usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h \
   /usr/include/x86_64-linux-gnu/bits/types/__FILE.h \
   /usr/include/x86_64-linux-gnu/bits/types/FILE.h \
-  /usr/include/c++/11/exception \
-  /usr/include/c++/11/bits/exception.h \
-  /usr/include/c++/11/bits/exception_ptr.h \
-  /usr/include/c++/11/bits/cxxabi_init_exception.h \
-  /usr/include/c++/11/typeinfo \
-  /usr/include/c++/11/bits/hash_bytes.h \
+  /usr/include/c++/11/bits/allocator.h \
+  /usr/include/x86_64-linux-gnu/c++/11/bits/c++allocator.h \
+  /usr/include/c++/11/ext/new_allocator.h \
   /usr/include/c++/11/new \
-  /usr/include/c++/11/bits/nested_exception.h \
-  /usr/include/c++/11/bits/char_traits.h \
+  /usr/include/c++/11/bits/exception.h \
   /usr/include/c++/11/bits/localefwd.h \
   /usr/include/x86_64-linux-gnu/c++/11/bits/c++locale.h \
   /usr/include/c++/11/clocale \
   /usr/include/locale.h \
   /usr/include/x86_64-linux-gnu/bits/locale.h \
+  /usr/include/c++/11/iosfwd \
   /usr/include/c++/11/cctype \
   /usr/include/ctype.h \
-  /usr/include/c++/11/bits/ios_base.h \
+  /usr/include/c++/11/bits/ostream_insert.h \
+  /usr/include/c++/11/bits/cxxabi_forced.h \
+  /usr/include/c++/11/bits/stl_function.h \
+  /usr/include/c++/11/backward/binders.h \
+  /usr/include/c++/11/bits/range_access.h \
+  /usr/include/c++/11/initializer_list \
+  /usr/include/c++/11/bits/basic_string.h \
   /usr/include/c++/11/ext/atomicity.h \
   /usr/include/x86_64-linux-gnu/c++/11/bits/gthr.h \
   /usr/include/x86_64-linux-gnu/c++/11/bits/gthr-default.h \
@@ -5054,23 +5061,12 @@ CMakeFiles/my_particle_system.dir/src/physics/rigidbody.cpp.o: ../src/physics/ri
   /usr/include/x86_64-linux-gnu/bits/types/struct___jmp_buf_tag.h \
   /usr/include/x86_64-linux-gnu/c++/11/bits/atomic_word.h \
   /usr/include/x86_64-linux-gnu/sys/single_threaded.h \
-  /usr/include/c++/11/bits/locale_classes.h \
-  /usr/include/c++/11/string \
-  /usr/include/c++/11/bits/allocator.h \
-  /usr/include/x86_64-linux-gnu/c++/11/bits/c++allocator.h \
-  /usr/include/c++/11/ext/new_allocator.h \
-  /usr/include/c++/11/bits/ostream_insert.h \
-  /usr/include/c++/11/bits/cxxabi_forced.h \
-  /usr/include/c++/11/bits/stl_function.h \
-  /usr/include/c++/11/backward/binders.h \
-  /usr/include/c++/11/bits/range_access.h \
-  /usr/include/c++/11/initializer_list \
-  /usr/include/c++/11/bits/basic_string.h \
   /usr/include/c++/11/ext/alloc_traits.h \
   /usr/include/c++/11/bits/alloc_traits.h \
   /usr/include/c++/11/bits/stl_construct.h \
   /usr/include/c++/11/string_view \
   /usr/include/c++/11/bits/functional_hash.h \
+  /usr/include/c++/11/bits/hash_bytes.h \
   /usr/include/c++/11/bits/string_view.tcc \
   /usr/include/c++/11/ext/string_conversions.h \
   /usr/include/c++/11/cstdlib \
@@ -5090,26 +5086,7 @@ CMakeFiles/my_particle_system.dir/src/physics/rigidbody.cpp.o: ../src/physics/ri
   /usr/include/asm-generic/errno-base.h \
   /usr/include/x86_64-linux-gnu/bits/types/error_t.h \
   /usr/include/c++/11/bits/charconv.h \
-  /usr/include/c++/11/bits/basic_string.tcc \
-  /usr/include/c++/11/bits/locale_classes.tcc \
-  /usr/include/c++/11/system_error \
-  /usr/include/x86_64-linux-gnu/c++/11/bits/error_constants.h \
-  /usr/include/c++/11/stdexcept \
-  /usr/include/c++/11/streambuf \
-  /usr/include/c++/11/bits/streambuf.tcc \
-  /usr/include/c++/11/bits/basic_ios.h \
-  /usr/include/c++/11/bits/locale_facets.h \
-  /usr/include/c++/11/cwctype \
-  /usr/include/wctype.h \
-  /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h \
-  /usr/include/x86_64-linux-gnu/c++/11/bits/ctype_base.h \
-  /usr/include/c++/11/bits/streambuf_iterator.h \
-  /usr/include/x86_64-linux-gnu/c++/11/bits/ctype_inline.h \
-  /usr/include/c++/11/bits/locale_facets.tcc \
-  /usr/include/c++/11/bits/basic_ios.tcc \
-  /usr/include/c++/11/bits/ostream.tcc \
-  /usr/include/c++/11/istream \
-  /usr/include/c++/11/bits/istream.tcc
+  /usr/include/c++/11/bits/basic_string.tcc
 
 CMakeFiles/my_particle_system.dir/src/scene.cpp.o: ../src/scene.cpp \
   /usr/include/stdc-predef.h \
@@ -5135,7 +5112,8 @@ CMakeFiles/my_particle_system.dir/src/scene.cpp.o: ../src/scene.cpp \
   /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
   /usr/local/include/GLFW/glfw3.h \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h \
-  /usr/include/c++/11/vector \
+  /usr/include/c++/11/map \
+  /usr/include/c++/11/bits/stl_tree.h \
   /usr/include/c++/11/bits/stl_algobase.h \
   /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
   /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \
@@ -5163,16 +5141,30 @@ CMakeFiles/my_particle_system.dir/src/scene.cpp.o: ../src/scene.cpp \
   /usr/include/c++/11/new \
   /usr/include/c++/11/bits/exception.h \
   /usr/include/c++/11/bits/memoryfwd.h \
-  /usr/include/c++/11/bits/stl_construct.h \
-  /usr/include/c++/11/bits/stl_uninitialized.h \
+  /usr/include/c++/11/bits/stl_function.h \
+  /usr/include/c++/11/backward/binders.h \
   /usr/include/c++/11/ext/alloc_traits.h \
   /usr/include/c++/11/bits/alloc_traits.h \
-  /usr/include/c++/11/bits/stl_vector.h \
+  /usr/include/c++/11/bits/stl_construct.h \
+  /usr/include/c++/11/ext/aligned_buffer.h \
+  /usr/include/c++/11/bits/node_handle.h \
+  /usr/include/c++/11/bits/stl_map.h \
   /usr/include/c++/11/initializer_list \
+  /usr/include/c++/11/tuple \
+  /usr/include/c++/11/utility \
+  /usr/include/c++/11/bits/stl_relops.h \
+  /usr/include/c++/11/array \
+  /usr/include/c++/11/bits/range_access.h \
+  /usr/include/c++/11/bits/uses_allocator.h \
+  /usr/include/c++/11/bits/invoke.h \
+  /usr/include/c++/11/bits/stl_multimap.h \
+  /usr/include/c++/11/bits/erase_if.h \
+  /usr/include/c++/11/vector \
+  /usr/include/c++/11/bits/stl_uninitialized.h \
+  /usr/include/c++/11/bits/stl_vector.h \
   /usr/include/c++/11/bits/stl_bvector.h \
   /usr/include/c++/11/bits/functional_hash.h \
   /usr/include/c++/11/bits/hash_bytes.h \
-  /usr/include/c++/11/bits/range_access.h \
   /usr/include/c++/11/bits/vector.tcc \
   /usr/include/glm/glm.hpp \
   /usr/include/glm/detail/_fixes.hpp \
@@ -5383,9 +5375,21 @@ CMakeFiles/my_particle_system.dir/src/scene.cpp.o: ../src/scene.cpp \
   /usr/include/glm/detail/type_half.inl \
   /usr/include/glm/integer.hpp \
   /usr/include/glm/detail/func_integer.inl \
-  ../src/graphics/light.h \
-  ../src/graphics/shader.h \
+  ../src/graphics/model.h \
   ../lib/glad/glad.h \
+  ../lib/assimp-5.3.1/include/assimp/Importer.hpp \
+  ../lib/assimp-5.3.1/include/assimp/types.h \
+  /usr/include/string.h \
+  /usr/include/strings.h \
+  ../lib/assimp-5.3.1/include/assimp/defs.h \
+  ../lib/assimp-5.3.1/include/assimp/config.h \
+  ../lib/assimp-5.3.1/include/assimp/vector2.h \
+  ../lib/assimp-5.3.1/include/assimp/vector3.h \
+  ../lib/assimp-5.3.1/include/assimp/color4.h \
+  ../lib/assimp-5.3.1/include/assimp/matrix3x3.h \
+  ../lib/assimp-5.3.1/include/assimp/matrix4x4.h \
+  ../lib/assimp-5.3.1/include/assimp/quaternion.h \
+  /usr/include/c++/11/cstring \
   /usr/include/c++/11/string \
   /usr/include/c++/11/bits/stringfwd.h \
   /usr/include/c++/11/bits/char_traits.h \
@@ -5408,8 +5412,6 @@ CMakeFiles/my_particle_system.dir/src/scene.cpp.o: ../src/scene.cpp \
   /usr/include/ctype.h \
   /usr/include/c++/11/bits/ostream_insert.h \
   /usr/include/c++/11/bits/cxxabi_forced.h \
-  /usr/include/c++/11/bits/stl_function.h \
-  /usr/include/c++/11/backward/binders.h \
   /usr/include/c++/11/bits/basic_string.h \
   /usr/include/c++/11/ext/atomicity.h \
   /usr/include/x86_64-linux-gnu/c++/11/bits/gthr.h \
@@ -5449,14 +5451,64 @@ CMakeFiles/my_particle_system.dir/src/scene.cpp.o: ../src/scene.cpp \
   /usr/include/x86_64-linux-gnu/bits/types/error_t.h \
   /usr/include/c++/11/bits/charconv.h \
   /usr/include/c++/11/bits/basic_string.tcc \
-  /usr/include/c++/11/fstream \
-  /usr/include/c++/11/istream \
-  /usr/include/c++/11/ios \
+  ../lib/assimp-5.3.1/include/assimp/vector2.inl \
+  ../lib/assimp-5.3.1/include/assimp/vector3.inl \
+  ../lib/assimp-5.3.1/include/assimp/color4.inl \
+  ../lib/assimp-5.3.1/include/assimp/matrix3x3.inl \
+  /usr/include/c++/11/algorithm \
+  /usr/include/c++/11/bits/stl_algo.h \
+  /usr/include/c++/11/bits/algorithmfwd.h \
+  /usr/include/c++/11/bits/stl_heap.h \
+  /usr/include/c++/11/bits/stl_tempbuf.h \
+  /usr/include/c++/11/bits/uniform_int_dist.h \
+  /usr/include/c++/11/pstl/glue_algorithm_defs.h \
+  /usr/include/c++/11/functional \
+  /usr/include/c++/11/bits/refwrap.h \
+  /usr/include/c++/11/bits/std_function.h \
+  /usr/include/c++/11/typeinfo \
+  /usr/include/c++/11/unordered_map \
+  /usr/include/c++/11/bits/hashtable.h \
+  /usr/include/c++/11/bits/hashtable_policy.h \
+  /usr/include/c++/11/bits/enable_special_members.h \
+  /usr/include/c++/11/bits/unordered_map.h \
+  /usr/include/c++/11/pstl/execution_defs.h \
+  ../lib/assimp-5.3.1/include/assimp/matrix4x4.inl \
+  ../lib/assimp-5.3.1/include/assimp/MathFunctions.h \
+  ../lib/assimp-5.3.1/include/assimp/quaternion.inl \
   /usr/include/c++/11/exception \
   /usr/include/c++/11/bits/exception_ptr.h \
   /usr/include/c++/11/bits/cxxabi_init_exception.h \
-  /usr/include/c++/11/typeinfo \
   /usr/include/c++/11/bits/nested_exception.h \
+  ../lib/assimp-5.3.1/include/assimp/scene.h \
+  ../lib/assimp-5.3.1/include/assimp/texture.h \
+  ../lib/assimp-5.3.1/include/assimp/Compiler/pushpack1.h \
+  ../lib/assimp-5.3.1/include/assimp/Compiler/poppack1.h \
+  ../lib/assimp-5.3.1/include/assimp/mesh.h \
+  ../lib/assimp-5.3.1/include/assimp/aabb.h \
+  ../lib/assimp-5.3.1/include/assimp/light.h \
+  ../lib/assimp-5.3.1/include/assimp/camera.h \
+  ../lib/assimp-5.3.1/include/assimp/material.h \
+  ../lib/assimp-5.3.1/include/assimp/material.inl \
+  ../lib/assimp-5.3.1/include/assimp/anim.h \
+  ../lib/assimp-5.3.1/include/assimp/metadata.h \
+  ../lib/assimp-5.3.1/include/assimp/postprocess.h \
+  /usr/include/glm/gtc/matrix_transform.hpp \
+  /usr/include/glm/ext/matrix_projection.hpp \
+  /usr/include/glm/gtc/constants.hpp \
+  /usr/include/glm/ext/scalar_constants.hpp \
+  /usr/include/glm/ext/scalar_constants.inl \
+  /usr/include/glm/gtc/constants.inl \
+  /usr/include/glm/ext/matrix_projection.inl \
+  /usr/include/glm/ext/matrix_clip_space.hpp \
+  /usr/include/glm/ext/matrix_clip_space.inl \
+  /usr/include/glm/ext/matrix_transform.hpp \
+  /usr/include/glm/ext/matrix_transform.inl \
+  /usr/include/glm/gtc/matrix_transform.inl \
+  ../src/graphics/mesh.h \
+  ../src/graphics/shader.h \
+  /usr/include/c++/11/fstream \
+  /usr/include/c++/11/istream \
+  /usr/include/c++/11/ios \
   /usr/include/c++/11/bits/ios_base.h \
   /usr/include/c++/11/bits/locale_classes.h \
   /usr/include/c++/11/bits/locale_classes.tcc \
@@ -5485,76 +5537,8 @@ CMakeFiles/my_particle_system.dir/src/scene.cpp.o: ../src/scene.cpp \
   /usr/include/c++/11/sstream \
   /usr/include/c++/11/bits/sstream.tcc \
   /usr/include/c++/11/iostream \
-  ../lib/assimp-5.3.1/include/assimp/scene.h \
-  ../lib/assimp-5.3.1/include/assimp/types.h \
-  /usr/include/string.h \
-  /usr/include/strings.h \
-  ../lib/assimp-5.3.1/include/assimp/defs.h \
-  ../lib/assimp-5.3.1/include/assimp/config.h \
-  ../lib/assimp-5.3.1/include/assimp/vector2.h \
-  ../lib/assimp-5.3.1/include/assimp/vector3.h \
-  ../lib/assimp-5.3.1/include/assimp/color4.h \
-  ../lib/assimp-5.3.1/include/assimp/matrix3x3.h \
-  ../lib/assimp-5.3.1/include/assimp/matrix4x4.h \
-  ../lib/assimp-5.3.1/include/assimp/quaternion.h \
-  /usr/include/c++/11/cstring \
-  ../lib/assimp-5.3.1/include/assimp/vector2.inl \
-  ../lib/assimp-5.3.1/include/assimp/vector3.inl \
-  ../lib/assimp-5.3.1/include/assimp/color4.inl \
-  ../lib/assimp-5.3.1/include/assimp/matrix3x3.inl \
-  /usr/include/c++/11/algorithm \
-  /usr/include/c++/11/utility \
-  /usr/include/c++/11/bits/stl_relops.h \
-  /usr/include/c++/11/bits/stl_algo.h \
-  /usr/include/c++/11/bits/algorithmfwd.h \
-  /usr/include/c++/11/bits/stl_heap.h \
-  /usr/include/c++/11/bits/stl_tempbuf.h \
-  /usr/include/c++/11/bits/uniform_int_dist.h \
-  /usr/include/c++/11/pstl/glue_algorithm_defs.h \
-  /usr/include/c++/11/functional \
-  /usr/include/c++/11/tuple \
-  /usr/include/c++/11/array \
-  /usr/include/c++/11/bits/uses_allocator.h \
-  /usr/include/c++/11/bits/invoke.h \
-  /usr/include/c++/11/bits/refwrap.h \
-  /usr/include/c++/11/bits/std_function.h \
-  /usr/include/c++/11/unordered_map \
-  /usr/include/c++/11/ext/aligned_buffer.h \
-  /usr/include/c++/11/bits/hashtable.h \
-  /usr/include/c++/11/bits/hashtable_policy.h \
-  /usr/include/c++/11/bits/enable_special_members.h \
-  /usr/include/c++/11/bits/node_handle.h \
-  /usr/include/c++/11/bits/unordered_map.h \
-  /usr/include/c++/11/bits/erase_if.h \
-  /usr/include/c++/11/pstl/execution_defs.h \
-  ../lib/assimp-5.3.1/include/assimp/matrix4x4.inl \
-  ../lib/assimp-5.3.1/include/assimp/MathFunctions.h \
-  ../lib/assimp-5.3.1/include/assimp/quaternion.inl \
-  ../lib/assimp-5.3.1/include/assimp/texture.h \
-  ../lib/assimp-5.3.1/include/assimp/Compiler/pushpack1.h \
-  ../lib/assimp-5.3.1/include/assimp/Compiler/poppack1.h \
-  ../lib/assimp-5.3.1/include/assimp/mesh.h \
-  ../lib/assimp-5.3.1/include/assimp/aabb.h \
-  ../lib/assimp-5.3.1/include/assimp/light.h \
-  ../lib/assimp-5.3.1/include/assimp/camera.h \
-  ../lib/assimp-5.3.1/include/assimp/material.h \
-  ../lib/assimp-5.3.1/include/assimp/material.inl \
-  ../lib/assimp-5.3.1/include/assimp/anim.h \
-  ../lib/assimp-5.3.1/include/assimp/metadata.h \
   /usr/include/glm/gtc/type_ptr.hpp \
   /usr/include/glm/gtc/quaternion.hpp \
-  /usr/include/glm/gtc/constants.hpp \
-  /usr/include/glm/ext/scalar_constants.hpp \
-  /usr/include/glm/ext/scalar_constants.inl \
-  /usr/include/glm/gtc/constants.inl \
-  /usr/include/glm/gtc/matrix_transform.hpp \
-  /usr/include/glm/ext/matrix_projection.hpp \
-  /usr/include/glm/ext/matrix_projection.inl \
-  /usr/include/glm/ext/matrix_clip_space.hpp \
-  /usr/include/glm/ext/matrix_clip_space.inl \
-  /usr/include/glm/ext/matrix_transform.hpp \
-  /usr/include/glm/ext/matrix_transform.inl \
-  /usr/include/glm/gtc/matrix_transform.inl \
   /usr/include/glm/ext/vector_relational.hpp \
   /usr/include/glm/ext/vector_relational.inl \
   /usr/include/glm/detail/type_float.hpp \
@@ -5590,6 +5574,19 @@ CMakeFiles/my_particle_system.dir/src/scene.cpp.o: ../src/scene.cpp \
   /usr/include/glm/ext/vector_uint1.hpp \
   /usr/include/glm/ext/vector_uint1_sized.hpp \
   /usr/include/glm/gtc/type_ptr.inl \
+  ../src/graphics/texture.h \
+  ../lib/stb/stb_image.h \
+  /usr/include/c++/11/stdlib.h \
+  ../src/graphics/glmemory.hpp \
+  ../src/graphics/models/box.hpp \
+  ../lib/glad/glad.h \
+  ../src/graphics/glmemory.hpp \
+  ../src/graphics/shader.h \
+  ../src/algorithms/bounds.h \
+  ../src/algorithms/bounds.h \
+  ../src/physics/rigidbody.h \
+  ../src/scene.h \
+  ../src/graphics/light.h \
   ../src/graphics/shader.h \
   ../src/io/camera.h \
   ../src/io/keyboard.h \
@@ -5600,8 +5597,6 @@ CMakeFiles/my_particle_system.dir/src/scene.cpp.o: ../src/scene.cpp \
 
 
 ../src/graphics/models/sphere.hpp:
-
-../src/graphics/models/modelarray.hpp:
 
 ../src/graphics/models/lamp.hpp:
 

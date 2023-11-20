@@ -25,8 +25,7 @@ bool BoundingRegion::containsPoint(glm::vec3 point) {
                (point.z >= min.z && point.z <= max.z);
     }
     else if (type == BoundTypes::SPHERE) {
-        //sphere: distance must be less than radius
-        // x^2 + y^2 + z^2 = r^2
+        // Sphere: distance must be less than radius x^2 + y^2 + z^2 = r^2
         float distSquared = 0.0f;
         for (int i=0; i<3; i++) {
             distSquared += (point[i] - center[i]) * (point[i] - center[i]);
@@ -59,7 +58,7 @@ bool BoundingRegion::containsRegion(BoundingRegion br) {
         */
         for (int i = 0; i < 3; i++) {
             if (abs(br.center[i] - min[i]) < br.radius || 
-            abs(max[i] - br.center[i]) < br.radius) {
+                abs(max[i] - br.center[i]) < br.radius) {
                 return false;
             }
         }
@@ -110,4 +109,17 @@ bool BoundingRegion::intersectsWith(BoundingRegion br) {
         // call algorith for br (defined in preceding else if block)
         return br.intersectsWith(*this);
      }
+}
+
+bool BoundingRegion::operator==(BoundingRegion br) {
+    if (type != br.type) {
+        return false;
+    }
+    if (type == BoundTypes::AABB) {
+        return min == br.min && max == br.max;
+    }
+    else if (type == BoundTypes::SPHERE) {
+        return center == br.center && radius == br.radius;
+    }
+    return false;
 }

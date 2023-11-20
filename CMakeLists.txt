@@ -51,7 +51,6 @@ add_executable(my_particle_system
     src/graphics/models/cube.hpp
     src/graphics/models/lamp.hpp
     src/graphics/models/gun.hpp
-    src/graphics/models/modelarray.hpp
     src/graphics/models/sphere.hpp
 
     src/io/camera.h

@@ -21,7 +21,8 @@ CMakeFiles/my_particle_system.dir/src/scene.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
  /usr/local/include/GLFW/glfw3.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h \
- /usr/include/c++/11/vector /usr/include/c++/11/bits/stl_algobase.h \
+ /usr/include/c++/11/map /usr/include/c++/11/bits/stl_tree.h \
+ /usr/include/c++/11/bits/stl_algobase.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/cpu_defines.h \
@@ -45,16 +46,26 @@ CMakeFiles/my_particle_system.dir/src/scene.cpp.o: \
  /usr/include/c++/11/ext/new_allocator.h /usr/include/c++/11/new \
  /usr/include/c++/11/bits/exception.h \
  /usr/include/c++/11/bits/memoryfwd.h \
- /usr/include/c++/11/bits/stl_construct.h \
- /usr/include/c++/11/bits/stl_uninitialized.h \
+ /usr/include/c++/11/bits/stl_function.h \
+ /usr/include/c++/11/backward/binders.h \
  /usr/include/c++/11/ext/alloc_traits.h \
  /usr/include/c++/11/bits/alloc_traits.h \
+ /usr/include/c++/11/bits/stl_construct.h \
+ /usr/include/c++/11/ext/aligned_buffer.h \
+ /usr/include/c++/11/bits/node_handle.h \
+ /usr/include/c++/11/bits/stl_map.h /usr/include/c++/11/initializer_list \
+ /usr/include/c++/11/tuple /usr/include/c++/11/utility \
+ /usr/include/c++/11/bits/stl_relops.h /usr/include/c++/11/array \
+ /usr/include/c++/11/bits/range_access.h \
+ /usr/include/c++/11/bits/uses_allocator.h \
+ /usr/include/c++/11/bits/invoke.h \
+ /usr/include/c++/11/bits/stl_multimap.h \
+ /usr/include/c++/11/bits/erase_if.h /usr/include/c++/11/vector \
+ /usr/include/c++/11/bits/stl_uninitialized.h \
  /usr/include/c++/11/bits/stl_vector.h \
- /usr/include/c++/11/initializer_list \
  /usr/include/c++/11/bits/stl_bvector.h \
  /usr/include/c++/11/bits/functional_hash.h \
  /usr/include/c++/11/bits/hash_bytes.h \
- /usr/include/c++/11/bits/range_access.h \
  /usr/include/c++/11/bits/vector.tcc /usr/include/glm/glm.hpp \
  /usr/include/glm/detail/_fixes.hpp /usr/include/c++/11/cmath \
  /usr/include/math.h /usr/include/x86_64-linux-gnu/bits/math-vector.h \
@@ -233,10 +244,21 @@ CMakeFiles/my_particle_system.dir/src/scene.cpp.o: \
  /usr/include/glm/detail/type_half.hpp \
  /usr/include/glm/detail/type_half.inl /usr/include/glm/integer.hpp \
  /usr/include/glm/detail/func_integer.inl \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/light.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/shader.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/model.h \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/../../lib/glad/glad.h \
- /usr/include/c++/11/string /usr/include/c++/11/bits/stringfwd.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/Importer.hpp \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/types.h \
+ /usr/include/string.h /usr/include/strings.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/defs.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/config.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/vector2.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/vector3.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/color4.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/matrix3x3.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/matrix4x4.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/quaternion.h \
+ /usr/include/c++/11/cstring /usr/include/c++/11/string \
+ /usr/include/c++/11/bits/stringfwd.h \
  /usr/include/c++/11/bits/char_traits.h \
  /usr/include/c++/11/bits/postypes.h /usr/include/c++/11/cwchar \
  /usr/include/wchar.h /usr/lib/gcc/x86_64-linux-gnu/11/include/stdarg.h \
@@ -252,8 +274,6 @@ CMakeFiles/my_particle_system.dir/src/scene.cpp.o: \
  /usr/include/c++/11/cctype /usr/include/ctype.h \
  /usr/include/c++/11/bits/ostream_insert.h \
  /usr/include/c++/11/bits/cxxabi_forced.h \
- /usr/include/c++/11/bits/stl_function.h \
- /usr/include/c++/11/backward/binders.h \
  /usr/include/c++/11/bits/basic_string.h \
  /usr/include/c++/11/ext/atomicity.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/gthr.h \
@@ -284,12 +304,59 @@ CMakeFiles/my_particle_system.dir/src/scene.cpp.o: \
  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
  /usr/include/x86_64-linux-gnu/bits/types/error_t.h \
  /usr/include/c++/11/bits/charconv.h \
- /usr/include/c++/11/bits/basic_string.tcc /usr/include/c++/11/fstream \
- /usr/include/c++/11/istream /usr/include/c++/11/ios \
+ /usr/include/c++/11/bits/basic_string.tcc \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/include/assimp/vector2.inl \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/include/assimp/vector3.inl \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/include/assimp/color4.inl \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/include/assimp/matrix3x3.inl \
+ /usr/include/c++/11/algorithm /usr/include/c++/11/bits/stl_algo.h \
+ /usr/include/c++/11/bits/algorithmfwd.h \
+ /usr/include/c++/11/bits/stl_heap.h \
+ /usr/include/c++/11/bits/stl_tempbuf.h \
+ /usr/include/c++/11/bits/uniform_int_dist.h \
+ /usr/include/c++/11/pstl/glue_algorithm_defs.h \
+ /usr/include/c++/11/functional /usr/include/c++/11/bits/refwrap.h \
+ /usr/include/c++/11/bits/std_function.h /usr/include/c++/11/typeinfo \
+ /usr/include/c++/11/unordered_map /usr/include/c++/11/bits/hashtable.h \
+ /usr/include/c++/11/bits/hashtable_policy.h \
+ /usr/include/c++/11/bits/enable_special_members.h \
+ /usr/include/c++/11/bits/unordered_map.h \
+ /usr/include/c++/11/pstl/execution_defs.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/include/assimp/matrix4x4.inl \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/include/assimp/MathFunctions.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/include/assimp/quaternion.inl \
  /usr/include/c++/11/exception /usr/include/c++/11/bits/exception_ptr.h \
  /usr/include/c++/11/bits/cxxabi_init_exception.h \
- /usr/include/c++/11/typeinfo /usr/include/c++/11/bits/nested_exception.h \
- /usr/include/c++/11/bits/ios_base.h \
+ /usr/include/c++/11/bits/nested_exception.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/scene.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/texture.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/include/assimp/Compiler/pushpack1.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/include/assimp/Compiler/poppack1.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/mesh.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/aabb.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/light.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/camera.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/material.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/include/assimp/material.inl \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/anim.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/metadata.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/postprocess.h \
+ /usr/include/glm/gtc/matrix_transform.hpp \
+ /usr/include/glm/ext/matrix_projection.hpp \
+ /usr/include/glm/gtc/constants.hpp \
+ /usr/include/glm/ext/scalar_constants.hpp \
+ /usr/include/glm/ext/scalar_constants.inl \
+ /usr/include/glm/gtc/constants.inl \
+ /usr/include/glm/ext/matrix_projection.inl \
+ /usr/include/glm/ext/matrix_clip_space.hpp \
+ /usr/include/glm/ext/matrix_clip_space.inl \
+ /usr/include/glm/ext/matrix_transform.hpp \
+ /usr/include/glm/ext/matrix_transform.inl \
+ /usr/include/glm/gtc/matrix_transform.inl \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/mesh.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/shader.h \
+ /usr/include/c++/11/fstream /usr/include/c++/11/istream \
+ /usr/include/c++/11/ios /usr/include/c++/11/bits/ios_base.h \
  /usr/include/c++/11/bits/locale_classes.h \
  /usr/include/c++/11/bits/locale_classes.tcc \
  /usr/include/c++/11/system_error \
@@ -310,70 +377,7 @@ CMakeFiles/my_particle_system.dir/src/scene.cpp.o: \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++io.h \
  /usr/include/c++/11/bits/fstream.tcc /usr/include/c++/11/sstream \
  /usr/include/c++/11/bits/sstream.tcc /usr/include/c++/11/iostream \
- /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/scene.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/types.h \
- /usr/include/string.h /usr/include/strings.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/defs.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/config.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/vector2.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/vector3.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/color4.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/matrix3x3.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/matrix4x4.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/quaternion.h \
- /usr/include/c++/11/cstring \
- /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/include/assimp/vector2.inl \
- /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/include/assimp/vector3.inl \
- /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/include/assimp/color4.inl \
- /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/include/assimp/matrix3x3.inl \
- /usr/include/c++/11/algorithm /usr/include/c++/11/utility \
- /usr/include/c++/11/bits/stl_relops.h \
- /usr/include/c++/11/bits/stl_algo.h \
- /usr/include/c++/11/bits/algorithmfwd.h \
- /usr/include/c++/11/bits/stl_heap.h \
- /usr/include/c++/11/bits/stl_tempbuf.h \
- /usr/include/c++/11/bits/uniform_int_dist.h \
- /usr/include/c++/11/pstl/glue_algorithm_defs.h \
- /usr/include/c++/11/functional /usr/include/c++/11/tuple \
- /usr/include/c++/11/array /usr/include/c++/11/bits/uses_allocator.h \
- /usr/include/c++/11/bits/invoke.h /usr/include/c++/11/bits/refwrap.h \
- /usr/include/c++/11/bits/std_function.h \
- /usr/include/c++/11/unordered_map \
- /usr/include/c++/11/ext/aligned_buffer.h \
- /usr/include/c++/11/bits/hashtable.h \
- /usr/include/c++/11/bits/hashtable_policy.h \
- /usr/include/c++/11/bits/enable_special_members.h \
- /usr/include/c++/11/bits/node_handle.h \
- /usr/include/c++/11/bits/unordered_map.h \
- /usr/include/c++/11/bits/erase_if.h \
- /usr/include/c++/11/pstl/execution_defs.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/include/assimp/matrix4x4.inl \
- /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/include/assimp/MathFunctions.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/include/assimp/quaternion.inl \
- /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/texture.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/include/assimp/Compiler/pushpack1.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/include/assimp/Compiler/poppack1.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/mesh.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/aabb.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/light.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/camera.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/material.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/include/assimp/material.inl \
- /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/anim.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/lib/assimp-5.3.1/code/../include/assimp/metadata.h \
  /usr/include/glm/gtc/type_ptr.hpp /usr/include/glm/gtc/quaternion.hpp \
- /usr/include/glm/gtc/constants.hpp \
- /usr/include/glm/ext/scalar_constants.hpp \
- /usr/include/glm/ext/scalar_constants.inl \
- /usr/include/glm/gtc/constants.inl \
- /usr/include/glm/gtc/matrix_transform.hpp \
- /usr/include/glm/ext/matrix_projection.hpp \
- /usr/include/glm/ext/matrix_projection.inl \
- /usr/include/glm/ext/matrix_clip_space.hpp \
- /usr/include/glm/ext/matrix_clip_space.inl \
- /usr/include/glm/ext/matrix_transform.hpp \
- /usr/include/glm/ext/matrix_transform.inl \
- /usr/include/glm/gtc/matrix_transform.inl \
  /usr/include/glm/ext/vector_relational.hpp \
  /usr/include/glm/ext/vector_relational.inl \
  /usr/include/glm/detail/type_float.hpp \
@@ -406,6 +410,19 @@ CMakeFiles/my_particle_system.dir/src/scene.cpp.o: \
  /usr/include/glm/ext/vector_uint1.hpp \
  /usr/include/glm/ext/vector_uint1_sized.hpp \
  /usr/include/glm/gtc/type_ptr.inl \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/texture.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/../../lib/stb/stb_image.h \
+ /usr/include/c++/11/stdlib.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/glmemory.hpp \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/box.hpp \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/../../../lib/glad/glad.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/../glmemory.hpp \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/../shader.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/models/../../algorithms/bounds.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/../algorithms/bounds.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/../physics/rigidbody.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/../scene.h \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/light.h \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/graphics/shader.h \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/camera.h \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/io/keyboard.h \
