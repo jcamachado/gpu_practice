@@ -15,6 +15,13 @@
 
 #include "../graphics/model.h"
 
+/*
+    Forward declaration
+
+*/
+
+class Model;
+
 namespace Octree {
     enum class Octant : unsigned char{
         O1 = 0x01,  // = 0b00000001
@@ -83,3 +90,12 @@ namespace Octree {
 }
 
 #endif
+
+/*
+    Simplified algorithm for octree
+    build tree          // Insert all objects into the tree    
+    (some nodes may be pending by addToPending()
+    process pending     // Before new frame, add queued objects to tree (if tree not built, add to objList)
+    update tree         // Based on the movements, creation and death of objects and nodes
+
+*/

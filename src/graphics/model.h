@@ -34,8 +34,12 @@
 #define CONST_INSTANCES	    (unsigned int)2     // 0b00000010
 #define NO_TEX			    (unsigned int)4	    // 0b00000100       
 
-// Forward declaration so wont have circular dependency
-class Scene;                                            
+
+/*
+    Forward declaration. So it wont have circular dependency error
+*/
+
+class Scene;
 
 class Model {
     public:

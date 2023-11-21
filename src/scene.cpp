@@ -103,7 +103,19 @@ bool Scene::init() {
     glEnable(GL_DEPTH_TEST); // Doesn't show vertices not visible to camera (back of objects)
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
+    /*
+        Init octree
+    */
+    octree = new Octree::node(BoundingRegion(glm::vec3(-16.0f), glm::vec3(16.0f)));
+
     return true;
+}
+
+/*
+    Prepare for mainloop (after object generation, etc and before main while loop)
+*/
+void Scene::prepare(){
+    octree->update();
 }
 
 /*
@@ -192,6 +204,10 @@ void Scene::update(){
 
 // Update screen before after each frame
 void Scene::newFrame(){
+    // Process pending.
+    octree->processPending();   // "Process new objects"
+    octree->update();           // "Are there any destroyed objects?"
+
     // Send new frame to window
     glfwSwapBuffers(window);
     glfwPollEvents();
@@ -295,12 +311,17 @@ std::string Scene::generateId(){
 }
 
 RigidBody* Scene::generateInstance(std::string modelId, glm::vec3 size, float mass, glm::vec3 pos){
+    /*
+        octree->addToPending(rb, models);     Add all bounding regions from the models to the pending queue
+        and since processPending calls update, prepare() doesnt need to call update.
+    */
     RigidBody* rb = models[modelId]->generateInstance(size, mass, pos);
     if (rb) {
         // Instance was created successfully
         std::string id = generateId();
         rb->instanceId = id;
         instances.insert(id, rb);
+        octree->addToPending(rb, models);                   // Add all bounding regions from the models to the pending queue
         return rb;
     }
     return nullptr;
@@ -332,7 +353,7 @@ void Scene::removeInstance(std::string instanceId){
     std::string targetModel = instances[instanceId]->modelId;
     models[targetModel]->removeInstance(instanceId);
     instances[instanceId] = nullptr;
-    instances.erase(instanceId);                        // erate() doesnt know the type of <T>Trie, so, deletes the nullptr
+    instances.erase(instanceId);                        // erasee() doesnt know the type of <T>Trie, so, deletes the nullptr
 }
 
 void Scene::markForDeletion(std::string instanceId){

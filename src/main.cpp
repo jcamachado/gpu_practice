@@ -129,6 +129,8 @@ int main(){
     scene.activeSpotLights = 1;
     
     scene.initInstances();                              // Instantiate instances
+    scene.prepare();                                    // Builds octree  
+
 
     while (!scene.shouldClose()){                       // Check if window should close
         double currentTime = glfwGetTime();
@@ -154,8 +156,8 @@ int main(){
         scene.renderInstances(lamp.id, lampShader, dt);
 
         // Send new frame to window
-        scene.clearDeadInstances();
         scene.newFrame();
+        scene.clearDeadInstances();             // Delete instances after updating octree
     }
     
     scene.cleanup();

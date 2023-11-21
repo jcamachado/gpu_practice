@@ -20,17 +20,25 @@
 // #include "io/joystick.h"
 
 #include "algorithms/states.hpp"
+#include "algorithms/octree.h"
 #include "algorithms/trie.hpp"
 
 /*
     Forward declaration
 */
+
+namespace Octree {
+    class node;
+}
+
 class Model; 
+
 class Scene {
     public:
         trie::Trie<Model*> models;
         trie::Trie<RigidBody*> instances;
         std::vector<RigidBody*> instancesToDelete;
+        Octree::node* octree;
 
         /*
             Callbacks
@@ -50,8 +58,11 @@ class Scene {
 
         /* 
             Initialization
+            - init() calls gl functions for window and io initialization and init octree
+            -prepare() calls the octree->insert() all objects, since the octree is not built yet
         */
-        bool init();
+        bool init();    
+        void prepare();                                                 
 
         /*
             Main loop methods
