@@ -1,8 +1,27 @@
 #include "rigidbody.h"
-#include <iostream>
 
-RigidBody::RigidBody(float mass, glm::vec3 pos, glm::vec3 velocity, glm::vec3 acceleration)
-    : mass(mass), pos(pos), velocity(velocity), acceleration(acceleration) {}
+bool RigidBody::operator==(RigidBody rb){
+    return instanceId == rb.instanceId;
+}
+
+bool RigidBody::operator==(std::string id){
+    return instanceId == id;
+}
+
+RigidBody::RigidBody() {}
+
+RigidBody::RigidBody(
+    std::string modelId, 
+    glm::vec3 size,
+    float mass,
+    glm::vec3 pos
+) : modelId(modelId),
+        size(size),
+        mass(mass), 
+        pos(pos), 
+        velocity(0.0f), 
+        acceleration(0.0f),
+        state(0) {}
 
 
 void RigidBody::update(float dt){

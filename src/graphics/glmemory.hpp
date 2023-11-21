@@ -46,21 +46,29 @@ class BufferObject {
             glBufferSubData(type, offset, nElements*sizeof(T), data);
         }
 
-        // set attribute pointers
-        // offset is the number of size in bytes away from the starting element that we pass into GLBufferdata
+        /*
+            .setAttrPointer<>(idx, size, type, stride, offset, divisor=0);
+            _idx_: 0, 1 and 2 are used for normal mesh (I believe he refers to mesh.cpp)
+            _size_ param and _type_ are related, so 3 GL_FLOATs
+            _stride_: _stride_ means it is its value * the _template_ size (related to template)
+            _offset_: is the number of the size in bytes away from the starting element that we pass into GLBufferdata
+            _divisor_ : indicates after how many iterations the index should reset. (Instancing)
+        */
         template<typename T>
         void setAttrPointer(GLuint idx, GLint size, GLenum type, GLuint stride, GLuint offset, GLuint divisor=0) {
             glVertexAttribPointer(idx, size, type, GL_FALSE, stride*sizeof(T), (void*)(offset*sizeof(T)));
             glEnableVertexAttribArray(idx);
             if (divisor > 0) {
-                // reset _idx_ attribute every _divisor_ iteration (instancing)
+                // Reset _idx_ attribute every _divisor_ iterations (instancing)
                 glVertexAttribDivisor(idx, divisor);
             }
         }
 
-        // clear buffer objects (bind 0)
-        // called when you dont want a certain vbo bound anymore
-        // once we are done loading the data, we unbind it and free that memory up from the GPU
+        /*
+            Clear buffer objects (bind 0)
+            called when you dont want a certain vbo bound anymore
+            once we are done loading the data, we unbind it and free that memory up from the GPU
+        */
         void clear() {
             glBindBuffer(type, 0);
         }
@@ -122,10 +130,6 @@ class ArrayObject {
         static void clear() {
             glBindVertexArray(0);
         }
-
-
-
-
 };
 
 #endif

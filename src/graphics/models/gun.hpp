@@ -6,15 +6,16 @@
 
 class Gun : public Model {
     public:
-        Gun()
-            : Model(BoundTypes::AABB, glm::vec3(0.0f), glm::vec3(1/300.0f), true) {}
+        // CONST_INSTANCES eh relativo a vbo e pois as mudancas de gun vao ocorrer na propria classe model
+        Gun(unsigned int maxNumInstances)      
+            : Model("m4a1", BoundTypes::AABB, maxNumInstances, CONST_INSTANCES | NO_TEX) {} 
 
         void init(){
             loadModel("assets/models/m4a1/scene.gltf");
         }
 
         
-        void render(Shader shader, float dt, Box *box, Scene *scene, bool setModel = false ){
+        void render(Shader shader, float dt, Scene *scene, bool setModel = false ){
             glm::mat4 model = glm::mat4(1.0f);
             
             // Set position
@@ -37,11 +38,11 @@ class Gun : public Model {
 
 
             //scale 
-            model = glm::scale(model, size);
+            model = glm::scale(model, rb.size);
 
             shader.setMat4("model", model);
 
-            Model::render(shader, dt, box, false);
+            Model::render(shader, dt, scene, false);
 
         }
 

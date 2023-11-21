@@ -16,7 +16,7 @@ void Scene::frameBufferSizeCallback(GLFWwindow* window, int width, int height) {
     Constructors
 */
 
-Scene::Scene() {}
+Scene::Scene() : currentId("aaaaaaaa") {}
 
 Scene::Scene(int glfwVersionMajor, 
     int glfwVersionMinor, 
@@ -28,7 +28,8 @@ Scene::Scene(int glfwVersionMajor,
     title(title),
     activeCamera(-1),
     activePointLights(0),
-    activeSpotLights(0) {
+    activeSpotLights(0),
+    currentId("aaaaaaaa") {
 
     Scene::scrWidth = scrWidth;
     Scene::scrHeight = scrHeight;
@@ -114,14 +115,16 @@ void Scene::processInput(float dt){
         // Active camera exists
 
         // Set camera direction
-        // if (!(Mouse::getDX() == 0 && Mouse::getDY() == 0)){ // to save resources
-        cameras[activeCamera]->updateCameraDirection(Mouse::getDX(), Mouse::getDY());
-        // }
+        double dx = Mouse::getDX(), dy = Mouse::getDY();
+        if (dx != 0 || dy != 0){
+            cameras[activeCamera]->updateCameraDirection(dx, dy);
+        }
 
         // Set camera zoom
-        // if (Mouse::getScrollDY() != 0){                 // to save resources
-        cameras[activeCamera]->updateCameraZoom(Mouse::getScrollDY());
-        // }
+        double scrollDY = Mouse::getScrollDY();
+        if (scrollDY != 0) {
+            cameras[activeCamera]->updateCameraZoom(scrollDY);
+        }
 
         // Set camera position
         if (Keyboard::key(GLFW_KEY_W)){
@@ -148,7 +151,7 @@ void Scene::processInput(float dt){
         projection = glm::perspective(
             glm::radians(cameras[activeCamera]->getZoom()), // FOV
             (float)scrWidth / (float)scrHeight,             // Aspect ratio
-            0.1f, 100.0f                                    // Near and far clipping planes
+            0.1f, 250.0f                                    // Near and far clipping planes
         );
 
         // Set position at end
@@ -194,8 +197,7 @@ void Scene::newFrame(){
     glfwPollEvents();
 }
 
-// Set uniform shader variables (lighting, etc)
-void Scene::render(Shader shader, bool applyLighting){
+void Scene::renderShader(Shader shader, bool applyLighting){
     // Activate shader
     shader.activate();
 
@@ -235,10 +237,19 @@ void Scene::render(Shader shader, bool applyLighting){
     }
 }
 
+void Scene::renderInstances(std::string modelId, Shader shader, float dt){
+        models[modelId]->render(shader, dt, this);
+}
+
 /*
     Cleanup method
 */
 void Scene::cleanup(){
+    // Cleanup models
+    models.traverse([](Model* model) -> void {      // Lambda function, return is type(->) void
+        model->cleanup();
+    });
+
     glfwTerminate();
 }
 
@@ -265,4 +276,73 @@ void Scene::setWindowColor(float r, float g, float b, float a){
     bgColor[1] = g;
     bgColor[2] = b;
     bgColor[3] = a;
+}
+
+/*
+    Models/Instances methods
+*/
+std::string Scene::generateId(){
+    for (int i = currentId.length()-1; i >= 0; i--){
+        if((int)currentId[i] != (int) 'z') {
+            currentId[i] = (char)(((int)currentId[i]) + 1);
+            break;
+        }
+        else{
+            currentId[i] = 'a';
+        }
+    }
+    return currentId;
+}
+
+RigidBody* Scene::generateInstance(std::string modelId, glm::vec3 size, float mass, glm::vec3 pos){
+    RigidBody* rb = models[modelId]->generateInstance(size, mass, pos);
+    if (rb) {
+        // Instance was created successfully
+        std::string id = generateId();
+        rb->instanceId = id;
+        instances.insert(id, rb);
+        return rb;
+    }
+    return nullptr;
+}
+
+
+void Scene::initInstances(){
+    models.traverse([](Model* model) -> void {          // Iteration over models in Trie structure 
+        model->initInstances();
+    });
+}
+
+void Scene::loadModels(){
+    models.traverse([](Model* model) -> void {
+        model->init();
+    });
+}
+
+void Scene::registerModel(Model* model){
+    models.insert(model->id, model);
+}
+
+void Scene::removeInstance(std::string instanceId){
+    /*
+        Remove all locations
+        -Scene::instances
+        -Model::instances
+    */
+    std::string targetModel = instances[instanceId]->modelId;
+    models[targetModel]->removeInstance(instanceId);
+    instances[instanceId] = nullptr;
+    instances.erase(instanceId);                        // erate() doesnt know the type of <T>Trie, so, deletes the nullptr
+}
+
+void Scene::markForDeletion(std::string instanceId){
+    States::activate(&instances[instanceId]->state, INSTANCE_DEAD);
+    instancesToDelete.push_back(instances[instanceId]);
+}
+
+void Scene::clearDeadInstances(){
+    for (RigidBody *rb : instancesToDelete){
+        removeInstance(rb->instanceId);
+    }
+    instancesToDelete.clear();
 }

@@ -250,6 +250,54 @@ lib/stb.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/lib/stb.cpp.s
 .PHONY : lib/stb.cpp.s
 
+src/algorithms/bounds.o: src/algorithms/bounds.cpp.o
+.PHONY : src/algorithms/bounds.o
+
+# target to build an object file
+src/algorithms/bounds.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/algorithms/bounds.cpp.o
+.PHONY : src/algorithms/bounds.cpp.o
+
+src/algorithms/bounds.i: src/algorithms/bounds.cpp.i
+.PHONY : src/algorithms/bounds.i
+
+# target to preprocess a source file
+src/algorithms/bounds.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/algorithms/bounds.cpp.i
+.PHONY : src/algorithms/bounds.cpp.i
+
+src/algorithms/bounds.s: src/algorithms/bounds.cpp.s
+.PHONY : src/algorithms/bounds.s
+
+# target to generate assembly for a file
+src/algorithms/bounds.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/algorithms/bounds.cpp.s
+.PHONY : src/algorithms/bounds.cpp.s
+
+src/algorithms/octree.o: src/algorithms/octree.cpp.o
+.PHONY : src/algorithms/octree.o
+
+# target to build an object file
+src/algorithms/octree.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/algorithms/octree.cpp.o
+.PHONY : src/algorithms/octree.cpp.o
+
+src/algorithms/octree.i: src/algorithms/octree.cpp.i
+.PHONY : src/algorithms/octree.i
+
+# target to preprocess a source file
+src/algorithms/octree.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/algorithms/octree.cpp.i
+.PHONY : src/algorithms/octree.cpp.i
+
+src/algorithms/octree.s: src/algorithms/octree.cpp.s
+.PHONY : src/algorithms/octree.s
+
+# target to generate assembly for a file
+src/algorithms/octree.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/algorithms/octree.cpp.s
+.PHONY : src/algorithms/octree.cpp.s
+
 src/glad.o: src/glad.c.o
 .PHONY : src/glad.o
 
@@ -514,30 +562,6 @@ src/io/mouse.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/io/mouse.cpp.s
 .PHONY : src/io/mouse.cpp.s
 
-src/io/screen.o: src/io/screen.cpp.o
-.PHONY : src/io/screen.o
-
-# target to build an object file
-src/io/screen.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/io/screen.cpp.o
-.PHONY : src/io/screen.cpp.o
-
-src/io/screen.i: src/io/screen.cpp.i
-.PHONY : src/io/screen.i
-
-# target to preprocess a source file
-src/io/screen.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/io/screen.cpp.i
-.PHONY : src/io/screen.cpp.i
-
-src/io/screen.s: src/io/screen.cpp.s
-.PHONY : src/io/screen.s
-
-# target to generate assembly for a file
-src/io/screen.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/io/screen.cpp.s
-.PHONY : src/io/screen.cpp.s
-
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
 
@@ -562,6 +586,78 @@ src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
+src/physics/environment.o: src/physics/environment.cpp.o
+.PHONY : src/physics/environment.o
+
+# target to build an object file
+src/physics/environment.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/physics/environment.cpp.o
+.PHONY : src/physics/environment.cpp.o
+
+src/physics/environment.i: src/physics/environment.cpp.i
+.PHONY : src/physics/environment.i
+
+# target to preprocess a source file
+src/physics/environment.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/physics/environment.cpp.i
+.PHONY : src/physics/environment.cpp.i
+
+src/physics/environment.s: src/physics/environment.cpp.s
+.PHONY : src/physics/environment.s
+
+# target to generate assembly for a file
+src/physics/environment.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/physics/environment.cpp.s
+.PHONY : src/physics/environment.cpp.s
+
+src/physics/rigidbody.o: src/physics/rigidbody.cpp.o
+.PHONY : src/physics/rigidbody.o
+
+# target to build an object file
+src/physics/rigidbody.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/physics/rigidbody.cpp.o
+.PHONY : src/physics/rigidbody.cpp.o
+
+src/physics/rigidbody.i: src/physics/rigidbody.cpp.i
+.PHONY : src/physics/rigidbody.i
+
+# target to preprocess a source file
+src/physics/rigidbody.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/physics/rigidbody.cpp.i
+.PHONY : src/physics/rigidbody.cpp.i
+
+src/physics/rigidbody.s: src/physics/rigidbody.cpp.s
+.PHONY : src/physics/rigidbody.s
+
+# target to generate assembly for a file
+src/physics/rigidbody.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/physics/rigidbody.cpp.s
+.PHONY : src/physics/rigidbody.cpp.s
+
+src/scene.o: src/scene.cpp.o
+.PHONY : src/scene.o
+
+# target to build an object file
+src/scene.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/scene.cpp.o
+.PHONY : src/scene.cpp.o
+
+src/scene.i: src/scene.cpp.i
+.PHONY : src/scene.i
+
+# target to preprocess a source file
+src/scene.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/scene.cpp.i
+.PHONY : src/scene.cpp.i
+
+src/scene.s: src/scene.cpp.s
+.PHONY : src/scene.s
+
+# target to generate assembly for a file
+src/scene.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my_particle_system.dir/build.make CMakeFiles/my_particle_system.dir/src/scene.cpp.s
+.PHONY : src/scene.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -582,6 +678,12 @@ help:
 	@echo "... lib/stb.o"
 	@echo "... lib/stb.i"
 	@echo "... lib/stb.s"
+	@echo "... src/algorithms/bounds.o"
+	@echo "... src/algorithms/bounds.i"
+	@echo "... src/algorithms/bounds.s"
+	@echo "... src/algorithms/octree.o"
+	@echo "... src/algorithms/octree.i"
+	@echo "... src/algorithms/octree.s"
 	@echo "... src/glad.o"
 	@echo "... src/glad.i"
 	@echo "... src/glad.s"
@@ -615,12 +717,18 @@ help:
 	@echo "... src/io/mouse.o"
 	@echo "... src/io/mouse.i"
 	@echo "... src/io/mouse.s"
-	@echo "... src/io/screen.o"
-	@echo "... src/io/screen.i"
-	@echo "... src/io/screen.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+	@echo "... src/physics/environment.o"
+	@echo "... src/physics/environment.i"
+	@echo "... src/physics/environment.s"
+	@echo "... src/physics/rigidbody.o"
+	@echo "... src/physics/rigidbody.i"
+	@echo "... src/physics/rigidbody.s"
+	@echo "... src/scene.o"
+	@echo "... src/scene.i"
+	@echo "... src/scene.s"
 .PHONY : help
 
 
