@@ -14,12 +14,13 @@
 #include "bounds.h"
 
 #include "../graphics/model.h"
+#include "../graphics/models/box.hpp"
+
 
 /*
     Forward declaration
 
 */
-
 class Model;
 
 namespace Octree {
@@ -63,10 +64,10 @@ namespace Octree {
 
             node();
 
-            node(BoundingRegion region);        // Constructor for root node
+            node(BoundingRegion bounds);        // Constructor for root node
 
             // When iterating, objectlist is the list of objects that fit each of its octants
-            node(BoundingRegion region, std::vector<BoundingRegion> objectList); 
+            node(BoundingRegion bounds, std::vector<BoundingRegion> objectList); 
 
             /*
                 Add an instance to pending queue
@@ -77,15 +78,13 @@ namespace Octree {
 
             void build();
 
-            void update();
+            void update(Box &box);
 
             void processPending();
 
-            bool insert(BoundingRegion object);
+            bool insert(BoundingRegion obj);
 
             void destroy();
-
-
     };
 }
 

@@ -73,6 +73,9 @@ int main(){
     scene.registerModel(&lamp);
     scene.registerModel(&sphere);
 
+    Box box;
+    box.init();                 // Box is not instanced
+
     scene.loadModels();         // Load all model data
 
     /*
@@ -129,8 +132,7 @@ int main(){
     scene.activeSpotLights = 1;
     
     scene.initInstances();                              // Instantiate instances
-    scene.prepare();                                    // Builds octree  
-
+    scene.prepare(box);                                    // Builds octree  
 
     while (!scene.shouldClose()){                       // Check if window should close
         double currentTime = glfwGetTime();
@@ -152,11 +154,14 @@ int main(){
             scene.renderInstances(sphere.id, shader, dt);
         }
 
-        scene.renderShader(lampShader);                  // Render lamps
+        scene.renderShader(lampShader, false);                  // Render lamps
         scene.renderInstances(lamp.id, lampShader, dt);
 
+        scene.renderShader(boxShader, false);           // Render boxes
+        box.render(boxShader);                          // Box is not instanced
+
         // Send new frame to window
-        scene.newFrame();
+        scene.newFrame(box);
         scene.clearDeadInstances();             // Delete instances after updating octree
     }
     

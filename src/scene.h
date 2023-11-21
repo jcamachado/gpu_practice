@@ -13,6 +13,7 @@
 #include "graphics/light.h"
 #include "graphics/shader.h"
 
+#include "graphics/models/box.hpp"
 
 #include "io/camera.h"
 #include "io/keyboard.h"
@@ -38,7 +39,7 @@ class Scene {
         trie::Trie<Model*> models;
         trie::Trie<RigidBody*> instances;
         std::vector<RigidBody*> instancesToDelete;
-        Octree::node* octree;
+        Octree::node* octree;                           // Root for the scene
 
         /*
             Callbacks
@@ -59,17 +60,17 @@ class Scene {
         /* 
             Initialization
             - init() calls gl functions for window and io initialization and init octree
-            -prepare() calls the octree->insert() all objects, since the octree is not built yet
+            - prepare() calls the octree->insert() all objects, since the octree is not built yet
         */
         bool init();    
-        void prepare();                                                 
+        void prepare(Box &box);                                                 
 
         /*
             Main loop methods
         */
         void processInput(float dt);                                    // Process input
         void update();                                                  // Update screen before each frame
-        void newFrame();                                                // Update screen before after each frame
+        void newFrame(Box &box);                                        // Update screen before after each frame
         void renderShader(Shader shader, bool applyLighting = true);    // Set uniform shader variables (lighting, etc)
         void renderInstances(                                           // Render all instances of a model
             std::string modelId, 

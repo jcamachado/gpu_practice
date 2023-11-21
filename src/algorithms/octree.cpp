@@ -87,12 +87,14 @@ void Octree::node::build(){
     // If objects overlap regions, they are in at least 1 region(parent), so they are not added to another region
     for (int i = 0, length = objects.size(); i < length; i++){
         BoundingRegion br = objects[i];
-        for (int j = 0; j < N_CHILDREN; i++){
+
+        for (int j = 0; j < N_CHILDREN; j++){
             if (octants[j].containsRegion(br)){
                 octLists[j].push_back(br); // Found an octant to put it in, so it is not added to another octant
                 delList.push(i);        // Object has been placed on an octant, so it can be removed from the original list
                 break; 
             }
+
         }
     }
 
@@ -117,10 +119,14 @@ void Octree::node::build(){
     treeReady = true;
 }
 
-void Octree::node::update(){
+void Octree::node::update(Box &box){
     if (treeBuilt && treeReady){
         // Countdown timer
+        box.positions.push_back(region.calculateCenter());
+        box.sizes.push_back(region.calculateDimensions());
         if(objects.size() == 0){
+            std::cout << "sadGo next" << std::endl;
+
             if(!hasChildren){
                 if (currentLifespan==-1){
                     currentLifespan = maxLifespan;
@@ -168,6 +174,8 @@ void Octree::node::update(){
                 objects[i].transform();
                 movedObjects.push({i, objects[i]});
             }
+            box.positions.push_back(objects[i].calculateCenter());
+            box.sizes.push_back(objects[i].calculateDimensions());
         }
 
         /*
@@ -193,20 +201,23 @@ void Octree::node::update(){
                 }
             }
         }
+        
 
         // Update child nodes
         if (children != nullptr){
             for (unsigned char flags = activeOctants, i = 0;
                 flags > 0;
                 flags >>= 1, i++){                      // Iterates over each bit in flags, each octant
-                    if (States::isIndexActive(&flags, 0)){
-                        // Activate octant
-                        if (children[i] == nullptr){
-
-                        }
+                if (States::isIndexActive(&flags, 0)){
+                    // Active octant
+                    if (children[i] != nullptr){
+                        std::cout << "iteration " << i  << std::endl;
+                        children[i]->update(box);
                     }
+                }
             }
         }
+        std::cout << "go next" << std::endl;
 
         // Move moved objects to new nodes
         BoundingRegion movedObj;
@@ -320,6 +331,7 @@ bool Octree::node::insert(BoundingRegion obj){
                 States::activateIndex(&activeOctants, i);
                 children[i]->parent = this;
                 children[i]->build();
+                hasChildren = true;
                 return true;
             }
         }

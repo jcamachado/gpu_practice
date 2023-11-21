@@ -114,8 +114,9 @@ bool Scene::init() {
 /*
     Prepare for mainloop (after object generation, etc and before main while loop)
 */
-void Scene::prepare(){
-    octree->update();
+void Scene::prepare(Box &box){
+    // octree->build();
+    octree->update(box);        // Calls octree->build() if it hasn't been built yet
 }
 
 /*
@@ -203,10 +204,14 @@ void Scene::update(){
 }
 
 // Update screen before after each frame
-void Scene::newFrame(){
+void Scene::newFrame(Box &box){
+    box.positions.clear();
+    box.sizes.clear();
+
     // Process pending.
     octree->processPending();   // "Process new objects"
-    octree->update();           // "Are there any destroyed objects?"
+    octree->update(box);           // "Are there any destroyed objects?"
+    std::cout << "Pending processed finally ok" << std::endl;
 
     // Send new frame to window
     glfwSwapBuffers(window);
@@ -321,7 +326,7 @@ RigidBody* Scene::generateInstance(std::string modelId, glm::vec3 size, float ma
         std::string id = generateId();
         rb->instanceId = id;
         instances.insert(id, rb);
-        octree->addToPending(rb, models);                   // Add all bounding regions from the models to the pending queue
+        octree->addToPending(rb, models);               // Add all bounding regions from the models to the pending queue
         return rb;
     }
     return nullptr;
