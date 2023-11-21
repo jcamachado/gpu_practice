@@ -11,7 +11,7 @@ bool RigidBody::operator==(std::string id){
 RigidBody::RigidBody() {}
 
 RigidBody::RigidBody(
-    std::string *modelId, 
+    std::string modelId, 
     glm::vec3 size,
     float mass,
     glm::vec3 pos

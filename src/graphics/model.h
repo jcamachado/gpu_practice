@@ -81,7 +81,7 @@ class Model {
 
         void initInstances();                           // Initialize memory for instances
         void removeInstance(unsigned int idx);          // Remove instance at idx
-        // void removeInstance(std::string instanceId);    // Remove instance with id
+        void removeInstance(std::string instanceId);    // Remove instance with id
         unsigned int getIdx(std::string id);            // Get index of instance with id
         
     protected:

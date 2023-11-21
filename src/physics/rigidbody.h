@@ -10,7 +10,7 @@ class RigidBody {
         float mass;
         glm::vec3 pos, velocity, acceleration, size;
 
-        std::string* modelId;
+        std::string modelId;
         std::string instanceId;
 
         bool operator==(RigidBody rb);
@@ -18,7 +18,7 @@ class RigidBody {
 
         RigidBody();
 
-        RigidBody(std::string *modelId, 
+        RigidBody(std::string modelId, 
             glm::vec3 size = glm::vec3(1.0f), 
             float mass= 1.0f,
             glm::vec3 pos = glm::vec3(0.0f)

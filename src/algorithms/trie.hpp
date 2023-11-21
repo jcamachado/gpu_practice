@@ -14,7 +14,7 @@
                        -> g -> o        // dog and parent of doge and doggo
                 
 
-    Using trie to replace the mapping of ids and maps. I beleive its the map<id, map<idx, model>>
+    Using trie to replace the mapping of ids in Scene.h for efficiency.
 */
 namespace trie {                
 	struct Range {

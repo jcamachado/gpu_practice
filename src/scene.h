@@ -5,7 +5,6 @@
 #include "../lib/glad/glad.h"
 #include <GLFW/glfw3.h>
 
-#include <map>
 #include <vector>
 
 #include <glm/glm.hpp>
@@ -21,6 +20,7 @@
 // #include "io/joystick.h"
 
 #include "algorithms/states.hpp"
+#include "algorithms/trie.hpp"
 
 /*
     Forward declaration
@@ -28,9 +28,9 @@
 class Model; 
 class Scene {
     public:
-        std::map<std::string, Model*> models;   // List of models in scene to access from, e.g., the main file
-        // (instanceId, (modelId, instanceIdx)
-        std::map<std::string, std::pair<std::string, unsigned int>> instances;
+        trie::Trie<Model*> models;
+        trie::Trie<std::string> instances;
+
 
         /*
             Callbacks

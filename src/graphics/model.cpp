@@ -17,7 +17,7 @@ unsigned int Model::generateInstance(glm::vec3 size, float mass, glm::vec3 pos){
         return -1;                                                  // All slots filled 
     }
 
-    instances.push_back(RigidBody(&id, size, mass, pos));
+    instances.push_back(RigidBody(id, size, mass, pos));
     return currentNumInstances++;
 }
 
@@ -87,6 +87,14 @@ void Model::initInstances() {
 void Model::removeInstance(unsigned int idx){
     instances.erase(instances.begin() + idx);
     currentNumInstances--;
+}
+
+void Model::removeInstance(std::string instanceId){
+    unsigned int idx = getIdx(instanceId);
+    if (idx != -1){
+        instances.erase(instances.begin() + idx);
+        currentNumInstances--;
+    }
 }
 
 unsigned int Model::getIdx(std::string id){

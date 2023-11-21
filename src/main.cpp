@@ -170,8 +170,8 @@ int main(){
 void launchItem(float dt){
     std::string id = scene.generateInstance(sphere.id, glm::vec3(1.0f), 1.0f, cam.cameraPos);
     if (id != ""){
-        sphere.instances[scene.instances[id].second].transferEnergy(10000.0f, cam.cameraFront);
-        sphere.instances[scene.instances[id].second].applyAcceleration(Environment::gravity);
+        sphere.instances[sphere.getIdx(id)].transferEnergy(10000.0f, cam.cameraFront);
+        sphere.instances[sphere.getIdx(id)].applyAcceleration(Environment::gravity);
     }
 }
 

@@ -246,9 +246,9 @@ void Scene::renderInstances(std::string modelId, Shader shader, float dt){
 */
 void Scene::cleanup(){
     // Cleanup models
-    for (auto& pair : models){
-        pair.second->cleanup();
-    }
+    models.traverse([](Model* model) -> void {      // Lambda function, return is type(->) void
+        model->cleanup();
+    });
 
     glfwTerminate();
 }
@@ -300,7 +300,7 @@ std::string Scene::generateInstance(std::string modelId, glm::vec3 size, float m
         // Instance was created successfully
         std::string id = generateId();
         models[modelId]->instances[idx].instanceId = id;
-        instances[id] = { modelId, idx };
+        instances.insert(id, modelId);
         return id;
     }
     return "";
@@ -308,19 +308,19 @@ std::string Scene::generateInstance(std::string modelId, glm::vec3 size, float m
 
 
 void Scene::initInstances(){
-    for (auto& pair : models){
-        pair.second->initInstances();
-    }
+    models.traverse([](Model* model) -> void {                  // Iteration over models in Trie structure 
+        model->initInstances();
+    });
 }
 
 void Scene::loadModels(){
-    for (auto& pair : models){
-        pair.second->init();
-    }
+    models.traverse([](Model* model) -> void {
+        model->init();
+    });
 }
 
 void Scene::registerModel(Model* model){
-    models[model->id] = model;
+    models.insert(model->id, model);
 }
 
 void Scene::removeInstance(std::string instanceId){
@@ -329,9 +329,8 @@ void Scene::removeInstance(std::string instanceId){
         -Scene::instances
         -Model::instances
     */
-    std::string targetModel = instances[instanceId].first;
-    unsigned int targetIdx = instances[instanceId].second;
-    models[targetModel]->removeInstance(targetIdx);
+    std::string targetModel = instances[instanceId];
+    models[targetModel]->removeInstance(instanceId);
     instances.erase(instanceId);
 }
 
