@@ -1,0 +1,35 @@
+regarding class ArrayObject:
+When you bind a VAO in modern opengl, what happens is that you bind a vao and everything you do to a buffer object while that vao is bound, then if you call glBindvertexarray object when you are drawing, opgl knows to go to those buffers that you performed operations on while that certain VAO was bound, so thats why we dont define the individual buffers everytime we call draw. That is modern opengl
+
+// IDEIA GERAL DO CODIGO
+
+Scene
+    map<str, Model>> models
+    map<str, RB> instances
+
+    loadModels()
+    addInstance
+    getModelInstances
+        return pointer
+
+Model(ID)
+    -RB,    +MaxNumInstances - allocate like modelArray
+    render(numInstances)
+
+    initInstances(std::vector<RB>)
+        if false
+            allocate null         States: uchar
+        if true               >STATIC, CONST_INSTANCES     
+            init vals
+
+// Ideia sobre o main.cpp
+int main() {
+    instantiate model map
+    load models 
+    add initial instances
+    initInstances in model
+    while true
+        render shader(shader)
+        render Instances (vector<str>)
+        '-> construct list of positions / sizes to pass into meshes for VBOs in dynamic render
+}
