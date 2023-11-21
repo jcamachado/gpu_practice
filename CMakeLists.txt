@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0.0)
 project(my_particle_system VERSION 0.1.0)
 cmake_policy(SET CMP0072 NEW)
 
-set(CMAKE_CXX_STANDARD 26)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(OpenGL 3.3 REQUIRED)
 find_package(glfw3 REQUIRED)

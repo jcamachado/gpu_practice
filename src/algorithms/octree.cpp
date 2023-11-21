@@ -2,31 +2,31 @@
 
 // For each octant, a new bounding region is calculated and stored in out
 // Out is a pointer to node region that will have its subregions calculated
-void Octree::calculateBounds(BoundingRegion* out, Octant octant, BoundingRegion parentRegion){
+void Octree::calculateBounds(BoundingRegion &out, Octant octant, BoundingRegion parentRegion){
     glm::vec3 center = parentRegion.calculateCenter();
     if (octant == Octant::O1) {
-        out = new BoundingRegion(center, parentRegion.max);
+        out = BoundingRegion(center, parentRegion.max);
     }
     else if (octant == Octant::O2) {
-        out = new BoundingRegion(glm::vec3(parentRegion.min.x, center.y, center.z), glm::vec3(center.x, parentRegion.max.y, parentRegion.max.z));
+        out = BoundingRegion(glm::vec3(parentRegion.min.x, center.y, center.z), glm::vec3(center.x, parentRegion.max.y, parentRegion.max.z));
     }
     else if (octant == Octant::O3) {
-        out = new BoundingRegion(glm::vec3(parentRegion.min.x, parentRegion.min.y, center.z), glm::vec3(center.x, center.y, parentRegion.max.z));
+        out = BoundingRegion(glm::vec3(parentRegion.min.x, parentRegion.min.y, center.z), glm::vec3(center.x, center.y, parentRegion.max.z));
     }
     else if (octant == Octant::O4) {
-        out = new BoundingRegion(glm::vec3(center.x, parentRegion.min.y, center.z), glm::vec3(parentRegion.max.x, center.y, parentRegion.max.z));
+        out = BoundingRegion(glm::vec3(center.x, parentRegion.min.y, center.z), glm::vec3(parentRegion.max.x, center.y, parentRegion.max.z));
     }
     else if (octant == Octant::O5) {
-        out = new BoundingRegion(glm::vec3(center.x, center.y, parentRegion.min.z), glm::vec3(parentRegion.max.x, parentRegion.max.y, center.z));
+        out = BoundingRegion(glm::vec3(center.x, center.y, parentRegion.min.z), glm::vec3(parentRegion.max.x, parentRegion.max.y, center.z));
     }
     else if (octant == Octant::O6) {
-        out = new BoundingRegion(glm::vec3(parentRegion.min.x, center.y, parentRegion.min.z), glm::vec3(center.x, parentRegion.max.y, center.z));
+        out = BoundingRegion(glm::vec3(parentRegion.min.x, center.y, parentRegion.min.z), glm::vec3(center.x, parentRegion.max.y, center.z));
     }
     else if (octant == Octant::O7) {
-        out = new BoundingRegion(parentRegion.min, center);
+        out = BoundingRegion(parentRegion.min, center);
     }
     else if (octant == Octant::O8) {
-        out = new BoundingRegion(glm::vec3(center.x, parentRegion.min.y, parentRegion.min.z), glm::vec3(parentRegion.max.x, center.y, center.z));
+        out = BoundingRegion(glm::vec3(center.x, parentRegion.min.y, parentRegion.min.z), glm::vec3(parentRegion.max.x, center.y, center.z));
     }
 }
 
@@ -58,6 +58,8 @@ void Octree::node::build(){
     */
     // <= 1 objects
     if (objects.size() <= 1){
+        treeBuilt = true;
+        treeReady = true;
         return;
     }
 
@@ -65,6 +67,8 @@ void Octree::node::build(){
     glm::vec3 dimensions = region.calculateDimensions();
     for (int i = 0; i < 3; i++){
         if (dimensions[i] < MIN_BOUNDS){
+            treeBuilt = true;
+            treeReady = true;
             return;
         }
     }
@@ -72,7 +76,7 @@ void Octree::node::build(){
     // Create regions
     BoundingRegion octants[N_CHILDREN];
     for (int i = 0; i < N_CHILDREN; i++){
-        calculateBounds(&octants[i], (Octant)(1 << i), region);
+        calculateBounds(octants[i], (Octant)(1 << i), region);
     }
 
     // Determine which octants to place object in
@@ -103,6 +107,7 @@ void Octree::node::build(){
         if (octLists[i].size() > 0){
             children[i] = new node(octants[i], octLists[i]);
             States::activateIndex(&activeOctants, i);
+            children[i]->parent = this;
             children[i]->build();
             hasChildren = true;
         }
@@ -110,7 +115,6 @@ void Octree::node::build(){
 
     treeBuilt = true;
     treeReady = true;
-
 }
 
 void Octree::node::update(){
@@ -298,7 +302,7 @@ bool Octree::node::insert(BoundingRegion obj){
             octants[i] = children[i]->region;
         }
         else{                               // If child is null, we calculate the bounds based on calculateBounds
-            calculateBounds(&octants[i], (Octant)(1 << i), region); 
+            calculateBounds(octants[i], (Octant)(1 << i), region); 
         }
 
     }
@@ -314,6 +318,8 @@ bool Octree::node::insert(BoundingRegion obj){
                 // Create new node
                 children[i] = new node(octants[i], {obj}); 
                 States::activateIndex(&activeOctants, i);
+                children[i]->parent = this;
+                children[i]->build();
                 return true;
             }
         }

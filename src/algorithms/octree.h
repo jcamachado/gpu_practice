@@ -32,7 +32,7 @@ namespace Octree {
     */
 
     // Calculate bounds of specified octant in bounding region
-    void calculateBounds(BoundingRegion* out, Octant octant, BoundingRegion parentRegion);
+    void calculateBounds(BoundingRegion &out, Octant octant, BoundingRegion parentRegion);
 
     class node{
         public:
