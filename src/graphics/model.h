@@ -47,9 +47,8 @@ class Model {
         BoundTypes boundType;                           // Type of bounding region for all meshes
         
         std::vector<Mesh> meshes;
-        // std::vector<BoundingRegion> boundingRegions;    // List of bounding regions (1 for each mesh)
-        // std::vector<RigidBody*> instances;              // For forces applied (collisions and such)
-        std::vector <RigidBody> instances;              // For forces applied (collisions and such)
+        std::vector<BoundingRegion> boundingRegions;    // List of bounding regions (1 for each mesh)
+        std::vector<RigidBody*> instances;              // For forces applied (collisions and such)
 
         int maxNumInstances;                            // Max indices allowed
         int currentNumInstances;
@@ -76,8 +75,7 @@ class Model {
         /*
             Instance methods
         */
-        // RigidBody* generateInstance(glm::vec3 size, float mass, glm::vec3 pos);
-        unsigned int generateInstance(glm::vec3 size, float mass, glm::vec3 pos);
+        RigidBody* generateInstance(glm::vec3 size, float mass, glm::vec3 pos);
 
         void initInstances();                           // Initialize memory for instances
         void removeInstance(unsigned int idx);          // Remove instance at idx

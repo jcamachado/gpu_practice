@@ -68,6 +68,7 @@ class Cube : public Model {
             ret.loadData(Vertex::genList(vertices, nVertices), indices);
 
             meshes.push_back(ret);
+            boundingRegions.push_back(br);
         }
 };
 

@@ -33,3 +33,12 @@ int main() {
         render Instances (vector<str>)
         '-> construct list of positions / sizes to pass into meshes for VBOs in dynamic render
 }
+
+//Hex       // Decimal
+x..000      //  0
+x..001      //  1
+x..002      //  2
+x..004      //  4
+x..008      //  8
+x..010      // 16
+x..020      // 32

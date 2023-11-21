@@ -15,11 +15,25 @@ Iteration
         meshes.render(shader);
     }
 
-Lambda function
--signature
-void traverse(void(*itemViewer)(T data)) {
+NULL - Is a reserved key that basically translates to 0(zero).
 
--call:
-models.traverse([](Model* model) -> void {      // return is type(->) void
+Lambda function
+    signature
+        void traverse(void(*itemViewer)(T data)) {
+
+    call:
+    models.traverse([](Model* model) -> void {      // return is type(->) void
         model->cleanup();
     });
+
+Classes
+    constructor: To define class constructors, you gotta have a default construct defined. This could be an empty constructor: C(); or
+        it have to all of its values set:  C(int a=1, int b=2);
+
+    new: To pass the pointer of a new instance of an object, you have to say new C();
+            ex: instances.push_back(new RigidBody(id, size, mass, pos));
+        instances is a list of pointers. If it was a list of RigidBodys, this line would look like this:
+            ex: instances.push_back(RigidBody(id, size, mass, pos));
+
+Pointers
+    nullptr - Object of "no value" for pointer

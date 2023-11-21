@@ -41,6 +41,15 @@ Octree::node::node(BoundingRegion bounds, std::vector<BoundingRegion> objectList
         objects.insert(objects.end(), objectList.begin(), objectList.end());
 }
 
+void Octree::node::addToPending(RigidBody* instance, trie::Trie<Model*> models){
+    // Get all the bounding regions of the models
+    for (BoundingRegion br : models[instance->modelId]->boundingRegions){
+        br.instance = instance;
+        br.transform();
+        queue.push(br);
+    }
+}
+
 void Octree::node::build(){
     /*
         Termination conditions
@@ -106,17 +115,82 @@ void Octree::node::build(){
 
 void Octree::node::update(){
     if (treeBuilt && treeReady){
-        // Get moved objects that were in this leaf in previous frame
-        std::vector<BoundingRegion> movedObjects(objects.size()); // Cap at size of objects
+        // Countdown timer
+        if(objects.size() == 0){
+            if(!hasChildren){
+                if (currentLifespan==-1){
+                    currentLifespan = maxLifespan;
+                }
+                else if (currentLifespan > 0){
+                    currentLifespan--;
+                }
+            }
+        }
+        else{
+            if (currentLifespan != -1){
+                if(maxLifespan < 64){
+                    // Extend lifespan because "hotspot" 
+                    maxLifespan <<= 2;
+                }
+            }
+        }
 
-        // Remove objects that dont exist anymore
-        for (int i = 0; i < objects.size(); i++){
+        /*
+            Remove objects that dont exist anymore
+
+            012345678
+            ABCDEFGHI          (list of objects),
+            ABCDFGHI            if E dies (i=4), we want, everything will (has to) be left shifted
+                                so we need to update _i_ and _listSize_
+            
+            since we do i++ with i--, we still get the next element F (i=4)
+            i
+        */
+        for (int i = 0, listSize = objects.size(); i < listSize; i++){
             // Remove if on list of dead objects
-            // TODO
+            if (States::isActive(&objects[i].instance->state, INSTANCE_DEAD)){
+                objects.erase(objects.begin() + i);
+                // Update counter and size accordingly
+                i--;
+                listSize--;
+
+            }
+        }
+
+        // Get moved objects that were in this leaf in previous frame
+        std::stack<std::pair<int, BoundingRegion>> movedObjects;
+        for (int i = 0, listSize = objects.size(); i < listSize; i++){
+            if (States::isActive(&objects[i].instance->state, INSTANCE_MOVED)){
+                objects[i].transform();
+                movedObjects.push({i, objects[i]});
+            }
+        }
+
+        /*
+            Remove dead branches
+
+            00110001        left shift until we get 00000000
+        */
+        unsigned char flags = activeOctants;
+        for (int i = 0; 
+            flags > 0; 
+            flags >>= 1, i++) 
+        {
+            if (States::isIndexActive(&flags, 0)&&(children[i]->currentLifespan == 0)){
+                // If this child is active and has no lifespan left
+                if (children[i]->objects.size() > 0) {
+                    // Branch is dead but has children, so reset lifespan
+                    children[i]->currentLifespan = -1;
+                }
+                else {
+                    // Branch is dead, remove it
+                    children[i] = nullptr;
+                    States::deactivateIndex(&activeOctants, i);
+                }
+            }
         }
 
         // Update child nodes
-        
         if (children != nullptr){
             for (unsigned char flags = activeOctants, i = 0;
                 flags > 0;
@@ -138,8 +212,8 @@ void Octree::node::update(){
                 - Traverse up tree (start with current node) until find a node that completely encloses the object
                 - Call insert (push object as far down as possible)
             */
-            movedObj = movedObjects[0];
-            node* current = this;
+            movedObj = movedObjects.top().second;       // Set to top object in stack
+            node* current = this;                       // Placeholder
             while (!current->region.containsRegion(movedObj)){
                 if (current->parent != nullptr){
                     current = current->parent;
@@ -148,14 +222,15 @@ void Octree::node::update(){
                     break;                  // If root, leave
                 }
             }
-
-            // Remove first object, second object becomes first, so list behaves like a queue
-            movedObjects.erase(movedObjects.begin());
-            // getIndexOf returns the index of object, 
-            // and it is the distance between the starting iterator and the iterator that represents the object
-             
-            objects.erase(objects.begin() + List::getIndexOf<BoundingRegion>(objects, movedObj));
-            current->insert(movedObj);      // Inserts further down
+            /*
+                Once finished
+                - Remove from objects list
+                - remove from movedObjects stack
+                - insert into found region
+            */
+            objects.erase(objects.begin() + movedObjects.top().first);
+            movedObjects.pop();
+            current->insert(movedObj);
 
             // Collision detection  (We can use bruteforce for now, the number of objects per region is small)
             // TODO

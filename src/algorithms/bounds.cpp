@@ -5,10 +5,31 @@ BoundingRegion::BoundingRegion(BoundTypes type)
     : type(type){}
 
 BoundingRegion::BoundingRegion(glm::vec3 center, float radius)
-    :type(BoundTypes::SPHERE), center(center), radius(radius) {}
+    :type(BoundTypes::SPHERE), 
+    center(center), 
+    radius(radius), 
+    ogCenter(center), 
+    ogRadius(radius) {}
 
 BoundingRegion::BoundingRegion(glm::vec3 min, glm::vec3 max)
-    : type(BoundTypes::AABB), min(min), max(max) {}
+    : type(BoundTypes::AABB), 
+    min(min), 
+    max(max),
+    ogMin(min),
+    ogMax(max) {}
+
+void BoundingRegion::transform(){
+    if (instance){
+        if(type == BoundTypes::AABB){
+            min = ogMin * instance->size + instance->pos;
+            max = ogMax * instance->size + instance->pos;
+        }
+        else if(type == BoundTypes::SPHERE){
+            center = ogCenter * instance->size + instance->pos;
+            radius = ogRadius * instance->size.x;                   // Radius is scalar, only needs 1 axis
+        }
+    }
+}
 
 glm::vec3 BoundingRegion::calculateCenter() {
     return type == BoundTypes::AABB ? (min + max) / 2.0f : center;
@@ -32,9 +53,11 @@ bool BoundingRegion::containsPoint(glm::vec3 point) {
         }
         return distSquared < (radius * radius);
     }
+    else {
+        return false;
+    }
 }
 
-// test if region is completely inside of another region
 bool BoundingRegion::containsRegion(BoundingRegion br) {
     if (br.type == BoundTypes::AABB) {
     // if br is a box, just has to contain min and max, 
@@ -62,10 +85,10 @@ bool BoundingRegion::containsRegion(BoundingRegion br) {
                 return false;
             }
         }
+        return true;
     }
 }
 
-// Test if region intersects (partially contains)
 bool BoundingRegion::intersectsWith(BoundingRegion br) {
     //overlap on all 3 axes
     

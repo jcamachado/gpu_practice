@@ -10,7 +10,10 @@
 
 #include "list.hpp"
 #include "states.hpp"
+#include "trie.hpp"
 #include "bounds.h"
+
+#include "../graphics/model.h"
 
 namespace Octree {
     enum class Octant : unsigned char{
@@ -43,6 +46,9 @@ namespace Octree {
             bool treeReady = false;
             bool treeBuilt = false;
 
+            short maxLifespan = 8;              // Duration of empty node before it is destroyed
+            short currentLifespan = -1;
+
             std::vector<BoundingRegion> objects;
             std::queue<BoundingRegion> queue;   // Queue for objects to be added to tree
 
@@ -54,6 +60,13 @@ namespace Octree {
 
             // When iterating, objectlist is the list of objects that fit each of its octants
             node(BoundingRegion region, std::vector<BoundingRegion> objectList); 
+
+            /*
+                Add an instance to pending queue
+                This function will take an instance and will add all of its models rigid bodies
+                a new rigid body for the actual thing (words from the video)
+            */
+            void addToPending(RigidBody* instance, trie::Trie<Model*> models);
 
             void build();
 

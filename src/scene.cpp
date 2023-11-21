@@ -151,7 +151,7 @@ void Scene::processInput(float dt){
         projection = glm::perspective(
             glm::radians(cameras[activeCamera]->getZoom()), // FOV
             (float)scrWidth / (float)scrHeight,             // Aspect ratio
-            0.1f, 100.0f                                    // Near and far clipping planes
+            0.1f, 250.0f                                    // Near and far clipping planes
         );
 
         // Set position at end
@@ -294,21 +294,21 @@ std::string Scene::generateId(){
     return currentId;
 }
 
-std::string Scene::generateInstance(std::string modelId, glm::vec3 size, float mass, glm::vec3 pos){
-    unsigned int idx = models[modelId]->generateInstance(size, mass, pos);
-    if (idx != -1) {
+RigidBody* Scene::generateInstance(std::string modelId, glm::vec3 size, float mass, glm::vec3 pos){
+    RigidBody* rb = models[modelId]->generateInstance(size, mass, pos);
+    if (rb) {
         // Instance was created successfully
         std::string id = generateId();
-        models[modelId]->instances[idx].instanceId = id;
-        instances.insert(id, modelId);
-        return id;
+        rb->instanceId = id;
+        instances.insert(id, rb);
+        return rb;
     }
-    return "";
+    return nullptr;
 }
 
 
 void Scene::initInstances(){
-    models.traverse([](Model* model) -> void {                  // Iteration over models in Trie structure 
+    models.traverse([](Model* model) -> void {          // Iteration over models in Trie structure 
         model->initInstances();
     });
 }
@@ -329,8 +329,20 @@ void Scene::removeInstance(std::string instanceId){
         -Scene::instances
         -Model::instances
     */
-    std::string targetModel = instances[instanceId];
+    std::string targetModel = instances[instanceId]->modelId;
     models[targetModel]->removeInstance(instanceId);
-    instances.erase(instanceId);
+    instances[instanceId] = nullptr;
+    instances.erase(instanceId);                        // erate() doesnt know the type of <T>Trie, so, deletes the nullptr
 }
 
+void Scene::markForDeletion(std::string instanceId){
+    States::activate(&instances[instanceId]->state, INSTANCE_DEAD);
+    instancesToDelete.push_back(instances[instanceId]);
+}
+
+void Scene::clearDeadInstances(){
+    for (RigidBody *rb : instancesToDelete){
+        removeInstance(rb->instanceId);
+    }
+    instancesToDelete.clear();
+}

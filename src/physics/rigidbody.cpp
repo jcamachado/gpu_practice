@@ -20,7 +20,8 @@ RigidBody::RigidBody(
         mass(mass), 
         pos(pos), 
         velocity(0.0f), 
-        acceleration(0.0f) {}
+        acceleration(0.0f),
+        state(0) {}
 
 
 void RigidBody::update(float dt){

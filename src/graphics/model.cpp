@@ -12,13 +12,13 @@ Model::Model(std::string id, BoundTypes boundType, unsigned int maxNumInstances,
     currentNumInstances(0), 
     maxNumInstances(maxNumInstances) {}
 
-unsigned int Model::generateInstance(glm::vec3 size, float mass, glm::vec3 pos){
+RigidBody* Model::generateInstance(glm::vec3 size, float mass, glm::vec3 pos){
     if (currentNumInstances >= maxNumInstances){
-        return -1;                                                  // All slots filled 
+        return nullptr;                                                  // All slots filled 
     }
 
-    instances.push_back(RigidBody(id, size, mass, pos));
-    return currentNumInstances++;
+    instances.push_back(new RigidBody(id, size, mass, pos));
+    return instances[currentNumInstances++];
 }
 
 void Model::initInstances() {
@@ -31,8 +31,8 @@ void Model::initInstances() {
     if (States::isActive(&switches, CONST_INSTANCES)){
         // Set data pointers
         for(unsigned int i = 0; i < currentNumInstances; i++){
-            positions.push_back(instances[i].pos);
-            sizes.push_back(instances[i].size);
+            positions.push_back(instances[i]->pos);
+            sizes.push_back(instances[i]->size);
         }
 
         if (positions.size() > 0) {
@@ -99,7 +99,7 @@ void Model::removeInstance(std::string instanceId){
 
 unsigned int Model::getIdx(std::string id){
     for (int i = 0; i < currentNumInstances; i++){
-        if (instances[i] == id){                                // Uses RB operator==
+        if (instances[i]->instanceId == id){                                // Uses RB operator==
             return i;
         }
     }
@@ -120,21 +120,22 @@ void Model::render(Shader shader, float dt, Scene *scene, bool setModel){
     }
 
     if (!States::isActive(&switches, CONST_INSTANCES)){
-        // Update VBO data
+        /*
+            Update VBO data
+        */
         // std::vector<glm::vec3> positions(currentNumInstances), sizes(currentNumInstances);
         std::vector<glm::vec3> positions, sizes;
         bool doUpdate = States::isActive(&switches, DYNAMIC);
 
         for (int i = 0; i < currentNumInstances; i++){
             if (doUpdate){
-                instances[i].update(dt);                        // Update RigidBody
+                instances[i]->update(dt);               // Update RigidBody
+                States::activate(&instances[i]->state, INSTANCE_MOVED);
+            }else{
+                States::deactivate(&instances[i]->state, INSTANCE_MOVED);
             }
-            // positions[i] = instances[i].pos;
-            // sizes[i] = instances[i].size;
-            // positions[i] = instances[i]->pos;
-            // sizes[i] = instances[i]->size;
-            positions.push_back(instances[i].pos);
-            sizes.push_back(instances[i].size);
+            positions.push_back(instances[i]->pos);
+            sizes.push_back(instances[i]->size);
         }
 
         posVBO.bind();
@@ -178,12 +179,16 @@ void Model::loadModel(std::string path){
 }
 
 void Model::processNode(aiNode *node, const aiScene *scene){
-    // process all the node's meshes (if any)
+    /*
+        Process all the node's meshes (Generate all the meshes),
+        then do the same for each of its children
+    */
     for(unsigned int i = 0; i < node->mNumMeshes; i++) {
         aiMesh *mesh = scene->mMeshes[node->mMeshes[i]]; 
-        meshes.push_back(processMesh(mesh, scene));			
+        Mesh newMesh = processMesh(mesh, scene);
+        meshes.push_back(newMesh);
+        boundingRegions.push_back(newMesh.br);
     }
-    // then do the same for each of its children
     for(unsigned int i = 0; i < node->mNumChildren; i++) {
         processNode(node->mChildren[i], scene);
     }
@@ -252,24 +257,27 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene){
     if (boundType == BoundTypes::AABB){
         // min and max are already calculated
         br.min = min;
+        br.ogMin = min;
         br.max = max;
+        br.ogMax = max;
     }else{
         // calculate center and radius
         br.center = BoundingRegion(min, max).calculateCenter();
+        br.ogCenter = br.center;
         float maxRadiusSquare = 0.0f;
         for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
-            float radiusSquared = 0.0f; //distance for this vertex
+            float radiusSquared = 0.0f;                 // Distance for this vertex
             for (int j = 0; j < 3; j++) {
                 radiusSquared += (vertices[i].pos[j] - br.center[j]) * (vertices[i].pos[j] - br.center[j]);
             }
-            if (radiusSquared > maxRadiusSquare) {
-                // if this distance is larger than the current max, set it as the new max
-                // if a^2 > b^2, then |a| > |b
-                maxRadiusSquare = radiusSquared;
+            if (radiusSquared > maxRadiusSquare) {      // If this distance is larger than the current max, set it as the new max
+                maxRadiusSquare = radiusSquared;        // If a^2 > b^2, then |a| > |b, saves sqrt calls 
+                
             }
         }
         // calling here sqrt is more efficient than calling it everytime
         br.radius = sqrt(maxRadiusSquare);
+        br.ogRadius = br.radius;
     }
 
 

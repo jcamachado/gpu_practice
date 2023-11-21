@@ -29,8 +29,8 @@ class Model;
 class Scene {
     public:
         trie::Trie<Model*> models;
-        trie::Trie<std::string> instances;
-
+        trie::Trie<RigidBody*> instances;
+        std::vector<RigidBody*> instancesToDelete;
 
         /*
             Callbacks
@@ -89,7 +89,7 @@ class Scene {
         std::string currentId;                                          // Has to be 8 chars long, from aaaaaaaa to zzzzzzzz
         
         std::string generateId();
-        std::string generateInstance(
+        RigidBody* generateInstance(
             std::string modelId, 
             glm::vec3 size, 
             float mass, 
@@ -99,6 +99,8 @@ class Scene {
         void loadModels();                                              // Will call model.init()
         void registerModel(Model* model);
         void removeInstance(std::string instanceId);
+        void markForDeletion(std::string instanceId);                   // Mark instances for death
+        void clearDeadInstances();                                      // Delete instances marked for death
 
         /*
             Lights
