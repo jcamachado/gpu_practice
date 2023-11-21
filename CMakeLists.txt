@@ -32,6 +32,7 @@ add_executable(my_particle_system
     src/algorithms/list.hpp
     src/algorithms/octree.h
     src/algorithms/octree.cpp
+    src/algorithms/trie.hpp
 
     src/graphics/light.h
     src/graphics/light.cpp
