@@ -1,8 +1,10 @@
 #include "octree.h"
+#include "../graphics/models/box.hpp"
 
-// For each octant, a new bounding region is calculated and stored in out
-// Out is a pointer to node region that will have its subregions calculated
-void Octree::calculateBounds(BoundingRegion &out, Octant octant, BoundingRegion parentRegion){
+// calculate bounds of specified quadrant in bounding region
+void Octree::calculateBounds(BoundingRegion &out, Octant octant, BoundingRegion parentRegion) {
+    // find min and max points of corresponding octant
+    
     glm::vec3 center = parentRegion.calculateCenter();
     if (octant == Octant::O1) {
         out = BoundingRegion(center, parentRegion.max);
@@ -30,146 +32,144 @@ void Octree::calculateBounds(BoundingRegion &out, Octant octant, BoundingRegion 
     }
 }
 
+// default constructor
 Octree::node::node()
     : region(BoundTypes::AABB) {}
 
+// initialize with bounds (no objects yet)
 Octree::node::node(BoundingRegion bounds)
     : region(bounds) {}
 
+// initialize with bounds and list of objects
 Octree::node::node(BoundingRegion bounds, std::vector<BoundingRegion> objectList)
     : region(bounds) {
-        objects.insert(objects.end(), objectList.begin(), objectList.end());
+    objects.insert(objects.end(), objectList.begin(), objectList.end());
 }
 
-void Octree::node::addToPending(RigidBody* instance, trie::Trie<Model*> models){
-    // Get all the bounding regions of the models
-    for (BoundingRegion br : models[instance->modelId]->boundingRegions){
+void Octree::node::addToPending(RigidBody* instance, trie::Trie<Model*> models) {
+    // get all bounding regions of model
+    for (BoundingRegion br : models[instance->modelId]->boundingRegions) {
         br.instance = instance;
         br.transform();
         queue.push(br);
     }
 }
 
-void Octree::node::build(){
+// build tree (called during initialization)
+void Octree::node::build() {
+    // variable declarations
+    BoundingRegion octants[N_CHILDREN];
+    glm::vec3 dimensions = region.calculateDimensions();
+    std::vector<BoundingRegion> octLists[N_CHILDREN]; // array of lists of objects in each octant
+    
     /*
-        Termination conditions
-        - 1 or less objects (ie an empty leaf node)
-        - dimensions are too small
+        termination conditions (don't subdivide further)
+        - 1 or less objects (ie an empty leaf node or node with 1 object)
+        - dimesnions are too small
     */
-    // <= 1 objects
 
-    if (objects.size() <= 1){
-        treeBuilt = true;
-        treeReady = true;
-        return;
+    // <= 1 objects
+    if (objects.size() <= 1) {
+        // set state variables
+        goto setVars;
     }
 
-    // Dimensions are too small
-    glm::vec3 dimensions = region.calculateDimensions();
-    for (int i = 0; i < 3; i++){
-        if (dimensions[i] < MIN_BOUNDS){
-            treeBuilt = true;
-            treeReady = true;
-            return;
+    // too small
+    
+    for (int i = 0; i < 3; i++) {
+        if (dimensions[i] < MIN_BOUNDS) {
+            // set state variables
+            goto setVars;
         }
     }
 
-    // Create regions
-    BoundingRegion octants[N_CHILDREN];
-    for (int i = 0; i < N_CHILDREN; i++){
+    // create regions
+    for (int i = 0; i < N_CHILDREN; i++) {
         calculateBounds(octants[i], (Octant)(1 << i), region);
     }
 
-    // Determine which octants to place object in
-    std::vector<BoundingRegion> octLists[N_CHILDREN]; // Array of list of objects in each octant
-    // If object doesnt fully belong to a region, it is added to the parent region
-    std::stack<int> delList; // List of objects that have been placed
-
-    // If objects overlap regions, they are in at least 1 region(parent), so they are not added to another region
-    for (int i = 0, length = objects.size(); i < length; i++){
+    // determine which octants to place objects in
+    for (int i = 0, len = objects.size(); i < len; i++) {
         BoundingRegion br = objects[i];
-
-        for (int j = 0; j < N_CHILDREN; j++){
-            if (octants[j].containsRegion(br)){
-                octLists[j].push_back(br); // Found an octant to put it in, so it is not added to another octant
-                delList.push(i);        // Object has been placed on an octant, so it can be removed from the original list
-                break; 
+        for (int j = 0; j < N_CHILDREN; j++) {
+            if (octants[j].containsRegion(br)) {
+                // octant contains region
+                octLists[j].push_back(br);
+                objects.erase(objects.begin() + i);
+                i--;
+                len--;
+                break;
             }
-
         }
     }
 
-    // Remove objects on delList
-    while (delList.size() != 0){
-        objects.erase(objects.begin() + delList.top());
-        delList.pop();
-    }
-
-    // Populate octants
-    for (int i = 0; i < N_CHILDREN; i++){
-        if (octLists[i].size() > 0){
+    // populate octants
+    for (int i = 0; i < N_CHILDREN; i++) {
+        if (octLists[i].size() != 0) {
+            // if children go into this octant
             children[i] = new node(octants[i], octLists[i]);
-            States::activateIndex(&activeOctants, i);
+            States::activateIndex(&activeOctants, i); // activate octant
             children[i]->parent = this;
             children[i]->build();
             hasChildren = true;
         }
     }
-
+    
+setVars:
+    // set state variables
     treeBuilt = true;
     treeReady = true;
+
+    for (int i = 0; i < objects.size(); i++) {
+        objects[i].cell = this;
+    }
 }
 
-void Octree::node::update(Box &box){
-    if (treeBuilt && treeReady){
-        // Countdown timer
+// update objects in tree (called during each iteration of main loop)
+void Octree::node::update(Box &box) {
+    if (treeBuilt && treeReady) {
         box.positions.push_back(region.calculateCenter());
         box.sizes.push_back(region.calculateDimensions());
-        
-        if(objects.size() == 0){
-            if(!hasChildren){
-                if (currentLifespan==-1){
+
+        // countdown timer
+        if (objects.size() == 0) {
+            if (!hasChildren) {
+                // ensure no child leaves
+                if (currentLifespan == -1) {
+                    // initial check
                     currentLifespan = maxLifespan;
                 }
-                else if (currentLifespan > 0){
+                else if (currentLifespan > 0) {
+                    // decrement
                     currentLifespan--;
                 }
             }
         }
-        else{
-            if (currentLifespan != -1){
-                if(maxLifespan < 64){
-                    // Extend lifespan because "hotspot" 
-                    maxLifespan <<= 1;
+        else {
+            if (currentLifespan != -1) {
+                if (maxLifespan <= 64) {
+                    // extend lifespan because "hotspot"
+                    maxLifespan <<= 2;
                 }
             }
         }
 
-        /*
-            Remove objects that dont exist anymore
+        // remove objects that don't exist anymore
 
-            012345678
-            ABCDEFGHI          (list of objects),
-            ABCDFGHI            if E dies (i=4), we want, everything will (has to) be left shifted
-                                so we need to update _i_ and _listSize_
-            
-            since we do i++ with i--, we still get the next element F (i=4)
-            i
-        */
-        for (int i = 0, listSize = objects.size(); i < listSize; i++){
-            // Remove if on list of dead objects
-            if (States::isActive(&objects[i].instance->state, INSTANCE_DEAD)){
+        for (int i = 0, listSize = objects.size(); i < listSize; i++) {
+            // remove if on list of dead objects
+            if (States::isActive(&objects[i].instance->state, INSTANCE_DEAD)) {
                 objects.erase(objects.begin() + i);
-                // Update counter and size accordingly
+                // update counter/size accordingly
                 i--;
                 listSize--;
-
             }
         }
-        // Get moved objects that were in this leaf in previous frame
+
+        // get moved objects that were in this leaf in previous frame
         std::stack<int> movedObjects;
-        for (int i = 0, listSize = objects.size(); i < listSize; i++){
-            if (States::isActive(&objects[i].instance->state, INSTANCE_MOVED)){
+        for (int i = 0, listSize = objects.size(); i < listSize; i++) {
+            if (States::isActive(&objects[i].instance->state, INSTANCE_MOVED)) {
                 objects[i].transform();
                 movedObjects.push(i);
             }
@@ -177,66 +177,66 @@ void Octree::node::update(Box &box){
             box.sizes.push_back(objects[i].calculateDimensions());
         }
 
-        /*
-            Remove dead branches
-
-            00110001        left shift until we get 00000000
-        */
+        // remove dead branches
         unsigned char flags = activeOctants;
-        for (int i = 0; 
-            flags > 0; 
-            flags >>= 1, i++) 
-        {
-            if (States::isIndexActive(&flags, 0)&&(children[i]->currentLifespan == 0)){
-                // If this child is active and has no lifespan left
+        for (int i = 0;
+            flags > 0;
+            flags >>= 1, i++) {
+            if (States::isIndexActive(&flags, 0) && children[i]->currentLifespan == 0) {
+                // active and run out of time
                 if (children[i]->objects.size() > 0) {
-                    // Branch is dead but has children, so reset lifespan
+                    // branch is dead but has children, so reset
                     children[i]->currentLifespan = -1;
                 }
                 else {
-                    // Branch is dead, remove it
+                    // branch is dead
                     children[i] = nullptr;
                     States::deactivateIndex(&activeOctants, i);
                 }
             }
         }
-        
-        // Update child nodes
-        if (children != nullptr){
+
+        // update child nodes
+        if (children != nullptr) {
+            // go through each octant using flags
             for (unsigned char flags = activeOctants, i = 0;
                 flags > 0;
-                flags >>= 1, i++){                      // Iterates over each bit in flags, each octant
-                if (States::isIndexActive(&flags, 0)){
-                    // Active octant
-                    if (children[i] != nullptr){
+                flags >>= 1, i++) {
+                if (States::isIndexActive(&flags, 0)) {
+                    // active octant
+                    if (children[i] != nullptr) {
+                        // child not null
                         children[i]->update(box);
                     }
                 }
             }
         }
-        // Move moved objects to new nodes
-        BoundingRegion movedObj;
-        while (movedObjects.size() != 0){
+        
+        // move moved objects into new nodes
+        BoundingRegion movedObj; // placeholder
+        while (movedObjects.size() != 0) {
             /*
-                For each moved object
-                - Traverse up tree (start with current node) until find a node that completely encloses the object
-                - Call insert (push object as far down as possible)
+                for each moved object
+                - traverse up tree (start with current node) until find a node that completely encloses the object
+                - call insert (push object as far down as possible)
             */
-            movedObj = objects[movedObjects.top()];       // Set to top object in stack
-            node* current = this;                       // Placeholder
 
-            while (!current->region.containsRegion(movedObj)){
-                if (current->parent != nullptr){
+            movedObj = objects[movedObjects.top()]; // set to top object in stack
+            node* current = this; // placeholder
+
+            while (!current->region.containsRegion(movedObj)) {
+                if (current->parent != nullptr) {
+                    // set current to current's parent (recursion)
                     current = current->parent;
                 }
                 else {
-                    break;                  // If root, leave
+                    break; // if root node, the leave
                 }
             }
 
             /*
-                Once finished
-                - Remove from objects list
+                once finished
+                - remove from objects list
                 - remove from movedObjects stack
                 - insert into found region
             */
@@ -244,89 +244,99 @@ void Octree::node::update(Box &box){
             movedObjects.pop();
             current->insert(movedObj);
 
-            // Collision detection  (We can use bruteforce for now, the number of objects per region is small)
-            // TODO
+            // collision detection
+            // itself
+            current = movedObj.cell;
+            current->checkCollisionsSelf(movedObj);
+
+            // children
+            current->checkCollisionsChildren(movedObj);
+
+            // parents
+            while (current->parent) {
+                current = current->parent;
+                current->checkCollisionsSelf(movedObj);
+            }
         }
     }
     else {
-        // Process pending results
-        if (queue.size() > 0){
+        // process pending results
+        if (queue.size() > 0) {
             processPending();
         }
     }
 }
 
-void Octree::node::processPending(){
-    if(!treeBuilt){
-        // Add objects to be sorted into branches when built
-        while (queue.size() != 0){
-            objects.push_back(queue.front());   // Place queued objects into objects list
+// process pending queue
+void Octree::node::processPending() {
+    if (!treeBuilt) {
+        // add objects to be sorted into branches when built
+        while (queue.size() != 0) {
+            objects.push_back(queue.front());
             queue.pop();
         }
-        build();                                // Place objects into its branches
+        build();
     }
-    else{
-        // Insert objects immediately
-        for (int i = 0, len = queue.size(); i<len ; i++){
+    else {
+        for (int i = 0, len = queue.size(); i < len; i++) {
             BoundingRegion br = queue.front();
-            if (region.containsRegion(br)){
-                insert(br);     // Insert object immediately
+            if (region.containsRegion(br)) {
+                // insert object immediately
+                insert(br);
             }
-            else{
+            else {
+                // return to queue
                 br.transform();
-                queue.push(br); // Return to queue
+                queue.push(br);
             }
             queue.pop();
         }
     }
 }
 
-bool Octree::node::insert(BoundingRegion obj){
+// dynamically insert object into node
+bool Octree::node::insert(BoundingRegion obj) {
     /*
-        Termination conditions
-        - No objects (Empty leaf node)
-        - Dimensions are less than MIN_BOUNDS
-
-        In either case, we will push back the (new) region
-        Because if there is no object, its gonna be the only object in the region and we
-        dont want to divide it any further.
-        And if the dimensions are too small, we dont want to divide it any further.
-
+        termination conditions
+        - no objects (an empty leaf node)
+        - dimensions are less than MIN_BOUNDS
     */
+
     glm::vec3 dimensions = region.calculateDimensions();
-    if (objects.size() == 0 || 
+    if (objects.size() == 0 ||
         dimensions.x < MIN_BOUNDS ||
         dimensions.y < MIN_BOUNDS ||
         dimensions.z < MIN_BOUNDS
-    )
-    {
-        // Push back object
+        ) {
+        obj.cell = this;
         objects.push_back(obj);
         return true;
     }
 
-    // Safeguard if object doesnt fit in any octant, it is added to parent
-    if (!region.containsRegion(obj)){
+    // safeguard if object doesn't fit
+    if (!region.containsRegion(obj)) {
         return parent == nullptr ? false : parent->insert(obj);
     }
 
-    // Create regions if not defined
-    BoundingRegion octants[N_CHILDREN]; // Octants are the regions of the children
-    for (int i = 0; i < N_CHILDREN; i++){
-        
-        if (children[i] == nullptr ){        // If child is not null, we want to use its region       
-            calculateBounds(octants[i], (Octant)(1 << i), parent->region); 
+    // create regions if not defined
+    BoundingRegion octants[N_CHILDREN];
+    for (int i = 0; i < N_CHILDREN; i++) {
+        if (children[i] != nullptr) {
+            // child exists, so take its region
+            octants[i] = children[i]->region;
         }
-        else{                               // If child is null, we calculate the bounds based on calculateBounds
-            octants[i] = children[i]->region;               //BREAKIG HERE
+        else {
+            // get region for this octant
+            calculateBounds(octants[i], (Octant)(1 << i), region);
         }
     }
 
     objects.push_back(obj);
 
     // determine which octants to put objects in
-    std::vector<BoundingRegion> octLists[N_CHILDREN];    // array of list of objects in each octant
+    std::vector<BoundingRegion> octLists[N_CHILDREN]; // array of list of objects in each octant
     for (int i = 0, len = objects.size(); i < len; i++) {
+        objects[i].cell = this;
         for (int j = 0; j < N_CHILDREN; j++) {
             if (octants[j].containsRegion(objects[i])) {
                 octLists[j].push_back(objects[i]);
@@ -338,43 +348,67 @@ bool Octree::node::insert(BoundingRegion obj){
             }
         }
     }
+
     // populate octants
     for (int i = 0; i < N_CHILDREN; i++) {
         if (octLists[i].size() != 0) {
-            // Objects exist in this octant
+            // objects exist in this octant
             if (children[i]) {
-             // Child octant exist
                 for (BoundingRegion br : octLists[i]) {
                     children[i]->insert(br);
                 }
             }
-            else {  //broken on second iteration of recursion
-                // Create new node, since it doesnt exist in this subregion
+            else {
+                // create new node
                 children[i] = new node(octants[i], octLists[i]);
                 children[i]->parent = this;
                 States::activateIndex(&activeOctants, i);
                 children[i]->build();
-                std::cout << "done"  <<std::endl;
                 hasChildren = true;
             }
         }
     }
 
     return true;
-
-
-
 }
 
-void Octree::node::destroy() {
-    // Clearing out children
-    if (children != nullptr){
+// check collisions with all objects in node
+void Octree::node::checkCollisionsSelf(BoundingRegion obj) {
+    for (BoundingRegion br : objects) {
+        if (br.intersectsWith(obj)) {
+            if (br.instance->instanceId != obj.instance->instanceId) {
+                // different instances collide
+                std::cout << "Instance " << br.instance->instanceId << "(" << br.instance->modelId << ") collides with " << obj.instance->instanceId << "(" << obj.instance->modelId << ")" << std::endl;
+                br.intersectsWith(obj);
+            }
+        }
+    }
+}
+
+// check collisions with all objects in child nodes
+void Octree::node::checkCollisionsChildren(BoundingRegion obj) {
+    if (children) {
         for (int flags = activeOctants, i = 0;
             flags > 0;
-            flags >> 1, i++){
-            if (States::isActive(&flags, 0)){
-                // If this child is active
-                if (children[i] != nullptr){
+            flags >>= 1, i++) {
+            if (States::isIndexActive(&flags, 0) && children[i]) {
+                children[i]->checkCollisionsSelf(obj);
+                children[i]->checkCollisionsChildren(obj);
+            }
+        }
+    }
+}
+
+// destroy object (free memory)
+void Octree::node::destroy() {
+    // clearing out children
+    if (children != nullptr) {
+        for (int flags = activeOctants, i = 0;
+            flags > 0;
+            flags >>= 1, i++) {
+            if (States::isIndexActive(&flags, 0)) {
+                // active
+                if (children[i] != nullptr) {
                     children[i]->destroy();
                     children[i] = nullptr;
                 }
@@ -382,8 +416,9 @@ void Octree::node::destroy() {
         }
     }
 
-    // Clear this node
-    while (queue.size() != 0){
+    // clear this node
+    objects.clear();
+    while (queue.size() != 0) {
         queue.pop();
     }
 }
