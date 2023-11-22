@@ -57,6 +57,7 @@ void Octree::node::build(){
         - dimensions are too small
     */
     // <= 1 objects
+
     if (objects.size() <= 1){
         treeBuilt = true;
         treeReady = true;
@@ -99,7 +100,7 @@ void Octree::node::build(){
     }
 
     // Remove objects on delList
-    while (!delList.size() != 0){
+    while (delList.size() != 0){
         objects.erase(objects.begin() + delList.top());
         delList.pop();
     }
@@ -324,7 +325,7 @@ bool Octree::node::insert(BoundingRegion obj){
     objects.push_back(obj);
 
     // determine which octants to put objects in
-    std::vector<BoundingRegion> octLists[N_CHILDREN]; // array of list of objects in each octant
+    std::vector<BoundingRegion> octLists[N_CHILDREN];    // array of list of objects in each octant
     for (int i = 0, len = objects.size(); i < len; i++) {
         for (int j = 0; j < N_CHILDREN; j++) {
             if (octants[j].containsRegion(objects[i])) {
@@ -344,17 +345,16 @@ bool Octree::node::insert(BoundingRegion obj){
             if (children[i]) {
              // Child octant exist
                 for (BoundingRegion br : octLists[i]) {
-                    std::cout << "a pending" << std::endl;
                     children[i]->insert(br);
-                    std::cout << "b pending" << std::endl;
                 }
             }
-            else {
+            else {  //broken on second iteration of recursion
                 // Create new node, since it doesnt exist in this subregion
                 children[i] = new node(octants[i], octLists[i]);
                 children[i]->parent = this;
                 States::activateIndex(&activeOctants, i);
                 children[i]->build();
+                std::cout << "done"  <<std::endl;
                 hasChildren = true;
             }
         }
