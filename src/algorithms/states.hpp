@@ -4,6 +4,7 @@
 // Using unsigned char because it has 1 byte, so you can use each bit as a boolean, having 256 states
 // since using 1 bool also uses 1 byte
 // unsigned int uses 4 bytes
+#include <iostream>
 
 namespace States {
     /*

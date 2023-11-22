@@ -209,9 +209,8 @@ void Scene::newFrame(Box &box){
     box.sizes.clear();
 
     // Process pending.
-    octree->processPending();   // "Process new objects"
-    octree->update(box);           // "Are there any destroyed objects?"
-    std::cout << "Pending processed finally ok" << std::endl;
+    octree->processPending();       // "Process new objects"
+    octree->update(box);            // "Are there any destroyed objects?"
 
     // Send new frame to window
     glfwSwapBuffers(window);

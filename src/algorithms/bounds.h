@@ -28,10 +28,10 @@ class BoundingRegion {
             -ogCenter is the center of the region in the original octree
             -ogRadius is the radius of the region in the original octree
         */
-        glm::vec3 center;
-        float radius;
-        glm::vec3 ogCenter;
-        float ogRadius;
+        glm::vec3 center = glm::vec3(0.0f);
+        float radius = 0.0f;
+        glm::vec3 ogCenter = glm::vec3(0.0f);
+        float ogRadius = 0.0f;
 
 
         /*
@@ -40,10 +40,10 @@ class BoundingRegion {
             -ogMin is the minimum of the region in the original octree
             -ogMax is the maximum of the region in the original octree
         */
-        glm::vec3 min;
-        glm::vec3 max;
-        glm::vec3 ogMin;
-        glm::vec3 ogMax;
+        glm::vec3 min = glm::vec3(0.0f);
+        glm::vec3 max = glm::vec3(0.0f);
+        glm::vec3 ogMin = glm::vec3(0.0f);
+        glm::vec3 ogMax = glm::vec3(0.0f);
 
         /*
             Constructors

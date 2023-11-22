@@ -45,9 +45,9 @@ namespace Octree {
     class node{
         public:
             node* parent;
-            node* children[N_CHILDREN]; // 8 children, octree
+            node* children[N_CHILDREN] = {0};  // 8 children, octree
 
-            unsigned char activeOctants; // Bitmask for active octants
+            unsigned char activeOctants = 0x00; // Bitmask for active octants
 
             bool hasChildren = false;
 
