@@ -5,6 +5,13 @@
 
 #include "../physics/rigidbody.h"
 
+/*
+    Forward declaration
+*/
+namespace Octree {
+    class node;
+}
+
 enum class BoundTypes : unsigned char {
     //unsigned char to make it less memory intensive
     AABB = 0x00, // 0x00 = 0 Axis Aligned Bounding Box
@@ -20,7 +27,7 @@ class BoundingRegion {
             Octree region values
 
         */
-        RigidBody* instance; //instance of the rigidbody that is inside the region
+        RigidBody* instance; // Instance of the rigidbody that is inside the region
 
         /*
             Sphere values (Even though AABB will also have center and radius. (kinda))

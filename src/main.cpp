@@ -141,7 +141,9 @@ int main(){
         lastFrame = currentTime;
         std::cout << "FPS: " << 1.0f / dt << std::endl;
         
+        std::cout << "Update scene" << std::endl;
         scene.update();                                 // Update screen values
+        std::cout << "Process input" << std::endl;
         processInput(dt);                               // Process input
 
         for (int i = 0; i < sphere.currentNumInstances; i++){
@@ -149,6 +151,7 @@ int main(){
                 scene.markForDeletion(sphere.instances[i]->instanceId);
             }
         }
+        std::cout << "Drawing launched" << std::endl;
         if (sphere.currentNumInstances > 0){            // Render launch objects
             scene.renderShader(shader);                     
             scene.renderInstances(sphere.id, shader, dt);
@@ -161,8 +164,11 @@ int main(){
         box.render(boxShader);                          // Box is not instanced
 
         // Send new frame to window
+        std::cout << "New frame" << std::endl;
+
         scene.newFrame(box);
         scene.clearDeadInstances();             // Delete instances after updating octree
+        std::cout << "End" << std::endl;
     }
     scene.cleanup();
     return 0;

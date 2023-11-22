@@ -42,3 +42,8 @@ x..004      //  4
 x..008      //  8
 x..010      // 16
 x..020      // 32
+
+
+Octant node:
+octants of node are its 8 children.
+So, a note can control itself divided by 8. Remebering this makes things less confusing

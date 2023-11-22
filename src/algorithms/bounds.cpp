@@ -1,5 +1,8 @@
-#include "bounds.h"
 #include <algorithm> // std::max, std::min compilation issue3
+
+#include "bounds.h"
+#include "octree.h"
+
 
 BoundingRegion::BoundingRegion(BoundTypes type)
     : type(type){}

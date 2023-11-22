@@ -22,6 +22,8 @@
 
 */
 class Model;
+class BoundingRegion;
+class Box;
 
 namespace Octree {
     enum class Octant : unsigned char{
@@ -47,7 +49,7 @@ namespace Octree {
             node* parent;
             node* children[N_CHILDREN] = {0};  // 8 children, octree
 
-            unsigned char activeOctants = 0x00; // Bitmask for active octants
+            unsigned char activeOctants = 0x00; // Bitmask for active octants, mapping Octant enum to regions
 
             bool hasChildren = false;
 
