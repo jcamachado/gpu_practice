@@ -5,7 +5,9 @@
 
 
 BoundingRegion::BoundingRegion(BoundTypes type)
-    : type(type){}
+    : type(type){
+        isEmptyInstance = true;
+    }
 
 BoundingRegion::BoundingRegion(glm::vec3 center, float radius)
     :type(BoundTypes::SPHERE), 

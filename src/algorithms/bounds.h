@@ -22,12 +22,18 @@ enum class BoundTypes : unsigned char {
 class BoundingRegion {
     public:
         BoundTypes type;
+        bool isEmptyInstance = false;
 
         /*
             Octree region values
 
         */
         RigidBody* instance; // Instance of the rigidbody that is inside the region
+
+        /*
+            Octree node values
+        */  
+        Octree::node* cell; // Cell is a node, therefore, an octant
 
         /*
             Sphere values (Even though AABB will also have center and radius. (kinda))

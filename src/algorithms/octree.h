@@ -46,7 +46,9 @@ namespace Octree {
 
     class node{
         public:
-            node* parent;
+            node* parent = nullptr;
+            // node* parent = 0;
+            // node* parent;
             node* children[N_CHILDREN] = {0};  // 8 children, octree
 
             unsigned char activeOctants = 0x00; // Bitmask for active octants, mapping Octant enum to regions
@@ -59,7 +61,8 @@ namespace Octree {
             short maxLifespan = 8;              // Duration of empty node before it is destroyed
             short currentLifespan = -1;
 
-            std::vector<BoundingRegion> objects;
+            // initialize with empty vector
+            std::vector<BoundingRegion> objects = {};
             std::queue<BoundingRegion> queue;   // Queue for objects to be added to tree
 
             BoundingRegion region;              // All will be of type AABB (Axis Aligned Bounding Box) for now
@@ -85,6 +88,11 @@ namespace Octree {
             void processPending();
 
             bool insert(BoundingRegion obj);
+
+            // Check collisions with all objects in the node
+            void checkCollisionsSelf(BoundingRegion obj);
+            // Check collisions with all objects in child node
+            void checkCollisionsChildren(BoundingRegion obj);
 
             void destroy();
     };

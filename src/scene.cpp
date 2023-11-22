@@ -269,6 +269,8 @@ void Scene::cleanup(){
     models.traverse([](Model* model) -> void {      // Lambda function, return is type(->) void
         model->cleanup();
     });
+    
+    octree->destroy();
 
     glfwTerminate();
 }

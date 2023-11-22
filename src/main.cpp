@@ -133,17 +133,15 @@ int main(){
     
     scene.initInstances();                              // Instantiate instances
     scene.prepare(box);                                    // Builds octree  
+    std::cout << "Start loop" << std::endl;
 
     while (!scene.shouldClose()){                       // Check if window should close
-        std::cout << "Start" << std::endl;
         double currentTime = glfwGetTime();
         dt = currentTime - lastFrame;
         lastFrame = currentTime;
-        std::cout << "FPS: " << 1.0f / dt << std::endl;
         
-        std::cout << "Update scene" << std::endl;
         scene.update();                                 // Update screen values
-        std::cout << "Process input" << std::endl;
+        std::cout << "Scene updated" << std::endl;
         processInput(dt);                               // Process input
 
         for (int i = 0; i < sphere.currentNumInstances; i++){
@@ -151,7 +149,6 @@ int main(){
                 scene.markForDeletion(sphere.instances[i]->instanceId);
             }
         }
-        std::cout << "Drawing launched" << std::endl;
         if (sphere.currentNumInstances > 0){            // Render launch objects
             scene.renderShader(shader);                     
             scene.renderInstances(sphere.id, shader, dt);
@@ -168,7 +165,6 @@ int main(){
 
         scene.newFrame(box);
         scene.clearDeadInstances();             // Delete instances after updating octree
-        std::cout << "End" << std::endl;
     }
     scene.cleanup();
     return 0;
