@@ -73,6 +73,9 @@ int main(){
     scene.registerModel(&lamp);
     scene.registerModel(&sphere);
 
+    Box box;
+    box.init();                 // Box is not instanced
+
     scene.loadModels();         // Load all model data
 
     /*
@@ -129,15 +132,16 @@ int main(){
     scene.activeSpotLights = 1;
     
     scene.initInstances();                              // Instantiate instances
+    scene.prepare(box);                                    // Builds octree  
+    std::cout << "Start loop" << std::endl;
 
     while (!scene.shouldClose()){                       // Check if window should close
         double currentTime = glfwGetTime();
         dt = currentTime - lastFrame;
         lastFrame = currentTime;
-        std::cout << "FPS: " << 1.0f / dt << std::endl;
         
         scene.update();                                 // Update screen values
-     
+        std::cout << "Scene updated" << std::endl;
         processInput(dt);                               // Process input
 
         for (int i = 0; i < sphere.currentNumInstances; i++){
@@ -150,23 +154,27 @@ int main(){
             scene.renderInstances(sphere.id, shader, dt);
         }
 
-        scene.renderShader(lampShader);                  // Render lamps
+        scene.renderShader(lampShader, false);                  // Render lamps
         scene.renderInstances(lamp.id, lampShader, dt);
 
+        scene.renderShader(boxShader, false);           // Render boxes
+        box.render(boxShader);                          // Box is not instanced
+
         // Send new frame to window
-        scene.clearDeadInstances();
-        scene.newFrame();
+        std::cout << "New frame" << std::endl;
+
+        scene.newFrame(box);
+        scene.clearDeadInstances();             // Delete instances after updating octree
     }
-    
     scene.cleanup();
     return 0;
 }
 
 void launchItem(float dt){
-    RigidBody* rb = scene.generateInstance(sphere.id, glm::vec3(1.0f), 1.0f, cam.cameraPos-glm::vec3(0.0f, 0.0f, 0.0f));
+    RigidBody* rb = scene.generateInstance(sphere.id, glm::vec3(0.05f), 1.0f, cam.cameraPos-glm::vec3(0.0f, 0.0f, 0.0f));
     // RigidBody* rb = scene.generateInstance(sphere.id, glm::vec3(1.0f), 1.0f, cam.cameraPos-glm::vec3(-15.0f, 10.0f, 10.0f));
     if (rb){
-        rb->transferEnergy(1000.0f, cam.cameraFront);
+        rb->transferEnergy(100.0f, cam.cameraFront);
         rb->applyAcceleration(Environment::gravity);
     }
 }

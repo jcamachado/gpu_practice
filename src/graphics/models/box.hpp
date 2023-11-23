@@ -11,9 +11,13 @@
 #include "../../algorithms/bounds.h"
 
 #define UPPER_BOUND 100 //3d vectors, max number of instances
+/*
+    This class is just for lines, no meshes, so we cant reuse the Mesh class and 
+    we have to generate the VAO, VBO and EBO
 
-//This class is just for lines, no meshes
-//So we cant reuse the Mesh class, and we have to generate the VAO, VBO and EBO
+    Also, it is this class responsibility to draw the lines around the bounding regions
+    So doesnt matter if it is a region from a model or a region from an octree cell. It will draw.
+*/
 class Box{
     public:
         std::vector<glm::vec3> positions;
@@ -50,32 +54,28 @@ class Box{
                 1, 5,
                 2, 6
             };
-            // generate VAO
-            VAO.generate();
+            VAO.generate();                                         // generate VAO
             VAO.bind();
 
-            // generate EBO
-            VAO["EBO"] = BufferObject(GL_ELEMENT_ARRAY_BUFFER);
+
+            VAO["EBO"] = BufferObject(GL_ELEMENT_ARRAY_BUFFER);     // generate EBO
             VAO["EBO"].generate();
             VAO["EBO"].bind();
             VAO["EBO"].setData<GLuint>(indices.size(), &indices[0], GL_STATIC_DRAW);
             
-            // generate VBO
-            VAO["VBO"] = BufferObject(GL_ARRAY_BUFFER);
+            VAO["VBO"] = BufferObject(GL_ARRAY_BUFFER);             // generate VBO
             VAO["VBO"].generate();
             VAO["VBO"].bind();
             VAO["VBO"].setData<GLfloat>(vertices.size(), &vertices[0], GL_STATIC_DRAW);
             VAO["VBO"].setAttrPointer<GLfloat>(0, 3, GL_FLOAT, 3, 0);
-
-            // position VBO - Dynamic
-            VAO["posVBO"] = BufferObject(GL_ARRAY_BUFFER);
+            
+            VAO["posVBO"] = BufferObject(GL_ARRAY_BUFFER);          // position VBO - Dynamic
             VAO["posVBO"].generate();
             VAO["posVBO"].bind();
             VAO["posVBO"].setData<glm::vec3>(UPPER_BOUND, NULL, GL_DYNAMIC_DRAW);
             VAO["posVBO"].setAttrPointer<glm::vec3>(1, 3, GL_FLOAT, 1, 0, 1);
 
-            // size VBO - Dynamic
-            VAO["sizeVBO"] = BufferObject(GL_ARRAY_BUFFER);
+            VAO["sizeVBO"] = BufferObject(GL_ARRAY_BUFFER);         // size VBO - Dynamic
             VAO["sizeVBO"].generate();
             VAO["sizeVBO"].bind();
             VAO["sizeVBO"].setData<glm::vec3>(UPPER_BOUND, NULL, GL_DYNAMIC_DRAW);

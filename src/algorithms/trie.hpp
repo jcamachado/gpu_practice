@@ -5,18 +5,7 @@
 #include <vector>
 #include <stdexcept>
 
-/*  
-    Trie is a data structure that is used to store strings. It is a tree structure where each node is a character.
-    Ex: Trie of "cat", "car", "dog", "doge", "doggo"
-    root -> c -> a -> t                 // ca as parent of cat and car
-                   -> r
-        -> d -> o -> g -> e             // dog and doge
-                       -> g -> o        // dog and parent of doge and doggo
-                
-
-    Using trie to replace the mapping of ids in Scene.h for efficiency.
-*/
-namespace trie {                
+namespace trie {
 	struct Range {
 		int lower;
 		int upper;

@@ -137,7 +137,7 @@ void Model::render(Shader shader, float dt, Scene *scene, bool setModel){
             positions.push_back(instances[i]->pos);
             sizes.push_back(instances[i]->size);
         }
-
+        
         posVBO.bind();
         posVBO.updateData<glm::vec3>(0, currentNumInstances, &positions[0]);
         sizeVBO.bind();
@@ -146,6 +146,7 @@ void Model::render(Shader shader, float dt, Scene *scene, bool setModel){
 
     shader.setFloat("material.shininess", 0.5f);
 
+    
     for (unsigned int i = 0, noMeshes = meshes.size();
         i < noMeshes;
         i++) {
