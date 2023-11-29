@@ -43,6 +43,12 @@ Models so far:
 3 - https://sketchfab.com/3d-models/sphere-b31b12ffa93a40f48c9d991b6f168f4d
 
 
+
+Transitioning the compiler to clang (shall delete all previous build/ content)
+sudo apt install libstdc++-12-dev
+export CC=/usr/bin/clang
+export CXX=/usr/bin/clang++
+
 Installed libs (some others may be necessary to install):
 sudo apt-get install libgl1-mesa-dev (for opengl)
 sudo apt-get install libharfbuzz-dev (for freetype)
@@ -53,3 +59,4 @@ ASSIMP (included manually): Gotta copy the assimp-x-y-z/build/include to an /lib
     Where x, y and z are Major, minor and patch versions.
 FREETYPE (included manually)
 stb (included manually)
+
