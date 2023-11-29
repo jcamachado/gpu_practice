@@ -44,7 +44,9 @@ Models so far:
 
 
 
-Transitioning the compiler to clang (shall delete all previous build/ content)
+Transitioning the compiler to clang 
+-Last commit using gcc: commit ff4608ba74840e8611a03dfdf5b3ba66bee3578c
+-Delete all previous build/ content
 sudo apt install libstdc++-12-dev
 export CC=/usr/bin/clang
 export CXX=/usr/bin/clang++
