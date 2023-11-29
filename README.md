@@ -1,5 +1,7 @@
 # gpu_practice
 
+Environment:
+Ubuntu 22.04
 g++ 11.4.0
 gcc 11.4.0 x64
 gnu 17
@@ -41,3 +43,13 @@ Models so far:
 3 - https://sketchfab.com/3d-models/sphere-b31b12ffa93a40f48c9d991b6f168f4d
 
 
+Installed libs (some others may be necessary to install):
+sudo apt-get install libgl1-mesa-dev (for opengl)
+sudo apt-get install libharfbuzz-dev (for freetype)
+
+Manually included libs
+GLAD : glad.c on same level as main.cpp. Also, might change the reference of glad.h inside glad.c dependending on their relative directories.
+ASSIMP (included manually): Gotta copy the assimp-x-y-z/build/include to an /lib/assimp/ folder. assimp/ and assimp-x-y-z/ must be in the same directory.
+    Where x, y and z are Major, minor and patch versions.
+FREETYPE (included manually)
+stb (included manually)

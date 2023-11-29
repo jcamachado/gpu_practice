@@ -4,8 +4,9 @@ set(CMAKE_CXX_STANDARD 20)
 cmake_policy(SET CMP0072 NEW)
 
 set(OpenGL_GL_PREFERENCE GLVND)
-
+find_package(Freetype REQUIRED VERSION 2.13.2)
 add_subdirectory(lib/assimp-5.3.1)
+add_subdirectory(lib/freetype-2.13.2)
 add_executable(my_particle_system
     assets/lamp.fs
     assets/object.fs
@@ -68,10 +69,13 @@ add_executable(my_particle_system
     src/physics/environment.h
     src/physics/environment.cpp
 )
+target_include_directories(my_particle_system PRIVATE ${FREETYPE_INCLUDE_DIRS})
 #including the header files glad/glad.h and stb_image
 # target_include_directories(my_particle_system PRIVATE ${CMAKE_SOURCE_DIR}/lib)
 target_link_libraries(my_particle_system
     glfw 
     ${OPENGL_LIBRARIES}
-    assimp
+    assimp    
+    ${FREETYPE_LIBRARIES}  # Add this line
+
 )
