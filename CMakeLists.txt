@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(my_particle_system VERSION 0.1.0)
+set(CMAKE_CXX_STANDARD 20)
 cmake_policy(SET CMP0072 NEW)
 
-find_package(OpenGL 3.3 REQUIRED)
+set(OpenGL_GL_PREFERENCE GLVND)
 
 add_subdirectory(lib/assimp-5.3.1)
 add_executable(my_particle_system
@@ -71,6 +72,6 @@ add_executable(my_particle_system
 # target_include_directories(my_particle_system PRIVATE ${CMAKE_SOURCE_DIR}/lib)
 target_link_libraries(my_particle_system
     glfw 
-    GL
+    ${OPENGL_LIBRARIES}
     assimp
 )
