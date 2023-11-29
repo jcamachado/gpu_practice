@@ -1,7 +1,8 @@
 #ifndef KEYBOARD_H
 #define KEYBOARD_H
 
-#include "../../lib/glad/glad.h" // include glad to get all the required OpenGL headers
+#include <glad/glad.h>
+// #include "../../lib/glad/glad.h" // include glad to get all the required OpenGL headers
 #include <GLFW/glfw3.h>
 
 class Keyboard{

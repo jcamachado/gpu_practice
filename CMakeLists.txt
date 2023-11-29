@@ -21,9 +21,8 @@ add_executable(my_particle_system
 
     lib/stb.cpp 
     lib/stb/stb_image.h
-    lib/glad/glad.h
+    lib/glad.c
     
-    src/glad.c
     src/main.cpp 
     src/scene.h 
     src/scene.cpp 
@@ -69,7 +68,7 @@ add_executable(my_particle_system
     src/physics/environment.h
     src/physics/environment.cpp
 )
-target_include_directories(my_particle_system PRIVATE ${FREETYPE_INCLUDE_DIRS})
+target_include_directories(my_particle_system PRIVATE ${FREETYPE_INCLUDE_DIRS} ${CMAKE_SOURCE_DIR}/lib)
 #including the header files glad/glad.h and stb_image
 # target_include_directories(my_particle_system PRIVATE ${CMAKE_SOURCE_DIR}/lib)
 target_link_libraries(my_particle_system

@@ -2,7 +2,8 @@
 #define BOX_HPP
 
 //include glad
-#include "../../../lib/glad/glad.h"
+#include <glad/glad.h>
+// #include "../../../lib/glad/glad.h"
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <vector>

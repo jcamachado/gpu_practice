@@ -2,7 +2,7 @@
 #ifndef MESH_H
 #define MESH_H
 
-#include "../../lib/glad/glad.h"
+// #include "../../lib/glad/glad.h"
 #include <GLFW/glfw3.h>
 
 #include <vector>
