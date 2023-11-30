@@ -19,6 +19,7 @@
 
 #include "algorithms/states.hpp"
 
+#include "graphics/cubemap.h"
 #include "graphics/light.h"
 #include "graphics/model.h"
 #include "graphics/shader.h"
@@ -65,7 +66,19 @@ int main(){
     Shader boxShader("assets/instanced/box.vs", "assets/instanced/box.fs");
     Shader lampShader("assets/instanced/instanced.vs", "assets/lamp.fs");
     Shader shader("assets/instanced/instanced.vs", "assets/object.fs");
+    Shader skyboxShader("assets/skybox/skybox.vs", "assets/skybox/sky.fs");
     Shader textShader("assets/text.vs", "assets/text.fs");
+    skyboxShader.activate();
+    skyboxShader.set3Float("min", 0.047f, 0.016f, 0.239f);
+    skyboxShader.set3Float("max", 0.945f, 1.000f, 0.682f);
+
+
+    /*
+        Skybox
+    */
+    Cubemap skybox;
+    skybox.init();
+    // skybox.loadTextures("assets/skybox");
 
     /*
         Models
@@ -147,6 +160,10 @@ int main(){
         scene.update();                                 // Update screen values
         processInput(dt);                               // Process input
 
+        skyboxShader.activate();
+        skyboxShader.setFloat("time", scene.variableLog["time"].val<float>());
+        skybox.render(skyboxShader, &scene); //Render skybox
+
         scene.renderText(
             "comic", 
             textShader, 
@@ -196,6 +213,7 @@ int main(){
         scene.newFrame(box);
         scene.clearDeadInstances();             // Delete instances after updating octree
     }
+    skybox.cleanup();
     scene.cleanup();
     return 0;
 }

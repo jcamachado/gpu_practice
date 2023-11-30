@@ -19,6 +19,17 @@ add_executable(my_particle_system
     assets/instanced/box.vs
     assets/instanced/instanced.vs
 
+    assets/skybox/skybox.fs
+    assets/skybox/skybox.vs
+    assets/skybox/sky.fs
+    assets/skybox/right.png
+    assets/skybox/left.png
+    assets/skybox/top.png
+    assets/skybox/bottom.png
+    assets/skybox/front.png
+    assets/skybox/back.png
+
+
     assets/models/sphere/scene.gltf
     assets/models/m4a1/scene.gltf
 
@@ -39,9 +50,11 @@ add_executable(my_particle_system
     src/algorithms/octree.cpp
     src/algorithms/trie.hpp
 
+    src/graphics/cubemap.h
+    src/graphics/cubemap.cpp
+    src/graphics/glmemory.hpp
     src/graphics/light.h
     src/graphics/light.cpp
-    src/graphics/glmemory.hpp
     src/graphics/material.h
     src/graphics/material.cpp
     src/graphics/mesh.h

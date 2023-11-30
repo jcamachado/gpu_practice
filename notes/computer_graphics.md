@@ -68,3 +68,6 @@ float diff = max(dot(norm, lightDir), 0.0); //when light is perpendicular to the
 
 Takes the normal vector and updates its position based on the possibly updated model position
 Normal = mat3(transpose(inverse(model))) * aNormal; //Normal in world space
+
+Cubemaps: More convenient to use since it only takes one textuer slot. We add 6 textures, tie them together so they only take 1 texture slot.
+And since cube and cubemap have the same vertices, we only have to pass one set of vertices to be drawn by the gpu.
