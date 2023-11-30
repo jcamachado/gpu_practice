@@ -50,6 +50,8 @@ add_executable(my_particle_system
     src/graphics/model.cpp
     src/graphics/shader.h
     src/graphics/shader.cpp
+    src/graphics/text.h
+    src/graphics/text.cpp
     src/graphics/texture.h
     src/graphics/texture.cpp
 

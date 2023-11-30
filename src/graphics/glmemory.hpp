@@ -80,34 +80,39 @@ class BufferObject {
 };
 
 /*
-    class for array objects
+    Class for array objects
     - VAOs
 */
 
 class ArrayObject {
     public:
-        // value/location
+        // Value/location
         GLuint val;
 
-        // map of names to buffers
+        // Map of names to buffers
         std::map<const char*, BufferObject> buffers;
 
-        // get buffer (override [])
+        // Get buffer (override [])
         BufferObject& operator[](const char* key) {
             return buffers[key];
         }
 
-        // generate object
+        // Generate object
         void generate() {
             glGenVertexArrays(1, &val);
         }
 
-        // bind
+        // Bind
         void bind() {
             glBindVertexArray(val);
         }
 
-        // draw
+        // Draw arrays
+        void draw(GLenum mode, GLuint first, GLuint count){
+            glDrawArrays(mode, first, count);
+        }
+
+        // Draw
         void draw(GLenum mode, GLuint count, GLenum type, GLint indices, GLuint instanceCount=1) {
             // video worked with glDrawElementsInstanced(mode, count, type, (void*)indices, instanceCount);
             // but here it is intermitently breaking the build
@@ -116,7 +121,7 @@ class ArrayObject {
             glDrawElementsInstanced(mode, count, type, (GLvoid*)(intptr_t)indices, instanceCount);
         }
 
-        // cleanup (instead of only deleting the VAO1, we also delete its children, all the the VBOs and EBOs)
+        // Cleanup (instead of only deleting the VAO1, we also delete its children, all the the VBOs and EBOs)
         void cleanup() {
             glDeleteVertexArrays(1, &val);
             // pair is a key value pair [key, value], where key is a const char* and value is a BufferObject 
@@ -126,7 +131,7 @@ class ArrayObject {
             }
         }
 
-        // clear array object (bind 0)
+        // Clear array object (bind 0)
         static void clear() {
             glBindVertexArray(0);
         }

@@ -65,6 +65,7 @@ int main(){
     Shader boxShader("assets/instanced/box.vs", "assets/instanced/box.fs");
     Shader lampShader("assets/instanced/instanced.vs", "assets/lamp.fs");
     Shader shader("assets/instanced/instanced.vs", "assets/object.fs");
+    Shader textShader("assets/text.vs", "assets/text.fs");
 
     /*
         Models
@@ -133,16 +134,46 @@ int main(){
     
     scene.initInstances();                              // Instantiate instances
     scene.prepare(box);                                    // Builds octree  
-    std::cout << "Start loop" << std::endl;
+    scene.variableLog["time"] = (double)0.0;
 
     while (!scene.shouldClose()){                       // Check if window should close
         double currentTime = glfwGetTime();
         dt = currentTime - lastFrame;
         lastFrame = currentTime;
+
+        scene.variableLog["time"] += dt;
+        scene.variableLog["fps"] = 1.0f/dt;
         
         scene.update();                                 // Update screen values
-        std::cout << "Scene updated" << std::endl;
         processInput(dt);                               // Process input
+
+        scene.renderText(
+            "comic", 
+            textShader, 
+            "Hello World!!", 
+            50.0f, 
+            50.0f, 
+            glm::vec2(1.0f), 
+            glm::vec3(0.5f, 0.6f, 1.0f)
+        );
+        scene.renderText(
+            "comic", 
+            textShader, 
+            "Time: " + scene.variableLog["time"].dump(), 
+            50.0f, 
+            550.0f, 
+            glm::vec2(1.0f), 
+            glm::vec3(0.5f, 0.6f, 1.0f)
+        );
+        scene.renderText(
+            "comic", 
+            textShader, 
+            "FPS: " + scene.variableLog["fps"].dump(), 
+            50.0f, 
+            550.0f - 40.0f, 
+            glm::vec2(1.0f), 
+            glm::vec3(0.5f, 0.6f, 1.0f)
+        );
 
         for (int i = 0; i < sphere.currentNumInstances; i++){
             if (glm::length(cam.cameraPos - sphere.instances[i]->pos) > 250.0f){
@@ -159,10 +190,9 @@ int main(){
 
         scene.renderShader(boxShader, false);           // Render boxes
         box.render(boxShader);                          // Box is not instanced
+        
 
         // Send new frame to window
-        std::cout << "New frame" << std::endl;
-
         scene.newFrame(box);
         scene.clearDeadInstances();             // Delete instances after updating octree
     }

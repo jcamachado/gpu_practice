@@ -99,14 +99,41 @@ bool Scene::init() {
     
     /*
         Set rendering parameters
+        - GL_DEPTH_TEST: Doesn't show vertices not visible to camera (back of objects)
+        - GL_BLEND: Allows transparency between objects (text texture)
+        - glBlendFunc: Sets blending function (how to blend)
+        - glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED): Disable cursor like in FPS games
+
+
     */
-    glEnable(GL_DEPTH_TEST); // Doesn't show vertices not visible to camera (back of objects)
+    glEnable(GL_DEPTH_TEST); 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     /*
         Init octree
     */
     octree = new Octree::node(BoundingRegion(glm::vec3(-16.0f), glm::vec3(16.0f)));
+
+    /*
+        Init FreeType library
+    */
+    if (FT_Init_FreeType(&ft)){
+        std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
+        return false;
+    }
+
+    /*
+        Insert font
+    */
+    fonts.insert("comic", TextRenderer(32));
+    if (!fonts["comic"].loadFont(ft, "assets/fonts/Comic_Sans_MS.ttf")){
+        std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
+        return false;
+    }
+
+    FT_Done_FreeType(ft);
 
     return true;
 }
@@ -166,6 +193,7 @@ void Scene::processInput(float dt){
             (float)scrWidth / (float)scrHeight,             // Aspect ratio
             0.1f, 250.0f                                    // Near and far clipping planes
         );
+        textProjection = glm::ortho(0.0f, (float)scrWidth, 0.0f, (float)scrHeight);
 
         // Set position at end
         cameraPos = cameras[activeCamera]->cameraPos;
@@ -261,6 +289,21 @@ void Scene::renderInstances(std::string modelId, Shader shader, float dt){
         models[modelId]->render(shader, dt, this);
 }
 
+void Scene::renderText(
+    std::string font,
+    Shader shader,
+    std::string text,
+    float x, 
+    float y, 
+    glm::vec2 scale, 
+    glm::vec3 color
+){
+    shader.activate();
+    shader.setMat4("projection", textProjection);
+
+    fonts[font].render(shader, text, x, y, scale, color);
+}
+
 /*
     Cleanup method
 */
@@ -269,7 +312,17 @@ void Scene::cleanup(){
     models.traverse([](Model* model) -> void {      // Lambda function, return is type(->) void
         model->cleanup();
     });
+
+    // Cleanup Tries
+    models.cleanup();
+    instances.cleanup();
+
+    // Cleanup fonts
+    fonts.traverse([](TextRenderer tr) -> void {
+        tr.cleanup();
+    });
     
+    // Destroy octree
     octree->destroy();
 
     glfwTerminate();

@@ -3,15 +3,20 @@
 // scene has everything that screen have and more.
 
 #include "../lib/glad/glad.h"
+#include "../lib/jsoncpp/json.hpp"
 #include <GLFW/glfw3.h>
 
 #include <vector>
 
 #include <glm/glm.hpp>
 
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 #include "graphics/model.h"
 #include "graphics/light.h"
 #include "graphics/shader.h"
+#include "graphics/text.h"
 
 #include "graphics/models/box.hpp"
 
@@ -40,6 +45,13 @@ class Scene {
         trie::Trie<RigidBody*> instances;
         std::vector<RigidBody*> instancesToDelete;
         Octree::node* octree;                           // Root for the scene
+        
+        /*
+            Map for logging variables
+        */
+        jsoncpp::json variableLog;
+        FT_Library ft;
+        trie::Trie<TextRenderer> fonts;
 
         /*
             Callbacks
@@ -67,16 +79,31 @@ class Scene {
 
         /*
             Main loop methods
+            -processInput() calls io methods
+            -update() calls renderShader() and renderInstances() and update screen before each frame
+            -newFrame() updates values to be used in the next frame
+            -renderShader() set uniform shader variables (for lighting, ex: setFloat, setBool, etc)
+            -renderInstances() Render all instances of a model
+            -renderText() Render text
         */
-        void processInput(float dt);                                    // Process input
-        void update();                                                  // Update screen before each frame
-        void newFrame(Box &box);                                        // Update screen before after each frame
-        void renderShader(Shader shader, bool applyLighting = true);    // Set uniform shader variables (lighting, etc)
-        void renderInstances(                                           // Render all instances of a model
+        void processInput(float dt);
+        void update();
+        void newFrame(Box &box);                                        
+        void renderShader(Shader shader, bool applyLighting = true);
+        void renderInstances(
             std::string modelId, 
             Shader shader, 
             float dt
-        );                           
+        );
+        void renderText(
+            std::string font,
+            Shader shader,
+            std::string text,
+            float x, 
+            float y, 
+            glm::vec2 scale, 
+            glm::vec3 color
+        );
 
         /*
             Cleanup method
@@ -129,11 +156,14 @@ class Scene {
 
         /*
             Camera
+            - projection will use perspective projection
+            - textProjection will use orthographic projection
         */
         std::vector<Camera*> cameras;
         unsigned int activeCamera;
         glm::mat4 view;
         glm::mat4 projection;
+        glm::mat4 textProjection;   
         glm::vec3 cameraPos;
 
     protected:
