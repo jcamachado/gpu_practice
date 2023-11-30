@@ -11,27 +11,6 @@ find_package(Freetype REQUIRED VERSION 2.13.2)
 add_subdirectory(lib/assimp-5.3.1)
 add_subdirectory(lib/freetype-2.13.2)
 add_executable(my_particle_system
-    assets/lamp.fs
-    assets/object.fs
-    assets/object.vs
-    
-    assets/instanced/box.fs
-    assets/instanced/box.vs
-    assets/instanced/instanced.vs
-
-    assets/skybox/skybox.fs
-    assets/skybox/skybox.vs
-    assets/skybox/sky.fs
-    assets/skybox/right.png
-    assets/skybox/left.png
-    assets/skybox/top.png
-    assets/skybox/bottom.png
-    assets/skybox/front.png
-    assets/skybox/back.png
-
-
-    assets/models/sphere/scene.gltf
-    assets/models/m4a1/scene.gltf
 
     lib/glad/glad.h
     lib/jsoncpp/json.hpp
