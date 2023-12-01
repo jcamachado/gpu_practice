@@ -1,12 +1,16 @@
 #version 330 core
-// define constant por max point lights
-#define MAX_POINT_LIGHTS 20
-// define constant por max spot lights
-#define MAX_SPOT_LIGHTS 5
+
+/*
+    The values of uniform arrays cannot be dynamically changed, so we need to set a maximum number of lights
+*/
+#define MAX_POINT_LIGHTS 20     
+#define MAX_SPOT_LIGHTS 5       
+
+#define DEFAULT_GAMA 2.2        // 2.2 is the usual value for gamma
 
 struct Material {
-    vec4 diffuse; //texture, 1 per mesh
-    vec4 specular;  //texture, 1 per mesh
+    vec4 diffuse;               //texture, 1 per mesh
+    vec4 specular;              //texture, 1 per mesh
     float shininess;
 };
 
@@ -69,6 +73,7 @@ uniform Material material;
 uniform int noTexture;
 uniform vec3 viewPos;
 uniform bool useBlinn;
+uniform bool useGamma;
 
 
 
@@ -106,6 +111,10 @@ void main(){
     // Spot lights
     for(int i = 0; i < nSpotLights; i++){
         result += calcSpotLight(i, norm, viewDir, diffMap, specMap);
+    }
+
+    if (useGamma){
+        result.rgb = pow(result.rgb, vec3(1.0/DEFAULT_GAMA));
     }
 
     FragColor = result;

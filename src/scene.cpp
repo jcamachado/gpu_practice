@@ -137,6 +137,7 @@ bool Scene::init() {
 
     // Setup lighting values
     variableLog["useBlinn"] = true;
+    variableLog["useGamma"] = true;
 
     return true;
 }
@@ -205,6 +206,12 @@ void Scene::processInput(float dt){
         if (Keyboard::keyWentUp(GLFW_KEY_B)){
             variableLog["useBlinn"] = !variableLog["useBlinn"].val<bool>();
             std::cout << "Blinn: " << variableLog["useBlinn"].val<bool>() << std::endl;
+        }
+
+        // Toggle gamma correction parameter if necessary
+        if (Keyboard::keyWentUp(GLFW_KEY_G)){
+            variableLog["useGamma"] = !variableLog["useGamma"].val<bool>();
+            std::cout << "Gamma: " << variableLog["useGamma"].val<bool>() << std::endl;
         }
 
         /*
@@ -293,6 +300,7 @@ void Scene::renderShader(Shader shader, bool applyLighting){
         dirLight->render(shader);
 
         shader.setBool("useBlinn", variableLog["useBlinn"].val<bool>());
+        shader.setBool("useGamma", variableLog["useGamma"].val<bool>());
     }
 }
 

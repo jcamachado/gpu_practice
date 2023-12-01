@@ -61,6 +61,26 @@ Creates a halfway vector(**h**) between Viewer vector (**v**) and light source v
 **h** = normalize(**l** + **v**)
 
 
+### Gamma Correction
+
+We expect that the color input to the system to be output on the screen. But this is not what happens.
+The function of outputColor(inputColor) will be referred as **"Expected color" E(x)**.
+We expect that this function E(x) to be linear. But in monitors, this functions are usually exponential, quadratic.
+**Monitor output -> M(x)**. Where this function usually is: M(x) = x<sup>γ</sup> (γ is gamma)
+
+So, to make things closer to the ideal and nullify this effect, we have to create our own **Gamma correction function C(x)**, where
+C(x) = x<sup>1/γ</sup> 
+
+Example:
+
+* E(0.5) = 0.5
+* M(0.5) = 0.5<sup>γ</sup>
+* C(0.5) = 0.5<sup>1/γ</sup> 
+
+And we pass C into M function, so:
+
+* (0.5<sup>1/γ</sup>)<sup>γ</sup> = 0.5
+
 ## Models
     Models are divided into units called MESHES (A section of the model)
     So in a body, the Meshes could be the head, limbs and so on. 
