@@ -1,19 +1,25 @@
-* Concepts *
-// VAO is the vertex array object, it stores the vertex attribute calls
-// VBO is the vertex buffer object, it stores the vertex data
-// EBO is the Element buffer object It's a type of buffer object that you can store indices in, which you can then use to render primitives in OpenGL.
+## Concepts
+* VAO is the vertex array object, it stores the vertex attribute calls. VAO is how OpenGL call it. VAO dont make any changes to the vertex data. It only refers to the buffer object. Making it cheaper to access the data many times.
+* VBO is the vertex buffer object, it stores the vertex data. VBO is how OpenGL call a Buffer Object.
+* EBO is the Element buffer object It's a type of buffer object that you can store indices in, which you can then use to render primitives in OpenGL.
 
-Optics
+## Optics
 The higher the field of view, the smaller objects will appear. 45o degrees FoV makes a cube looks larger then a 90o degrees FoV.
 
-Camera (movements)
+## Camera (movements)
 row, yaw and pitch: Are the axis in what that should rotate certain object.  (plane reference)
-Imagine an airplane rotatin around 3 axes :
-pointing forward (roll)
-pointing east (pitch)
-pointing down (yaw) 
 
-Light
+Imagine an airplane rotating around 3 axes :
+* pointing forward (roll)
+* pointing east (pitch)
+* pointing down (yaw) 
+
+## Light 
+
+#### Phong lighting
+
+Os conceitos de aplicacao de diffuse light, directional light e specular light utilizados no codigo e' chamado de Phong Lighting.
+
     Diffuse light 
     // diffuse - is more about the position of the object in relation to the light source
     In point light (ambient light)
@@ -44,11 +50,22 @@ Light
     k0 = 1 for most purposes
     the bigger k1 and k2, the dimmer the light
 
-Models
+* Problems with Phong: Specular is calculated by using dot product between reflection and view vectors. If the angle Θ (theta) between these vectors is greater than 90 degrees, the dot product will be negative.
+And how we are dealing with it so far is that we ignore specular for degrees greater than 90.
+So to compensate this, it got an upgraded version called Blinn-Phong lighting.
+
+### Blinn-Phng lighting
+
+Creates a halfway vector(**h**) between Viewer vector (**v**) and light source vector (**l**). The dot product between these vectors will always be < 90.
+
+**h** = normalize(**l** + **v**)
+
+
+## Models
     Models are divided into units called MESHES (A section of the model)
     So in a body, the Meshes could be the head, limbs and so on. 
 
-Shaders
+## Shaders
     Aparentemente qualquer shader pode fazer qualquer coisa. Essa diferenciacao parece mais organizacional (usando opengl) 
 
     -Fragment shader(fs): basicamente o que eh pintado sobre os pixels. No caso, de triangulos.
@@ -56,14 +73,15 @@ Shaders
     -Vertex shader(vs): Manipula posicao de vertices. 
 
 
-*  OPENGL *
+# OPENGL
 File extensions
 -.fs fragment shader 
 -.vs vector shader
 *Both use a simplified version of C
 
 lightDir is 
-float diff = max(dot(norm, lightDir), 0.0); //when light is perpendicular to the normal, dot product is 0
+
+    float diff = max(dot(norm, lightDir), 0.0); //when light is perpendicular to the normal, dot product is 0
 
 
 Takes the normal vector and updates its position based on the possibly updated model position
