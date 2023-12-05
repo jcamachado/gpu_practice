@@ -46,7 +46,10 @@ Camera cam;
 double dt = 0.0f;       // Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
 
-Sphere sphere(10);
+unsigned int nSpheres = 10;
+unsigned int nLamps = 1;
+
+Sphere sphere(nSpheres);
 
 int main(){
     scene = Scene(3, 3, "Particle System", 800, 600); // Create scene
@@ -83,12 +86,12 @@ int main(){
     /*
         Models
     */
-    Lamp lamp(4);
+    Lamp lamp(nLamps);
     scene.registerModel(&lamp);
     scene.registerModel(&sphere);
 
-    Cube cube(1);
-    scene.registerModel(&cube);
+    // Cube cube(1);
+    // scene.registerModel(&cube);
 
     Box box;
     box.init();                 // Box is not instanced
@@ -120,9 +123,9 @@ int main(){
     float k1 = 0.09f;
     float k2 = 0.032f;
 
-    PointLight pointLights[4];
+    PointLight pointLights[nLamps];
 
-    for (unsigned int i = 0; i < 4; i++) {
+    for (unsigned int i = 0; i < nLamps; i++) {
         pointLights[i] = {
             pointLightPositions[i],
             k0, k1, k2,
@@ -147,7 +150,7 @@ int main(){
     scene.spotLights.push_back(&spotLight);
     scene.activeSpotLights = 1;                         // 0b00000001
     
-    scene.generateInstance(cube.id, glm::vec3(20.0f, 0.1f, 20.0f), 100.0f, glm::vec3(0.0f, -3.0f, 0.0f));
+    // scene.generateInstance(cube.id, glm::vec3(20.0f, 0.1f, 20.0f), 100.0f, glm::vec3(0.0f, -3.0f, 0.0f));
 
     scene.initInstances();                              // Instantiate instances
     scene.prepare(box);                                 // Builds octree  
@@ -205,7 +208,7 @@ int main(){
         if (sphere.currentNumInstances > 0){            // Render launch objects
             scene.renderInstances(sphere.id, shader, dt);
         }
-        scene.renderInstances(cube.id, shader, dt);     // Render cube
+        // scene.renderInstances(cube.id, shader, dt);     // Render cube
 
         scene.renderShader(lampShader, false);                  // Render lamps
         scene.renderInstances(lamp.id, lampShader, dt);
@@ -250,6 +253,17 @@ void processInput(double dt){ // Function for processing input
     }
     if (Keyboard::keyWentDown(GLFW_KEY_F)){
         launchItem(dt);
+    }
+    if (Keyboard::keyWentDown(GLFW_KEY_T)){
+        for (int i = 0; i < sphere.currentNumInstances; i++){
+            if (!sphere.instances[i]->freeze()){
+                sphere.instances[i]->unfreeze();
+            }
+        }
+    }
+    //reset octree
+    if (Keyboard::keyWentDown(GLFW_KEY_R)){
+        scene.octree = new Octree::node(BoundingRegion(glm::vec3(-16.0f), glm::vec3(16.0f)));
     }
     for (int i=0; i<4; i++){
         if (Keyboard::keyWentDown(GLFW_KEY_1 + i)){
