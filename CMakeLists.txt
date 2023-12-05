@@ -11,16 +11,6 @@ find_package(Freetype REQUIRED VERSION 2.13.2)
 add_subdirectory(lib/assimp-5.3.1)
 add_subdirectory(lib/freetype-2.13.2)
 add_executable(my_particle_system
-    assets/lamp.fs
-    assets/object.fs
-    assets/object.vs
-    
-    assets/instanced/box.fs
-    assets/instanced/box.vs
-    assets/instanced/instanced.vs
-
-    assets/models/sphere/scene.gltf
-    assets/models/m4a1/scene.gltf
 
     lib/glad/glad.h
     lib/jsoncpp/json.hpp
@@ -39,9 +29,11 @@ add_executable(my_particle_system
     src/algorithms/octree.cpp
     src/algorithms/trie.hpp
 
+    src/graphics/cubemap.h
+    src/graphics/cubemap.cpp
+    src/graphics/glmemory.hpp
     src/graphics/light.h
     src/graphics/light.cpp
-    src/graphics/glmemory.hpp
     src/graphics/material.h
     src/graphics/material.cpp
     src/graphics/mesh.h

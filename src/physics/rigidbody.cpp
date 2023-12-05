@@ -66,3 +66,24 @@ void RigidBody::transferEnergy(float joules, glm::vec3 direction){
     // float newVelocityMagnitude = sqrt(2 * joules / mass);
     // velocity = glm::normalize(velocity) * newVelocityMagnitude;
 }
+
+bool RigidBody::freeze(){//TODO: create a frozen state
+    if (velocity == glm::vec3(0.0f) && acceleration == glm::vec3(0.0f)){
+        return false;
+    }
+    storedVelocity = velocity;
+    storedAcceleration = acceleration;
+
+    velocity = glm::vec3(0.0f);
+    acceleration = glm::vec3(0.0f);
+    return true;
+}
+
+bool RigidBody::unfreeze(){
+    if (velocity != glm::vec3(0.0f) && acceleration != glm::vec3(0.0f)){
+        return false;
+    }
+    velocity = storedVelocity;
+    acceleration = storedAcceleration;
+    return true;
+}

@@ -19,6 +19,7 @@
 
 #include "algorithms/states.hpp"
 
+#include "graphics/cubemap.h"
 #include "graphics/light.h"
 #include "graphics/model.h"
 #include "graphics/shader.h"
@@ -45,7 +46,10 @@ Camera cam;
 double dt = 0.0f;       // Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
 
-Sphere sphere(10);
+unsigned int nSpheres = 10;
+unsigned int nLamps = 1;
+
+Sphere sphere(nSpheres);
 
 int main(){
     scene = Scene(3, 3, "Particle System", 800, 600); // Create scene
@@ -65,14 +69,29 @@ int main(){
     Shader boxShader("assets/instanced/box.vs", "assets/instanced/box.fs");
     Shader lampShader("assets/instanced/instanced.vs", "assets/lamp.fs");
     Shader shader("assets/instanced/instanced.vs", "assets/object.fs");
+    Shader skyboxShader("assets/skybox/skybox.vs", "assets/skybox/sky.fs");
     Shader textShader("assets/text.vs", "assets/text.fs");
+    skyboxShader.activate();
+    skyboxShader.set3Float("min", 0.047f, 0.016f, 0.239f);
+    skyboxShader.set3Float("max", 0.945f, 1.000f, 0.682f);
+
+
+    /*
+        Skybox
+    */
+    Cubemap skybox;
+    skybox.init();
+    // skybox.loadTextures("assets/skybox");
 
     /*
         Models
     */
-    Lamp lamp(4);
+    Lamp lamp(nLamps);
     scene.registerModel(&lamp);
     scene.registerModel(&sphere);
+
+    // Cube cube(1);
+    // scene.registerModel(&cube);
 
     Box box;
     box.init();                 // Box is not instanced
@@ -104,9 +123,9 @@ int main(){
     float k1 = 0.09f;
     float k2 = 0.032f;
 
-    PointLight pointLights[4];
+    PointLight pointLights[nLamps];
 
-    for (unsigned int i = 0; i < 4; i++) {
+    for (unsigned int i = 0; i < nLamps; i++) {
         pointLights[i] = {
             pointLightPositions[i],
             k0, k1, k2,
@@ -129,11 +148,12 @@ int main(){
         glm::vec4(1.0f)
     };
     scene.spotLights.push_back(&spotLight);
-    // States::activateIndex(&scene.activeSpotLights, 1);  // 0b00000001
-    scene.activeSpotLights = 1;
+    scene.activeSpotLights = 1;                         // 0b00000001
     
+    // scene.generateInstance(cube.id, glm::vec3(20.0f, 0.1f, 20.0f), 100.0f, glm::vec3(0.0f, -3.0f, 0.0f));
+
     scene.initInstances();                              // Instantiate instances
-    scene.prepare(box);                                    // Builds octree  
+    scene.prepare(box);                                 // Builds octree  
     scene.variableLog["time"] = (double)0.0;
 
     while (!scene.shouldClose()){                       // Check if window should close
@@ -146,6 +166,10 @@ int main(){
         
         scene.update();                                 // Update screen values
         processInput(dt);                               // Process input
+
+        skyboxShader.activate();
+        skyboxShader.setFloat("time", scene.variableLog["time"].val<float>());
+        skybox.render(skyboxShader, &scene); //Render skybox
 
         scene.renderText(
             "comic", 
@@ -180,10 +204,11 @@ int main(){
                 scene.markForDeletion(sphere.instances[i]->instanceId);
             }
         }
+        scene.renderShader(shader);                     
         if (sphere.currentNumInstances > 0){            // Render launch objects
-            scene.renderShader(shader);                     
             scene.renderInstances(sphere.id, shader, dt);
         }
+        // scene.renderInstances(cube.id, shader, dt);     // Render cube
 
         scene.renderShader(lampShader, false);                  // Render lamps
         scene.renderInstances(lamp.id, lampShader, dt);
@@ -196,6 +221,7 @@ int main(){
         scene.newFrame(box);
         scene.clearDeadInstances();             // Delete instances after updating octree
     }
+    skybox.cleanup();
     scene.cleanup();
     return 0;
 }
@@ -227,6 +253,17 @@ void processInput(double dt){ // Function for processing input
     }
     if (Keyboard::keyWentDown(GLFW_KEY_F)){
         launchItem(dt);
+    }
+    if (Keyboard::keyWentDown(GLFW_KEY_T)){
+        for (int i = 0; i < sphere.currentNumInstances; i++){
+            if (!sphere.instances[i]->freeze()){
+                sphere.instances[i]->unfreeze();
+            }
+        }
+    }
+    //reset octree
+    if (Keyboard::keyWentDown(GLFW_KEY_R)){
+        scene.octree = new Octree::node(BoundingRegion(glm::vec3(-16.0f), glm::vec3(16.0f)));
     }
     for (int i=0; i<4; i++){
         if (Keyboard::keyWentDown(GLFW_KEY_1 + i)){

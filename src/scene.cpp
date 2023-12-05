@@ -135,6 +135,10 @@ bool Scene::init() {
 
     FT_Done_FreeType(ft);
 
+    // Setup lighting values
+    variableLog["useBlinn"] = true;
+    variableLog["useGamma"] = true;
+
     return true;
 }
 
@@ -197,6 +201,18 @@ void Scene::processInput(float dt){
 
         // Set position at end
         cameraPos = cameras[activeCamera]->cameraPos;
+
+        // Update blinn parameter if necessary
+        if (Keyboard::keyWentUp(GLFW_KEY_B)){
+            variableLog["useBlinn"] = !variableLog["useBlinn"].val<bool>();
+            std::cout << "Blinn: " << variableLog["useBlinn"].val<bool>() << std::endl;
+        }
+
+        // Toggle gamma correction parameter if necessary
+        if (Keyboard::keyWentUp(GLFW_KEY_G)){
+            variableLog["useGamma"] = !variableLog["useGamma"].val<bool>();
+            std::cout << "Gamma: " << variableLog["useGamma"].val<bool>() << std::endl;
+        }
 
         /*
             if using Joystick (probably deprecated, but the logic is here)
@@ -282,6 +298,9 @@ void Scene::renderShader(Shader shader, bool applyLighting){
 
         // Directional light (only one)
         dirLight->render(shader);
+
+        shader.setBool("useBlinn", variableLog["useBlinn"].val<bool>());
+        shader.setBool("useGamma", variableLog["useGamma"].val<bool>());
     }
 }
 
