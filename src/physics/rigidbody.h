@@ -18,6 +18,8 @@ class RigidBody {
 
         float mass;
         glm::vec3 pos, velocity, acceleration, size;
+        glm::vec3 storedVelocity, storedAcceleration;
+        
 
         std::string modelId;
         std::string instanceId;
@@ -52,6 +54,8 @@ class RigidBody {
         void applyImpulse(glm::vec3 direction, float magnitude, float dt);
 
         void transferEnergy(float joules, glm::vec3 direction);
+        bool freeze();
+        bool unfreeze();
 };
 
 

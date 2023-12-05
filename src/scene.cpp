@@ -99,11 +99,55 @@ bool Scene::init() {
     
     /*
         Set rendering parameters
+        - GL_DEPTH_TEST: Doesn't show vertices not visible to camera (back of objects)
+        - GL_BLEND: Allows transparency between objects (text texture)
+        - glBlendFunc: Sets blending function (how to blend)
+        - glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED): Disable cursor like in FPS games
+
+
     */
-    glEnable(GL_DEPTH_TEST); // Doesn't show vertices not visible to camera (back of objects)
+    glEnable(GL_DEPTH_TEST); 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
+    /*
+        Init octree
+    */
+    octree = new Octree::node(BoundingRegion(glm::vec3(-16.0f), glm::vec3(16.0f)));
+
+    /*
+        Init FreeType library
+    */
+    if (FT_Init_FreeType(&ft)){
+        std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
+        return false;
+    }
+
+    /*
+        Insert font
+    */
+    fonts.insert("comic", TextRenderer(32));
+    if (!fonts["comic"].loadFont(ft, "assets/fonts/Comic_Sans_MS.ttf")){
+        std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
+        return false;
+    }
+
+    FT_Done_FreeType(ft);
+
+    // Setup lighting values
+    variableLog["useBlinn"] = true;
+    variableLog["useGamma"] = true;
+
     return true;
+}
+
+/*
+    Prepare for mainloop (after object generation, etc and before main while loop)
+*/
+void Scene::prepare(Box &box){
+    // octree->build();
+    octree->update(box);        // Calls octree->build() if it hasn't been built yet
 }
 
 /*
@@ -153,9 +197,22 @@ void Scene::processInput(float dt){
             (float)scrWidth / (float)scrHeight,             // Aspect ratio
             0.1f, 250.0f                                    // Near and far clipping planes
         );
+        textProjection = glm::ortho(0.0f, (float)scrWidth, 0.0f, (float)scrHeight);
 
         // Set position at end
         cameraPos = cameras[activeCamera]->cameraPos;
+
+        // Update blinn parameter if necessary
+        if (Keyboard::keyWentUp(GLFW_KEY_B)){
+            variableLog["useBlinn"] = !variableLog["useBlinn"].val<bool>();
+            std::cout << "Blinn: " << variableLog["useBlinn"].val<bool>() << std::endl;
+        }
+
+        // Toggle gamma correction parameter if necessary
+        if (Keyboard::keyWentUp(GLFW_KEY_G)){
+            variableLog["useGamma"] = !variableLog["useGamma"].val<bool>();
+            std::cout << "Gamma: " << variableLog["useGamma"].val<bool>() << std::endl;
+        }
 
         /*
             if using Joystick (probably deprecated, but the logic is here)
@@ -191,7 +248,14 @@ void Scene::update(){
 }
 
 // Update screen before after each frame
-void Scene::newFrame(){
+void Scene::newFrame(Box &box){
+    box.positions.clear();
+    box.sizes.clear();
+
+    // Process pending.
+    octree->processPending();       // "Process new objects"
+    octree->update(box);            // "Are there any destroyed objects?"
+
     // Send new frame to window
     glfwSwapBuffers(window);
     glfwPollEvents();
@@ -234,11 +298,29 @@ void Scene::renderShader(Shader shader, bool applyLighting){
 
         // Directional light (only one)
         dirLight->render(shader);
+
+        shader.setBool("useBlinn", variableLog["useBlinn"].val<bool>());
+        shader.setBool("useGamma", variableLog["useGamma"].val<bool>());
     }
 }
 
 void Scene::renderInstances(std::string modelId, Shader shader, float dt){
         models[modelId]->render(shader, dt, this);
+}
+
+void Scene::renderText(
+    std::string font,
+    Shader shader,
+    std::string text,
+    float x, 
+    float y, 
+    glm::vec2 scale, 
+    glm::vec3 color
+){
+    shader.activate();
+    shader.setMat4("projection", textProjection);
+
+    fonts[font].render(shader, text, x, y, scale, color);
 }
 
 /*
@@ -249,6 +331,18 @@ void Scene::cleanup(){
     models.traverse([](Model* model) -> void {      // Lambda function, return is type(->) void
         model->cleanup();
     });
+
+    // Cleanup Tries
+    models.cleanup();
+    instances.cleanup();
+
+    // Cleanup fonts
+    fonts.traverse([](TextRenderer tr) -> void {
+        tr.cleanup();
+    });
+    
+    // Destroy octree
+    octree->destroy();
 
     glfwTerminate();
 }
@@ -295,12 +389,17 @@ std::string Scene::generateId(){
 }
 
 RigidBody* Scene::generateInstance(std::string modelId, glm::vec3 size, float mass, glm::vec3 pos){
+    /*
+        octree->addToPending(rb, models);     Add all bounding regions from the models to the pending queue
+        and since processPending calls update, prepare() doesnt need to call update.
+    */
     RigidBody* rb = models[modelId]->generateInstance(size, mass, pos);
     if (rb) {
         // Instance was created successfully
         std::string id = generateId();
         rb->instanceId = id;
         instances.insert(id, rb);
+        octree->addToPending(rb, models);               // Add all bounding regions from the models to the pending queue
         return rb;
     }
     return nullptr;
@@ -332,7 +431,7 @@ void Scene::removeInstance(std::string instanceId){
     std::string targetModel = instances[instanceId]->modelId;
     models[targetModel]->removeInstance(instanceId);
     instances[instanceId] = nullptr;
-    instances.erase(instanceId);                        // erate() doesnt know the type of <T>Trie, so, deletes the nullptr
+    instances.erase(instanceId);                        // erasee() doesnt know the type of <T>Trie, so, deletes the nullptr
 }
 
 void Scene::markForDeletion(std::string instanceId){

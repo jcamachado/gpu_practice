@@ -14,6 +14,16 @@
 #include "bounds.h"
 
 #include "../graphics/model.h"
+#include "../graphics/models/box.hpp"
+
+
+/*
+    Forward declaration
+
+*/
+class Model;
+class BoundingRegion;
+class Box;
 
 namespace Octree {
     enum class Octant : unsigned char{
@@ -32,14 +42,16 @@ namespace Octree {
     */
 
     // Calculate bounds of specified octant in bounding region
-    void calculateBounds(BoundingRegion* out, Octant octant, BoundingRegion parentRegion);
+    void calculateBounds(BoundingRegion &out, Octant octant, BoundingRegion parentRegion);
 
     class node{
         public:
-            node* parent;
-            node* children[N_CHILDREN]; // 8 children, octree
+            node* parent = nullptr;
+            // node* parent = 0;
+            // node* parent;
+            node* children[N_CHILDREN] = {0};  // 8 children, octree
 
-            unsigned char activeOctants; // Bitmask for active octants
+            unsigned char activeOctants = 0x00; // Bitmask for active octants, mapping Octant enum to regions
 
             bool hasChildren = false;
 
@@ -49,17 +61,18 @@ namespace Octree {
             short maxLifespan = 8;              // Duration of empty node before it is destroyed
             short currentLifespan = -1;
 
-            std::vector<BoundingRegion> objects;
+            // initialize with empty vector
+            std::vector<BoundingRegion> objects = {};
             std::queue<BoundingRegion> queue;   // Queue for objects to be added to tree
 
             BoundingRegion region;              // All will be of type AABB (Axis Aligned Bounding Box) for now
 
             node();
 
-            node(BoundingRegion region);        // Constructor for root node
+            node(BoundingRegion bounds);        // Constructor for root node
 
             // When iterating, objectlist is the list of objects that fit each of its octants
-            node(BoundingRegion region, std::vector<BoundingRegion> objectList); 
+            node(BoundingRegion bounds, std::vector<BoundingRegion> objectList); 
 
             /*
                 Add an instance to pending queue
@@ -70,16 +83,28 @@ namespace Octree {
 
             void build();
 
-            void update();
+            void update(Box &box);
 
             void processPending();
 
-            bool insert(BoundingRegion object);
+            bool insert(BoundingRegion obj);
+
+            // Check collisions with all objects in the node
+            void checkCollisionsSelf(BoundingRegion obj);
+            // Check collisions with all objects in child node
+            void checkCollisionsChildren(BoundingRegion obj);
 
             void destroy();
-
-
     };
 }
 
 #endif
+
+/*
+    Simplified algorithm for octree
+    build tree          // Insert all objects into the tree    
+    (some nodes may be pending by addToPending()
+    process pending     // Before new frame, add queued objects to tree (if tree not built, add to objList)
+    update tree         // Based on the movements, creation and death of objects and nodes
+
+*/

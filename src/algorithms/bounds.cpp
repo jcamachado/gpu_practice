@@ -1,8 +1,13 @@
-#include "bounds.h"
 #include <algorithm> // std::max, std::min compilation issue3
 
+#include "bounds.h"
+#include "octree.h"
+
+
 BoundingRegion::BoundingRegion(BoundTypes type)
-    : type(type){}
+    : type(type){
+        isEmptyInstance = true;
+    }
 
 BoundingRegion::BoundingRegion(glm::vec3 center, float radius)
     :type(BoundTypes::SPHERE), 
@@ -24,7 +29,8 @@ void BoundingRegion::transform(){
             min = ogMin * instance->size + instance->pos;
             max = ogMax * instance->size + instance->pos;
         }
-        else if(type == BoundTypes::SPHERE){
+        // else if(type == BoundTypes::SPHERE){
+        else{
             center = ogCenter * instance->size + instance->pos;
             radius = ogRadius * instance->size.x;                   // Radius is scalar, only needs 1 axis
         }
@@ -45,17 +51,18 @@ bool BoundingRegion::containsPoint(glm::vec3 point) {
                (point.y >= min.y && point.y <= max.y) &&
                (point.z >= min.z && point.z <= max.z);
     }
-    else if (type == BoundTypes::SPHERE) {
+    // else if (type == BoundTypes::SPHERE) {
+    else{
         // Sphere: distance must be less than radius x^2 + y^2 + z^2 = r^2
         float distSquared = 0.0f;
         for (int i=0; i<3; i++) {
-            distSquared += (point[i] - center[i]) * (point[i] - center[i]);
+            distSquared += (center[i] - point[i]) * (center[i] - point[i]);
         }
         return distSquared < (radius * radius);
     }
-    else {
-        return false;
-    }
+    // else {
+    //     return false;
+    // }
 }
 
 bool BoundingRegion::containsRegion(BoundingRegion br) {
@@ -73,9 +80,8 @@ bool BoundingRegion::containsRegion(BoundingRegion br) {
         if(!containsPoint(br.center)) {
             return false;
         }
-
-        // center is inside the box
         /*
+            center is inside the box
             for each axis (x, y, z)
                 if the center to each side is smaller than the radius, return false
         */

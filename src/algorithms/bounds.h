@@ -5,6 +5,13 @@
 
 #include "../physics/rigidbody.h"
 
+/*
+    Forward declaration
+*/
+namespace Octree {
+    class node;
+}
+
 enum class BoundTypes : unsigned char {
     //unsigned char to make it less memory intensive
     AABB = 0x00, // 0x00 = 0 Axis Aligned Bounding Box
@@ -15,12 +22,18 @@ enum class BoundTypes : unsigned char {
 class BoundingRegion {
     public:
         BoundTypes type;
+        bool isEmptyInstance = false;
 
         /*
             Octree region values
 
         */
-        RigidBody* instance; //instance of the rigidbody that is inside the region
+        RigidBody* instance; // Instance of the rigidbody that is inside the region
+
+        /*
+            Octree node values
+        */  
+        Octree::node* cell; // Cell is a node, therefore, an octant
 
         /*
             Sphere values (Even though AABB will also have center and radius. (kinda))
@@ -28,10 +41,10 @@ class BoundingRegion {
             -ogCenter is the center of the region in the original octree
             -ogRadius is the radius of the region in the original octree
         */
-        glm::vec3 center;
-        float radius;
-        glm::vec3 ogCenter;
-        float ogRadius;
+        glm::vec3 center = glm::vec3(0.0f);
+        float radius = 0.0f;
+        glm::vec3 ogCenter = glm::vec3(0.0f);
+        float ogRadius = 0.0f;
 
 
         /*
@@ -40,10 +53,10 @@ class BoundingRegion {
             -ogMin is the minimum of the region in the original octree
             -ogMax is the maximum of the region in the original octree
         */
-        glm::vec3 min;
-        glm::vec3 max;
-        glm::vec3 ogMin;
-        glm::vec3 ogMax;
+        glm::vec3 min = glm::vec3(0.0f);
+        glm::vec3 max = glm::vec3(0.0f);
+        glm::vec3 ogMin = glm::vec3(0.0f);
+        glm::vec3 ogMax = glm::vec3(0.0f);
 
         /*
             Constructors
