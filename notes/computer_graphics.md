@@ -109,3 +109,5 @@ Normal = mat3(transpose(inverse(model))) * aNormal; //Normal in world space
 
 Cubemaps: More convenient to use since it only takes one textuer slot. We add 6 textures, tie them together so they only take 1 texture slot.
 And since cube and cubemap have the same vertices, we only have to pass one set of vertices to be drawn by the gpu.
+
+Stencil: A mapping of a renderable view(matrix) and a stencil matrix of 1 and 0s. If the values on the second matrix is 0, the corresponding value in the original  view matrix wont be drawn, otherwise, draw normally.

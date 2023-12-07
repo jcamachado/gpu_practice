@@ -47,7 +47,7 @@ double dt = 0.0f;       // Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
 
 unsigned int nSpheres = 10;
-unsigned int nLamps = 1;
+unsigned int nLamps = 4;
 
 Sphere sphere(nSpheres);
 
@@ -68,20 +68,25 @@ int main(){
     */
     Shader boxShader("assets/instanced/box.vs", "assets/instanced/box.fs");
     Shader lampShader("assets/instanced/instanced.vs", "assets/lamp.fs");
+    Shader outlineShader("assets/outline.vs", "assets/outline.fs");
     Shader shader("assets/instanced/instanced.vs", "assets/object.fs");
     Shader skyboxShader("assets/skybox/skybox.vs", "assets/skybox/sky.fs");
     Shader textShader("assets/text.vs", "assets/text.fs");
-    skyboxShader.activate();
-    skyboxShader.set3Float("min", 0.047f, 0.016f, 0.239f);
-    skyboxShader.set3Float("max", 0.945f, 1.000f, 0.682f);
 
+
+
+    // skyboxShader.activate();
+    // skyboxShader.set3Float("min", 0.047f, 0.016f, 0.239f);
+    // skyboxShader.set3Float("max", 0.945f, 1.000f, 0.682f);
+    // skyboxShader.set3Float("min", 0.1f, 0.1f, 0.15f);
+    // skyboxShader.set3Float("max", 0.1f, 0.1f, 0.15f);
 
     /*
         Skybox
     */
     Cubemap skybox;
     skybox.init();
-    // skybox.loadTextures("assets/skybox");
+    // skybox.loadTextures("assets/skybox");    // Load cubemap texture (image)
 
     /*
         Models
@@ -90,7 +95,7 @@ int main(){
     scene.registerModel(&lamp);
     scene.registerModel(&sphere);
 
-    Cube cube(1);
+    Cube cube(10);
     scene.registerModel(&cube);
 
     Box box;
@@ -151,6 +156,20 @@ int main(){
     scene.activeSpotLights = 1;                         // 0b00000001
     
     scene.generateInstance(cube.id, glm::vec3(20.0f, 0.1f, 20.0f), 100.0f, glm::vec3(0.0f, -3.0f, 0.0f));
+    glm::vec3 cubePositions[] = {
+        { 1.0f, 3.0f, -5.0f },
+        { -7.25f, 2.1f, 1.5f },
+        { -15.0f, 2.55f, 9.0f },
+        { 4.0f, -3.5f, 5.0f },
+        { 2.8f, 1.9f, -6.2f },
+        { 3.5f, 6.3f, -1.0f },
+        { -3.4f, 10.9f, -5.5f },
+        { 10.0f, -2.0f, 13.2f },
+        { 2.1f, 7.9f, -8.3f },
+    };
+    for (unsigned int i = 0; i < 9; i++) {
+        scene.generateInstance(cube.id, glm::vec3(0.5f), 1.0f, cubePositions[i]);
+    }
 
     scene.initInstances();                              // Instantiate instances
     scene.prepare(box);                                 // Builds octree  
@@ -167,55 +186,87 @@ int main(){
         scene.update();                                 // Update screen values
         processInput(dt);                               // Process input
 
-        skyboxShader.activate();
-        skyboxShader.setFloat("time", scene.variableLog["time"].val<float>());
-        skybox.render(skyboxShader, &scene); //Render skybox
+        // skyboxShader.activate();
+        // skyboxShader.setFloat("time", scene.variableLog["time"].val<float>());
+        // skybox.render(skyboxShader, &scene); //Render skybox
 
-        scene.renderText(
-            "comic", 
-            textShader, 
-            "Hello World!!", 
-            50.0f, 
-            50.0f, 
-            glm::vec2(1.0f), 
-            glm::vec3(0.5f, 0.6f, 1.0f)
-        );
-        scene.renderText(
-            "comic", 
-            textShader, 
-            "Time: " + scene.variableLog["time"].dump(), 
-            50.0f, 
-            550.0f, 
-            glm::vec2(1.0f), 
-            glm::vec3(0.5f, 0.6f, 1.0f)
-        );
-        scene.renderText(
-            "comic", 
-            textShader, 
-            "FPS: " + scene.variableLog["fps"].dump(), 
-            50.0f, 
-            550.0f - 40.0f, 
-            glm::vec2(1.0f), 
-            glm::vec3(0.5f, 0.6f, 1.0f)
-        );
+        // scene.renderText(
+        //     "comic", 
+        //     textShader, 
+        //     "Hello World!!", 
+        //     50.0f, 
+        //     50.0f, 
+        //     glm::vec2(1.0f), 
+        //     glm::vec3(0.5f, 0.6f, 1.0f)
+        // );
+        // scene.renderText(
+        //     "comic", 
+        //     textShader, 
+        //     "Time: " + scene.variableLog["time"].dump(), 
+        //     50.0f, 
+        //     550.0f, 
+        //     glm::vec2(1.0f), 
+        //     glm::vec3(0.5f, 0.6f, 1.0f)
+        // );
+        // scene.renderText(
+        //     "comic", 
+        //     textShader, 
+        //     "FPS: " + scene.variableLog["fps"].dump(), 
+        //     50.0f, 
+        //     550.0f - 40.0f, 
+        //     glm::vec2(1.0f), 
+        //     glm::vec3(0.5f, 0.6f, 1.0f)
+        // );
+
+
+        scene.renderShader(lampShader, false);                  // Render lamps
+        scene.renderInstances(lamp.id, lampShader, dt);
 
         for (int i = 0; i < sphere.currentNumInstances; i++){
             if (glm::length(cam.cameraPos - sphere.instances[i]->pos) > 250.0f){
                 scene.markForDeletion(sphere.instances[i]->instanceId);
             }
         }
+
+        if (scene.variableLog["displayOutline"].val<bool>()){
+            /*
+                glStencilMask tells opengl what to bitwise AND the stencil buffer with.
+            */
+            glStencilMask(0x00);                        // Disable stencil buffer writing for sphersd
+            // scene.renderShader(outlineShader, false);    // Render outline
+            // scene.renderInstances(sphere.id, outlineShader, dt);
+        }
+
         scene.renderShader(shader);                     
         if (sphere.currentNumInstances > 0){            // Render launch objects
             scene.renderInstances(sphere.id, shader, dt);
         }
-        scene.renderInstances(cube.id, shader, dt);     // Render cube
 
-        scene.renderShader(lampShader, false);                  // Render lamps
-        scene.renderInstances(lamp.id, lampShader, dt);
+        if (scene.variableLog["displayOutline"].val<bool>()){
+            // Always write to stencil buffer with cubes
+            glStencilFunc(GL_ALWAYS, 1, 0xFF);              // Set any stencil to 1
+            glStencilMask(0xFF);                            // Always write to stencil buffer
+            scene.renderInstances(cube.id, shader, dt);     // Render cubes
 
-        scene.renderShader(boxShader, false);           // Render boxes
-        box.render(boxShader);                          // Box is not instanced
-        
+            glStencilFunc(GL_NOTEQUAL, 1, 0xFF); // render fragments if different than what is stored
+            glStencilMask(0x00); // disable writing 
+            glDisable(GL_DEPTH_TEST); // disable depth test so outlines are displayed behind objects
+
+            scene.renderShader(outlineShader, false); // Render outline
+            scene.renderInstances(cube.id, outlineShader, dt);
+
+            // Reset valus
+            glStencilFunc(GL_ALWAYS, 1, 0xFF);  // Every fragment written to stencil buffer
+            glStencilMask(0xFF);                // Write always
+            glEnable(GL_DEPTH_TEST);            // Re-enable depth test
+        }
+        else{
+            // render cubes normally
+            scene.renderInstances(cube.id, shader, dt);     // Render cubes
+        }
+
+        // scene.renderShader(boxShader, false);           // Render boxes
+        // box.render(boxShader);                          // Box is not instanced
 
         // Send new frame to window
         scene.newFrame(box);
