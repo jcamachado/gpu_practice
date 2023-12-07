@@ -113,9 +113,26 @@ void main(){
         result += calcSpotLight(i, norm, viewDir, diffMap, specMap);
     }
 
+    // Gamma correction
     if (useGamma){
         result.rgb = pow(result.rgb, vec3(1.0/DEFAULT_GAMA));
     }
+
+    /*
+        Depth testing
+        -Z is related to depth (distance from camera to fragment)
+        -Since we are using perspective, we need to transform the depth value to linear depth
+        by taking the inverse of the projection matrix (only for perspective) using the formula:
+            linearDepth = (2.0 * near * far) / (z * (far - near) - (far + near));
+        -Then we need to transform the linear depth to [0, 1] range using the formula:
+    */
+    float near = 0.1;
+    float far = 100.0;
+    float z = gl_FragCoord.z * 2.0 - 1.0;   // Transform to Normalized Device Coordinates (NDC) [0, 1] -> [-1, 1]
+    float linearDepth = (2.0 * near * far) / (z * (far - near) - (far + near)); 
+    float factor = (near + linearDepth) / (near - far); // Transform back to [0, 1] range
+
+    result.rgb *= 1 - factor;   // Darken the fragment the further away it is
 
     FragColor = result;
 }

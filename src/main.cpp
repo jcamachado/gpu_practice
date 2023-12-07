@@ -90,8 +90,8 @@ int main(){
     scene.registerModel(&lamp);
     scene.registerModel(&sphere);
 
-    // Cube cube(1);
-    // scene.registerModel(&cube);
+    Cube cube(1);
+    scene.registerModel(&cube);
 
     Box box;
     box.init();                 // Box is not instanced
@@ -150,7 +150,7 @@ int main(){
     scene.spotLights.push_back(&spotLight);
     scene.activeSpotLights = 1;                         // 0b00000001
     
-    // scene.generateInstance(cube.id, glm::vec3(20.0f, 0.1f, 20.0f), 100.0f, glm::vec3(0.0f, -3.0f, 0.0f));
+    scene.generateInstance(cube.id, glm::vec3(20.0f, 0.1f, 20.0f), 100.0f, glm::vec3(0.0f, -3.0f, 0.0f));
 
     scene.initInstances();                              // Instantiate instances
     scene.prepare(box);                                 // Builds octree  
@@ -208,7 +208,7 @@ int main(){
         if (sphere.currentNumInstances > 0){            // Render launch objects
             scene.renderInstances(sphere.id, shader, dt);
         }
-        // scene.renderInstances(cube.id, shader, dt);     // Render cube
+        scene.renderInstances(cube.id, shader, dt);     // Render cube
 
         scene.renderShader(lampShader, false);                  // Render lamps
         scene.renderInstances(lamp.id, lampShader, dt);
