@@ -10,7 +10,7 @@
 
 #include "shader.h"
 #include "texture.h"
-#include "glmemory.hpp"
+#include "vertexmemory.hpp"
 
 #include "models/box.hpp"
 

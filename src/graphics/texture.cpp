@@ -47,7 +47,30 @@ void Texture::load(bool flip) {
     stbi_image_free(data);
 }
 
+void Texture::allocate(GLenum format, GLuint width, GLuint height, GLenum type){
+    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, type, NULL); // allocate memory, not assigning values
+    glBindTexture(GL_TEXTURE_2D, id);
+    glGenerateMipmap(GL_TEXTURE_2D);
+}
+        
+        
+void Texture::setParams(
+    GLenum texMinFilter,
+    GLenum texMagFilter,
+    GLenum wrapS,
+    GLenum wrapT) {
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, texMinFilter);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, texMagFilter);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapS);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapT);
+}
+
 void Texture::bind() {
      // Bind texture to unit 0 by default. depends on the active texture unit
     glBindTexture(GL_TEXTURE_2D, id);
+}
+
+void Texture::cleanup() {
+    glDeleteTextures(1, &id);
 }

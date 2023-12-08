@@ -20,6 +20,7 @@
 #include "algorithms/states.hpp"
 
 #include "graphics/cubemap.h"
+#include "graphics/framememory.hpp"
 #include "graphics/light.h"
 #include "graphics/model.h"
 #include "graphics/shader.h"
@@ -76,12 +77,9 @@ int main(){
     Shader textShader("assets/text.vs", "assets/text.fs");
 
 
-
     // skyboxShader.activate();
     // skyboxShader.set3Float("min", 0.047f, 0.016f, 0.239f);
     // skyboxShader.set3Float("max", 0.945f, 1.000f, 0.682f);
-    // skyboxShader.set3Float("min", 0.1f, 0.1f, 0.15f);
-    // skyboxShader.set3Float("max", 0.1f, 0.1f, 0.15f);
 
     /*
         Skybox
@@ -103,114 +101,29 @@ int main(){
     Box box;
     box.init();                 // Box is not instanced
 
-
     /*
-        FBO (Frame Buffer Object)
+        Framebuffer Object (FBO)
     */
     const GLuint BUFFER_WIDTH = 800, BUFFER_HEIGHT = 600;
-    GLuint fbo;
-    glGenFramebuffers(1, &fbo);     // Similar to what we did on VAOs and VBOs
+    FramebufferObject fbo(BUFFER_WIDTH, BUFFER_HEIGHT, GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+    fbo.generate();
+    fbo.bind();
 
-    // Initialize Texture
-    Texture bufferTexture("bufferTex");
+    Texture bufferTex("bufferTex");
+    bufferTex.bind();
+    bufferTex.allocate(GL_RGBA, BUFFER_WIDTH, BUFFER_HEIGHT, GL_UNSIGNED_BYTE);
+    Texture::setParams();
 
-    // setup texture values
-    bufferTexture.bind();
-    // glTexImage2D(
-    //     GL_TEXTURE_2D, 
-    //     0, 
-    //     GL_DEPTH_COMPONENT, 
-    //     BUFFER_WIDTH, 
-    //     BUFFER_HEIGHT, 
-    //     0, 
-    //     GL_DEPTH_COMPONENT, 
-    //     GL_FLOAT, 
-    //     NULL
-    // );
-    glTexImage2D(
-        GL_TEXTURE_2D, 
-        0, 
-        GL_RGBA, 
-        BUFFER_WIDTH, 
-        BUFFER_HEIGHT, 
-        0, 
-        GL_RGBA, 
-        GL_UNSIGNED_BYTE, 
-        NULL
-    );
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameterf(
-        GL_TEXTURE_2D, 
-        GL_TEXTURE_WRAP_S, 
-        GL_REPEAT
-    );
-    glTexParameterf(
-        GL_TEXTURE_2D, 
-        GL_TEXTURE_WRAP_T, 
-        GL_REPEAT
-    );
+    fbo.attachTexture(GL_COLOR_ATTACHMENT0, bufferTex);
+    fbo.allocateAndAttachRBO(GL_DEPTH_STENCIL_ATTACHMENT, GL_DEPTH24_STENCIL8);
 
-    // Attach texture to FBO
-    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-    // glFramebufferTexture2D(
-    //     GL_FRAMEBUFFER, 
-    //     GL_DEPTH_ATTACHMENT, 
-    //     GL_TEXTURE_2D, 
-    //     bufferTexture.id, 
-    //     0
-    // );
-    glFramebufferTexture2D(
-        GL_FRAMEBUFFER, 
-        GL_COLOR_ATTACHMENT0, 
-        GL_TEXTURE_2D, 
-        bufferTexture.id, 
-        0
-    );
-
-    // Renderbuffer to store color buffer unformatted
-    unsigned int rbo;
-    glGenRenderbuffers(1, &rbo);
-    glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-
-    // Set storage attributes of rbo to the color attachment
-    // allocate memory for rbo
-    // glRenderbufferStorage(
-    //     GL_RENDERBUFFER, 
-    //     GL_RGB, 
-    //     BUFFER_WIDTH, 
-    //     BUFFER_HEIGHT
-    // );
-
-    glRenderbufferStorage(
-        GL_RENDERBUFFER, 
-        GL_DEPTH24_STENCIL8, 
-        BUFFER_WIDTH, 
-        BUFFER_HEIGHT
-    );
-
-    // attach rbo to framebuffer
-    // glFramebufferRenderbuffer(
-    //     GL_FRAMEBUFFER, 
-    //     GL_COLOR_ATTACHMENT0, 
-    //     GL_RENDERBUFFER, 
-    //     rbo
-    // );
-    glFramebufferRenderbuffer(
-        GL_FRAMEBUFFER, 
-        GL_DEPTH_STENCIL_ATTACHMENT, 
-        GL_RENDERBUFFER, 
-        rbo
-    );
+    scene.defaultFBO.bind(); // rebind default framebuffer
 
     // Setup plane to display texture
     Plane map;
-    map.init(bufferTexture);
+    map.init(bufferTex);
     scene.registerModel(&map);
     scene.loadModels();         // Load all model data
-
-    glBindBuffer(GL_FRAMEBUFFER, 0); // rebind default framebuffer
-
 
     /*
         Lights
@@ -302,9 +215,7 @@ int main(){
             Depth values will be output to the texture that we attach and 
             the color values will be aoutputted to the render buffer object
         */
-        glViewport(0, 0, BUFFER_WIDTH, BUFFER_HEIGHT);
-        glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-        glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+        fbo.activate();
 
 
 
@@ -394,8 +305,7 @@ int main(){
             Render texture
         */
         // rebind default framebuffer
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glViewport(0, 0, 800, 600);
+        scene.defaultFBO.activate();
 
         // Render quad
         scene.renderInstances(map.id, bufferShader, dt);
@@ -404,7 +314,8 @@ int main(){
         scene.newFrame(box);
         scene.clearDeadInstances();             // Delete instances after updating octree
     }
-    skybox.cleanup();
+    // skybox.cleanup();
+    fbo.cleanup();
     scene.cleanup();
     return 0;
 }

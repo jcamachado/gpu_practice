@@ -13,6 +13,7 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
+#include "graphics/framememory.hpp"
 #include "graphics/model.h"
 #include "graphics/light.h"
 #include "graphics/shader.h"
@@ -52,6 +53,8 @@ class Scene {
         jsoncpp::json variableLog;
         FT_Library ft;
         trie::Trie<TextRenderer> fonts;
+
+        FramebufferObject defaultFBO;                // By default, glfw sets the default framebuffer to the screen
 
         /*
             Callbacks

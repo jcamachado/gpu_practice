@@ -164,4 +164,8 @@ void Mesh::setup(){
 
 void Mesh::cleanup(){
     VAO.cleanup();
+
+    for (Texture t: textures) {
+        t.cleanup();
+    }
 }
