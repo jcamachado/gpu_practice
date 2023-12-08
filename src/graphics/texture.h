@@ -11,16 +11,20 @@
 class Texture {
     public:
         Texture();
+        Texture(std::string name);
         Texture(std::string dir, std::string path, aiTextureType type);
-        // Texture(const char* path, const char* name, bool defaultParams = true);
 
         void generate();
         void load(bool flip = true);
 
         void bind();
 
+        /*
+            Texture object values
+        */
         unsigned int id;
         aiTextureType type;
+        std::string name;
         std::string dir;
         std::string path;
 

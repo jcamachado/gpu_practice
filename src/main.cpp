@@ -29,6 +29,7 @@
 #include "graphics/models/cube.hpp"
 #include "graphics/models/gun.hpp"
 #include "graphics/models/lamp.hpp"
+#include "graphics/models/plane.hpp"
 #include "graphics/models/sphere.hpp"
 
 #include "io/camera.h"
@@ -67,6 +68,7 @@ int main(){
          Shaders
     */
     Shader boxShader("assets/instanced/box.vs", "assets/instanced/box.fs");
+    Shader bufferShader("assets/buffer.vs", "assets/buffer.fs");
     Shader lampShader("assets/instanced/instanced.vs", "assets/lamp.fs");
     Shader outlineShader("assets/outline.vs", "assets/outline.fs");
     Shader shader("assets/instanced/instanced.vs", "assets/object.fs");
@@ -101,7 +103,114 @@ int main(){
     Box box;
     box.init();                 // Box is not instanced
 
+
+    /*
+        FBO (Frame Buffer Object)
+    */
+    const GLuint BUFFER_WIDTH = 800, BUFFER_HEIGHT = 600;
+    GLuint fbo;
+    glGenFramebuffers(1, &fbo);     // Similar to what we did on VAOs and VBOs
+
+    // Initialize Texture
+    Texture bufferTexture("bufferTex");
+
+    // setup texture values
+    bufferTexture.bind();
+    // glTexImage2D(
+    //     GL_TEXTURE_2D, 
+    //     0, 
+    //     GL_DEPTH_COMPONENT, 
+    //     BUFFER_WIDTH, 
+    //     BUFFER_HEIGHT, 
+    //     0, 
+    //     GL_DEPTH_COMPONENT, 
+    //     GL_FLOAT, 
+    //     NULL
+    // );
+    glTexImage2D(
+        GL_TEXTURE_2D, 
+        0, 
+        GL_RGBA, 
+        BUFFER_WIDTH, 
+        BUFFER_HEIGHT, 
+        0, 
+        GL_RGBA, 
+        GL_UNSIGNED_BYTE, 
+        NULL
+    );
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameterf(
+        GL_TEXTURE_2D, 
+        GL_TEXTURE_WRAP_S, 
+        GL_REPEAT
+    );
+    glTexParameterf(
+        GL_TEXTURE_2D, 
+        GL_TEXTURE_WRAP_T, 
+        GL_REPEAT
+    );
+
+    // Attach texture to FBO
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+    // glFramebufferTexture2D(
+    //     GL_FRAMEBUFFER, 
+    //     GL_DEPTH_ATTACHMENT, 
+    //     GL_TEXTURE_2D, 
+    //     bufferTexture.id, 
+    //     0
+    // );
+    glFramebufferTexture2D(
+        GL_FRAMEBUFFER, 
+        GL_COLOR_ATTACHMENT0, 
+        GL_TEXTURE_2D, 
+        bufferTexture.id, 
+        0
+    );
+
+    // Renderbuffer to store color buffer unformatted
+    unsigned int rbo;
+    glGenRenderbuffers(1, &rbo);
+    glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+
+    // Set storage attributes of rbo to the color attachment
+    // allocate memory for rbo
+    // glRenderbufferStorage(
+    //     GL_RENDERBUFFER, 
+    //     GL_RGB, 
+    //     BUFFER_WIDTH, 
+    //     BUFFER_HEIGHT
+    // );
+
+    glRenderbufferStorage(
+        GL_RENDERBUFFER, 
+        GL_DEPTH24_STENCIL8, 
+        BUFFER_WIDTH, 
+        BUFFER_HEIGHT
+    );
+
+    // attach rbo to framebuffer
+    // glFramebufferRenderbuffer(
+    //     GL_FRAMEBUFFER, 
+    //     GL_COLOR_ATTACHMENT0, 
+    //     GL_RENDERBUFFER, 
+    //     rbo
+    // );
+    glFramebufferRenderbuffer(
+        GL_FRAMEBUFFER, 
+        GL_DEPTH_STENCIL_ATTACHMENT, 
+        GL_RENDERBUFFER, 
+        rbo
+    );
+
+    // Setup plane to display texture
+    Plane map;
+    map.init(bufferTexture);
+    scene.registerModel(&map);
     scene.loadModels();         // Load all model data
+
+    glBindBuffer(GL_FRAMEBUFFER, 0); // rebind default framebuffer
+
 
     /*
         Lights
@@ -171,6 +280,8 @@ int main(){
         scene.generateInstance(cube.id, glm::vec3(0.5f), 1.0f, cubePositions[i]);
     }
 
+    // instantiate texture plane
+    scene.generateInstance(map.id, glm::vec3(2.0f, 2.0f, 0.0f), 0.0f, glm::vec3(0.0f)); 
     scene.initInstances();                              // Instantiate instances
     scene.prepare(box);                                 // Builds octree  
     scene.variableLog["time"] = (double)0.0;
@@ -185,6 +296,17 @@ int main(){
         
         scene.update();                                 // Update screen values
         processInput(dt);                               // Process input
+
+        /*
+            Render scene to the custom framebuffer
+            Depth values will be output to the texture that we attach and 
+            the color values will be aoutputted to the render buffer object
+        */
+        glViewport(0, 0, BUFFER_WIDTH, BUFFER_HEIGHT);
+        glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+        glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+
+
 
         // skyboxShader.activate();
         // skyboxShader.setFloat("time", scene.variableLog["time"].val<float>());
@@ -267,6 +389,16 @@ int main(){
 
         // scene.renderShader(boxShader, false);           // Render boxes
         // box.render(boxShader);                          // Box is not instanced
+
+        /*
+            Render texture
+        */
+        // rebind default framebuffer
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glViewport(0, 0, 800, 600);
+
+        // Render quad
+        scene.renderInstances(map.id, bufferShader, dt);
 
         // Send new frame to window
         scene.newFrame(box);

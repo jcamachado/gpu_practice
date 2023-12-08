@@ -327,7 +327,8 @@ void Scene::renderShader(Shader shader, bool applyLighting){
 }
 
 void Scene::renderInstances(std::string modelId, Shader shader, float dt){
-        models[modelId]->render(shader, dt, this);
+    shader.activate();
+    models[modelId]->render(shader, dt, this);
 }
 
 void Scene::renderText(
