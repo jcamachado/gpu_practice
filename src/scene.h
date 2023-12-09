@@ -93,6 +93,8 @@ class Scene {
         void update();
         void newFrame(Box &box);                                        
         void renderShader(Shader shader, bool applyLighting = true);
+        // Since we dont to render from the user's perspective (camera valus), we need other methods for casting shadow
+        void renderDirLightShader(Shader shader);   
         void renderInstances(
             std::string modelId, 
             Shader shader, 

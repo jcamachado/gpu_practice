@@ -54,11 +54,9 @@ struct SpotLight {
     vec4 specular;
 };
 
-// uniform PointLight pointLight;
 uniform PointLight pointLights[MAX_POINT_LIGHTS];
 uniform int nPointLights;
 uniform DirLight dirLight;
-// uniform SpotLight spotLight;
 uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
 uniform int nSpotLights;
 

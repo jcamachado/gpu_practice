@@ -297,6 +297,10 @@ void Scene::renderShader(Shader shader, bool applyLighting){
 
     // Lighting
     if (applyLighting){
+        unsigned int textureIdx = 31;
+        // Directional light (only one)
+        dirLight->render(shader, textureIdx--);     // set as last texture to guarantee that wont override other textures(solution could be better)
+
         // Point lights
         unsigned int nLights = pointLights.size();
         unsigned int nActiveLights = 0;
@@ -321,12 +325,17 @@ void Scene::renderShader(Shader shader, bool applyLighting){
         }
         shader.setInt("nSpotLights", nActiveLights);
 
-        // Directional light (only one)
-        dirLight->render(shader);
-
+        
         shader.setBool("useBlinn", variableLog["useBlinn"].val<bool>());
         shader.setBool("useGamma", variableLog["useGamma"].val<bool>());
     }
+}
+
+void Scene::renderDirLightShader(Shader shader){
+    shader.activate();
+
+    // Set camera values
+    shader.setMat4("lightSpaceMatrix", dirLight->lightSpaceMatrix);
 }
 
 void Scene::renderInstances(std::string modelId, Shader shader, float dt){

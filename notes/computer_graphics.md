@@ -60,6 +60,12 @@ Creates a halfway vector(**h**) between Viewer vector (**v**) and light source v
 
 **h** = normalize(**l** + **v**)
 
+### Shadows
+#### Shadow Mapping (Directional Light)
+
+Creates framebuffers on light source so, since it is a parallel source of light, we can say that if a position is occluse to the light's framebuffer, then the occluded object has a shadow cast into it. Another way to view the light framebuffer is like it had a camera, and it couldnt see some part of its quad. So this unseen part is in shadow.
+
+In directional light, we will cast shadows that will look like a box around the caracter, since its parallel, and we dont need to cast where it wont be rendered, only within the player(camera) field of view. We will call this box: Bounding region br. ()in light.h
 
 ### Gamma Correction
 

@@ -3,7 +3,10 @@
 
 
 #include <glm/glm.hpp>
+
 #include "shader.h"
+#include "../algorithms/bounds.h"
+#include "framememory.hpp"
 
 struct PointLight {
     glm::vec3 position;
@@ -30,8 +33,29 @@ struct DirLight {
     glm::vec4 diffuse;
     glm::vec4 specular;
 
+    // Bounding region for shadow
+    BoundingRegion br;
 
-    void render(Shader shader);
+    // Transformation to a light space (projection * view)
+    glm::mat4 lightSpaceMatrix;
+
+    // FBO for shadows
+    FramebufferObject shadowFBO;    // This is working basically as a texture
+
+    // Constructor
+    DirLight(glm::vec3 direction,
+             glm::vec4 ambient,
+             glm::vec4 diffuse,
+             glm::vec4 specular,
+             BoundingRegion br
+    );
+
+    // Render light into shader
+    void render(Shader shader, unsigned int textureIdx);
+
+    // Update light space matrix
+    void updateMatrices();
+
 };
 
 struct SpotLight {

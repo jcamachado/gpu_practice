@@ -30,7 +30,7 @@ namespace States {
             --------
             00001000 == 00001000
         */
-        return (*states & (1 << target)) == (1 << target);
+        return (*states & (1 << target));
     }
 
     
@@ -45,7 +45,7 @@ namespace States {
             --------
             11011101
         */
-        *states |= (1 << target);
+        *states |= 1 << target;
     }
 
                                                             
