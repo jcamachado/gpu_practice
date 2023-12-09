@@ -313,7 +313,7 @@ void Scene::renderShader(Shader shader, bool applyLighting){
         nLights = spotLights.size();
         nActiveLights = 0;
         for (unsigned int i = 0; i < nLights; i++){
-            if (States::isActive(&activeSpotLights, i)){
+            if (States::isIndexActive(&activeSpotLights, i)){
                 // i'th spot light is active
                 spotLights[i]->render(shader, nActiveLights);
                 nActiveLights++;
