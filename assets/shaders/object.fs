@@ -205,8 +205,26 @@ float calcDirLightShadow(vec3 norm, vec3 lightDir){
     float minBias = 0.005;
     float bias = max(maxBias * (1.0 - dot(norm, lightDir)), minBias);
 
-    // If depth is greater (further), return 1
-    return currentDepth - bias > closestDepth ? 1.0 : 0.0;
+    /*
+     PCF (Percentage Closer Filtering)
+    - Texel is a pixel in a texture
+    We need to go from -1 to 1 and do the averages
+    - pcfDepth is the depth of the neighbouring texel 
+    We create the offset by -1 to 1 and multiply by the texelSize, converting the offset in pixels to normalized coordinates
+    */
+
+    float shadowSum = 0.0;
+    vec2 texelSize = 1.0 / textureSize(dirLight.depthBuffer, 0); // 0 because its a 2D texture
+    for (int y = -1; y <= 1; y++){
+        for (int x = -1; x <= 1; x++){
+            float pcfDepth = texture(dirLight.depthBuffer, projCoords.xy + vec2(x, y) * texelSize).r;
+            // If depth is greater (further), return 1
+            shadowSum += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
+        }
+    }
+
+
+    return shadowSum / 9.0; // 9 because we are doing 3x3 PCF
 }
 
 

@@ -87,6 +87,15 @@ Shadow acne is caused by the discrete nature of the shadow map. A shadow map is 
 
 The canonical way to solve this is to offset the shadow map slightly so the object no longer self shadows itself. This offset is called a bias. One can use more smart offsets than just a fixed value but a fixed value works quite well and has minimal overhead.
 
+#### PCF: Percentage closer filtering.
+Is a technique to solve another problem regarding the finite nature of the texture sampled from the shadow mapping.
+
+In this case, the problem happens not by rendering the regular directional light shadow on a surface, but the shadow
+cast by other objects on the surface that is strongly aliased(pixelated). When you increases the shadow resolution, the pixelation decreases. 
+
+To solve this we will have to do "blending".  That is a kind of average of values from neighboring coordinates on the texture. and average all 9 values.
+
+
 ### Gamma Correction
 
 We expect that the color input to the system to be output on the screen. But this is not what happens.
