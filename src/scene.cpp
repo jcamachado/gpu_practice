@@ -299,13 +299,14 @@ void Scene::renderShader(Shader shader, bool applyLighting){
     if (applyLighting){
         unsigned int textureIdx = 31;
         // Directional light (only one)
-        dirLight->render(shader, textureIdx--);     // set as last texture to guarantee that wont override other textures(solution could be better)
+        // set as last texture to guarantee that wont override other textures(solution could be better)
+        dirLight->render(shader, textureIdx--);     
 
         // Point lights
         unsigned int nLights = pointLights.size();
         unsigned int nActiveLights = 0;
         for (unsigned int i = 0; i < nLights; i++){
-            if (States::isActive(&activePointLights, i)){
+            if (States::isIndexActive(&activePointLights, i)){
                 // i'th light is active
                 pointLights[i]->render(shader, nActiveLights);
                 nActiveLights++;
@@ -319,7 +320,7 @@ void Scene::renderShader(Shader shader, bool applyLighting){
         for (unsigned int i = 0; i < nLights; i++){
             if (States::isIndexActive(&activeSpotLights, i)){
                 // i'th spot light is active
-                spotLights[i]->render(shader, nActiveLights);
+                spotLights[i]->render(shader, nActiveLights, textureIdx--);
                 nActiveLights++;
             }
         }
@@ -336,6 +337,13 @@ void Scene::renderDirLightShader(Shader shader){
 
     // Set camera values
     shader.setMat4("lightSpaceMatrix", dirLight->lightSpaceMatrix);
+}
+
+void Scene::renderSpotLightShader(Shader shader, int idx){
+    shader.activate();
+
+    // Set camera values
+    shader.setMat4("lightSpaceMatrix", spotLights[idx]->lightSpaceMatrix);
 }
 
 void Scene::renderInstances(std::string modelId, Shader shader, float dt){

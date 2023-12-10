@@ -32,7 +32,7 @@ class FramebufferObject {
         }
 
         // This will allow us to bypass writing to the color buffer, which will save a lot of memory on the GPU
-        void disableDrawColorBuffer() {
+        void disableColorBuffer() {
             glDrawBuffer(GL_NONE);
             glReadBuffer(GL_NONE);      
         }

@@ -96,6 +96,10 @@ cast by other objects on the surface that is strongly aliased(pixelated). When y
 To solve this we will have to do "blending".  That is a kind of average of values from neighboring coordinates on the texture. and average all 9 values.
 
 
+### Shadow (Spotlight)
+
+Will work similarly to the camera. Like the image cone of light has a canvas on the other side of objects.
+
 ### Gamma Correction
 
 We expect that the color input to the system to be output on the screen. But this is not what happens.

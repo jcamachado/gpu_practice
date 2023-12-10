@@ -55,6 +55,12 @@ struct SpotLight {
     vec4 ambient;
     vec4 diffuse;
     vec4 specular;
+
+    float nearPlane;
+    float farPlane;
+
+    sampler2D depthBuffer;
+    mat4 lightSpaceMatrix;
 };
 
 uniform PointLight pointLights[MAX_POINT_LIGHTS];
@@ -77,7 +83,6 @@ uniform bool useBlinn;
 uniform bool useGamma;
 
 
-float calcDirLightShadow(vec3 norm, vec3 lightDir);
 vec4 calcPointLight(int idx, vec3 norm, vec3 viewDir, vec4 diffMap, vec4 specMap);
 vec4 calcDirLight(vec3 norm, vec3 viewDir, vec4 diffMap, vec4 specMap);
 vec4 calcSpotLight(int idx, vec3 norm, vec3 viewDir, vec4 diffMap, vec4 specMap);
@@ -185,6 +190,10 @@ float calcDirLightShadow(vec3 norm, vec3 lightDir){
         So its easier to handle where the fragment is in the world.
 
         - We need to calculate a Bias factor to avoid Shadow Acne, where the shadow is rendered in a striped pattern
+
+        - We dont need to linearize the depth because we are using an orthographic projection, so the depth is already linear
+
+        - In this scenario, outerCutoff cannot be greater than 45 degrees because of cubemap limitations
     */
     vec4 fragPosLightSpace = dirLight.lightSpaceMatrix * vec4(FragPos, 1.0);
 
@@ -271,6 +280,57 @@ vec4 calcDirLight(vec3 norm, vec3 viewDir, vec4 diffMap, vec4 specMap) {
     return vec4(ambient + (1.0 - shadow) * (diffuse + specular));
 }
 
+float calcSpotLightShadow(int idx, vec3 norm, vec3 lightDir){
+    vec4 fragPosLightSpace = spotLights[idx].lightSpaceMatrix * vec4(FragPos, 1.0);
+
+    // Perspective divide (Transforming coordinates NDC)
+    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w; //[depth relative to light] => [-1, 1]
+
+    // NDC to depth range (renders everything inside bounding region in lightSpaceMatrix from light.cpp [i guess??])
+    projCoords = projCoords * 0.5 + 0.5; //[-1, 1] => [0, 1]
+
+    // If too far from light, do not return shadow
+    if (projCoords.z > 1.0){
+        return 0.0;
+    }
+
+    // Get closest depth in depthBuffer
+    float closestDepth = texture(spotLights[idx].depthBuffer, projCoords.xy).r; //r because its a depth texture
+
+    // Linearize depth
+    float z = closestDepth * 2.0 - 1.0;   // Transform to Normalized Device Coordinates (NDC) [0, 1] -> [-1, 1]
+    closestDepth = (2.0 * spotLights[idx].nearPlane * spotLights[idx].farPlane) / 
+        (spotLights[idx].farPlane + spotLights[idx].nearPlane - 
+        z * (spotLights[idx].farPlane - spotLights[idx].nearPlane));
+    closestDepth /= spotLights[idx].farPlane;
+
+    // Get depth of current fragment from light's perspective
+    float currentDepth = projCoords.z; // in normalized coordinates, z is the depth
+
+    // Calculate bias (based on depth map resolution and slope)
+    float maxBias = 0.05;
+    float minBias = 0.005;
+    float bias = max(maxBias * (1.0 - dot(norm, lightDir)), minBias);
+
+    /*
+    PCF (Percentage Closer Filtering)
+    */
+
+    float shadowSum = 0.0;
+    vec2 texelSize = 1.0 / textureSize(spotLights[idx].depthBuffer, 0); // 0 because its a 2D texture
+    for (int y = -1; y <= 1; y++){
+        for (int x = -1; x <= 1; x++){
+            float pcfDepth = texture(spotLights[idx].depthBuffer, projCoords.xy + vec2(x, y) * texelSize).r;
+            // If depth is greater (further), return 1
+            shadowSum += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
+        }
+    }
+
+    // Return average. 9 because we are doing 3x3 PCF
+    return shadowSum / 9.0;
+
+}
+
 vec4 calcSpotLight(int idx, vec3 norm, vec3 viewDir, vec4 diffMap, vec4 specMap){
     vec3 lightDir = normalize(spotLights[idx].position - FragPos); //same as pointLight
 
@@ -312,7 +372,13 @@ vec4 calcSpotLight(int idx, vec3 norm, vec3 viewDir, vec4 diffMap, vec4 specMap)
         float dist = length(spotLights[idx].position - FragPos);
         float attenuation = 1.0/(spotLights[idx].k0 + spotLights[idx].k1*dist + spotLights[idx].k2*(dist*dist));
 
-        return vec4(ambient + diffuse + specular) * attenuation;
+        float shadow = calcSpotLightShadow(idx, norm, lightDir);
+
+        ambient *= attenuation;
+        diffuse *= attenuation;
+        specular *= attenuation;
+
+        return vec4(ambient + (1.0 - shadow) * (diffuse + specular));
     }
     else{
         return ambient;

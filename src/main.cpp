@@ -51,10 +51,9 @@ double dt = 0.0f;       // Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
 
 unsigned int nSpheres = 10;
-unsigned int nLamps = 4;
 
-Sphere sphere(nSpheres);
 Cube cube(10);
+Sphere sphere(nSpheres);
 
 int main(){
     scene = Scene(3, 3, "Particle System", 800, 600); // Create scene
@@ -74,7 +73,7 @@ int main(){
     Shader boxShader("assets/shaders/instanced/box.vs", "assets/shaders/instanced/box.fs");
     Shader bufferShader("assets/shaders/buffer.vs", "assets/shaders/buffer.fs");
     Shader lampShader("assets/shaders/instanced/instanced.vs", "assets/shaders/lamp.fs");
-    Shader dirLightShader("assets/shaders/shadows/directionalshadow.vs", "assets/shaders/shadows/shadow.fs");
+    Shader shadowShader("assets/shaders/shadows/shadow.vs", "assets/shaders/shadows/shadow.fs");
     Shader outlineShader("assets/shaders/outline.vs", "assets/shaders/outline.fs");
     Shader shader("assets/shaders/instanced/instanced.vs", "assets/shaders/object.fs");
     Shader textShader("assets/shaders/text.vs", "assets/shaders/text.fs");
@@ -93,6 +92,16 @@ int main(){
     Box box;
     box.init();                 // Box is not instanced
 
+    // Setup plane to display texture
+    // Plane map;
+    // map.init(dirLight.shadowFBO.textures[0]);
+    // scene.registerModel(&map);
+    scene.loadModels();         // Load all model data
+
+    /*
+        Lights
+    */
+    
     DirLight dirLight(
         glm::vec3(-0.2f, -0.9f, -0.2f), 
         glm::vec4(0.1f, 0.1f, 0.1f, 1.0f), 
@@ -101,16 +110,6 @@ int main(){
         BoundingRegion(glm::vec3(-20.0f, -20.0f, 0.5f), glm::vec3(20.0f, 20.0f, 50.0f))
     );
 
-    // Setup plane to display texture
-    Plane map;
-    map.init(dirLight.shadowFBO.textures[0]);
-    scene.registerModel(&map);
-    scene.loadModels();         // Load all model data
-
-    /*
-        Lights
-    */
-    
     scene.dirLight = &dirLight;
 
     // glm::vec3 pointLightPositions[] = {
@@ -139,20 +138,17 @@ int main(){
     //     scene.pointLights.push_back(&pointLights[i]);
     //     States::activate(&scene.activePointLights, i);
     // }
-    // SpotLight spotLight = {
-    //     cam.cameraPos,
-    //     cam.cameraFront,
-    //     glm::cos(glm::radians(12.5f)),
-    //     glm::cos(glm::radians(20.0f)),
-    //     1.0f,
-    //     0.07f,
-    //     0.032f,
-    //     glm::vec4(0.0f, 0.0f, 0.0f, 1.0f),
-    //     glm::vec4(1.0f),
-    //     glm::vec4(1.0f)
-    // };
-    // scene.spotLights.push_back(&spotLight);
-    // scene.activeSpotLights = 1;                         // 0b00000001
+
+    // Spot Light
+    SpotLight spotLight(                                            // Perpendicular to direction
+        cam.cameraPos, cam.cameraFront, cam.cameraUp,
+        glm::cos(glm::radians(12.5f)), glm::cos(glm::radians(20.0f)),
+        1.0f, 0.0014f, 0.000007f,
+        glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), glm::vec4(1.0f), glm::vec4(1.0f),
+        0.1f, 100.0f
+    );
+    scene.spotLights.push_back(&spotLight);
+    scene.activeSpotLights = 1;                         // 0b00000001
     
     scene.generateInstance(cube.id, glm::vec3(20.0f, 0.1f, 20.0f), 100.0f, glm::vec3(0.0f, -3.0f, 0.0f));
     glm::vec3 cubePositions[] = {
@@ -163,15 +159,15 @@ int main(){
         { 2.8f, 1.9f, -6.2f },
         { 3.5f, 6.3f, -1.0f },
         { -3.4f, 10.9f, -5.5f },
-        { 10.0f, -2.0f, 13.2f },
-        { 2.1f, 7.9f, -8.3f },
+        { 0.0f, 11.0f, 0.2f },
+        { 0.0f, 5.0f, 0.0f },
     };
     for (unsigned int i = 0; i < 9; i++) {
         scene.generateInstance(cube.id, glm::vec3(0.5f), 1.0f, cubePositions[i]);
     }
 
     // instantiate texture plane
-    scene.generateInstance(map.id, glm::vec3(2.0f, 2.0f, 0.0f), 0.0f, glm::vec3(0.0f)); 
+    // scene.generateInstance(map.id, glm::vec3(2.0f, 2.0f, 0.0f), 0.0f, glm::vec3(0.0f)); 
     scene.initInstances();                              // Instantiate instances
     scene.prepare(box);                                 // Builds octree  
     scene.variableLog["time"] = (double)0.0;
@@ -200,8 +196,17 @@ int main(){
 
         // Render scene to dirlight FBO
         dirLight.shadowFBO.activate();
-        scene.renderDirLightShader(dirLightShader);    // Render scene from light's perspective     
-        renderScene(dirLightShader);
+        scene.renderDirLightShader(shadowShader);    // Render scene from light's perspective     
+        renderScene(shadowShader);
+
+        // Render scene to spot light FBO
+        for (unsigned int i = 0, len = scene.spotLights.size(); i < len; i++){
+            if (States::isIndexActive(&scene.activeSpotLights, i)){
+                scene.spotLights[i]->shadowFBO.activate();
+                scene.renderSpotLightShader(shadowShader, i);    // Render scene from light's perspective     
+                renderScene(shadowShader);
+            }
+        }
 
         // Render scene normally
         scene.defaultFBO.activate();
@@ -247,6 +252,8 @@ void processInput(double dt){ // Function for processing input
     if (States::isIndexActive(&scene.activeSpotLights, 0)){
         scene.spotLights[0]->position = scene.getActiveCamera()->cameraPos;
         scene.spotLights[0]->direction = scene.getActiveCamera()->cameraFront;
+        scene.spotLights[0]->up = scene.getActiveCamera()->cameraUp;
+        scene.spotLights[0]->updateMatrices();
     }
 
     if(Keyboard::keyWentUp(GLFW_KEY_L)){

@@ -93,8 +93,17 @@ class Scene {
         void update();
         void newFrame(Box &box);                                        
         void renderShader(Shader shader, bool applyLighting = true);
-        // Since we dont to render from the user's perspective (camera valus), we need other methods for casting shadow
+        
+        /*
+            Shadow rendering methods
+            To render shadows, we create like a camera from the light's perspective, but we dont see through it
+            Since we dont to render from the user's perspective (camera values), we need other methods for casting shadow
+        */
+        // Set uniform shader variables for directional light render
         void renderDirLightShader(Shader shader);   
+        // Set uniform shader variables for spot light render
+        void renderSpotLightShader(Shader shader, int idx);
+
         void renderInstances(
             std::string modelId, 
             Shader shader, 
