@@ -33,6 +33,9 @@ Scene::Scene(int glfwVersionMajor,
 
     Scene::scrWidth = scrWidth;
     Scene::scrHeight = scrHeight;
+    defaultFBO = FramebufferObject(scrWidth, scrHeight, 
+    GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT
+    );
 
     setWindowColor(0.1f, 0.15f, 0.15f, 1.0f);
 }
@@ -99,16 +102,34 @@ bool Scene::init() {
     
     /*
         Set rendering parameters
-        - GL_DEPTH_TEST: Doesn't show vertices not visible to camera (back of objects)
-        - GL_BLEND: Allows transparency between objects (text texture)
-        - glBlendFunc: Sets blending function (how to blend)
-        - glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED): Disable cursor like in FPS games
-
-
     */
-    glEnable(GL_DEPTH_TEST); 
+    /*
+        Depth testing
+        - GL_DEPTH_TEST: Doesn't show vertices not visible to camera (back of objects)
+        Blending fortext tures
+        - GL_BLEND: Allows transparency between objects (text texture)
+        - glBlendFunc(): Sets blending function (how to blend)
+        - glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED): Disable cursor like in FPS games
+    */
+    glEnable(GL_DEPTH_TEST);        
+
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    /*
+        Stencil Testing
+        -glStencilOp: has 3 parameters: fail, zfail, zpass. fail that represents 3 cases.
+        1- fail means that both stencil and depth tests failed. 
+        2- zfail means that stencil test passed but depth test failed. 
+        3- zpass means that both tests passed.
+
+        GL_Keep keep fragmets if stencil or depth fails. And replace if both pass.
+    */
+    glEnable(GL_STENCIL_TEST);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
+
+
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     /*
@@ -205,13 +226,16 @@ void Scene::processInput(float dt){
         // Update blinn parameter if necessary
         if (Keyboard::keyWentUp(GLFW_KEY_B)){
             variableLog["useBlinn"] = !variableLog["useBlinn"].val<bool>();
-            std::cout << "Blinn: " << variableLog["useBlinn"].val<bool>() << std::endl;
         }
 
         // Toggle gamma correction parameter if necessary
         if (Keyboard::keyWentUp(GLFW_KEY_G)){
             variableLog["useGamma"] = !variableLog["useGamma"].val<bool>();
-            std::cout << "Gamma: " << variableLog["useGamma"].val<bool>() << std::endl;
+        }
+
+        // Update outline parameter if necessary
+        if (Keyboard::keyWentUp(GLFW_KEY_O)){
+            variableLog["displayOutline"] = !variableLog["displayOutline"].val<bool>();
         }
 
         /*
@@ -244,7 +268,8 @@ void Scene::processInput(float dt){
 void Scene::update(){
     // apply shaders for lighting and textures
     glClearColor(bgColor[0], bgColor[1], bgColor[2], bgColor[3]);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    // Clear occupied bits
+    defaultFBO.clear();
 }
 
 // Update screen before after each frame
@@ -272,11 +297,16 @@ void Scene::renderShader(Shader shader, bool applyLighting){
 
     // Lighting
     if (applyLighting){
+        unsigned int textureIdx = 31;
+        // Directional light (only one)
+        // set as last texture to guarantee that wont override other textures(solution could be better)
+        dirLight->render(shader, textureIdx--);     
+
         // Point lights
         unsigned int nLights = pointLights.size();
         unsigned int nActiveLights = 0;
         for (unsigned int i = 0; i < nLights; i++){
-            if (States::isActive(&activePointLights, i)){
+            if (States::isIndexActive(&activePointLights, i)){
                 // i'th light is active
                 pointLights[i]->render(shader, nActiveLights);
                 nActiveLights++;
@@ -288,24 +318,37 @@ void Scene::renderShader(Shader shader, bool applyLighting){
         nLights = spotLights.size();
         nActiveLights = 0;
         for (unsigned int i = 0; i < nLights; i++){
-            if (States::isActive(&activeSpotLights, i)){
+            if (States::isIndexActive(&activeSpotLights, i)){
                 // i'th spot light is active
-                spotLights[i]->render(shader, nActiveLights);
+                spotLights[i]->render(shader, nActiveLights, textureIdx--);
                 nActiveLights++;
             }
         }
         shader.setInt("nSpotLights", nActiveLights);
 
-        // Directional light (only one)
-        dirLight->render(shader);
-
+        
         shader.setBool("useBlinn", variableLog["useBlinn"].val<bool>());
         shader.setBool("useGamma", variableLog["useGamma"].val<bool>());
     }
 }
 
+void Scene::renderDirLightShader(Shader shader){
+    shader.activate();
+
+    // Set camera values
+    shader.setMat4("lightSpaceMatrix", dirLight->lightSpaceMatrix);
+}
+
+void Scene::renderSpotLightShader(Shader shader, int idx){
+    shader.activate();
+
+    // Set camera values
+    shader.setMat4("lightSpaceMatrix", spotLights[idx]->lightSpaceMatrix);
+}
+
 void Scene::renderInstances(std::string modelId, Shader shader, float dt){
-        models[modelId]->render(shader, dt, this);
+    shader.activate();
+    models[modelId]->render(shader, dt, this);
 }
 
 void Scene::renderText(

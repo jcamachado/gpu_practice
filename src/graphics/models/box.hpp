@@ -6,7 +6,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <vector>
-#include "../glmemory.hpp"
+#include "../vertexmemory.hpp"
 #include "../shader.h"
 #include "../../algorithms/bounds.h"
 
