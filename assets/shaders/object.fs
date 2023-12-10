@@ -77,7 +77,7 @@ uniform bool useBlinn;
 uniform bool useGamma;
 
 
-float calcDirLightShadow();
+float calcDirLightShadow(vec3 norm, vec3 lightDir);
 vec4 calcPointLight(int idx, vec3 norm, vec3 viewDir, vec4 diffMap, vec4 specMap);
 vec4 calcDirLight(vec3 norm, vec3 viewDir, vec4 diffMap, vec4 specMap);
 vec4 calcSpotLight(int idx, vec3 norm, vec3 viewDir, vec4 diffMap, vec4 specMap);
@@ -178,10 +178,14 @@ vec4 calcPointLight(int idx, vec3 norm, vec3 viewDir, vec4 diffMap, vec4 specMap
     return vec4(ambient + diffuse + specular) * attenuation;
 }
 
-float calcDirLightShadow(){
-     // FragPos is only affected by the model, gl_pos is affected by changes in perspective. 
-     // It wouldnt make sense passing projection coordinates because we dont want to render light from the camera's point of view
-     // So its easier to handler where the fragment is in the world 
+float calcDirLightShadow(vec3 norm, vec3 lightDir){
+    /*
+        - fragPosLightSpace:  FragPos is only affected by the model, gl_pos is affected by changes in perspective. 
+        It wouldnt make sense passing projection coordinates because we dont want to render light from the camera's point of view.
+        So its easier to handle where the fragment is in the world.
+
+        - We need to calculate a Bias factor to avoid Shadow Acne, where the shadow is rendered in a striped pattern
+    */
     vec4 fragPosLightSpace = dirLight.lightSpaceMatrix * vec4(FragPos, 1.0);
 
     // Perspective divide (Transforming coordinates NDC, normalized device coordinates)
@@ -196,8 +200,13 @@ float calcDirLightShadow(){
     // Get depth of current fragment from light's perspective
     float currentDepth = projCoords.z; // in normalized coordinates, z is the depth
 
+    // Calculate bias (based on depth map resolution and slope)
+    float maxBias = 0.05;
+    float minBias = 0.005;
+    float bias = max(maxBias * (1.0 - dot(norm, lightDir)), minBias);
+
     // If depth is greater (further), return 1
-    return currentDepth > closestDepth ? 1.0 : 0.0;
+    return currentDepth - bias > closestDepth ? 1.0 : 0.0;
 }
 
 
@@ -234,7 +243,7 @@ vec4 calcDirLight(vec3 norm, vec3 viewDir, vec4 diffMap, vec4 specMap) {
         specular = dirLight.specular * (spec * specMap);
     }
 
-    float shadow = calcDirLightShadow();    // Only affects diffuse and specular
+    float shadow = calcDirLightShadow(norm, lightDir);    // Only affects diffuse and specular
     
     return vec4(ambient + (1.0 - shadow) * (diffuse + specular));
 }

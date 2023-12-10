@@ -67,6 +67,26 @@ Creates framebuffers on light source so, since it is a parallel source of light,
 
 In directional light, we will cast shadows that will look like a box around the caracter, since its parallel, and we dont need to cast where it wont be rendered, only within the player(camera) field of view. We will call this box: Bounding region br. ()in light.h
 
+#### Shadow acne
+Happens when we have finite resolution on texture
+
+When a light maps to a surface by its depth and with finite resolution texture, we consider a hit on one pixel.
+Every fragment can be so sharf of a resolution, and this process keeps going to for "parallel light vectors"
+When we take the coordinate from each fragment to determine if its in the shadow or not, we convert it into an integer (into a normalized coordinate), and each normalized coordinate will map to some integer pixel coordinate on the image.
+
+Minhas palavras / a partida da explicacao visual do MGrieco
+A depthmap on a surface is kinda perpendicular to light vector. So, picturing this as a diagonal relatively to the surface.  
+And imagine that this diagonal starts under the surface and goes further in depth above the surface. 
+The first part will be counted as out of the shadow, and the other part as being shadowed.  This makes a striped pattern.
+But i'm still a bit confused.
+
+This will be solved by a solution called Bias where we just offset it.
+
+(from stackoverflow)
+Shadow acne is caused by the discrete nature of the shadow map. A shadow map is composed of samples, a surface is continuous. Thus, there can be a spot on the surface where the discrete surface is further than the sample. The problem does persist even if you multi sample, but you can sample smarter in ways that can nearly eliminate this at significant cost.
+
+The canonical way to solve this is to offset the shadow map slightly so the object no longer self shadows itself. This offset is called a bias. One can use more smart offsets than just a fixed value but a fixed value works quite well and has minimal overhead.
+
 ### Gamma Correction
 
 We expect that the color input to the system to be output on the screen. But this is not what happens.
