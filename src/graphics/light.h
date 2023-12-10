@@ -33,7 +33,7 @@ struct DirLight {
     glm::vec4 diffuse;
     glm::vec4 specular;
 
-    // Bounding region for shadow
+    // Bounding region for shadow, defines the shadow format
     BoundingRegion br;
 
     // Transformation to a light space (projection * view)

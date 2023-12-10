@@ -76,10 +76,16 @@ class FramebufferObject {
             // Allocate
             tex.bind();
             tex.allocate(format, width, height, type);
-            Texture::setParams();
+            //GL_CLAMP_TO_BORDER if we try to sample outside the texture, it will return the border color
+            Texture::setParams(GL_NEAREST, GL_NEAREST, GL_CLAMP_TO_BORDER, GL_CLAMP_TO_BORDER);
+
+            // if its black, it will be considered on the shadow because a depth value of 0.0f is considered that the closest
+            // object is right on the camera or on the light. And we just wan to set that thes no objects outside the shadow box
+            // Nothing will be rendered in the shadow when were looking at the shadowbox
+            float borderColor[] = {1.0f, 1.0f, 1.0f, 1.0f}; // White border, 
+            glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
             // Attach
-            bind();
             glFramebufferTexture2D(GL_FRAMEBUFFER, attachType, GL_TEXTURE_2D, tex.id, 0);
 
             textures.push_back(tex);

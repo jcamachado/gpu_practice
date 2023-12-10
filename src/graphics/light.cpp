@@ -20,7 +20,7 @@ DirLight::DirLight(glm::vec3 direction,
                    glm::vec4 diffuse,
                    glm::vec4 specular,
                    BoundingRegion br
-) : direction(direction), ambient(ambient), diffuse(diffuse), specular(specular), br(br), shadowFBO(1024, 1024, GL_DEPTH_BUFFER_BIT) {
+) : direction(direction), ambient(ambient), diffuse(diffuse), specular(specular), br(br), shadowFBO(2048, 2048, GL_DEPTH_BUFFER_BIT) {
     // Generate FBO
     shadowFBO.generate();
     shadowFBO.bind();

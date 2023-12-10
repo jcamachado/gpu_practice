@@ -194,6 +194,11 @@ float calcDirLightShadow(vec3 norm, vec3 lightDir){
     // NDC to depth range (renders everything inside bounding region in lightSpaceMatrix from light.cpp [i guess??])
     projCoords = projCoords * 0.5 + 0.5; //[-1, 1] => [0, 1]
 
+    // If too far from light, do not return shadow
+    if (projCoords.z > 1.0){
+        return 0.0;
+    }
+
     // Get closest depth in depthBuffer
     float closestDepth = texture(dirLight.depthBuffer, projCoords.xy).r; //r because its a depth texture
 
