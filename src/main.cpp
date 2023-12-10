@@ -40,8 +40,10 @@
 
 #include "physics/environment.h"
 
-void processInput(double dt);
 Scene scene;
+
+void processInput(double dt);
+void renderScene(Shader shader);
 
 Camera cam;
 
@@ -52,6 +54,7 @@ unsigned int nSpheres = 10;
 unsigned int nLamps = 4;
 
 Sphere sphere(nSpheres);
+Cube cube(10);
 
 int main(){
     scene = Scene(3, 3, "Particle System", 800, 600); // Create scene
@@ -85,19 +88,17 @@ int main(){
     // scene.registerModel(&lamp);
     scene.registerModel(&sphere);
 
-    Cube cube(10);
     scene.registerModel(&cube);
 
     Box box;
     box.init();                 // Box is not instanced
 
-    scene.defaultFBO.bind(); // rebind default framebuffer
     DirLight dirLight(
-        glm::vec3(-0.2f, -1.0f, -0.3f), 
+        glm::vec3(-0.2f, -0.9f, -0.2f), 
         glm::vec4(0.1f, 0.1f, 0.1f, 1.0f), 
-        glm::vec4(0.4f, 0.4f, 0.4f, 1.0f),
-        glm::vec4(0.5f, 0.5f, 0.5f, 1.0f), 
-        BoundingRegion(glm::vec3(-20.0f, -20.0f, 0.5f), glm::vec3(20.0f, 20.0f, 20.0f))
+        glm::vec4(0.6f, 0.6f, 0.6f, 1.0f),
+        glm::vec4(0.7f, 0.7f, 0.7f, 1.0f), 
+        BoundingRegion(glm::vec3(-20.0f, -20.0f, 0.5f), glm::vec3(20.0f, 20.0f, 50.0f))
     );
 
     // Setup plane to display texture
@@ -175,6 +176,7 @@ int main(){
     scene.prepare(box);                                 // Builds octree  
     scene.variableLog["time"] = (double)0.0;
 
+    scene.defaultFBO.bind(); // rebind default framebuffer
     while (!scene.shouldClose()){                       // Check if window should close
         double currentTime = glfwGetTime();
         dt = currentTime - lastFrame;
@@ -196,24 +198,18 @@ int main(){
             }
         }
 
-        // scene.renderShader(shader);  
+        // Render scene to dirlight FBO
         dirLight.shadowFBO.activate();
         scene.renderDirLightShader(dirLightShader);    // Render scene from light's perspective     
-        if (sphere.currentNumInstances > 0){            // Render launch objects
-            scene.renderInstances(sphere.id, dirLightShader, dt);
-        }
-        scene.renderInstances(cube.id, dirLightShader, dt);     // Render cubes
+        renderScene(dirLightShader);
+
+        // Render scene normally
+        scene.defaultFBO.activate();
+        scene.renderShader(shader);               // Render scene normally
+        renderScene(shader);
+
         // scene.renderShader(boxShader, false);           // Render boxes
         // box.render(boxShader);                          // Box is not instanced
-
-        /*
-            Render texture
-        */
-        // rebind default framebuffer
-        scene.defaultFBO.activate();
-
-        // Render quad
-        scene.renderInstances(map.id, bufferShader, dt);
 
         // Send new frame to window
         scene.newFrame(box);
@@ -221,6 +217,13 @@ int main(){
     }
     scene.cleanup();
     return 0;
+}
+
+void renderScene(Shader shader){                // assumes shader is prepared accordingly
+    if (sphere.currentNumInstances > 0){            // Render launch objects
+            scene.renderInstances(sphere.id, shader, dt);
+        }
+        scene.renderInstances(cube.id, shader, dt);     // Render cubes
 }
 
 void launchItem(float dt){

@@ -36,6 +36,9 @@ struct DirLight {
     vec4 ambient;
     vec4 diffuse;
     vec4 specular;
+
+    sampler2D depthBuffer;    // set from light.cpp
+    mat4 lightSpaceMatrix;
 };
 
 struct SpotLight {
@@ -74,7 +77,7 @@ uniform bool useBlinn;
 uniform bool useGamma;
 
 
-
+float calcDirLightShadow();
 vec4 calcPointLight(int idx, vec3 norm, vec3 viewDir, vec4 diffMap, vec4 specMap);
 vec4 calcDirLight(vec3 norm, vec3 viewDir, vec4 diffMap, vec4 specMap);
 vec4 calcSpotLight(int idx, vec3 norm, vec3 viewDir, vec4 diffMap, vec4 specMap);
@@ -175,6 +178,29 @@ vec4 calcPointLight(int idx, vec3 norm, vec3 viewDir, vec4 diffMap, vec4 specMap
     return vec4(ambient + diffuse + specular) * attenuation;
 }
 
+float calcDirLightShadow(){
+     // FragPos is only affected by the model, gl_pos is affected by changes in perspective. 
+     // It wouldnt make sense passing projection coordinates because we dont want to render light from the camera's point of view
+     // So its easier to handler where the fragment is in the world 
+    vec4 fragPosLightSpace = dirLight.lightSpaceMatrix * vec4(FragPos, 1.0);
+
+    // Perspective divide (Transforming coordinates NDC, normalized device coordinates)
+    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w; //[depth relative to light] => [-1, 1]
+
+    // NDC to depth range (renders everything inside bounding region in lightSpaceMatrix from light.cpp [i guess??])
+    projCoords = projCoords * 0.5 + 0.5; //[-1, 1] => [0, 1]
+
+    // Get closest depth in depthBuffer
+    float closestDepth = texture(dirLight.depthBuffer, projCoords.xy).r; //r because its a depth texture
+
+    // Get depth of current fragment from light's perspective
+    float currentDepth = projCoords.z; // in normalized coordinates, z is the depth
+
+    // If depth is greater (further), return 1
+    return currentDepth > closestDepth ? 1.0 : 0.0;
+}
+
+
 vec4 calcDirLight(vec3 norm, vec3 viewDir, vec4 diffMap, vec4 specMap) {
     /*
         Ambient -> constant
@@ -207,8 +233,10 @@ vec4 calcDirLight(vec3 norm, vec3 viewDir, vec4 diffMap, vec4 specMap) {
         float spec = pow(max(dotProd, 0.0), material.shininess*128);
         specular = dirLight.specular * (spec * specMap);
     }
+
+    float shadow = calcDirLightShadow();    // Only affects diffuse and specular
     
-    return vec4(ambient + diffuse + specular);
+    return vec4(ambient + (1.0 - shadow) * (diffuse + specular));
 }
 
 vec4 calcSpotLight(int idx, vec3 norm, vec3 viewDir, vec4 diffMap, vec4 specMap){
