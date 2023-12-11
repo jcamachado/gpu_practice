@@ -14,7 +14,10 @@ struct Material {
     float shininess;
 };
 
+uniform bool noNormalMap;
+
 uniform sampler2D diffuse0;
+uniform sampler2D normal0;
 uniform sampler2D specular0;
 
 
@@ -82,7 +85,8 @@ in vec2 TexCoord;
 
 uniform Material material;
 
-uniform int noTexture;
+uniform bool noTexture;
+uniform bool skipNormalMapping;
 uniform vec3 viewPos;
 
 
@@ -109,13 +113,17 @@ vec3 sampleOffsetDirections[NUM_SAMPLES] = vec3[]
 // TODO - make Blinn always true
 void main(){
     vec3 norm = normalize(Normal);
+
+    if (!skipNormalMapping && !noNormalMap){
+        norm = normalize(texture(normal0, TexCoord).rgb * 2.0 - 1.0); // map from [0, 1] to [-1, 1]
+    }
     vec3 viewVec = viewPos - FragPos; // Will be used for soft shadow
     vec3 viewDir = normalize(viewVec);
 
     vec4 diffMap;
     vec4 specMap;
 
-    if (noTexture == 1){
+    if (noTexture){
         diffMap = material.diffuse;
         specMap = material.specular;
     }
@@ -247,8 +255,8 @@ vec4 calcDirLight(vec3 norm, vec3 viewVec, vec3 viewDir, vec4 diffMap, vec4 spec
         specular = dirLight.specular * (spec * specMap);
     }
 
-    float shadow = calcDirLightShadow(norm, viewVec, lightDir);    // Only affects diffuse and specular
-    
+    // float shadow = calcDirLightShadow(norm, viewVec, lightDir);    // Only affects diffuse and specular
+    float shadow = 0.0;
     return vec4(ambient + (1.0 - shadow) * (diffuse + specular));
 }
 
@@ -325,7 +333,8 @@ vec4 calcPointLight(int idx, vec3 norm, vec3 viewVec, vec3 viewDir, vec4 diffMap
     float dist = length(pointLights[idx].position - FragPos);
     float attenuation = 1.0/(pointLights[idx].k0 + pointLights[idx].k1*dist + pointLights[idx].k2*(dist*dist));
 
-    float shadow = calcPointLightShadow(idx, norm, viewVec, lightDir);
+    // float shadow = calcPointLightShadow(idx, norm, viewVec, lightDir);
+    float shadow = 0.0;
 
     return vec4(ambient + (1.0 - shadow) * (diffuse + specular)) * attenuation;
 }
@@ -412,7 +421,9 @@ vec4 calcSpotLight(int idx, vec3 norm, vec3 viewVec, vec3 viewDir, vec4 diffMap,
         float dist = length(spotLights[idx].position - FragPos);
         float attenuation = 1.0/(spotLights[idx].k0 + spotLights[idx].k1*dist + spotLights[idx].k2*(dist*dist));
 
-        float shadow = calcSpotLightShadow(idx, norm, viewVec, lightDir);
+        // float shadow = calcSpotLightShadow(idx, norm, viewVec, lightDir);
+        float shadow = 0.0;
+
 
         ambient *= attenuation;
         diffuse *= attenuation;

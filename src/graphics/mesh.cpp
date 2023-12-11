@@ -83,15 +83,18 @@ void Mesh::loadData(std::vector<Vertex> _vertices, std::vector<unsigned int> _in
 }
 
 void Mesh::render(Shader shader, unsigned int numInstances){
+    shader.setBool("noNormalMap", true);
+
     if(noTextures){
         //materials
         shader.set4Float("material.diffuse", diffuse);
         shader.set4Float("material.specular", specular);
-        shader.setInt("noTexture", 1);
+        shader.setBool("noTexture", true);
     }
     else{
         // textures
         unsigned int diffuseIdx = 0;
+        unsigned int normalIdx = 0;
         unsigned int specularIdx = 0;
 
         for(unsigned int i = 0; i < textures.size(); i++){
@@ -105,6 +108,10 @@ void Mesh::render(Shader shader, unsigned int numInstances){
                 case aiTextureType_DIFFUSE:
                     name = "diffuse" + std::to_string(diffuseIdx++);
                     break;
+                case aiTextureType_NORMALS:
+                    name = "normal" + std::to_string(normalIdx++);
+                    shader.setBool("noNormalMap", false);
+                    break;
                 case aiTextureType_SPECULAR:
                     name = "specular" + std::to_string(specularIdx++);
                     break;
@@ -116,7 +123,7 @@ void Mesh::render(Shader shader, unsigned int numInstances){
             shader.setInt(name, i);
             textures[i].bind();
         }
-        shader.setInt("noTexture", 0);
+        shader.setBool("noTexture", false);
     }
 
     VAO.bind();                                                                 // Bind VAO

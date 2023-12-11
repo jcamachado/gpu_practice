@@ -49,6 +49,7 @@ add_executable(my_particle_system
     src/graphics/texture.cpp
 
     src/graphics/models/box.hpp
+    src/graphics/models/brickwall.hpp
     src/graphics/models/cube.hpp
     src/graphics/models/lamp.hpp
     src/graphics/models/gun.hpp

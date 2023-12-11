@@ -98,3 +98,20 @@
 (render lamps)
         scene.renderShader(lampShader, false);                  // Render lamps
         scene.renderInstances(lamp.id, lampShader, dt);
+
+
+
+        // Update blinn parameter if necessary
+        if (Keyboard::keyWentUp(GLFW_KEY_B)){
+            variableLog["useBlinn"] = !variableLog["useBlinn"].val<bool>();
+        }
+
+        // Toggle gamma correction parameter if necessary
+        if (Keyboard::keyWentUp(GLFW_KEY_G)){
+            variableLog["useGamma"] = !variableLog["useGamma"].val<bool>();
+        }
+
+        // Update outline parameter if necessary
+        if (Keyboard::keyWentUp(GLFW_KEY_O)){
+            variableLog["displayOutline"] = !variableLog["displayOutline"].val<bool>();
+        }

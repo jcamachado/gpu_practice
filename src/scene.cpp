@@ -156,9 +156,7 @@ bool Scene::init() {
 
     FT_Done_FreeType(ft);
 
-    // Setup lighting values
-    variableLog["useBlinn"] = true;
-    variableLog["useGamma"] = true;
+    variableLog["skipNormalMapping"] = false;
 
     return true;
 }
@@ -223,21 +221,9 @@ void Scene::processInput(float dt){
         // Set position at end
         cameraPos = cameras[activeCamera]->cameraPos;
 
-        // Update blinn parameter if necessary
-        if (Keyboard::keyWentUp(GLFW_KEY_B)){
-            variableLog["useBlinn"] = !variableLog["useBlinn"].val<bool>();
+        if (Keyboard::key(GLFW_KEY_N)){
+            variableLog["skipNormalMapping"] = !variableLog["skipNormalMapping"].val<bool>();
         }
-
-        // Toggle gamma correction parameter if necessary
-        if (Keyboard::keyWentUp(GLFW_KEY_G)){
-            variableLog["useGamma"] = !variableLog["useGamma"].val<bool>();
-        }
-
-        // Update outline parameter if necessary
-        if (Keyboard::keyWentUp(GLFW_KEY_O)){
-            variableLog["displayOutline"] = !variableLog["displayOutline"].val<bool>();
-        }
-
         /*
             if using Joystick (probably deprecated, but the logic is here)
         */
@@ -327,8 +313,7 @@ void Scene::renderShader(Shader shader, bool applyLighting){
         shader.setInt("nSpotLights", nActiveLights);
 
         
-        shader.setBool("useBlinn", variableLog["useBlinn"].val<bool>());
-        shader.setBool("useGamma", variableLog["useGamma"].val<bool>());
+        shader.setBool("skipNormalMapping", variableLog["skipNormalMapping"].val<bool>());
     }
 }
 
