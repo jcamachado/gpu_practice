@@ -308,7 +308,7 @@ void Scene::renderShader(Shader shader, bool applyLighting){
         for (unsigned int i = 0; i < nLights; i++){
             if (States::isIndexActive(&activePointLights, i)){
                 // i'th light is active
-                pointLights[i]->render(shader, nActiveLights);
+                pointLights[i]->render(shader, nActiveLights, textureIdx--);
                 nActiveLights++;
             }
         }
@@ -339,11 +339,26 @@ void Scene::renderDirLightShader(Shader shader){
     shader.setMat4("lightSpaceMatrix", dirLight->lightSpaceMatrix);
 }
 
-void Scene::renderSpotLightShader(Shader shader, int idx){
+void Scene::renderSpotLightShader(Shader shader, unsigned int idx){
     shader.activate();
 
-    // Set camera values
     shader.setMat4("lightSpaceMatrix", spotLights[idx]->lightSpaceMatrix);
+}
+
+void Scene::renderPointLightShader(Shader shader, unsigned int idx){
+    shader.activate();
+
+    // Set light space matrices
+    for (unsigned int i = 0; i < 6; i++){
+        // idx is the index of the point light and i is the index of the matrix within that light
+        shader.setMat4("lightSpaceMatrices[" + std::to_string(i) + "]", pointLights[idx]->lightSpaceMatrices[i]);
+    }
+
+    // light position
+    shader.set3Float("lightPos", pointLights[idx]->position);
+
+    // far plane
+    shader.setFloat("farPlane", pointLights[idx]->farPlane);
 }
 
 void Scene::renderInstances(std::string modelId, Shader shader, float dt){

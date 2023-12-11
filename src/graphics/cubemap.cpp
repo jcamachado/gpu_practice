@@ -1,6 +1,15 @@
 #include "cubemap.h"
+#include "../scene.h"       // we call scene methods here
 
 Cubemap::Cubemap(): hasTextures(false) {}
+
+void Cubemap::generate() {
+    glGenTextures(1, &id);
+}
+
+void Cubemap::bind() {
+    glBindTexture(GL_TEXTURE_CUBE_MAP, id);
+}
 
 void Cubemap::loadTextures(
     std::string _directory,
@@ -15,9 +24,6 @@ void Cubemap::loadTextures(
     hasTextures = true;
     faces = { right, left, top, bottom, front, back };
     
-    glGenTextures(1, &id);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, id);
-
     int width, height, nChannels;
 
     for (unsigned int i = 0; i < 6; i++){
@@ -50,6 +56,29 @@ void Cubemap::loadTextures(
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+}
+
+// We have to allocate 6 texture slots for the cubemap but we wont allocate any data to them
+// Just like we did on the texture allocate method
+void Cubemap::allocate(GLenum format, GLuint width, GLuint height, GLenum type){
+    hasTextures = true;
+
+    for (unsigned int i = 0; i < 6; i++){
+        /*
+            0 is Positive X, 1 is Negative X, 
+            2 is Positive Y, 3 is Negative Y, 
+            4 is Positive Z, 5 is Negative Z
+        */        
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+            0, format, width, height, 0, format, type, NULL);
+    }
+
+    // Set texture parameters
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR); 
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);	
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE); 
 }
 
 void Cubemap::init(){
@@ -135,7 +164,7 @@ void Cubemap::render(Shader shader, Scene *scene){
     shader.setMat4("projection", scene->projection);
 
     if (hasTextures){
-        glBindTexture(GL_TEXTURE_CUBE_MAP, id);
+        bind();
     }
     
     VAO.bind();

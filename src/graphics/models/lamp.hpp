@@ -13,7 +13,7 @@ class Lamp : public Cube {
         glm::vec3 lightColor;
 
         Lamp(unsigned int maxNumInstances, glm::vec3 lightColor = glm::vec3(1.0f)) 
-            : Cube(maxNumInstances) {
+            : Cube(maxNumInstances, Material::white_rubber) {
             id = "lamp";
             this->lightColor = lightColor;
         }

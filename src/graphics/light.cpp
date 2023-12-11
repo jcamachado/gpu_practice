@@ -1,19 +1,6 @@
-
 #include "light.h"
 
-void PointLight::render(Shader shader, int idx){
-    std::string name = "pointLights[" + std::to_string(idx) + "]";
-
-    shader.set3Float(name + ".position", position);
-
-    shader.setFloat(name + ".k0", k0);
-    shader.setFloat(name + ".k1", k1);
-    shader.setFloat(name + ".k2", k2);
-
-    shader.set4Float(name + ".ambient", ambient);
-    shader.set4Float(name + ".diffuse", diffuse);
-    shader.set4Float(name + ".specular", specular);
-}
+DirLight::DirLight() {}
 
 DirLight::DirLight(glm::vec3 direction,
                    glm::vec4 ambient,
@@ -60,6 +47,89 @@ void DirLight::updateMatrices(){
 
     lightSpaceMatrix = projection * lightView;  // same as we did in object.fs, but calculating on the CPU instead. (May change later)
 }
+
+// List of directions //CUBEMAP_DEFAULT_NFACES
+glm::vec3 PointLight::directions[6] = {
+    { 1.0f,  0.0f,  0.0f},      // Right  x+
+    {-1.0f,  0.0f,  0.0f},      // Left   x-
+    { 0.0f,  1.0f,  0.0f},      // Top    y+
+    { 0.0f, -1.0f,  0.0f},      // Bottom y-
+    { 0.0f,  0.0f,  1.0f},      // Front  z+
+    { 0.0f,  0.0f, -1.0f}       // Back   z-
+};
+
+// List of up vectors
+glm::vec3 PointLight::ups[6] = {
+    {0.0f, -1.0f,  0.0f},       // Right  x+
+    {0.0f, -1.0f,  0.0f},       // Left   x-
+    {0.0f,  0.0f,  1.0f},       // Top    y+
+    {0.0f,  0.0f, -1.0f},       // Bottom y-
+    {0.0f, -1.0f,  0.0f},       // Front  z+
+    {0.0f, -1.0f,  0.0f}        // Back   z-
+};
+
+PointLight::PointLight() {}
+
+PointLight::PointLight(glm::vec3 position,
+                       float k0, float k1, float k2,
+                       glm::vec4 ambient, glm::vec4 diffuse, glm::vec4 specular,
+                       float nearPlane, float farPlane
+) : position(position), 
+    k0(k0), k1(k1), k2(k2), 
+    ambient(ambient), diffuse(diffuse), specular(specular), 
+    nearPlane(nearPlane), farPlane(farPlane), 
+    shadowFBO(2048, 2048, GL_DEPTH_BUFFER_BIT)
+{
+    shadowFBO.generate();
+    shadowFBO.bind();
+    shadowFBO.disableColorBuffer();
+    shadowFBO.allocateAndAttachCubemap(GL_DEPTH_ATTACHMENT, GL_DEPTH_COMPONENT, GL_FLOAT);
+
+    updateMatrices();
+}
+
+void PointLight::render(Shader shader, int idx, unsigned int textureIdx){
+    std::string name = "pointLights[" + std::to_string(idx) + "]";
+
+    shader.set3Float(name + ".position", position);
+
+    shader.setFloat(name + ".k0", k0);
+    shader.setFloat(name + ".k1", k1);
+    shader.setFloat(name + ".k2", k2);
+
+    shader.set4Float(name + ".ambient", ambient);
+    shader.set4Float(name + ".diffuse", diffuse);
+    shader.set4Float(name + ".specular", specular);
+
+    // Set near and far planes
+    shader.setFloat(name + ".nearPlane", nearPlane);
+    shader.setFloat(name + ".farPlane", farPlane);
+
+    // Set depth texture
+    glActiveTexture(GL_TEXTURE0 + textureIdx);  // OpenGL doesnt distinguish between 2d and cubemap textures
+    shadowFBO.cubemap.bind();
+    shader.setInt(name + ".depthBuffer", textureIdx);
+}
+
+// Update light space matrices
+void PointLight::updateMatrices() {
+    // 90 degrees because it is a cube
+    glm::mat4 projection = glm::perspective(glm::radians(90.0f),        // FOV 
+        (float)shadowFBO.height / (float)shadowFBO.width,               // Aspect ratio
+        nearPlane, farPlane                                             // Near and far bounds       
+    );
+
+    for (unsigned int i = 0; i < 6; i++) {
+        // The position of the camera is the position of the light
+        glm::mat4 lightView = glm::lookAt(
+            position,
+            position + PointLight::directions[i],
+            PointLight::ups[i]
+        );
+    }        
+}
+
+SpotLight::SpotLight() {}
 
 SpotLight::SpotLight(glm::vec3 position, glm::vec3 direction, glm::vec3 up,
                      float cutOff, float outerCutOff,

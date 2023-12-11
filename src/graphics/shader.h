@@ -17,8 +17,21 @@ class Shader{
     public:
         unsigned int id;
         Shader();
-        Shader(const char* vertexShaderPath, const char* fragmentShaderPath);
-        void generate(const char* vertexShaderPath, const char* fragmentShaderPath);
+        // Initialize with paths to vertex, fragment and geometry shaders (optional)
+        Shader(
+            const char* vertexShaderPath, 
+            const char* fragmentShaderPath, 
+            const char* geometryShaderPath = nullptr
+        );
+
+        /*
+            Process functions
+        */
+        // Generates using vertex, fragment and geometry shaders (optional)
+        void generate(
+            const char* vertexShaderPath, 
+            const char* fragmentShaderPath, 
+            const char* geometryShaderPath = nullptr);
         
         void activate();
 
