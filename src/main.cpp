@@ -76,12 +76,19 @@ int main(){
     // Shader outlineShader("assets/shaders/outline.vs", "assets/shaders/outline.fs");
     // Shader textShader("assets/shaders/text.vs", "assets/shaders/text.fs");
     Shader boxShader("assets/shaders/instanced/box.vs", "assets/shaders/instanced/box.fs");
-    Shader shadowShader("assets/shaders/shadows/shadow.vs", "assets/shaders/shadows/shadow.fs");
     Shader shader("assets/shaders/instanced/instanced.vs", "assets/shaders/object.fs");
     Shader pointShadowShader(
         "assets/shaders/shadows/pointShadow.vs", 
-        "assets/shaders/shadows/pointShadow.fs", 
+        "assets/shaders/shadows/pointSpotShadow.fs", 
         "assets/shaders/shadows/pointShadow.gs"
+    );
+    Shader dirShadowShader(
+        "assets/shaders/shadows/dirSpotShadow.vs", 
+        "assets/shaders/shadows/dirShadow.fs"
+    );
+    Shader spotShadowShader(
+        "assets/shaders/shadows/dirSpotShadow.vs", 
+        "assets/shaders/shadows/pointSpotShadow.fs"
     );
 
 
@@ -145,7 +152,8 @@ int main(){
 
     // Spot Light
     SpotLight spotLight(                                            // Perpendicular to direction
-        cam.cameraPos, cam.cameraFront, cam.cameraUp,
+        // cam.cameraPos, cam.cameraFront, cam.cameraUp,
+        glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
         glm::cos(glm::radians(12.5f)), glm::cos(glm::radians(20.0f)),
         1.0f, 0.0014f, 0.000007f,
         glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), glm::vec4(1.0f), glm::vec4(1.0f),
@@ -200,8 +208,8 @@ int main(){
 
         // Render scene to dirlight FBO
         dirLight.shadowFBO.activate();
-        scene.renderDirLightShader(shadowShader);    // Render scene from light's perspective     
-        renderScene(shadowShader);
+        scene.renderDirLightShader(dirShadowShader);    // Render scene from light's perspective     
+        renderScene(dirShadowShader);
 
 
         // Render scene to point light FBO
@@ -221,13 +229,13 @@ int main(){
         }
 
         // Render scene to spot light FBO
-        // for (unsigned int i = 0, len = scene.spotLights.size(); i < len; i++){
-        //     if (States::isIndexActive(&scene.activeSpotLights, i)){
-        //         scene.spotLights[i]->shadowFBO.activate();
-        //         scene.renderSpotLightShader(shadowShader, i);    // Render scene from light's perspective     
-        //         renderScene(shadowShader);
-        //     }
-        // }
+        for (unsigned int i = 0, len = scene.spotLights.size(); i < len; i++){
+            if (States::isIndexActive(&scene.activeSpotLights, i)){
+                scene.spotLights[i]->shadowFBO.activate();
+                scene.renderSpotLightShader(spotShadowShader, i);    // Render scene from light's perspective     
+                renderScene(spotShadowShader);
+            }
+        }
 
 
         // Render scene normally
@@ -273,10 +281,10 @@ void processInput(double dt){ // Function for processing input
 
     // Update flash light
     if (States::isIndexActive(&scene.activeSpotLights, 0)){
-        scene.spotLights[0]->position = scene.getActiveCamera()->cameraPos;
-        scene.spotLights[0]->direction = scene.getActiveCamera()->cameraFront;
-        scene.spotLights[0]->up = scene.getActiveCamera()->cameraUp;
-        scene.spotLights[0]->updateMatrices();
+        // scene.spotLights[0]->position = scene.getActiveCamera()->cameraPos;
+        // scene.spotLights[0]->direction = scene.getActiveCamera()->cameraFront;
+        // scene.spotLights[0]->up = scene.getActiveCamera()->cameraUp;
+        // scene.spotLights[0]->updateMatrices();
     }
 
     if(Keyboard::keyWentUp(GLFW_KEY_L)){

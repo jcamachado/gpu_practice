@@ -26,6 +26,8 @@ void DirLight::render(Shader shader, unsigned int textureIdx){
     shader.set4Float(name + ".diffuse", diffuse);
     shader.set4Float(name + ".specular", specular);
 
+    shader.setFloat(name + ".farPlane", br.max.z);
+
     // Set depth texture
     glActiveTexture(GL_TEXTURE0 + textureIdx);
     shadowFBO.textures[0].bind();

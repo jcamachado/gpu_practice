@@ -342,7 +342,16 @@ void Scene::renderDirLightShader(Shader shader){
 void Scene::renderSpotLightShader(Shader shader, unsigned int idx){
     shader.activate();
 
+    // Set light space matrix
     shader.setMat4("lightSpaceMatrix", spotLights[idx]->lightSpaceMatrix);
+
+    // light position
+    shader.set3Float("lightPos", spotLights[idx]->position);
+
+    // far plane
+    shader.setFloat("farPlane", spotLights[idx]->farPlane);
+
+
 }
 
 void Scene::renderPointLightShader(Shader shader, unsigned int idx){
