@@ -50,6 +50,12 @@ class Shader{
         void set4Float(const std::string& name, glm::vec4 v);
         void setMat4(const std::string& name, glm::mat4 v);
 
+        /*
+            static
+        */
+        // Default directory
+        static std::string defaultDirectory;
+
 };
 #endif
 

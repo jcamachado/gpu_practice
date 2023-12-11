@@ -42,6 +42,7 @@
 #include "physics/environment.h"
 
 Scene scene;
+std::string Shader::defaultDirectory = "assets/shaders";
 
 void processInput(double dt);
 void renderScene(Shader shader);
@@ -74,23 +75,23 @@ int main(){
     /*
          Shaders
     */
-    // Shader bufferShader("assets/shaders/buffer.vs", "assets/shaders/buffer.fs");
-    // Shader outlineShader("assets/shaders/outline.vs", "assets/shaders/outline.fs");
-    // Shader textShader("assets/shaders/text.vs", "assets/shaders/text.fs");
-    Shader boxShader("assets/shaders/instanced/box.vs", "assets/shaders/instanced/box.fs");
-    Shader shader("assets/shaders/instanced/instanced.vs", "assets/shaders/object.fs");
+    // Shader bufferShader("buffer.vs", "buffer.fs");
+    // Shader outlineShader("outline.vs", "outline.fs");
+    // Shader textShader("text.vs", "text.fs");
+    Shader boxShader("instanced/box.vs", "instanced/box.fs");
+    Shader shader("instanced/instanced.vs", "object.fs");
     Shader pointShadowShader(
-        "assets/shaders/shadows/pointShadow.vs", 
-        "assets/shaders/shadows/pointSpotShadow.fs", 
-        "assets/shaders/shadows/pointShadow.gs"
+        "shadows/pointShadow.vs", 
+        "shadows/pointSpotShadow.fs", 
+        "shadows/pointShadow.gs"
     );
     Shader dirShadowShader(
-        "assets/shaders/shadows/dirSpotShadow.vs", 
-        "assets/shaders/shadows/dirShadow.fs"
+        "shadows/dirSpotShadow.vs", 
+        "shadows/dirShadow.fs"
     );
     Shader spotShadowShader(
-        "assets/shaders/shadows/dirSpotShadow.vs", 
-        "assets/shaders/shadows/pointSpotShadow.fs"
+        "shadows/dirSpotShadow.vs", 
+        "shadows/pointSpotShadow.fs"
     );
 
 

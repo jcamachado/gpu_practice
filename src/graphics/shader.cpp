@@ -53,7 +53,8 @@ std::string Shader::loadShaderSrc(const char* filename){ // Function for loading
     std::stringstream buf;
 
     std::string ret = "";
-    file.open(filename); // Open file
+    std::string fullPath = Shader::defaultDirectory + '/' + filename; // Get full path of file
+    file.open(fullPath.c_str()); // Open file
     if (file.is_open()){ // Check if file is open
         buf << file.rdbuf(); // Read file buffer into stringstream
         ret = buf.str(); // Set return string to string from stringstream
