@@ -80,7 +80,8 @@ GLuint Shader::compileShader (const char* filepath, GLenum type){ // Function fo
     glGetShaderiv(ret, GL_COMPILE_STATUS, &success); // Check if fragment shader compiled successfully
     if(!success){ // Check if fragment shader compiled successfully
         glGetShaderInfoLog(ret, 512, NULL, infoLog); // Get error message
-        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl; // Print error message
+        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED at: " << filepath << "\n" << 
+        infoLog << std::endl; // Print error message
     }
 
     return ret; // Return compiled shader
