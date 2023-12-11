@@ -7,7 +7,7 @@ class Plane: public Model{
     public:
         Plane(): Model("plane", BoundTypes::AABB, 1, CONST_INSTANCES){}
 
-        void init(Texture tex){
+        void init(std::vector<Texture> textures){
             int nVertices = 4;
             float quadVertices[] ={
                 // Position             Normal             TexCoord
@@ -23,7 +23,7 @@ class Plane: public Model{
             };
 
             BoundingRegion br(glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec3(0.5f, 0.5f, 0.0f));
-            Mesh ret(br, { tex });
+            Mesh ret(br, textures);
             ret.loadData(Vertex::genList(quadVertices, nVertices), indices, true);
 
             meshes.push_back(ret);

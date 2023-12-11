@@ -6,6 +6,7 @@
 
 #include <vector>
 
+#include "cubemap.h"
 #include "texture.h"
 
 class FramebufferObject {
@@ -20,7 +21,8 @@ class FramebufferObject {
 
         std::vector<GLuint> rbos;
         std::vector<Texture> textures;
-        
+        Cubemap cubemap;
+
         FramebufferObject()
             : val(0), width(0), height(0), bitCombo(0) {}
 
@@ -93,6 +95,18 @@ class FramebufferObject {
 
         void attachTexture(GLenum attachType, Texture& tex) {
             glFramebufferTexture2D(GL_FRAMEBUFFER, attachType, GL_TEXTURE_2D, tex.id, 0);
+        }
+
+        /*
+            Same as in allocate and attach texture but for a different type of texture (cubemap)
+        */
+        void allocateAndAttachCubemap(GLenum attachType, GLenum format, GLenum type) {
+            cubemap = Cubemap();
+            cubemap.generate();
+            cubemap.bind();
+            cubemap.allocate(format, width, height, type);
+            // Since its not a normal 2D texture, we have to set the parameters for the cubemap
+            glFramebufferTexture(GL_FRAMEBUFFER, attachType, cubemap.id, 0);
         }
 
         void cleanup() {

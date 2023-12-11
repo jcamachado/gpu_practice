@@ -156,9 +156,7 @@ bool Scene::init() {
 
     FT_Done_FreeType(ft);
 
-    // Setup lighting values
-    variableLog["useBlinn"] = true;
-    variableLog["useGamma"] = true;
+    variableLog["skipNormalMapping"] = false;
 
     return true;
 }
@@ -223,21 +221,9 @@ void Scene::processInput(float dt){
         // Set position at end
         cameraPos = cameras[activeCamera]->cameraPos;
 
-        // Update blinn parameter if necessary
-        if (Keyboard::keyWentUp(GLFW_KEY_B)){
-            variableLog["useBlinn"] = !variableLog["useBlinn"].val<bool>();
+        if (Keyboard::key(GLFW_KEY_N)){
+            variableLog["skipNormalMapping"] = !variableLog["skipNormalMapping"].val<bool>();
         }
-
-        // Toggle gamma correction parameter if necessary
-        if (Keyboard::keyWentUp(GLFW_KEY_G)){
-            variableLog["useGamma"] = !variableLog["useGamma"].val<bool>();
-        }
-
-        // Update outline parameter if necessary
-        if (Keyboard::keyWentUp(GLFW_KEY_O)){
-            variableLog["displayOutline"] = !variableLog["displayOutline"].val<bool>();
-        }
-
         /*
             if using Joystick (probably deprecated, but the logic is here)
         */
@@ -308,7 +294,7 @@ void Scene::renderShader(Shader shader, bool applyLighting){
         for (unsigned int i = 0; i < nLights; i++){
             if (States::isIndexActive(&activePointLights, i)){
                 // i'th light is active
-                pointLights[i]->render(shader, nActiveLights);
+                pointLights[i]->render(shader, nActiveLights, textureIdx--);
                 nActiveLights++;
             }
         }
@@ -327,8 +313,7 @@ void Scene::renderShader(Shader shader, bool applyLighting){
         shader.setInt("nSpotLights", nActiveLights);
 
         
-        shader.setBool("useBlinn", variableLog["useBlinn"].val<bool>());
-        shader.setBool("useGamma", variableLog["useGamma"].val<bool>());
+        shader.setBool("skipNormalMapping", variableLog["skipNormalMapping"].val<bool>());
     }
 }
 
@@ -339,11 +324,35 @@ void Scene::renderDirLightShader(Shader shader){
     shader.setMat4("lightSpaceMatrix", dirLight->lightSpaceMatrix);
 }
 
-void Scene::renderSpotLightShader(Shader shader, int idx){
+void Scene::renderSpotLightShader(Shader shader, unsigned int idx){
     shader.activate();
 
-    // Set camera values
+    // Set light space matrix
     shader.setMat4("lightSpaceMatrix", spotLights[idx]->lightSpaceMatrix);
+
+    // light position
+    shader.set3Float("lightPos", spotLights[idx]->position);
+
+    // far plane
+    shader.setFloat("farPlane", spotLights[idx]->farPlane);
+
+
+}
+
+void Scene::renderPointLightShader(Shader shader, unsigned int idx){
+    shader.activate();
+
+    // Set light space matrices
+    for (unsigned int i = 0; i < 6; i++){
+        // idx is the index of the point light and i is the index of the matrix within that light
+        shader.setMat4("lightSpaceMatrices[" + std::to_string(i) + "]", pointLights[idx]->lightSpaceMatrices[i]);
+    }
+
+    // light position
+    shader.set3Float("lightPos", pointLights[idx]->position);
+
+    // far plane
+    shader.setFloat("farPlane", pointLights[idx]->farPlane);
 }
 
 void Scene::renderInstances(std::string modelId, Shader shader, float dt){

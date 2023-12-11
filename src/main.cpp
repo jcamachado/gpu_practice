@@ -27,6 +27,7 @@
 #include "graphics/texture.h"
 
 #include "graphics/models/box.hpp" 
+#include "graphics/models/brickwall.hpp"
 #include "graphics/models/cube.hpp"
 #include "graphics/models/gun.hpp"
 #include "graphics/models/lamp.hpp"
@@ -41,6 +42,7 @@
 #include "physics/environment.h"
 
 Scene scene;
+std::string Shader::defaultDirectory = "assets/shaders";
 
 void processInput(double dt);
 void renderScene(Shader shader);
@@ -51,12 +53,15 @@ double dt = 0.0f;       // Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
 
 unsigned int nSpheres = 10;
+unsigned int nLamps = 1;
 
-Cube cube(10);
-Sphere sphere(nSpheres);
+BrickWall wall;
+// Cube cube(10);
+Lamp lamp(nLamps);
+// Sphere sphere(nSpheres);
 
 int main(){
-    scene = Scene(3, 3, "Particle System", 800, 600); // Create scene
+    scene = Scene(3, 3, "Particle System", 1200, 720); // Create scene
     
     if (!scene.init()){ // Initialize scene
         std::cout << "Could not open window" << std::endl;
@@ -70,24 +75,39 @@ int main(){
     /*
          Shaders
     */
-    Shader boxShader("assets/shaders/instanced/box.vs", "assets/shaders/instanced/box.fs");
-    Shader bufferShader("assets/shaders/buffer.vs", "assets/shaders/buffer.fs");
-    Shader lampShader("assets/shaders/instanced/instanced.vs", "assets/shaders/lamp.fs");
-    Shader shadowShader("assets/shaders/shadows/shadow.vs", "assets/shaders/shadows/shadow.fs");
-    Shader outlineShader("assets/shaders/outline.vs", "assets/shaders/outline.fs");
-    Shader shader("assets/shaders/instanced/instanced.vs", "assets/shaders/object.fs");
-    Shader textShader("assets/shaders/text.vs", "assets/shaders/text.fs");
+    Shader::loadIntoDefault("defaultHeader.gh");
+    // Shader bufferShader("buffer.vs", "buffer.fs");
+    // Shader outlineShader("outline.vs", "outline.fs");
+    // Shader textShader("text.vs", "text.fs");
+    
+    Shader boxShader(false, "instanced/box.vs", "instanced/box.fs");
+    Shader shader(true, "instanced/instanced.vs", "object.fs");
+    Shader pointShadowShader(
+        false, 
+        "shadows/pointShadow.vs", 
+        "shadows/pointSpotShadow.fs", 
+        "shadows/pointShadow.gs"
+    );
+    Shader dirShadowShader(
+        false, 
+        "shadows/dirSpotShadow.vs", 
+        "shadows/dirShadow.fs"
+    );
+    Shader spotShadowShader(
+        false, 
+        "shadows/dirSpotShadow.vs", 
+        "shadows/pointSpotShadow.fs"
+    );
 
-
+    Shader::clearDefault();
 
     /*
         Models
     */
-    // Lamp lamp(nLamps);
-    // scene.registerModel(&lamp);
-    scene.registerModel(&sphere);
-
-    scene.registerModel(&cube);
+    // scene.registerModel(&cube);
+    scene.registerModel(&lamp);
+    // scene.registerModel(&sphere);
+    scene.registerModel(&wall);
 
     Box box;
     box.init();                 // Box is not instanced
@@ -112,45 +132,48 @@ int main(){
 
     scene.dirLight = &dirLight;
 
-    // glm::vec3 pointLightPositions[] = {
-    //     glm::vec3(0.7f,  0.2f,  2.0f),
-    //     glm::vec3(2.3f, -3.3f, -4.0f),
-    //     glm::vec3(-4.0f,  2.0f, -12.0f),
-    //     glm::vec3(0.0f,  0.0f, -3.0f)
-    // };
+    glm::vec3 pointLightPositions[] = {
+        glm::vec3(1.0f,  1.0f,  0.0f),
+        glm::vec3(0.0,  15.0f,  0.0f),
+        glm::vec3(2.3f, -3.3f, -4.0f),
+        glm::vec3(-4.0f,  2.0f, -12.0f),
+        glm::vec3(0.0f,  0.0f, -3.0f)
+    };
     
-    // glm::vec4 ambient(0.05f, 0.05f, 0.05f, 1.0f);
-    // glm::vec4 diffuse(0.8f, 0.8f, 0.8f, 1.0f);
-    // glm::vec4 specular(1.0f);
-    // float k0 = 1.0f;
-    // float k1 = 0.09f;
-    // float k2 = 0.032f;
+    glm::vec4 ambient(0.05f, 0.05f, 0.05f, 1.0f);
+    glm::vec4 diffuse(0.8f, 0.8f, 0.8f, 1.0f);
+    glm::vec4 specular(1.0f);
+    float k0 = 1.0f;
+    float k1 = 0.0014f;
+    float k2 = 0.000007f;
 
-    // PointLight pointLights[nLamps];
+    PointLight pointLights[nLamps];
 
-    // for (unsigned int i = 0; i < nLamps; i++) {
-    //     pointLights[i] = {
-    //         pointLightPositions[i],
-    //         k0, k1, k2,
-    //         ambient, diffuse, specular
-    //     };
-    //     scene.generateInstance(lamp.id, glm::vec3(0.25f), 0.25f, pointLightPositions[i]);
-    //     scene.pointLights.push_back(&pointLights[i]);
-    //     States::activate(&scene.activePointLights, i);
-    // }
+    for (unsigned int i = 0; i < nLamps; i++) {
+        pointLights[i] = PointLight(
+            pointLightPositions[i],
+            k0, k1, k2,
+            ambient, diffuse, specular,
+            0.5f, 50.0f
+        );
+        scene.generateInstance(lamp.id, glm::vec3(0.25f), 0.25f, pointLightPositions[i]);
+        scene.pointLights.push_back(&pointLights[i]);
+        States::activateIndex(&scene.activePointLights, i);
+    }
 
     // Spot Light
     SpotLight spotLight(                                            // Perpendicular to direction
         cam.cameraPos, cam.cameraFront, cam.cameraUp,
+        // glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
         glm::cos(glm::radians(12.5f)), glm::cos(glm::radians(20.0f)),
         1.0f, 0.0014f, 0.000007f,
         glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), glm::vec4(1.0f), glm::vec4(1.0f),
         0.1f, 100.0f
     );
     scene.spotLights.push_back(&spotLight);
-    scene.activeSpotLights = 1;                         // 0b00000001
+    // scene.activeSpotLights = 1;                         // 0b00000001
     
-    scene.generateInstance(cube.id, glm::vec3(20.0f, 0.1f, 20.0f), 100.0f, glm::vec3(0.0f, -3.0f, 0.0f));
+    // scene.generateInstance(cube.id, glm::vec3(20.0f, 0.1f, 20.0f), 100.0f, glm::vec3(0.0f, -3.0f, 0.0f));
     glm::vec3 cubePositions[] = {
         { 1.0f, 3.0f, -5.0f },
         { -7.25f, 2.1f, 1.5f },
@@ -163,8 +186,10 @@ int main(){
         { 0.0f, 5.0f, 0.0f },
     };
     for (unsigned int i = 0; i < 9; i++) {
-        scene.generateInstance(cube.id, glm::vec3(0.5f), 1.0f, cubePositions[i]);
+        // scene.generateInstance(cube.id, glm::vec3(0.5f), 1.0f, cubePositions[i]);
     }
+    // Instantiate brickwall
+    scene.generateInstance(wall.id, glm::vec3(1.0f), 1.0f, glm::vec3(0.0f, 0.0f, -2.0f));
 
     // instantiate texture plane
     // scene.generateInstance(map.id, glm::vec3(2.0f, 2.0f, 0.0f), 0.0f, glm::vec3(0.0f)); 
@@ -173,6 +198,7 @@ int main(){
     scene.variableLog["time"] = (double)0.0;
 
     scene.defaultFBO.bind(); // rebind default framebuffer
+
     while (!scene.shouldClose()){                       // Check if window should close
         double currentTime = glfwGetTime();
         dt = currentTime - lastFrame;
@@ -188,25 +214,43 @@ int main(){
         // Everything rendered after this will be rendered to this FBO
 
 
-        for (int i = 0; i < sphere.currentNumInstances; i++){
-            if (glm::length(cam.cameraPos - sphere.instances[i]->pos) > 250.0f){
-                scene.markForDeletion(sphere.instances[i]->instanceId);
-            }
-        }
+        // for (int i = 0; i < sphere.currentNumInstances; i++){
+        //     if (glm::length(cam.cameraPos - sphere.instances[i]->pos) > 250.0f){
+        //         scene.markForDeletion(sphere.instances[i]->instanceId);
+        //     }
+        // }
 
-        // Render scene to dirlight FBO
-        dirLight.shadowFBO.activate();
-        scene.renderDirLightShader(shadowShader);    // Render scene from light's perspective     
-        renderScene(shadowShader);
+        // // Render scene to dirlight FBO
+        // dirLight.shadowFBO.activate();
+        // scene.renderDirLightShader(dirShadowShader);    // Render scene from light's perspective     
+        // renderScene(dirShadowShader);
 
-        // Render scene to spot light FBO
-        for (unsigned int i = 0, len = scene.spotLights.size(); i < len; i++){
-            if (States::isIndexActive(&scene.activeSpotLights, i)){
-                scene.spotLights[i]->shadowFBO.activate();
-                scene.renderSpotLightShader(shadowShader, i);    // Render scene from light's perspective     
-                renderScene(shadowShader);
-            }
-        }
+
+        // // Render scene to point light FBO
+        // for (unsigned int i = 0, len = scene.pointLights.size(); i < len; i++){
+        //     if (States::isIndexActive(&scene.activePointLights, i)){
+        //         scene.pointLights[i]->shadowFBO.activate();
+        //         /*
+        //             Render scene from light's perspective  
+        //             1 - Goes through model transformation to put in world coordinates (.vs)  
+        //             2 - then goes to geometry shader and its transformed 6 times to get each face
+        //             and then each one of those 6 triangles is then emmited as a vertex and then passes
+        //             the fragment shader to be colored customly to the depth buffer
+        //         */
+        //         scene.renderPointLightShader(pointShadowShader, i);       
+        //         renderScene(pointShadowShader);
+        //     }
+        // }
+
+        // // Render scene to spot light FBO
+        // for (unsigned int i = 0, len = scene.spotLights.size(); i < len; i++){
+        //     if (States::isIndexActive(&scene.activeSpotLights, i)){
+        //         scene.spotLights[i]->shadowFBO.activate();
+        //         scene.renderSpotLightShader(spotShadowShader, i);    // Render scene from light's perspective     
+        //         renderScene(spotShadowShader);
+        //     }
+        // }
+
 
         // Render scene normally
         scene.defaultFBO.activate();
@@ -225,20 +269,22 @@ int main(){
 }
 
 void renderScene(Shader shader){                // assumes shader is prepared accordingly
-    if (sphere.currentNumInstances > 0){            // Render launch objects
-            scene.renderInstances(sphere.id, shader, dt);
-        }
-        scene.renderInstances(cube.id, shader, dt);     // Render cubes
+    // if (sphere.currentNumInstances > 0) {            // Render launch objects
+    //         scene.renderInstances(sphere.id, shader, dt);
+    // }
+    // scene.renderInstances(cube.id, shader, dt);     // Render cubes
+    scene.renderInstances(lamp.id, shader, dt);     // Render lamps
+    scene.renderInstances(wall.id, shader, dt);     // Render wall
 }
 
-void launchItem(float dt){
-    RigidBody* rb = scene.generateInstance(sphere.id, glm::vec3(0.05f), 1.0f, cam.cameraPos-glm::vec3(0.0f, 0.0f, 0.0f));
-    // RigidBody* rb = scene.generateInstance(sphere.id, glm::vec3(1.0f), 1.0f, cam.cameraPos-glm::vec3(-15.0f, 10.0f, 10.0f));
-    if (rb){
-        rb->transferEnergy(100.0f, cam.cameraFront);
-        rb->applyAcceleration(Environment::gravity);
-    }
-}
+// void launchItem(float dt){
+//     RigidBody* rb = scene.generateInstance(sphere.id, glm::vec3(0.05f), 1.0f, cam.cameraPos-glm::vec3(0.0f, 0.0f, 0.0f));
+//     // RigidBody* rb = scene.generateInstance(sphere.id, glm::vec3(1.0f), 1.0f, cam.cameraPos-glm::vec3(-15.0f, 10.0f, 10.0f));
+//     if (rb){
+//         rb->transferEnergy(100.0f, cam.cameraFront);
+//         rb->applyAcceleration(Environment::gravity);
+//     }
+// }
 
 void processInput(double dt){ // Function for processing input
     scene.processInput(dt); // Process input for scene
@@ -248,7 +294,7 @@ void processInput(double dt){ // Function for processing input
         scene.setShouldClose(true); // Set window to close
     }
 
-    // Update flash light
+    // Update flash light attached to the camera
     if (States::isIndexActive(&scene.activeSpotLights, 0)){
         scene.spotLights[0]->position = scene.getActiveCamera()->cameraPos;
         scene.spotLights[0]->direction = scene.getActiveCamera()->cameraFront;
@@ -260,16 +306,16 @@ void processInput(double dt){ // Function for processing input
         States::toggleIndex(&scene.activeSpotLights, 0);
     }
 
-    if (Keyboard::keyWentDown(GLFW_KEY_F)){
-        launchItem(dt);
-    }
-    if (Keyboard::keyWentDown(GLFW_KEY_T)){
-        for (int i = 0; i < sphere.currentNumInstances; i++){
-            if (!sphere.instances[i]->freeze()){
-                sphere.instances[i]->unfreeze();
-            }
-        }
-    }
+    // if (Keyboard::keyWentDown(GLFW_KEY_F)){
+    //     launchItem(dt);
+    // }
+    // if (Keyboard::keyWentDown(GLFW_KEY_T)){
+    //     for (int i = 0; i < sphere.currentNumInstances; i++){
+    //         if (!sphere.instances[i]->freeze()){
+    //             sphere.instances[i]->unfreeze();
+    //         }
+    //     }
+    // }
     //reset octree
     if (Keyboard::keyWentDown(GLFW_KEY_R)){
         scene.octree = new Octree::node(BoundingRegion(glm::vec3(-16.0f), glm::vec3(16.0f)));

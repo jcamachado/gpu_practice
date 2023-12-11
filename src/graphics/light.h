@@ -8,24 +8,6 @@
 #include "../algorithms/bounds.h"
 #include "framememory.hpp"
 
-struct PointLight {
-    glm::vec3 position;
-
-    // attenuation constants
-    float k0; // constant
-    float k1; // linear
-    float k2; // quadratic
-
-    glm::vec4 ambient;
-    glm::vec4 diffuse;
-    glm::vec4 specular;
-
-
-    void render(Shader shader, int idx);
-
-
-};
-
 struct DirLight {
     glm::vec3 direction;
 
@@ -42,7 +24,8 @@ struct DirLight {
     // FBO for shadows
     FramebufferObject shadowFBO;    // This is working basically as a texture
 
-    // Constructor
+    // Constructors
+    DirLight();     // Default constructor
     DirLight(glm::vec3 direction,
              glm::vec4 ambient,
              glm::vec4 diffuse,
@@ -56,6 +39,49 @@ struct DirLight {
     // Update light space matrix
     void updateMatrices();
 
+};
+
+
+struct PointLight {
+    glm::vec3 position;
+
+    // attenuation constants
+    float k0; // constant
+    float k1; // linear
+    float k2; // quadratic
+
+    glm::vec4 ambient;
+    glm::vec4 diffuse;
+    glm::vec4 specular;
+
+    // Bounds
+    float nearPlane;
+    float farPlane;
+
+    // List of view matrices for each face of the cube
+    glm::mat4 lightSpaceMatrices[6];
+
+    // FBO for shadows
+    FramebufferObject shadowFBO;
+
+    // Constructors
+    PointLight();       // Default constructor
+    PointLight(glm::vec3 position,
+               float k0, float k1, float k2,
+               glm::vec4 ambient, glm::vec4 diffuse, glm::vec4 specular,
+               float nearPlane, float farPlane
+    );
+
+    void render(Shader shader, int idx, unsigned int textureIdx);
+
+    // Update light space matrix
+    void updateMatrices();
+
+    // List of directions (static, since they are shared by all instances. Point lights are radially symmetric)
+    static glm::vec3 directions[6];
+
+    // List of up vectors
+    static glm::vec3 ups[6];
 };
 
 struct SpotLight {
@@ -85,7 +111,8 @@ struct SpotLight {
     // FBO for shadows
     FramebufferObject shadowFBO;
 
-    // Constructor
+    // Constructors
+    SpotLight();        // Default constructor
     SpotLight(glm::vec3 position, glm::vec3 direction, glm::vec3 up,
               float cutOff, float outerCutOff,
               float k0, float k1, float k2,

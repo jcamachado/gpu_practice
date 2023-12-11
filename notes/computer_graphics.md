@@ -99,6 +99,12 @@ To solve this we will have to do "blending".  That is a kind of average of value
 ### Shadow (Spotlight)
 
 Will work similarly to the camera. Like the image cone of light has a canvas on the other side of objects.
+Similar to what happens on update matrices in spotlight using perspective, but we will have 6 view matrices because the direction (in lookat) is what 
+will change from face to face.
+
+### Shadow (Point light)
+
+Basically we will create 6 depthmaps using cubemaps.
 
 ### Gamma Correction
 
@@ -131,6 +137,14 @@ And we pass C into M function, so:
     Entao as funcoes que se relacionam com elementos da tela alterarao a cor dos pixels desses elementos
     -Vertex shader(vs): Manipula posicao de vertices. 
 
+### Geometry shader
+    It comes between the vertex shader and the fragment shader. Its an optional step you don't need to actually compile anything with the geometry shader.
+    But in geometry shader you can pass custom vertices based on the vertex shader into the fragment shader so everytime we call EmitVertex() it will take the value of glPosition and pass it into the fragment shader and it will set the color accordingly.
+
+    In the example he calls EmitVertex twice (each after a gl_Position) and EndPrimitive() so openGL knows that we finished with the shape of the polygon, the line, the point, etc... and it could move on to the next primitive.
+
+    We will use it on cubemap texture shadow for point lights.
+    // Only geometry shader can emit many vertex from vertex shader
 
 # OPENGL
 File extensions
@@ -152,3 +166,19 @@ And since cube and cubemap have the same vertices, we only have to pass one set 
 Stencil: A mapping of a renderable view(matrix) and a stencil matrix of 1 and 0s. If the values on the second matrix is 0, the corresponding value in the original  view matrix wont be drawn, otherwise, draw normally.
 
 Framebuffer: Combines the color, depth and stencil buffers and it displays it somewhere. The default framebuffer is on screen and glfw sets it up for us. And connects this framebuffer to the monitor.
+
+
+
+#### Normal mapping
+
+Helps on creating quality texture
+R G B are translated to X Y Z
+So the blue value indicates the texture "depth", Z. And so on.
+
+Rough explanation
+But it has a limitation. The normal is pointing to the positive Z direction. So if the reflectiveness is in another axis, it will not display as well.
+Possibly we would need to change the normal of the object or the Normal mapping so they could align.
+
+### Interface blocks
+
+The only purpose of this structure is to pass the vertex shader and the fragment shader or  the geometry shader. So its just to pass it between the shader files.

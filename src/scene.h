@@ -37,9 +37,7 @@
 namespace Octree {
     class node;
 }
-
 class Model; 
-
 class Scene {
     public:
         trie::Trie<Model*> models;
@@ -101,8 +99,10 @@ class Scene {
         */
         // Set uniform shader variables for directional light render
         void renderDirLightShader(Shader shader);   
+        // Set uniform shader variables for point light render
+        void renderPointLightShader(Shader shader, unsigned int idx);
         // Set uniform shader variables for spot light render
-        void renderSpotLightShader(Shader shader, int idx);
+        void renderSpotLightShader(Shader shader, unsigned int idx);
 
         void renderInstances(
             std::string modelId, 
