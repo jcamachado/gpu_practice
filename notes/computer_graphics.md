@@ -166,3 +166,11 @@ And since cube and cubemap have the same vertices, we only have to pass one set 
 Stencil: A mapping of a renderable view(matrix) and a stencil matrix of 1 and 0s. If the values on the second matrix is 0, the corresponding value in the original  view matrix wont be drawn, otherwise, draw normally.
 
 Framebuffer: Combines the color, depth and stencil buffers and it displays it somewhere. The default framebuffer is on screen and glfw sets it up for us. And connects this framebuffer to the monitor.
+
+
+
+#### Normal mapping
+
+Helps on creating quality texture
+R G B are translated to X Y Z
+So the blue value indicates the texture "depth", Z. And so on.
