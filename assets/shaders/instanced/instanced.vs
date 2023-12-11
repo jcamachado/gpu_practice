@@ -1,4 +1,3 @@
-#version 330 core
 //These are from buffer
 //layout(qualifier1​, qualifier2​ = value, ...) variable definition
 layout (location = 0) in vec3 aPos; //the layout is the location of the vertex attribute in the VBO

@@ -1,5 +1,3 @@
-#version 330 core
-
 /*
     The values of uniform arrays cannot be dynamically changed, so we need to set a maximum number of lights
 */
@@ -14,62 +12,9 @@ struct Material {
     float shininess;
 };
 
-uniform bool noNormalMap;
-
 uniform sampler2D diffuse0;
 uniform sampler2D normal0;
 uniform sampler2D specular0;
-
-
-struct DirLight {
-    vec3 direction;
-
-    vec4 ambient;
-    vec4 diffuse;
-    vec4 specular;
-
-    float farPlane;
-
-    sampler2D depthBuffer;    // set from light.cpp
-    mat4 lightSpaceMatrix;
-};
-
-struct PointLight {
-    vec3 position;
-
-    float k0;
-    float k1;
-    float k2;
-
-    vec4 ambient;
-    vec4 diffuse;
-    vec4 specular;
-
-    float farPlane;
-    samplerCube depthBuffer;
-};
-
-struct SpotLight {
-    vec3 position;
-    vec3 direction;
-
-    float cutOff;
-    float outerCutOff;
-
-    float k0;
-    float k1;
-    float k2;
-
-    vec4 ambient;
-    vec4 diffuse;
-    vec4 specular;
-
-    float nearPlane;
-    float farPlane;
-
-    sampler2D depthBuffer;
-    mat4 lightSpaceMatrix;
-};
 
 uniform PointLight pointLights[MAX_POINT_LIGHTS];
 uniform int nPointLights;
@@ -85,13 +30,12 @@ in VS_OUT {
     vec2 TexCoord;
 } fs_in;
 
-
 uniform Material material;
 
+uniform bool noNormalMap;
 uniform bool noTexture;
 uniform bool skipNormalMapping;
 uniform vec3 viewPos;
-
 
 vec4 calcDirLight(vec3 norm, vec3 viewVec, vec3 viewDir, vec4 diffMap, vec4 specMap);
 vec4 calcPointLight(int idx, vec3 norm, vec3 viewVec, vec3 viewDir, vec4 diffMap, vec4 specMap);

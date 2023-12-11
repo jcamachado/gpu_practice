@@ -19,6 +19,7 @@ class Shader{
         Shader();
         // Initialize with paths to vertex, fragment and geometry shaders (optional)
         Shader(
+            bool includeDefaultHeader,
             const char* vertexShaderPath, 
             const char* fragmentShaderPath, 
             const char* geometryShaderPath = nullptr
@@ -29,6 +30,7 @@ class Shader{
         */
         // Generates using vertex, fragment and geometry shaders (optional)
         void generate(
+            bool includeDefaultHeader,
             const char* vertexShaderPath, 
             const char* fragmentShaderPath, 
             const char* geometryShaderPath = nullptr);
@@ -36,8 +38,7 @@ class Shader{
         void activate();
 
         // utility functions
-        std::string loadShaderSrc(const char* filepath);
-        GLuint compileShader(const char* source, GLenum type);
+        GLuint compileShader(bool includeDefaultHeader, const char* source, GLenum type);
 
         // uniform functions
         void setBool(const std::string& name, bool value);
@@ -56,6 +57,17 @@ class Shader{
         // Default directory
         static std::string defaultDirectory;
 
+        // Stream containing the default header source
+        static std::stringstream defaultHeaders;
+
+        // Load into default header
+        static void loadIntoDefault(const char* filepath);
+
+        // Clear default header (after shader compilation)
+        static void clearDefault();
+
+        // Load shader source code (string) from file
+        static std::string loadShaderSrc(bool includeDefaultHeader, const char* filepath);
 };
 #endif
 

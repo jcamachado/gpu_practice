@@ -75,25 +75,31 @@ int main(){
     /*
          Shaders
     */
+    Shader::loadIntoDefault("defaultHeader.gh");
     // Shader bufferShader("buffer.vs", "buffer.fs");
     // Shader outlineShader("outline.vs", "outline.fs");
     // Shader textShader("text.vs", "text.fs");
-    Shader boxShader("instanced/box.vs", "instanced/box.fs");
-    Shader shader("instanced/instanced.vs", "object.fs");
+    
+    Shader boxShader(false, "instanced/box.vs", "instanced/box.fs");
+    Shader shader(true, "instanced/instanced.vs", "object.fs");
     Shader pointShadowShader(
+        false, 
         "shadows/pointShadow.vs", 
         "shadows/pointSpotShadow.fs", 
         "shadows/pointShadow.gs"
     );
     Shader dirShadowShader(
+        false, 
         "shadows/dirSpotShadow.vs", 
         "shadows/dirShadow.fs"
     );
     Shader spotShadowShader(
+        false, 
         "shadows/dirSpotShadow.vs", 
         "shadows/pointSpotShadow.fs"
     );
 
+    Shader::clearDefault();
 
     /*
         Models

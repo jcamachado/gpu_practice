@@ -5,21 +5,21 @@
 Shader::Shader(){
 }
 
-Shader::Shader(const char* vertexShaderPath, const char* fragmentShaderPath, const char* geometryShaderPath){
-    generate(vertexShaderPath, fragmentShaderPath, geometryShaderPath);
+Shader::Shader(bool includeDefaultHeader, const char* vertexShaderPath, const char* fragmentShaderPath, const char* geometryShaderPath){
+    generate(includeDefaultHeader, vertexShaderPath, fragmentShaderPath, geometryShaderPath);
 }
 
-void Shader::generate(const char* vertexShaderPath, const char* fragmentShaderPath, const char* geometryShaderPath){
+void Shader::generate(bool includeDefaultHeader, const char* vertexShaderPath, const char* fragmentShaderPath, const char* geometryShaderPath){
     int success;
     char infoLog[512];
 
-    GLuint vertexShader = compileShader(vertexShaderPath, GL_VERTEX_SHADER);
-    GLuint fragShader = compileShader(fragmentShaderPath, GL_FRAGMENT_SHADER);
+    GLuint vertexShader = compileShader(includeDefaultHeader, vertexShaderPath, GL_VERTEX_SHADER);
+    GLuint fragShader = compileShader(includeDefaultHeader, fragmentShaderPath, GL_FRAGMENT_SHADER);
 
     // Geometry shader
     GLuint geometryShader = 0;  // Placeholder
     if (geometryShaderPath){
-        geometryShader = compileShader(geometryShaderPath, GL_GEOMETRY_SHADER);
+        geometryShader = compileShader(includeDefaultHeader, geometryShaderPath, GL_GEOMETRY_SHADER);
     }
 
     id = glCreateProgram();
@@ -47,33 +47,12 @@ void Shader::activate(){
     glUseProgram(id);
 }
 
-
-std::string Shader::loadShaderSrc(const char* filename){ // Function for loading shader source code
-    std::ifstream file;
-    std::stringstream buf;
-
-    std::string ret = "";
-    std::string fullPath = Shader::defaultDirectory + '/' + filename; // Get full path of file
-    file.open(fullPath.c_str()); // Open file
-    if (file.is_open()){ // Check if file is open
-        buf << file.rdbuf(); // Read file buffer into stringstream
-        ret = buf.str(); // Set return string to string from stringstream
-    }
-    else{
-        std::cout << "Unable to open file " << filename << std::endl; // Print error message
-    }
-
-    file.close(); // Close file
-
-    return ret; // Return string from stringstream
-}
-
-GLuint Shader::compileShader (const char* filepath, GLenum type){ // Function for compiling shader
+GLuint Shader::compileShader (bool includeDefaultHeader, const char* filepath, GLenum type){ // Function for compiling shader
     int success;
     char infoLog[512];
 
     GLuint ret = glCreateShader(type); // Create shader and set the type
-    std::string shaderSrc = loadShaderSrc(filepath); // Load shader source code
+    std::string shaderSrc = loadShaderSrc(includeDefaultHeader, filepath); // Load shader source code
     const GLchar* shader = shaderSrc.c_str(); // Get pointer to shader source code
     glShaderSource(ret, 1, &shader, NULL); // Set shader source code
     glCompileShader(ret); // Compile shader
@@ -126,4 +105,51 @@ void Shader::setMat4(const std::string& name, glm::mat4 v){
     //name eh o nome da variavel no shader, ex: "transform"
     //ou seja, value sera a matrix de transformacao aplicada ao shader atraves da variavel "transform"
     glUniformMatrix4fv(glGetUniformLocation(id, name.c_str()), 1, GL_FALSE, glm::value_ptr(v));
+}
+
+/*
+    Static functions
+*/
+
+
+
+// Clear default header (after shader compilation)
+void Shader::clearDefault(){
+    Shader::defaultHeaders.clear(); // Clear default header
+}
+
+std::string Shader::loadShaderSrc(bool includeDefaultHeader, const char* filename){ // Function for loading shader source code
+    std::ifstream file;
+    std::stringstream buf;
+
+    std::string ret = "";
+
+    // Include default header
+    if (includeDefaultHeader){
+        buf << Shader::defaultHeaders.str(); // Append default header to stringstream
+    }
+
+    std::string fullPath = Shader::defaultDirectory + '/' + filename; // Get full path of file
+    file.open(fullPath.c_str()); // Open file
+    if (file.is_open()){ // Check if file is open
+        buf << file.rdbuf(); // Read file buffer into stringstream
+        ret = buf.str(); // Set return string to string from stringstream
+    }
+    else{
+        std::cout << "Unable to open file " << filename << std::endl; // Print error message
+    }
+
+    file.close(); // Close file
+
+    return ret; // Return string from stringstream
+}
+
+
+// Stream containing the default header source
+std::stringstream Shader::defaultHeaders;
+
+// Load into default header
+void Shader::loadIntoDefault(const char* filepath){
+    std::string fileContents = loadShaderSrc(false, filepath); // Load shader source code (without default header)
+    Shader::defaultHeaders << fileContents; // Append shader source code to default header
 }
