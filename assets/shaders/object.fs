@@ -84,8 +84,6 @@ uniform Material material;
 
 uniform int noTexture;
 uniform vec3 viewPos;
-uniform bool useBlinn;
-uniform bool useGamma;
 
 
 vec4 calcDirLight(vec3 norm, vec3 viewVec, vec3 viewDir, vec4 diffMap, vec4 specMap);
@@ -142,9 +140,7 @@ void main(){
     }
 
     // Gamma correction
-    if (useGamma){
-        result.rgb = pow(result.rgb, vec3(1.0/DEFAULT_GAMA));
-    }
+    result.rgb = pow(result.rgb, vec3(1.0/DEFAULT_GAMA));
 
     /*
         Depth testing
@@ -245,14 +241,8 @@ vec4 calcDirLight(vec3 norm, vec3 viewVec, vec3 viewDir, vec4 diffMap, vec4 spec
     vec4 specular = vec4(0.0, 0.0, 0.0, 1.0);
     if (diff > 0) {
         float dotProd = 0.0;
-        if (useBlinn){  //Calculate using Blinn-Phong model
-            vec3 halfwayDir = normalize(lightDir + viewDir);
-            dotProd = dot(norm, halfwayDir);
-        }
-        else{           //Calculate using Phong model
-            vec3 reflectDir = reflect(-lightDir, norm);
-            dotProd = dot(viewDir, reflectDir);
-        }
+        vec3 halfwayDir = normalize(lightDir + viewDir);
+        dotProd = dot(norm, halfwayDir);
         float spec = pow(max(dotProd, 0.0), material.shininess*128);
         specular = dirLight.specular * (spec * specMap);
     }
@@ -325,14 +315,9 @@ vec4 calcPointLight(int idx, vec3 norm, vec3 viewVec, vec3 viewDir, vec4 diffMap
     vec4 specular = vec4(0.0, 0.0, 0.0, 1.0);
     if (diff > 0) {
         float dotProd = 0.0;
-        if (useBlinn){  //Calculate using Blinn-Phong model
-            vec3 halfwayDir = normalize(lightDir + viewDir);
-            dotProd = dot(norm, halfwayDir);
-        }
-        else{           //Calculate using Phong model
-            vec3 reflectDir = reflect(-lightDir, norm);
-            dotProd = dot(viewDir, reflectDir);
-        }
+        //Calculate using Blinn-Phong model
+        vec3 halfwayDir = normalize(lightDir + viewDir);
+        dotProd = dot(norm, halfwayDir);
         float spec = pow(max(dotProd, 0.0), material.shininess*128);
         specular = dirLight.specular * (spec * specMap);
     }
@@ -413,14 +398,8 @@ vec4 calcSpotLight(int idx, vec3 norm, vec3 viewVec, vec3 viewDir, vec4 diffMap,
         vec4 specular = vec4(0.0, 0.0, 0.0, 1.0);
         if (diff > 0) {
             float dotProd = 0.0;
-            if (useBlinn){  //Calculate using Blinn-Phong model
-                vec3 halfwayDir = normalize(lightDir + viewDir);
-                dotProd = dot(norm, halfwayDir);
-            }
-            else{           //Calculate using Phong model
-                vec3 reflectDir = reflect(-lightDir, norm);
-                dotProd = dot(viewDir, reflectDir);
-            }
+            vec3 halfwayDir = normalize(lightDir + viewDir);
+            dotProd = dot(norm, halfwayDir);
             float spec = pow(max(dotProd, 0.0), material.shininess*128);
             specular = dirLight.specular * (spec * specMap);
         }
