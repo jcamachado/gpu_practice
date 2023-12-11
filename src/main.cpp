@@ -20,15 +20,18 @@
 #include "algorithms/states.hpp"
 
 #include "graphics/cubemap.h"
+#include "graphics/framememory.hpp"
 #include "graphics/light.h"
 #include "graphics/model.h"
 #include "graphics/shader.h"
 #include "graphics/texture.h"
 
 #include "graphics/models/box.hpp" 
+#include "graphics/models/brickwall.hpp"
 #include "graphics/models/cube.hpp"
 #include "graphics/models/gun.hpp"
 #include "graphics/models/lamp.hpp"
+#include "graphics/models/plane.hpp"
 #include "graphics/models/sphere.hpp"
 
 #include "io/camera.h"
@@ -38,8 +41,11 @@
 
 #include "physics/environment.h"
 
-void processInput(double dt);
 Scene scene;
+std::string Shader::defaultDirectory = "assets/shaders";
+
+void processInput(double dt);
+void renderScene(Shader shader);
 
 Camera cam;
 
@@ -49,10 +55,13 @@ float lastFrame = 0.0f; // Time of last frame
 unsigned int nSpheres = 10;
 unsigned int nLamps = 1;
 
-Sphere sphere(nSpheres);
+BrickWall wall;
+// Cube cube(10);
+Lamp lamp(nLamps);
+// Sphere sphere(nSpheres);
 
 int main(){
-    scene = Scene(3, 3, "Particle System", 800, 600); // Create scene
+    scene = Scene(3, 3, "Particle System", 1200, 720); // Create scene
     
     if (!scene.init()){ // Initialize scene
         std::cout << "Could not open window" << std::endl;
@@ -66,51 +75,66 @@ int main(){
     /*
          Shaders
     */
-    Shader boxShader("assets/instanced/box.vs", "assets/instanced/box.fs");
-    Shader lampShader("assets/instanced/instanced.vs", "assets/lamp.fs");
-    Shader shader("assets/instanced/instanced.vs", "assets/object.fs");
-    Shader skyboxShader("assets/skybox/skybox.vs", "assets/skybox/sky.fs");
-    Shader textShader("assets/text.vs", "assets/text.fs");
-    skyboxShader.activate();
-    skyboxShader.set3Float("min", 0.047f, 0.016f, 0.239f);
-    skyboxShader.set3Float("max", 0.945f, 1.000f, 0.682f);
+    Shader::loadIntoDefault("defaultHeader.gh");
+    // Shader bufferShader("buffer.vs", "buffer.fs");
+    // Shader outlineShader("outline.vs", "outline.fs");
+    // Shader textShader("text.vs", "text.fs");
+    
+    Shader boxShader(false, "instanced/box.vs", "instanced/box.fs");
+    Shader shader(true, "instanced/instanced.vs", "object.fs");
+    Shader pointShadowShader(
+        false, 
+        "shadows/pointShadow.vs", 
+        "shadows/pointSpotShadow.fs", 
+        "shadows/pointShadow.gs"
+    );
+    Shader dirShadowShader(
+        false, 
+        "shadows/dirSpotShadow.vs", 
+        "shadows/dirShadow.fs"
+    );
+    Shader spotShadowShader(
+        false, 
+        "shadows/dirSpotShadow.vs", 
+        "shadows/pointSpotShadow.fs"
+    );
 
-
-    /*
-        Skybox
-    */
-    Cubemap skybox;
-    skybox.init();
-    // skybox.loadTextures("assets/skybox");
+    Shader::clearDefault();
 
     /*
         Models
     */
-    Lamp lamp(nLamps);
-    scene.registerModel(&lamp);
-    scene.registerModel(&sphere);
-
-    // Cube cube(1);
     // scene.registerModel(&cube);
+    scene.registerModel(&lamp);
+    // scene.registerModel(&sphere);
+    scene.registerModel(&wall);
 
     Box box;
     box.init();                 // Box is not instanced
 
+    // Setup plane to display texture
+    // Plane map;
+    // map.init(dirLight.shadowFBO.textures[0]);
+    // scene.registerModel(&map);
     scene.loadModels();         // Load all model data
 
     /*
         Lights
     */
-    DirLight dirLight{
-        glm::vec3(-0.2f, -1.0f, -0.3f), 
+    
+    DirLight dirLight(
+        glm::vec3(-0.2f, -0.9f, -0.2f), 
         glm::vec4(0.1f, 0.1f, 0.1f, 1.0f), 
-        glm::vec4(0.4f, 0.4f, 0.4f, 1.0f),
-        glm::vec4(0.5f, 0.5f, 0.5f, 1.0f)
-    };
+        glm::vec4(0.6f, 0.6f, 0.6f, 1.0f),
+        glm::vec4(0.7f, 0.7f, 0.7f, 1.0f), 
+        BoundingRegion(glm::vec3(-20.0f, -20.0f, 0.5f), glm::vec3(20.0f, 20.0f, 50.0f))
+    );
+
     scene.dirLight = &dirLight;
 
     glm::vec3 pointLightPositions[] = {
-        glm::vec3(0.7f,  0.2f,  2.0f),
+        glm::vec3(1.0f,  1.0f,  0.0f),
+        glm::vec3(0.0,  15.0f,  0.0f),
         glm::vec3(2.3f, -3.3f, -4.0f),
         glm::vec3(-4.0f,  2.0f, -12.0f),
         glm::vec3(0.0f,  0.0f, -3.0f)
@@ -120,41 +144,60 @@ int main(){
     glm::vec4 diffuse(0.8f, 0.8f, 0.8f, 1.0f);
     glm::vec4 specular(1.0f);
     float k0 = 1.0f;
-    float k1 = 0.09f;
-    float k2 = 0.032f;
+    float k1 = 0.0014f;
+    float k2 = 0.000007f;
 
     PointLight pointLights[nLamps];
 
     for (unsigned int i = 0; i < nLamps; i++) {
-        pointLights[i] = {
+        pointLights[i] = PointLight(
             pointLightPositions[i],
             k0, k1, k2,
-            ambient, diffuse, specular
-        };
+            ambient, diffuse, specular,
+            0.5f, 50.0f
+        );
         scene.generateInstance(lamp.id, glm::vec3(0.25f), 0.25f, pointLightPositions[i]);
         scene.pointLights.push_back(&pointLights[i]);
-        States::activate(&scene.activePointLights, i);
+        States::activateIndex(&scene.activePointLights, i);
     }
-    SpotLight spotLight = {
-        cam.cameraPos,
-        cam.cameraFront,
-        glm::cos(glm::radians(12.5f)),
-        glm::cos(glm::radians(20.0f)),
-        1.0f,
-        0.07f,
-        0.032f,
-        glm::vec4(0.0f, 0.0f, 0.0f, 1.0f),
-        glm::vec4(1.0f),
-        glm::vec4(1.0f)
-    };
+
+    // Spot Light
+    SpotLight spotLight(                                            // Perpendicular to direction
+        cam.cameraPos, cam.cameraFront, cam.cameraUp,
+        // glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
+        glm::cos(glm::radians(12.5f)), glm::cos(glm::radians(20.0f)),
+        1.0f, 0.0014f, 0.000007f,
+        glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), glm::vec4(1.0f), glm::vec4(1.0f),
+        0.1f, 100.0f
+    );
     scene.spotLights.push_back(&spotLight);
-    scene.activeSpotLights = 1;                         // 0b00000001
+    // scene.activeSpotLights = 1;                         // 0b00000001
     
     // scene.generateInstance(cube.id, glm::vec3(20.0f, 0.1f, 20.0f), 100.0f, glm::vec3(0.0f, -3.0f, 0.0f));
+    glm::vec3 cubePositions[] = {
+        { 1.0f, 3.0f, -5.0f },
+        { -7.25f, 2.1f, 1.5f },
+        { -15.0f, 2.55f, 9.0f },
+        { 4.0f, -3.5f, 5.0f },
+        { 2.8f, 1.9f, -6.2f },
+        { 3.5f, 6.3f, -1.0f },
+        { -3.4f, 10.9f, -5.5f },
+        { 0.0f, 11.0f, 0.2f },
+        { 0.0f, 5.0f, 0.0f },
+    };
+    for (unsigned int i = 0; i < 9; i++) {
+        // scene.generateInstance(cube.id, glm::vec3(0.5f), 1.0f, cubePositions[i]);
+    }
+    // Instantiate brickwall
+    scene.generateInstance(wall.id, glm::vec3(1.0f), 1.0f, glm::vec3(0.0f, 0.0f, -2.0f));
 
+    // instantiate texture plane
+    // scene.generateInstance(map.id, glm::vec3(2.0f, 2.0f, 0.0f), 0.0f, glm::vec3(0.0f)); 
     scene.initInstances();                              // Instantiate instances
     scene.prepare(box);                                 // Builds octree  
     scene.variableLog["time"] = (double)0.0;
+
+    scene.defaultFBO.bind(); // rebind default framebuffer
 
     while (!scene.shouldClose()){                       // Check if window should close
         double currentTime = glfwGetTime();
@@ -167,100 +210,112 @@ int main(){
         scene.update();                                 // Update screen values
         processInput(dt);                               // Process input
 
-        skyboxShader.activate();
-        skyboxShader.setFloat("time", scene.variableLog["time"].val<float>());
-        skybox.render(skyboxShader, &scene); //Render skybox
+        // Activate the directional light's FBO
+        // Everything rendered after this will be rendered to this FBO
 
-        scene.renderText(
-            "comic", 
-            textShader, 
-            "Hello World!!", 
-            50.0f, 
-            50.0f, 
-            glm::vec2(1.0f), 
-            glm::vec3(0.5f, 0.6f, 1.0f)
-        );
-        scene.renderText(
-            "comic", 
-            textShader, 
-            "Time: " + scene.variableLog["time"].dump(), 
-            50.0f, 
-            550.0f, 
-            glm::vec2(1.0f), 
-            glm::vec3(0.5f, 0.6f, 1.0f)
-        );
-        scene.renderText(
-            "comic", 
-            textShader, 
-            "FPS: " + scene.variableLog["fps"].dump(), 
-            50.0f, 
-            550.0f - 40.0f, 
-            glm::vec2(1.0f), 
-            glm::vec3(0.5f, 0.6f, 1.0f)
-        );
 
-        for (int i = 0; i < sphere.currentNumInstances; i++){
-            if (glm::length(cam.cameraPos - sphere.instances[i]->pos) > 250.0f){
-                scene.markForDeletion(sphere.instances[i]->instanceId);
-            }
-        }
-        scene.renderShader(shader);                     
-        if (sphere.currentNumInstances > 0){            // Render launch objects
-            scene.renderInstances(sphere.id, shader, dt);
-        }
-        // scene.renderInstances(cube.id, shader, dt);     // Render cube
+        // for (int i = 0; i < sphere.currentNumInstances; i++){
+        //     if (glm::length(cam.cameraPos - sphere.instances[i]->pos) > 250.0f){
+        //         scene.markForDeletion(sphere.instances[i]->instanceId);
+        //     }
+        // }
 
-        scene.renderShader(lampShader, false);                  // Render lamps
-        scene.renderInstances(lamp.id, lampShader, dt);
+        // // Render scene to dirlight FBO
+        // dirLight.shadowFBO.activate();
+        // scene.renderDirLightShader(dirShadowShader);    // Render scene from light's perspective     
+        // renderScene(dirShadowShader);
 
-        scene.renderShader(boxShader, false);           // Render boxes
-        box.render(boxShader);                          // Box is not instanced
-        
+
+        // // Render scene to point light FBO
+        // for (unsigned int i = 0, len = scene.pointLights.size(); i < len; i++){
+        //     if (States::isIndexActive(&scene.activePointLights, i)){
+        //         scene.pointLights[i]->shadowFBO.activate();
+        //         /*
+        //             Render scene from light's perspective  
+        //             1 - Goes through model transformation to put in world coordinates (.vs)  
+        //             2 - then goes to geometry shader and its transformed 6 times to get each face
+        //             and then each one of those 6 triangles is then emmited as a vertex and then passes
+        //             the fragment shader to be colored customly to the depth buffer
+        //         */
+        //         scene.renderPointLightShader(pointShadowShader, i);       
+        //         renderScene(pointShadowShader);
+        //     }
+        // }
+
+        // // Render scene to spot light FBO
+        // for (unsigned int i = 0, len = scene.spotLights.size(); i < len; i++){
+        //     if (States::isIndexActive(&scene.activeSpotLights, i)){
+        //         scene.spotLights[i]->shadowFBO.activate();
+        //         scene.renderSpotLightShader(spotShadowShader, i);    // Render scene from light's perspective     
+        //         renderScene(spotShadowShader);
+        //     }
+        // }
+
+
+        // Render scene normally
+        scene.defaultFBO.activate();
+        scene.renderShader(shader);               // Render scene normally
+        renderScene(shader);
+
+        // scene.renderShader(boxShader, false);           // Render boxes
+        // box.render(boxShader);                          // Box is not instanced
 
         // Send new frame to window
         scene.newFrame(box);
         scene.clearDeadInstances();             // Delete instances after updating octree
     }
-    skybox.cleanup();
     scene.cleanup();
     return 0;
 }
 
-void launchItem(float dt){
-    RigidBody* rb = scene.generateInstance(sphere.id, glm::vec3(0.05f), 1.0f, cam.cameraPos-glm::vec3(0.0f, 0.0f, 0.0f));
-    // RigidBody* rb = scene.generateInstance(sphere.id, glm::vec3(1.0f), 1.0f, cam.cameraPos-glm::vec3(-15.0f, 10.0f, 10.0f));
-    if (rb){
-        rb->transferEnergy(100.0f, cam.cameraFront);
-        rb->applyAcceleration(Environment::gravity);
-    }
+void renderScene(Shader shader){                // assumes shader is prepared accordingly
+    // if (sphere.currentNumInstances > 0) {            // Render launch objects
+    //         scene.renderInstances(sphere.id, shader, dt);
+    // }
+    // scene.renderInstances(cube.id, shader, dt);     // Render cubes
+    scene.renderInstances(lamp.id, shader, dt);     // Render lamps
+    scene.renderInstances(wall.id, shader, dt);     // Render wall
 }
+
+// void launchItem(float dt){
+//     RigidBody* rb = scene.generateInstance(sphere.id, glm::vec3(0.05f), 1.0f, cam.cameraPos-glm::vec3(0.0f, 0.0f, 0.0f));
+//     // RigidBody* rb = scene.generateInstance(sphere.id, glm::vec3(1.0f), 1.0f, cam.cameraPos-glm::vec3(-15.0f, 10.0f, 10.0f));
+//     if (rb){
+//         rb->transferEnergy(100.0f, cam.cameraFront);
+//         rb->applyAcceleration(Environment::gravity);
+//     }
+// }
 
 void processInput(double dt){ // Function for processing input
     scene.processInput(dt); // Process input for scene
-
-    // Update flash light
-    if (States::isIndexActive(&scene.activeSpotLights, 0)){
-        scene.spotLights[0]->position = scene.getActiveCamera()->cameraPos;
-        scene.spotLights[0]->direction = scene.getActiveCamera()->cameraFront;
-    }
 
     // if(Keyboard::key(GLFW_KEY_ESCAPE) || mainJ.buttonState(GLFW_JOYSTICK_BTN_RIGHT)){ // Check if escape key is pressed
     if(Keyboard::key(GLFW_KEY_ESCAPE)){
         scene.setShouldClose(true); // Set window to close
     }
+
+    // Update flash light attached to the camera
+    if (States::isIndexActive(&scene.activeSpotLights, 0)){
+        scene.spotLights[0]->position = scene.getActiveCamera()->cameraPos;
+        scene.spotLights[0]->direction = scene.getActiveCamera()->cameraFront;
+        scene.spotLights[0]->up = scene.getActiveCamera()->cameraUp;
+        scene.spotLights[0]->updateMatrices();
+    }
+
     if(Keyboard::keyWentUp(GLFW_KEY_L)){
         States::toggleIndex(&scene.activeSpotLights, 0);
     }
-    if (Keyboard::keyWentDown(GLFW_KEY_F)){
-        launchItem(dt);
-    }
-    if (Keyboard::keyWentDown(GLFW_KEY_T)){
-        for (int i = 0; i < sphere.currentNumInstances; i++){
-            if (!sphere.instances[i]->freeze()){
-                sphere.instances[i]->unfreeze();
-            }
-        }
-    }
+
+    // if (Keyboard::keyWentDown(GLFW_KEY_F)){
+    //     launchItem(dt);
+    // }
+    // if (Keyboard::keyWentDown(GLFW_KEY_T)){
+    //     for (int i = 0; i < sphere.currentNumInstances; i++){
+    //         if (!sphere.instances[i]->freeze()){
+    //             sphere.instances[i]->unfreeze();
+    //         }
+    //     }
+    // }
     //reset octree
     if (Keyboard::keyWentDown(GLFW_KEY_R)){
         scene.octree = new Octree::node(BoundingRegion(glm::vec3(-16.0f), glm::vec3(16.0f)));

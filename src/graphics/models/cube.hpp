@@ -9,8 +9,8 @@ class Cube : public Model {
     public:
         Material material;
 
-        Cube(unsigned int maxNumInstances)
-            : Model("cube", BoundTypes::AABB, maxNumInstances, CONST_INSTANCES | NO_TEX) {}
+        Cube(unsigned int maxNumInstances, Material material = Material::red_plastic)
+            : Model("cube", BoundTypes::AABB, maxNumInstances, CONST_INSTANCES | NO_TEX), material(material) {}
         void init(){
             int nVertices = 36;
              //each face of the cube have to have a texture
@@ -65,15 +65,15 @@ class Cube : public Model {
             BoundingRegion br(glm::vec3(-0.5f), glm::vec3(0.5f));
 
             aiColor4D diff(
-                Material::red_plastic.diffuse.r, 
-                Material::red_plastic.diffuse.g, 
-                Material::red_plastic.diffuse.b, 
+                material.diffuse.r, 
+                material.diffuse.g, 
+                material.diffuse.b, 
                 1.0f
             );
             aiColor4D spec(
-                Material::red_plastic.specular.r, 
-                Material::red_plastic.specular.g, 
-                Material::red_plastic.specular.b, 
+                material.specular.r, 
+                material.specular.g, 
+                material.specular.b, 
                 1.0f
             );
 

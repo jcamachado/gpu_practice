@@ -42,7 +42,7 @@ Mesh::Mesh(BoundingRegion br, aiColor4D diff, aiColor4D spec)
     : br(br), diffuse(diff), specular(spec), noTextures(true) {}
 
 // Load vertex and index data
-void Mesh::loadData(std::vector<Vertex> _vertices, std::vector<unsigned int> _indices) {
+void Mesh::loadData(std::vector<Vertex> _vertices, std::vector<unsigned int> _indices, bool pad) {
     this->vertices = _vertices;
     this->indices = _indices;
  
@@ -54,13 +54,22 @@ void Mesh::loadData(std::vector<Vertex> _vertices, std::vector<unsigned int> _in
     VAO["EBO"] = BufferObject(GL_ELEMENT_ARRAY_BUFFER);
     VAO["EBO"].generate();
     VAO["EBO"].bind();
+
+    
     VAO["EBO"].setData<GLuint>(this->indices.size(), &this->indices[0], GL_STATIC_DRAW);
  
     // Load data into vertex buffers
     VAO["VBO"] = BufferObject(GL_ARRAY_BUFFER);
     VAO["VBO"].generate();
     VAO["VBO"].bind();
-    VAO["VBO"].setData<Vertex>(this->vertices.size(), &this->vertices[0], GL_STATIC_DRAW);
+
+
+    unsigned int size = this->indices.size();
+    if (pad && size){
+        size++;
+    }
+
+    VAO["VBO"].setData<Vertex>(size, &this->vertices[0], GL_STATIC_DRAW);
  
     // Set the vertex attribute pointers
     VAO["VBO"].bind();
@@ -74,15 +83,18 @@ void Mesh::loadData(std::vector<Vertex> _vertices, std::vector<unsigned int> _in
 }
 
 void Mesh::render(Shader shader, unsigned int numInstances){
+    shader.setBool("noNormalMap", true);
+
     if(noTextures){
         //materials
         shader.set4Float("material.diffuse", diffuse);
         shader.set4Float("material.specular", specular);
-        shader.setInt("noTexture", 1);
+        shader.setBool("noTexture", true);
     }
     else{
         // textures
         unsigned int diffuseIdx = 0;
+        unsigned int normalIdx = 0;
         unsigned int specularIdx = 0;
 
         for(unsigned int i = 0; i < textures.size(); i++){
@@ -96,14 +108,22 @@ void Mesh::render(Shader shader, unsigned int numInstances){
                 case aiTextureType_DIFFUSE:
                     name = "diffuse" + std::to_string(diffuseIdx++);
                     break;
+                case aiTextureType_NORMALS:
+                    name = "normal" + std::to_string(normalIdx++);
+                    shader.setBool("noNormalMap", false);
+                    break;
                 case aiTextureType_SPECULAR:
                     name = "specular" + std::to_string(specularIdx++);
+                    break;
+                case aiTextureType_NONE:
+                    name = textures[i].name;
                     break;
             }
             // set shader value
             shader.setInt(name, i);
             textures[i].bind();
         }
+        shader.setBool("noTexture", false);
     }
 
     VAO.bind();                                                                 // Bind VAO
@@ -152,4 +172,8 @@ void Mesh::setup(){
 
 void Mesh::cleanup(){
     VAO.cleanup();
+
+    for (Texture t: textures) {
+        t.cleanup();
+    }
 }

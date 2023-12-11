@@ -10,16 +10,23 @@
 #include <vector>
 
 #include "shader.h"
-#include "glmemory.hpp"
+#include "vertexmemory.hpp"
 
-#include "../scene.h"
+class Scene;
 
 /*
     Skybox is a type of cubemap that is rendered at infinity.
 */
 class Cubemap{
     public:
+        // Texture object
+        unsigned int id;
+        
         Cubemap();
+
+        void generate();
+
+        void bind();
 
         /*
             The order matters. 
@@ -35,6 +42,9 @@ class Cubemap{
             std::string back    = "back.png"
         );
 
+        // So we can work with the cubemap as a texture, for example shader uniforms like shadow maps
+        void allocate(GLenum format, GLuint width, GLuint height, GLenum type);
+
         void init();
 
         void render(Shader shader, Scene *scene);
@@ -42,8 +52,6 @@ class Cubemap{
         void cleanup();
 
     private:
-        // Texture
-        unsigned int id;
         std::string directory;
         std::vector<std::string> faces;
         bool hasTextures;

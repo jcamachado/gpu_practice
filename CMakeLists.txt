@@ -31,7 +31,8 @@ add_executable(my_particle_system
 
     src/graphics/cubemap.h
     src/graphics/cubemap.cpp
-    src/graphics/glmemory.hpp
+    src/graphics/vertexmemory.hpp
+    src/graphics/framememory.hpp
     src/graphics/light.h
     src/graphics/light.cpp
     src/graphics/material.h
@@ -48,9 +49,11 @@ add_executable(my_particle_system
     src/graphics/texture.cpp
 
     src/graphics/models/box.hpp
+    src/graphics/models/brickwall.hpp
     src/graphics/models/cube.hpp
     src/graphics/models/lamp.hpp
     src/graphics/models/gun.hpp
+    src/graphics/models/plane.hpp
     src/graphics/models/sphere.hpp
 
     src/io/camera.h

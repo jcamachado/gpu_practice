@@ -60,6 +60,51 @@ Creates a halfway vector(**h**) between Viewer vector (**v**) and light source v
 
 **h** = normalize(**l** + **v**)
 
+### Shadows
+#### Shadow Mapping (Directional Light)
+
+Creates framebuffers on light source so, since it is a parallel source of light, we can say that if a position is occluse to the light's framebuffer, then the occluded object has a shadow cast into it. Another way to view the light framebuffer is like it had a camera, and it couldnt see some part of its quad. So this unseen part is in shadow.
+
+In directional light, we will cast shadows that will look like a box around the caracter, since its parallel, and we dont need to cast where it wont be rendered, only within the player(camera) field of view. We will call this box: Bounding region br. ()in light.h
+
+#### Shadow acne
+Happens when we have finite resolution on texture
+
+When a light maps to a surface by its depth and with finite resolution texture, we consider a hit on one pixel.
+Every fragment can be so sharf of a resolution, and this process keeps going to for "parallel light vectors"
+When we take the coordinate from each fragment to determine if its in the shadow or not, we convert it into an integer (into a normalized coordinate), and each normalized coordinate will map to some integer pixel coordinate on the image.
+
+Minhas palavras / a partida da explicacao visual do MGrieco
+A depthmap on a surface is kinda perpendicular to light vector. So, picturing this as a diagonal relatively to the surface.  
+And imagine that this diagonal starts under the surface and goes further in depth above the surface. 
+The first part will be counted as out of the shadow, and the other part as being shadowed.  This makes a striped pattern.
+But i'm still a bit confused.
+
+This will be solved by a solution called Bias where we just offset it.
+
+(from stackoverflow)
+Shadow acne is caused by the discrete nature of the shadow map. A shadow map is composed of samples, a surface is continuous. Thus, there can be a spot on the surface where the discrete surface is further than the sample. The problem does persist even if you multi sample, but you can sample smarter in ways that can nearly eliminate this at significant cost.
+
+The canonical way to solve this is to offset the shadow map slightly so the object no longer self shadows itself. This offset is called a bias. One can use more smart offsets than just a fixed value but a fixed value works quite well and has minimal overhead.
+
+#### PCF: Percentage closer filtering.
+Is a technique to solve another problem regarding the finite nature of the texture sampled from the shadow mapping.
+
+In this case, the problem happens not by rendering the regular directional light shadow on a surface, but the shadow
+cast by other objects on the surface that is strongly aliased(pixelated). When you increases the shadow resolution, the pixelation decreases. 
+
+To solve this we will have to do "blending".  That is a kind of average of values from neighboring coordinates on the texture. and average all 9 values.
+
+
+### Shadow (Spotlight)
+
+Will work similarly to the camera. Like the image cone of light has a canvas on the other side of objects.
+Similar to what happens on update matrices in spotlight using perspective, but we will have 6 view matrices because the direction (in lookat) is what 
+will change from face to face.
+
+### Shadow (Point light)
+
+Basically we will create 6 depthmaps using cubemaps.
 
 ### Gamma Correction
 
@@ -92,6 +137,14 @@ And we pass C into M function, so:
     Entao as funcoes que se relacionam com elementos da tela alterarao a cor dos pixels desses elementos
     -Vertex shader(vs): Manipula posicao de vertices. 
 
+### Geometry shader
+    It comes between the vertex shader and the fragment shader. Its an optional step you don't need to actually compile anything with the geometry shader.
+    But in geometry shader you can pass custom vertices based on the vertex shader into the fragment shader so everytime we call EmitVertex() it will take the value of glPosition and pass it into the fragment shader and it will set the color accordingly.
+
+    In the example he calls EmitVertex twice (each after a gl_Position) and EndPrimitive() so openGL knows that we finished with the shape of the polygon, the line, the point, etc... and it could move on to the next primitive.
+
+    We will use it on cubemap texture shadow for point lights.
+    // Only geometry shader can emit many vertex from vertex shader
 
 # OPENGL
 File extensions
@@ -109,3 +162,23 @@ Normal = mat3(transpose(inverse(model))) * aNormal; //Normal in world space
 
 Cubemaps: More convenient to use since it only takes one textuer slot. We add 6 textures, tie them together so they only take 1 texture slot.
 And since cube and cubemap have the same vertices, we only have to pass one set of vertices to be drawn by the gpu.
+
+Stencil: A mapping of a renderable view(matrix) and a stencil matrix of 1 and 0s. If the values on the second matrix is 0, the corresponding value in the original  view matrix wont be drawn, otherwise, draw normally.
+
+Framebuffer: Combines the color, depth and stencil buffers and it displays it somewhere. The default framebuffer is on screen and glfw sets it up for us. And connects this framebuffer to the monitor.
+
+
+
+#### Normal mapping
+
+Helps on creating quality texture
+R G B are translated to X Y Z
+So the blue value indicates the texture "depth", Z. And so on.
+
+Rough explanation
+But it has a limitation. The normal is pointing to the positive Z direction. So if the reflectiveness is in another axis, it will not display as well.
+Possibly we would need to change the normal of the object or the Normal mapping so they could align.
+
+### Interface blocks
+
+The only purpose of this structure is to pass the vertex shader and the fragment shader or  the geometry shader. So its just to pass it between the shader files.

@@ -16,9 +16,9 @@ uniform mat4 view;
 uniform mat4 projection;
 
 void main() {
-    vec3 pos = aPos * aSize + aOffset;
+    vec3 pos = aPos * (aSize * 1.1) + aOffset;  // Scale the outline so it is bigger than the object
 
-    FragPos = vec3(model * vec4(pos, 1.0)); // Its position in the world
+    FragPos = vec3(model * vec4(pos, 1.0));             // Its position in the world
     Normal = mat3(transpose(inverse(model))) * aNormal; //Normal in world space
 
     gl_Position = projection * view * vec4(FragPos, 1.0); //Order Matters!

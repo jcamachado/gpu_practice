@@ -13,6 +13,7 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
+#include "graphics/framememory.hpp"
 #include "graphics/model.h"
 #include "graphics/light.h"
 #include "graphics/shader.h"
@@ -36,9 +37,7 @@
 namespace Octree {
     class node;
 }
-
 class Model; 
-
 class Scene {
     public:
         trie::Trie<Model*> models;
@@ -52,6 +51,8 @@ class Scene {
         jsoncpp::json variableLog;
         FT_Library ft;
         trie::Trie<TextRenderer> fonts;
+
+        FramebufferObject defaultFBO;                // By default, glfw sets the default framebuffer to the screen
 
         /*
             Callbacks
@@ -90,6 +91,19 @@ class Scene {
         void update();
         void newFrame(Box &box);                                        
         void renderShader(Shader shader, bool applyLighting = true);
+        
+        /*
+            Shadow rendering methods
+            To render shadows, we create like a camera from the light's perspective, but we dont see through it
+            Since we dont to render from the user's perspective (camera values), we need other methods for casting shadow
+        */
+        // Set uniform shader variables for directional light render
+        void renderDirLightShader(Shader shader);   
+        // Set uniform shader variables for point light render
+        void renderPointLightShader(Shader shader, unsigned int idx);
+        // Set uniform shader variables for spot light render
+        void renderSpotLightShader(Shader shader, unsigned int idx);
+
         void renderInstances(
             std::string modelId, 
             Shader shader, 
