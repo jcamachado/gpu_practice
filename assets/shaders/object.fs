@@ -79,9 +79,12 @@ uniform int nSpotLights;
 
 out vec4 FragColor;
 
-in vec3 FragPos;
-in vec3 Normal;
-in vec2 TexCoord;
+in VS_OUT {
+    vec3 FragPos;
+    vec3 Normal;
+    vec2 TexCoord;
+} fs_in;
+
 
 uniform Material material;
 
@@ -112,12 +115,12 @@ vec3 sampleOffsetDirections[NUM_SAMPLES] = vec3[]
 
 // TODO - make Blinn always true
 void main(){
-    vec3 norm = normalize(Normal);
+    vec3 norm = normalize(fs_in.Normal);
 
     if (!skipNormalMapping && !noNormalMap){
-        norm = normalize(texture(normal0, TexCoord).rgb * 2.0 - 1.0); // map from [0, 1] to [-1, 1]
+        norm = normalize(texture(normal0, fs_in.TexCoord).rgb * 2.0 - 1.0); // map from [0, 1] to [-1, 1]
     }
-    vec3 viewVec = viewPos - FragPos; // Will be used for soft shadow
+    vec3 viewVec = viewPos - fs_in.FragPos; // Will be used for soft shadow
     vec3 viewDir = normalize(viewVec);
 
     vec4 diffMap;
@@ -128,8 +131,8 @@ void main(){
         specMap = material.specular;
     }
     else{
-        diffMap = texture(diffuse0, TexCoord);
-        specMap = texture(specular0, TexCoord);
+        diffMap = texture(diffuse0, fs_in.TexCoord);
+        specMap = texture(specular0, fs_in.TexCoord);
     }
 
     vec4 result;
@@ -171,7 +174,7 @@ void main(){
 
 float calcDirLightShadow(vec3 norm, vec3 viewVec, vec3 lightDir){
     /*
-        - fragPosLightSpace:  FragPos is only affected by the model, gl_pos is affected by changes in perspective. 
+        - fragPosLightSpace:  fs_in.FragPos is only affected by the model, gl_pos is affected by changes in perspective. 
         It wouldnt make sense passing projection coordinates because we dont want to render light from the camera's point of view.
         So its easier to handle where the fragment is in the world.
 
@@ -181,7 +184,7 @@ float calcDirLightShadow(vec3 norm, vec3 viewVec, vec3 lightDir){
 
         - In this scenario, outerCutoff cannot be greater than 45 degrees because of cubemap limitations
     */
-    vec4 fragPosLightSpace = dirLight.lightSpaceMatrix * vec4(FragPos, 1.0);
+    vec4 fragPosLightSpace = dirLight.lightSpaceMatrix * vec4(fs_in.FragPos, 1.0);
 
     // Perspective divide (Transforming coordinates NDC, normalized device coordinates)
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w; //[depth relative to light] => [-1, 1]
@@ -262,7 +265,7 @@ vec4 calcDirLight(vec3 norm, vec3 viewVec, vec3 viewDir, vec4 diffMap, vec4 spec
 
 float calcPointLightShadow(int idx, vec3 norm, vec3 viewVec, vec3 lightDir){
     // Get vector from the light to the fragment (similar to pointShadow.fs)
-    vec3 lightToFrag = FragPos - pointLights[idx].position;
+    vec3 lightToFrag = fs_in.FragPos - pointLights[idx].position;
 
     // Get depth from cubemap
     float closestDepth = texture(pointLights[idx].depthBuffer, lightToFrag).r;
@@ -306,7 +309,7 @@ vec4 calcPointLight(int idx, vec3 norm, vec3 viewVec, vec3 viewDir, vec4 diffMap
     // Ambient -> constant
     vec4 ambient = pointLights[idx].ambient * diffMap;
 
-    vec3 lightDir = normalize(pointLights[idx].position - FragPos);
+    vec3 lightDir = normalize(pointLights[idx].position - fs_in.FragPos);
     // When pointLight is > perpendicular to the normal, dot product is 0
     float diff = max(dot(norm, lightDir), 0.0);
     vec4 diffuse = pointLights[idx].diffuse * (diff * diffMap);
@@ -330,7 +333,7 @@ vec4 calcPointLight(int idx, vec3 norm, vec3 viewVec, vec3 viewDir, vec4 diffMap
         specular = dirLight.specular * (spec * specMap);
     }
 
-    float dist = length(pointLights[idx].position - FragPos);
+    float dist = length(pointLights[idx].position - fs_in.FragPos);
     float attenuation = 1.0/(pointLights[idx].k0 + pointLights[idx].k1*dist + pointLights[idx].k2*(dist*dist));
 
     // float shadow = calcPointLightShadow(idx, norm, viewVec, lightDir);
@@ -341,7 +344,7 @@ vec4 calcPointLight(int idx, vec3 norm, vec3 viewVec, vec3 viewDir, vec4 diffMap
 
 
 float calcSpotLightShadow(int idx, vec3 norm, vec3 viewVec, vec3 lightDir){
-    vec4 fragPosLightSpace = spotLights[idx].lightSpaceMatrix * vec4(FragPos, 1.0);
+    vec4 fragPosLightSpace = spotLights[idx].lightSpaceMatrix * vec4(fs_in.FragPos, 1.0);
 
     // Perspective divide (Transforming coordinates NDC)
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w; //[depth relative to light] => [-1, 1]
@@ -387,7 +390,7 @@ float calcSpotLightShadow(int idx, vec3 norm, vec3 viewVec, vec3 lightDir){
 }
 
 vec4 calcSpotLight(int idx, vec3 norm, vec3 viewVec, vec3 viewDir, vec4 diffMap, vec4 specMap){
-    vec3 lightDir = normalize(spotLights[idx].position - FragPos); //same as pointLight
+    vec3 lightDir = normalize(spotLights[idx].position - fs_in.FragPos); //same as pointLight
 
      // Angle between lightDir and spotLight direction, cossine
     float theta = dot(lightDir, normalize(-spotLights[idx].direction));
@@ -418,7 +421,7 @@ vec4 calcSpotLight(int idx, vec3 norm, vec3 viewVec, vec3 viewDir, vec4 diffMap,
         diffuse *= intensity;
         specular *= intensity;
 
-        float dist = length(spotLights[idx].position - FragPos);
+        float dist = length(spotLights[idx].position - fs_in.FragPos);
         float attenuation = 1.0/(spotLights[idx].k0 + spotLights[idx].k1*dist + spotLights[idx].k2*(dist*dist));
 
         // float shadow = calcSpotLightShadow(idx, norm, viewVec, lightDir);

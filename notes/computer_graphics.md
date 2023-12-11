@@ -178,3 +178,7 @@ So the blue value indicates the texture "depth", Z. And so on.
 Rough explanation
 But it has a limitation. The normal is pointing to the positive Z direction. So if the reflectiveness is in another axis, it will not display as well.
 Possibly we would need to change the normal of the object or the Normal mapping so they could align.
+
+### Interface blocks
+
+The only purpose of this structure is to pass the vertex shader and the fragment shader or  the geometry shader. So its just to pass it between the shader files.
