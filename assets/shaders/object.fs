@@ -56,7 +56,6 @@ vec3 sampleOffsetDirections[NUM_SAMPLES] = vec3[]
    vec3(0, 1,  1), vec3( 0, -1,  1), vec3( 0, -1, -1), vec3( 0, 0, 0)
 );
 
-
 // TODO - make Blinn always true
 void main(){
     vec3 norm = normalize(fs_in.Normal);

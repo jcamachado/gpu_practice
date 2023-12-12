@@ -25,6 +25,7 @@
 #include "graphics/model.h"
 #include "graphics/shader.h"
 #include "graphics/texture.h"
+#include "graphics/uniformmemory.hpp"
 
 #include "graphics/models/box.hpp" 
 #include "graphics/models/brickwall.hpp"
@@ -59,6 +60,10 @@ BrickWall wall;
 // Cube cube(10);
 Lamp lamp(nLamps);
 // Sphere sphere(nSpheres);
+
+struct Color {
+    glm::vec3 c;
+};
 
 int main(){
     scene = Scene(3, 3, "Particle System", 1200, 720); // Create scene
@@ -101,6 +106,9 @@ int main(){
 
     Shader::clearDefault();
 
+    /*
+        UBOs
+    */
     /*
         Models
     */
