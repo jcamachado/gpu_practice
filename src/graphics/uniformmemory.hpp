@@ -131,11 +131,11 @@ namespace UBO {
 
     } Element;
 
-    Element newScalar() {
+    inline Element newScalar() {
         return Element(Type::SCALAR);
     }
 
-    Element newVec(unsigned char dim) {
+    inline Element newVec(unsigned char dim) {
         switch (dim) {
             case 2: return Type::VEC2;
             case 3: return Type::VEC3;
@@ -144,7 +144,7 @@ namespace UBO {
         };
     }
 
-    Element newArray(unsigned int length,Element arrElement) {
+    inline Element newArray(unsigned int length,Element arrElement) {
         Element ret(Type::ARRAY);
         ret.length = length;
         ret.list = { arrElement };
@@ -160,24 +160,26 @@ namespace UBO {
     /*
         Matrices and Array of matrices
     */
-    Element newColMat(unsigned char cols, unsigned char rows){
+    inline Element newColMat(unsigned char cols, unsigned char rows){
         return newArray(cols, newVec(rows));
     }
-    Element newColMatArray(unsigned int nMatrices, unsigned char cols, unsigned char rows) {
+
+    inline Element newColMatArray(unsigned int nMatrices, unsigned char cols, unsigned char rows) {
         return newArray(nMatrices * cols, newVec(rows));
     }
 
-    Element newRowMat(unsigned char rows, unsigned char cols) {
+    inline Element newRowMat(unsigned char rows, unsigned char cols) {
         return newArray(rows, newVec(cols));
     }
-    Element newRowMatArray(unsigned int nMatrices, unsigned char rows, unsigned char cols) {
+
+    inline Element newRowMatArray(unsigned int nMatrices, unsigned char rows, unsigned char cols) {
         return newArray(nMatrices * rows, newVec(cols));
     }
 
     /*
         Structs
     */
-    Element newStruct(std::vector<Element> subelements) {
+    inline Element newStruct(std::vector<Element> subelements) {
         Element ret(Type::STRUCT);
         ret.list.insert(ret.list.end(), subelements.begin(), subelements.end());
         ret.length = ret.list.size();
