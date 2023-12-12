@@ -18,23 +18,13 @@ DirLight::DirLight(glm::vec3 direction,
 }
 
 void DirLight::render(Shader shader, unsigned int textureIdx){
-    std::string name = "dirLight";
-
-    shader.set3Float(name + ".direction", direction);
-
-    shader.set4Float(name + ".ambient", ambient);
-    shader.set4Float(name + ".diffuse", diffuse);
-    shader.set4Float(name + ".specular", specular);
-
-    shader.setFloat(name + ".farPlane", br.max.z);
+    // std::string name = "dirLight";
 
     // Set depth texture
     glActiveTexture(GL_TEXTURE0 + textureIdx);
     shadowFBO.textures[0].bind();
-    shader.setInt(name + ".depthBuffer", textureIdx);
+    shader.setInt("dirLightBuffer", textureIdx);
 
-    // Set light space matrix
-    shader.setMat4(name + ".lightSpaceMatrix", lightSpaceMatrix);
 }
 
 void DirLight::updateMatrices(){
@@ -91,26 +81,12 @@ PointLight::PointLight(glm::vec3 position,
 }
 
 void PointLight::render(Shader shader, int idx, unsigned int textureIdx){
-    std::string name = "pointLights[" + std::to_string(idx) + "]";
-
-    shader.set3Float(name + ".position", position);
-
-    shader.setFloat(name + ".k0", k0);
-    shader.setFloat(name + ".k1", k1);
-    shader.setFloat(name + ".k2", k2);
-
-    shader.set4Float(name + ".ambient", ambient);
-    shader.set4Float(name + ".diffuse", diffuse);
-    shader.set4Float(name + ".specular", specular);
-
-    // Set near and far planes
-    shader.setFloat(name + ".nearPlane", nearPlane);
-    shader.setFloat(name + ".farPlane", farPlane);
+    std::string lightBufferName = "pointLightBuffers[" + std::to_string(idx) + "]";
 
     // Set depth texture
     glActiveTexture(GL_TEXTURE0 + textureIdx);  // OpenGL doesnt distinguish between 2d and cubemap textures
     shadowFBO.cubemap.bind();
-    shader.setInt(name + ".depthBuffer", textureIdx);
+    shader.setInt(lightBufferName, textureIdx);
 }
 
 // Update light space matrices
@@ -155,29 +131,11 @@ SpotLight::SpotLight(glm::vec3 position, glm::vec3 direction, glm::vec3 up,
 }
 
 void SpotLight::render(Shader shader, int idx, unsigned int textureIdx){
-    std::string name = "spotLights[" + std::to_string(idx) + "]";
-
-    shader.set3Float(name + ".position", position);
-    shader.set3Float(name + ".direction", direction);
-
-    shader.setFloat(name + ".cutOff", cutOff);
-    shader.setFloat(name + ".outerCutOff", outerCutOff);
-
-    shader.setFloat(name + ".k0", k0);
-    shader.setFloat(name + ".k1", k1);
-    shader.setFloat(name + ".k2", k2);
-
-    shader.set4Float(name + ".ambient", ambient);
-    shader.set4Float(name + ".diffuse", diffuse);
-    shader.set4Float(name + ".specular", specular);
-
+    std::string lightBufferName = "spotLightBuffers[" + std::to_string(idx) + "]";
     // Set depth texture
     glActiveTexture(GL_TEXTURE0 + textureIdx);
     shadowFBO.textures[0].bind();
-    shader.setInt(name + ".depthBuffer", textureIdx);
-
-    // Set light space matrix
-    shader.setMat4(name + ".lightSpaceMatrix", lightSpaceMatrix);
+    shader.setInt(lightBufferName, textureIdx);
 }
 
 void SpotLight::updateMatrices(){

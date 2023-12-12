@@ -18,6 +18,7 @@
 #include "graphics/light.h"
 #include "graphics/shader.h"
 #include "graphics/text.h"
+#include "graphics/uniformmemory.hpp"
 
 #include "graphics/models/box.hpp"
 
@@ -54,6 +55,7 @@ class Scene {
 
         FramebufferObject defaultFBO;                // By default, glfw sets the default framebuffer to the screen
 
+        UBO::UBO lightUBO;
         /*
             Callbacks
         */
@@ -73,10 +75,14 @@ class Scene {
         /* 
             Initialization
             - init() calls gl functions for window and io initialization and init octree
-            - prepare() calls the octree->insert() all objects, since the octree is not built yet
+            - prepare() calls the octree->insert() all objects, since the octree is not built yet.
+            Since we are using static lights, we can set their values for UBO here without having to 
+            update them every frame
+            Receives a box to be used as the root of the octree and a vector of shaders to be used
+            with the UBO
         */
         bool init();    
-        void prepare(Box &box);                                                 
+        void prepare(Box &box, std::vector<Shader> shaders);                                       
 
         /*
             Main loop methods
@@ -159,9 +165,11 @@ class Scene {
             Lights
         */
         // list of point lights
+        unsigned int nPointLights;
         std::vector<PointLight*> pointLights;
         unsigned int activePointLights;
         // list of spot lights
+        unsigned int nSpotLights;
         std::vector<SpotLight*> spotLights;
         unsigned int activeSpotLights;
         // directional light

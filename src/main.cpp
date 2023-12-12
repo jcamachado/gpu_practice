@@ -61,10 +61,6 @@ BrickWall wall;
 Lamp lamp(nLamps);
 // Sphere sphere(nSpheres);
 
-struct Color {
-    glm::vec3 c;
-};
-
 int main(){
     scene = Scene(3, 3, "Particle System", 1200, 720); // Create scene
     
@@ -106,9 +102,6 @@ int main(){
 
     Shader::clearDefault();
 
-    /*
-        UBOs
-    */
     /*
         Models
     */
@@ -202,7 +195,7 @@ int main(){
     // instantiate texture plane
     // scene.generateInstance(map.id, glm::vec3(2.0f, 2.0f, 0.0f), 0.0f, glm::vec3(0.0f)); 
     scene.initInstances();                              // Instantiate instances
-    scene.prepare(box);                                 // Builds octree  
+    scene.prepare(box, { shader });                                 // Builds octree  
     scene.variableLog["time"] = (double)0.0;
 
     scene.defaultFBO.bind(); // rebind default framebuffer

@@ -8,6 +8,7 @@
 #include <string>
 
 #include "vertexmemory.hpp"
+#include "shader.h"
 
 /*
     Same structure as VertexMemory.hpp but using a different buffer type
@@ -27,7 +28,7 @@ namespace UBO {
     };
 
     // Round up val to the next multiple of mul 2^n
-    unsigned int roundUpPow2(unsigned int val, unsigned int n) {
+    inline unsigned int roundUpPow2(unsigned int val, unsigned int n) {
         /*
             n=4
             pow2n = 2^4 = 16 = 0b00010000

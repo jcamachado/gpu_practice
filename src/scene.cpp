@@ -1,5 +1,11 @@
 #include "scene.h"
 
+/*
+    These macros are the same as in defaultHeader.gh
+*/
+#define MAX_POINT_LIGHTS 20
+#define MAX_SPOT_LIGHTS 5
+
 unsigned int Scene::scrWidth = 0;
 unsigned int Scene::scrHeight = 0;
 
@@ -15,8 +21,7 @@ void Scene::frameBufferSizeCallback(GLFWwindow* window, int width, int height) {
 /*
     Constructors
 */
-
-Scene::Scene() : currentId("aaaaaaaa") {}
+Scene::Scene() : currentId("aaaaaaaa"), lightUBO(0) {}
 
 Scene::Scene(int glfwVersionMajor, 
     int glfwVersionMinor, 
@@ -29,7 +34,8 @@ Scene::Scene(int glfwVersionMajor,
     activeCamera(-1),
     activePointLights(0),
     activeSpotLights(0),
-    currentId("aaaaaaaa") {
+    currentId("aaaaaaaa"), 
+    lightUBO(0) {
 
     Scene::scrWidth = scrWidth;
     Scene::scrHeight = scrHeight;
@@ -164,9 +170,120 @@ bool Scene::init() {
 /*
     Prepare for mainloop (after object generation, etc and before main while loop)
 */
-void Scene::prepare(Box &box){
+void Scene::prepare(Box &box, std::vector<Shader> shaders){
     // octree->build();
     octree->update(box);        // Calls octree->build() if it hasn't been built yet
+
+    // Set lighting UBO, mapped with Lights in defaultHeader.gh
+    lightUBO = UBO::UBO(0, {
+        UBO::newStruct({// Directional light
+            UBO::Type::VEC3,
+
+            UBO::Type::VEC4,
+            UBO::Type::VEC4,
+            UBO::Type::VEC4,
+
+            UBO::Type::SCALAR,
+
+            UBO::newColMat(4, 4)
+        }),
+
+        UBO::Type::SCALAR,  // nPointLights
+        UBO::newArray(MAX_POINT_LIGHTS, UBO::newStruct({ // Point lights
+            UBO::Type::VEC3,
+
+            UBO::Type::VEC4,
+            UBO::Type::VEC4,
+            UBO::Type::VEC4,
+
+            UBO::Type::SCALAR,
+            UBO::Type::SCALAR,
+            UBO::Type::SCALAR,
+
+            UBO::Type::SCALAR
+        })),
+
+        UBO::Type::SCALAR,  // nSpotLights
+        UBO::newArray(MAX_SPOT_LIGHTS, UBO::newStruct({ // Spot lights
+            UBO::Type::VEC3,
+            UBO::Type::VEC3,
+
+            UBO::Type::SCALAR,
+            UBO::Type::SCALAR,
+
+            UBO::Type::VEC4,
+            UBO::Type::VEC4,
+            UBO::Type::VEC4,
+
+            UBO::Type::SCALAR,
+            UBO::Type::SCALAR,
+            UBO::Type::SCALAR,
+
+            UBO::Type::SCALAR,
+            UBO::Type::SCALAR,
+
+            UBO::newColMat(4, 4)
+        }))
+
+    });
+
+    // Attach the UBO to specified shaders
+    for (Shader shader : shaders){
+        lightUBO.attachToShader(shader, "Lights");
+    }
+
+    // Setup memory for UBO
+    lightUBO.generate();
+    lightUBO.bind();
+    lightUBO.initNullData(GL_STATIC_DRAW);
+    lightUBO.bindRange();
+
+    // Write initial values
+    lightUBO.startWrite();
+
+    // Write directional light
+    lightUBO.writeElement<glm::vec3>(&dirLight->direction);
+    lightUBO.writeElement<glm::vec4>(&dirLight->ambient);
+    lightUBO.writeElement<glm::vec4>(&dirLight->diffuse);
+    lightUBO.writeElement<glm::vec4>(&dirLight->specular);
+    lightUBO.writeElement<float>(&dirLight->br.max.z);  // Far plane
+    lightUBO.writeArrayContainer<glm::mat4, glm::vec4>(&dirLight->lightSpaceMatrix, 4);
+
+    // Write point lights   
+    nPointLights = std::min<unsigned int>(pointLights.size(), MAX_POINT_LIGHTS);
+    lightUBO.writeElement<unsigned int>(&nPointLights);
+    unsigned int i = 0;
+    for (; i < nPointLights; i++){
+        lightUBO.writeElement<glm::vec3>(&pointLights[i]->position);
+        lightUBO.writeElement<glm::vec4>(&pointLights[i]->ambient);
+        lightUBO.writeElement<glm::vec4>(&pointLights[i]->diffuse);
+        lightUBO.writeElement<glm::vec4>(&pointLights[i]->specular);
+        lightUBO.writeElement<float>(&pointLights[i]->k0);
+        lightUBO.writeElement<float>(&pointLights[i]->k1);
+        lightUBO.writeElement<float>(&pointLights[i]->k2);
+        lightUBO.writeElement<float>(&pointLights[i]->farPlane);
+    }
+    lightUBO.advanceArray(MAX_POINT_LIGHTS - i);    // Advance to finish array
+
+    // Write spot lights
+    nSpotLights = std::min<unsigned int>(spotLights.size(), MAX_SPOT_LIGHTS);
+    lightUBO.writeElement<unsigned int>(&nSpotLights);
+    for (int i = 0; i < nSpotLights; i++) {
+        lightUBO.writeElement<glm::vec3>(&spotLights[i]->position);
+        lightUBO.writeElement<glm::vec3>(&spotLights[i]->direction);
+        lightUBO.writeElement<float>(&spotLights[i]->cutOff);
+        lightUBO.writeElement<float>(&spotLights[i]->outerCutOff);
+        lightUBO.writeElement<glm::vec4>(&spotLights[i]->ambient);
+        lightUBO.writeElement<glm::vec4>(&spotLights[i]->diffuse);
+        lightUBO.writeElement<glm::vec4>(&spotLights[i]->specular);
+        lightUBO.writeElement<float>(&spotLights[i]->k0);
+        lightUBO.writeElement<float>(&spotLights[i]->k1);
+        lightUBO.writeElement<float>(&spotLights[i]->k2);
+        lightUBO.writeElement<float>(&spotLights[i]->nearPlane);
+        lightUBO.writeElement<float>(&spotLights[i]->farPlane);
+        lightUBO.writeArrayContainer<glm::mat4, glm::vec4>(&spotLights[i]->lightSpaceMatrix, 4);
+    }
+    lightUBO.clear();
 }
 
 /*

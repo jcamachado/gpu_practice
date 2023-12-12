@@ -1,5 +1,8 @@
 #version 330 core       // Cannot be specified twice, so deleted to those who append this header
 
+/*
+    Cannot pass sampler data through UBO, only through uniform
+*/
 struct DirLight {
     vec3 direction;
 
@@ -9,25 +12,25 @@ struct DirLight {
 
     float farPlane;
 
-    sampler2D depthBuffer;    // set from light.cpp
     mat4 lightSpaceMatrix;
 };
 
+#define MAX_POINT_LIGHTS 20
 struct PointLight {
     vec3 position;
-
-    float k0;
-    float k1;
-    float k2;
 
     vec4 ambient;
     vec4 diffuse;
     vec4 specular;
 
+    float k0;
+    float k1;
+    float k2;
+
     float farPlane;
-    samplerCube depthBuffer;
 };
 
+#define MAX_SPOT_LIGHTS 5
 struct SpotLight {
     vec3 position;
     vec3 direction;
@@ -35,17 +38,27 @@ struct SpotLight {
     float cutOff;
     float outerCutOff;
 
-    float k0;
-    float k1;
-    float k2;
-
     vec4 ambient;
     vec4 diffuse;
     vec4 specular;
 
+    float k0;
+    float k1;
+    float k2;
+
     float nearPlane;
     float farPlane;
 
-    sampler2D depthBuffer;
     mat4 lightSpaceMatrix;
+};
+
+// UBO
+layout (std140) uniform Lights {
+    DirLight dirLight;
+
+    int nPointLights;
+    PointLight pointLights[MAX_POINT_LIGHTS];
+
+    int nSpotLights;
+    SpotLight spotLights[MAX_SPOT_LIGHTS];
 };

@@ -1,9 +1,6 @@
 /*
     The values of uniform arrays cannot be dynamically changed, so we need to set a maximum number of lights
 */
-#define MAX_POINT_LIGHTS 20     
-#define MAX_SPOT_LIGHTS 5       
-
 #define DEFAULT_GAMA 2.2        // 2.2 is the usual value for gamma
 
 struct Material {
@@ -13,14 +10,12 @@ struct Material {
 };
 
 uniform sampler2D diffuse0;
-uniform sampler2D normal0;
 uniform sampler2D specular0;
+uniform sampler2D normal0;
 
-uniform PointLight pointLights[MAX_POINT_LIGHTS];
-uniform int nPointLights;
-uniform DirLight dirLight;
-uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
-uniform int nSpotLights;
+uniform sampler2D dirLightBuffer;
+uniform samplerCube pointLightBuffers[MAX_POINT_LIGHTS];
+uniform sampler2D spotLightBuffers[MAX_SPOT_LIGHTS];
 
 out vec4 FragColor;
 
@@ -157,12 +152,12 @@ float calcDirLightShadow(vec3 norm, vec3 viewVec, vec3 lightDir){
     */
 
     float shadowSum = 0.0;
-    vec2 texelSize = 1.0 / textureSize(dirLight.depthBuffer, 0); // 0 because its a 2D texture
+    vec2 texelSize = 1.0 / textureSize(dirLightBuffer, 0); // 0 because its a 2D texture
     float viewDist = length(viewVec);
     float diskRadius = (1.0 + (viewDist / dirLight.farPlane)) / 30.0; 
     for (int y = -1; y <= 1; y++){
         for (int x = -1; x <= 1; x++){
-            float pcfDepth = texture(dirLight.depthBuffer, 
+            float pcfDepth = texture(dirLightBuffer, 
                 projCoords.xy + vec2(x, y) * texelSize * diskRadius
             ).r;
             // If depth is greater (further), return 1
@@ -210,11 +205,11 @@ float calcPointLightShadow(int idx, vec3 norm, vec3 viewVec, vec3 lightDir){
     // Get vector from the light to the fragment (similar to pointShadow.fs)
     vec3 lightToFrag = fs_in.FragPos - pointLights[idx].position;
 
-    // Get depth from cubemap
-    float closestDepth = texture(pointLights[idx].depthBuffer, lightToFrag).r;
+    // // Get depth from cubemap
+    // float closestDepth = texture(pointLightBuffers[idx], lightToFrag).r;
 
-    // [0,1] => original depth value
-    closestDepth *= pointLights[idx].farPlane;
+    // // [0,1] => original depth value
+    // closestDepth *= pointLights[idx].farPlane;
 
     // Get current depth
     float currentDepth = length(lightToFrag);
@@ -236,7 +231,7 @@ float calcPointLightShadow(int idx, vec3 norm, vec3 viewVec, vec3 lightDir){
     */
     float diskRadius = (1.0 + (viewDist / pointLights[idx].farPlane)) / 30.0; 
     for (int i = 0; i < NUM_SAMPLES; i++){
-        float pcfDepth = texture(pointLights[idx].depthBuffer, 
+        float pcfDepth = texture(pointLightBuffers[idx], 
             lightToFrag + sampleOffsetDirections[i] * diskRadius).r;
         pcfDepth *= pointLights[idx].farPlane;
 
@@ -313,12 +308,12 @@ float calcSpotLightShadow(int idx, vec3 norm, vec3 viewVec, vec3 lightDir){
     */
 
     float shadowSum = 0.0;
-    vec2 texelSize = 1.0 / textureSize(spotLights[idx].depthBuffer, 0); // 0 because its a 2D texture
+    vec2 texelSize = 1.0 / textureSize(spotLightBuffers[idx], 0); // 0 because its a 2D texture
     float viewDist = length(viewVec);
     float diskRadius = (1.0 + (viewDist / spotLights[idx].farPlane)) / 30.0; 
     for (int y = -1; y <= 1; y++){
         for (int x = -1; x <= 1; x++){
-            float pcfDepth = texture(spotLights[idx].depthBuffer, 
+            float pcfDepth = texture(spotLightBuffers[idx], 
                 projCoords.xy + vec2(x, y) * texelSize * diskRadius
             ).r;
             pcfDepth *= spotLights[idx].farPlane;   // [0,1] => original depth value

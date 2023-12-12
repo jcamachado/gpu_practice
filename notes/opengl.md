@@ -8,11 +8,13 @@ A new way of passing data through shaders
 Here we have to have in mind that we are creating a new data structure to the system. We will allocate the data,
 iterate over its members to translate values, and so on.
 
+We cannot pass samplers in UBO
+
 It relates to uniform data from shader files and buffer objects that pass data from the cpu to the gpu.
 We can create "classes" of uniform objects.
 It is useful for global variables between all shaders, like light values.
 In light, the color values dont change so ofter, but with UBO we can insert what we want when things are updated. So for the positions we'll be able to update these certain values when they change.
-
+UBO naming is case sensitive
 Example of UBO in shader and the similarity of it with a cpp struct
 
 -
