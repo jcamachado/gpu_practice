@@ -179,6 +179,93 @@ Rough explanation
 But it has a limitation. The normal is pointing to the positive Z direction. So if the reflectiveness is in another axis, it will not display as well.
 Possibly we would need to change the normal of the object or the Normal mapping so they could align.
 
-### Interface blocks
+### Tangent Spaces
 
+Solution to the problem of our normal mapping only working on the Z direction (blue)
+A coordinate space around our face per vertex, reducing the amount of calculation.
+The tangent is calculated using the texture coordinates.
+Each point   P has its <x, y, z> coordinates, but also have a <u,v> coordinates that are text coordinates
+<x, y, z> vertex position
+<u,v> = Texture Coordinates
+We have '2 tangent' vectors: Tangente t, and Bitangent b;
+T and B are IDEALLY perpendicular. Normal points out of the page.
+Tangent is perpendicular to the face's normal  and going through the edges in the triangle. Which means pointing to the other 
+2 points of the triangle.
+We have to calculate tangent t and bitangent b.
+Given a triangle (p1, p2, p3), lets consider p1's tangent.
+p1: <x1, y1, z1> and <u1, u1>
+p2: <x2, y2, z2> and <u2, u2>
+Where the edges E1, E2 of p1:
+E1 (p1, p2)
+E2 (p1, p3)
+
+//             deltaU  deltaV
+dU1 = u2 - u1;  dV1 = v2 - v1
+E1 = p2 - p1 = dU1 * t + dV1 * b =  
+= <E1x, E1y, E1,> = <x2-x1, y2-y1, z2-z1> (E1 point values, world values for each vertex)
+
+
+dU2 = u3 - u1;  dV = v3 - v1
+E2 = p3 - p1 = dU2 * t + dV2 * b =
+= <E2x, E2y, E2z>
+
+We know deltaU, deltaV in edge coordinates because we can calculate from known values 
+We gotta figure out t and b
+_ t _, _ b _, ... are the vectors represented in the matrix
+ps: i hope the dot and times products are correct. I based this on the 47 video's audio, since he
+drew every product with a point(dot). and sometime [][] without symbol is a multiplication
+matrix representation by me:
+[a] are 1 matrix[3,1]
+[b]
+[c]
+
+// Each edge is a linear combination of the tangent and the bitangent so, we can use this matrix form
+where they are on top of each other
+~~~
+[_ E1 _]  = [dU1]*t + [dU1]*b   =
+[_ E2 _]  = [dU2]     [dU2]
+
+[E1x E1y E1z] = [dU1]*[tx ty tz] + [dU1]*[bx by bz]
+[E2x E2y E2z]   [dU2]              [dU2]
+
+E1x = [dU1 dV1] • [tx]
+                  [bx]
+E2x = [dU2 dV2] • [tx]
+                  [bx]
+
+Can be viewed as
+[E1x] = [dU1 dV1] • [tx]        -> Matrix A • column cx
+[E2x]   [dU2 dV2]   [bx]
+
+[E1y] = A • cy
+[E2y]   
+
+[E1z] = A • cz
+[E2z]   
+
+Observation: we can represent:
+    [.. .. .....]
+A • [n1 n2 n3...] = [A•n1 A•n2 ...] 
+    [.. .. .....]            
+
+So,                 A
+[E1x E1y E1z] = [dU1 dV1] * [tx ty tz]
+[E2x E2y E2z]   [dU2 dV2]   [bx by bz]
+
+(-1 is inverse)
+A-1 * [_ E1 _] = A-1 * A -> goes out to identity matrix I
+      [_ E2 _]
+
+= I [_ t _] 
+    [_ b _]
+
+(detA os the determinant of A)
+          -      A-1      -                
+[_ t _] = (1/detA)[dU1 dV1][_ E1 _]          
+[_ b _]           [dU2 dV2][_ E2 _]
+
+~~~
+
+### Interface blocks
+    
 The only purpose of this structure is to pass the vertex shader and the fragment shader or  the geometry shader. So its just to pass it between the shader files.
