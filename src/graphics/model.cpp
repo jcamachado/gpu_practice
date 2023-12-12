@@ -5,20 +5,20 @@
 #include <iostream>
 
 
-Model::Model(std::string id, BoundTypes boundType, unsigned int maxNumInstances, unsigned int flags)
+Model::Model(std::string id, BoundTypes boundType, unsigned int maxNInstances, unsigned int flags)
     :id (id), 
     boundType(boundType), 
     switches(flags),
-    currentNumInstances(0), 
-    maxNumInstances(maxNumInstances) {}
+    currentNInstances(0), 
+    maxNInstances(maxNInstances) {}
 
 RigidBody* Model::generateInstance(glm::vec3 size, float mass, glm::vec3 pos){
-    if (currentNumInstances >= maxNumInstances){
+    if (currentNInstances >= maxNInstances){
         return nullptr;                                                  // All slots filled 
     }
 
     instances.push_back(new RigidBody(id, size, mass, pos));
-    return instances[currentNumInstances++];
+    return instances[currentNInstances++];
 }
 
 void Model::initInstances() {
@@ -30,7 +30,7 @@ void Model::initInstances() {
 
     if (States::isActive(&switches, CONST_INSTANCES)){
         // Set data pointers
-        for(unsigned int i = 0; i < currentNumInstances; i++){
+        for(unsigned int i = 0; i < currentNInstances; i++){
             positions.push_back(instances[i]->pos);
             sizes.push_back(instances[i]->size);
         }
@@ -39,8 +39,10 @@ void Model::initInstances() {
             posData = &positions[0];
             sizeData = &sizes[0];
         }
-
-        usage = GL_STATIC_DRAW;                                 // CONST_INSTANCES kind of a synonym for static instances
+    /*
+        CONST_INSTANCES kind of a synonym for static instances
+    */
+        usage = GL_STATIC_DRAW;                                 
     }
 
     /*
@@ -70,15 +72,20 @@ void Model::initInstances() {
         posVBO.bind();
         /*
             .setAttrPointer<template>();
-            1st param: 0, 1 and 2 are used for normal mesh (i believe he refers to mesh.cpp)
+            1st param: index of attribute
+                In mesh, the indices 0, 1, 2, 3  are used for position, normal, texCoord and tangent
+                So: 4 is used for instance vbo positions
+                And 5 is used for instance vbo sizes
+
+
             2nd param and 3rd are related, so 3 GL_FLOATs
             4th param: stride is 1 glm::vec3 (related to template)
             6th param: reset every 1 instance
         */
-        posVBO.setAttrPointer<glm::vec3>(3, 3, GL_FLOAT, 1, 0, 1); 
+        posVBO.setAttrPointer<glm::vec3>(4, 3, GL_FLOAT, 1, 0, 1); 
 
         sizeVBO.bind();
-        sizeVBO.setAttrPointer<glm::vec3>(4, 3, GL_FLOAT, 1, 0, 1);
+        sizeVBO.setAttrPointer<glm::vec3>(5, 3, GL_FLOAT, 1, 0, 1);
 
         ArrayObject::clear();
     }
@@ -86,19 +93,19 @@ void Model::initInstances() {
 
 void Model::removeInstance(unsigned int idx){
     instances.erase(instances.begin() + idx);
-    currentNumInstances--;
+    currentNInstances--;
 }
 
 void Model::removeInstance(std::string instanceId){
     unsigned int idx = getIdx(instanceId);
     if (idx != -1){
         instances.erase(instances.begin() + idx);
-        currentNumInstances--;
+        currentNInstances--;
     }
 }
 
 unsigned int Model::getIdx(std::string id){
-    for (int i = 0; i < currentNumInstances; i++){
+    for (int i = 0; i < currentNInstances; i++){
         if (instances[i]->instanceId == id){                                // Uses RB operator==
             return i;
         }
@@ -107,27 +114,27 @@ unsigned int Model::getIdx(std::string id){
 }
 
 void Model::init() {}
-
-void Model::render(Shader shader, float dt, Scene *scene, bool setModel){
     /*
         We won't transform here, that data will be passed into the VBO and 
         all calculations will be done in the shaders.
         Just like we are doing for the model and the instances.
         We will be this to all models.
     */
-    if (setModel){
-        shader.setMat4("model", glm::mat4(1.0f));
-    }
-
+void Model::render(Shader shader, float dt, Scene *scene, glm::mat4 model){
+    // Set model matrix
+    shader.setMat4("model", model);
+    // Avoid doing this per phase(Phase or face?), its the same per model 
+    shader.setMat3("normalModel", glm::mat3(glm::transpose(glm::inverse(model))));
+    
+    
     if (!States::isActive(&switches, CONST_INSTANCES)){
         /*
-            Update VBO data
+            Dynamic instances - Update VBO data
         */
-        // std::vector<glm::vec3> positions(currentNumInstances), sizes(currentNumInstances);
         std::vector<glm::vec3> positions, sizes;
         bool doUpdate = States::isActive(&switches, DYNAMIC);
 
-        for (int i = 0; i < currentNumInstances; i++){
+        for (int i = 0; i < currentNInstances; i++){
             if (doUpdate){
                 instances[i]->update(dt);               // Update RigidBody
                 States::activate(&instances[i]->state, INSTANCE_MOVED);
@@ -139,9 +146,9 @@ void Model::render(Shader shader, float dt, Scene *scene, bool setModel){
         }
         
         posVBO.bind();
-        posVBO.updateData<glm::vec3>(0, currentNumInstances, &positions[0]);
+        posVBO.updateData<glm::vec3>(0, currentNInstances, &positions[0]);
         sizeVBO.bind();
-        sizeVBO.updateData<glm::vec3>(0, currentNumInstances, &sizes[0]);
+        sizeVBO.updateData<glm::vec3>(0, currentNInstances, &sizes[0]);
     }
 
     shader.setFloat("material.shininess", 0.5f);
@@ -150,7 +157,7 @@ void Model::render(Shader shader, float dt, Scene *scene, bool setModel){
     for (unsigned int i = 0, noMeshes = meshes.size();
         i < noMeshes;
         i++) {
-        meshes[i].render(shader, currentNumInstances);
+        meshes[i].render(shader, currentNInstances);
     }
 }
 
@@ -163,9 +170,24 @@ void Model::cleanup(){
     sizeVBO.cleanup();
 }
 
+/*
+    Our models attrb (position, normal, texCoord, tangent) are set and calculated in mesh.cpp
+    But for the imported ones, assimp will calculate these attributes.
+    So we need to get those attributes from assimp and set them in our model.
+*/
 void Model::loadModel(std::string path){
     Assimp::Importer import;
-    const aiScene *scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+    /*
+        - aiProcess_Triangulate - Makes faces into triangles
+        - aiProcess_FlipUVs - Flips the texture coordinates on the y-axis where necessary during processing. 
+            Some file formats (such as jpg) store texture coordinates from top to bottom while OpenGL
+            (and many others) store them from bottom to top.
+        - aiProcess_CalcTangentSpace - Calculates the tangents and bitangents for the imported meshes.
+            Assimp stores these tangent vectors in each vertex
+    */
+    const aiScene *scene = import.ReadFile(
+        path, 
+        aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
     // check for errors
     if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
         std::cout << 
@@ -195,6 +217,9 @@ void Model::processNode(aiNode *node, const aiScene *scene){
     }
 }
 
+/*
+    aiMesh: Is an Assimp struct that contains all the data about a mesh
+*/
 Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene){
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
@@ -238,7 +263,7 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene){
             mesh->mNormals[i].z
         );
 
-        // texture coordinates
+        // Texture coordinates
         // mTextireCoords stores up to 8 different texture coordinates per vertex. 
         // We only care about the first set of texture coordinates (if it does exist).
         if(mesh->mTextureCoords[0]) { // does the mesh contain texture coordinates?
@@ -251,6 +276,13 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene){
             vertex.texCoord = glm::vec2(0.0f);
 
         }
+        // Tangent vector
+        vertex.tangent = glm::vec3(
+            mesh->mTangents[i].x, 
+            mesh->mTangents[i].y, 
+            mesh->mTangents[i].z
+        );
+
         vertices.push_back(vertex);
     }
 
@@ -308,12 +340,18 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene){
             ret = Mesh(br, diff, spec);
         }
         else {
+            // Use textures
             // 1. diffuse maps
             std::vector<Texture> diffuseMaps = loadTextures(material, aiTextureType_DIFFUSE);
             textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
             // 2. specular maps
             std::vector<Texture> specularMaps = loadTextures(material, aiTextureType_SPECULAR);
             textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+            // 3. normal maps
+            // if file is .obj. Use aiTextureType_HEIGHT instead of aiTextureType_NORMALS
+            std::vector<Texture> normalMaps = loadTextures(material, aiTextureType_NORMALS);
+            textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
+            // 4. 
  
             ret = Mesh(br, textures);
         }

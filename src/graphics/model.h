@@ -50,15 +50,15 @@ class Model {
         std::vector<BoundingRegion> boundingRegions;    // List of bounding regions (1 for each mesh)
         std::vector<RigidBody*> instances;              // For forces applied (collisions and such)
 
-        int maxNumInstances;                            // Max indices allowed
-        int currentNumInstances;
+        int maxNInstances;                            // Max indices allowed
+        int currentNInstances;
 
         unsigned int switches;                          // Combination of switches above
 
         /*
             Constructors
         */
-        Model(std::string id, BoundTypes boundType, unsigned int maxNumInstances, unsigned int flags = 0);
+        Model(std::string id, BoundTypes boundType, unsigned int maxNInstances, unsigned int flags = 0);
 
         /*
             Process functions
@@ -69,7 +69,12 @@ class Model {
         */
         virtual void init();
         void loadModel(std::string path);
-        virtual void render(Shader shader, float dt, Scene *scene, bool setModel=true);
+        virtual void render(
+            Shader shader, 
+            float dt, 
+            Scene *scene, 
+            glm::mat4 model = glm::mat4(1.0f)
+        );
         void cleanup();                                 // Free memory
 
         /*
@@ -98,9 +103,13 @@ class Model {
         Mesh processMesh(aiMesh *mesh, const aiScene *scene);   // Process mesh in object file
         std::vector<Texture> loadTextures(aiMaterial *mat, aiTextureType type);
 
-        // VBOs for positions and sizes
-        BufferObject posVBO;
-        BufferObject sizeVBO;
+        /*
+           VBOs for positions and sizes
+           Are these only for instances? Since its for optimization and 
+           are called offset in shader, maybe they are like 
+        */
+        BufferObject posVBO;                // Instance position?
+        BufferObject sizeVBO;               // Instance size?
 };
 
 #endif

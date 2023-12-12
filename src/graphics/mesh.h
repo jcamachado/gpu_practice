@@ -15,13 +15,27 @@
 #include "models/box.hpp"
 
 #include "../algorithms/bounds.h"
+/*
+    All base coordinates are here
 
+    We want to ensure tangent and bitangent vectors are perpendic.ular. 
+    Their orthogonality will allow more accurate calculations.
+    We will leave the bitangent calculation to the vertex shader.
+
+*/
 struct Vertex{
     glm::vec3 pos;
     glm::vec3 normal;
     glm::vec2 texCoord;
+    glm::vec3 tangent;
 
     static std::vector<struct Vertex> genList(float* vertices, int nVertices);
+
+    // Calculate tangent vectors for each vertex
+    static void calcTanVectors(
+        std::vector<struct Vertex>& list, 
+        std::vector<unsigned int>& indices
+    );
 };
 
 typedef struct Vertex Vertex;

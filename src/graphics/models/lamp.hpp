@@ -12,17 +12,11 @@ class Lamp : public Cube {
     public:
         glm::vec3 lightColor;
 
-        Lamp(unsigned int maxNumInstances, glm::vec3 lightColor = glm::vec3(1.0f)) 
-            : Cube(maxNumInstances, Material::white_rubber) {
+        Lamp(unsigned int maxNInstances, glm::vec3 lightColor = glm::vec3(1.0f)) 
+            : Cube(maxNInstances, Material::white_rubber) {
             id = "lamp";
             this->lightColor = lightColor;
         }
-
-    void render(Shader shader, float dt, Scene *scene, bool setModel = true){
-        shader.set3Float("lightColor", lightColor);        // Set light color
-
-        Cube::render(shader, dt, scene, setModel);
-    }
 };
 
 #endif

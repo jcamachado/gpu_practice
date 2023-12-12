@@ -215,7 +215,7 @@ int main(){
         // Everything rendered after this will be rendered to this FBO
 
 
-        // for (int i = 0; i < sphere.currentNumInstances; i++){
+        // for (int i = 0; i < sphere.currentNInstances; i++){
         //     if (glm::length(cam.cameraPos - sphere.instances[i]->pos) > 250.0f){
         //         scene.markForDeletion(sphere.instances[i]->instanceId);
         //     }
@@ -270,7 +270,7 @@ int main(){
 }
 
 void renderScene(Shader shader){                // assumes shader is prepared accordingly
-    // if (sphere.currentNumInstances > 0) {            // Render launch objects
+    // if (sphere.currentNInstances > 0) {            // Render launch objects
     //         scene.renderInstances(sphere.id, shader, dt);
     // }
     // scene.renderInstances(cube.id, shader, dt);     // Render cubes
@@ -311,7 +311,7 @@ void processInput(double dt){ // Function for processing input
     //     launchItem(dt);
     // }
     // if (Keyboard::keyWentDown(GLFW_KEY_T)){
-    //     for (int i = 0; i < sphere.currentNumInstances; i++){
+    //     for (int i = 0; i < sphere.currentNInstances; i++){
     //         if (!sphere.instances[i]->freeze()){
     //             sphere.instances[i]->unfreeze();
     //         }

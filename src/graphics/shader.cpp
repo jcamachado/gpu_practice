@@ -101,6 +101,10 @@ void Shader::set4Float(const std::string& name, glm::vec4 v){
     glUniform4f(glGetUniformLocation(id, name.c_str()), v.x, v.y, v.z, v.w);
 }
 
+void Shader::setMat3(const std::string& name, glm::mat3 v){
+    glUniformMatrix3fv(glGetUniformLocation(id, name.c_str()), 1, GL_FALSE, glm::value_ptr(v));
+}
+
 void Shader::setMat4(const std::string& name, glm::mat4 v){
     //name eh o nome da variavel no shader, ex: "transform"
     //ou seja, value sera a matrix de transformacao aplicada ao shader atraves da variavel "transform"

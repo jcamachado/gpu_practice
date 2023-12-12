@@ -10,6 +10,10 @@
 /*
     class for buffer objects
     - VBOs, EBOs, VAOs
+
+    Each value in shader layout location is a buffer object
+    ex: layout (location = 0) in vec3 position; position gets the location of 
+    the first buffer in VBOs
 */
 
 class BufferObject {

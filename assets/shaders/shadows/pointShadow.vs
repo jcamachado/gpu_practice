@@ -1,7 +1,8 @@
 #version 330 core
-layout (location = 0) in vec3 aPos;
-layout (location = 3) in vec3 aOffset;
-layout (location = 4) in vec3 aSize;
+// 1 is normal, 2 is texture, 3 is tangent
+layout (location = 0) in vec3 aPos;     // mesh position vbo
+layout (location = 4) in vec3 aOffset;  // posVBO
+layout (location = 5) in vec3 aSize;    // sizeVBO
 
 // We wont make matrix transformations in the vertex shader because only geometry shader can emit multiple vertices of vertex shader 
 void main()

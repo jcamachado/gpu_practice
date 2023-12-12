@@ -9,8 +9,8 @@ class Cube : public Model {
     public:
         Material material;
 
-        Cube(unsigned int maxNumInstances, Material material = Material::red_plastic)
-            : Model("cube", BoundTypes::AABB, maxNumInstances, CONST_INSTANCES | NO_TEX), material(material) {}
+        Cube(unsigned int maxNInstances, Material material = Material::red_plastic)
+            : Model("cube", BoundTypes::AABB, maxNInstances, CONST_INSTANCES | NO_TEX), material(material) {}
         void init(){
             int nVertices = 36;
              //each face of the cube have to have a texture
@@ -76,9 +76,11 @@ class Cube : public Model {
                 material.specular.b, 
                 1.0f
             );
+            std::vector<Vertex> vertexList = Vertex::genList(vertices, nVertices);
+            Vertex::calcTanVectors(vertexList, indices);
 
             Mesh ret(br, diff, spec);
-            ret.loadData(Vertex::genList(vertices, nVertices), indices);
+            ret.loadData(vertexList, indices);
 
             meshes.push_back(ret);
             boundingRegions.push_back(br);

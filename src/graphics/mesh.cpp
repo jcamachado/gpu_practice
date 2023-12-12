@@ -3,11 +3,15 @@
 #include <iostream>
 
 std::vector<Vertex> Vertex::genList(float* vertices, int nVertices){
-    // 5 floats per vertex, 3 for position, 2 for texture coordinates
-    std::vector<Vertex> ret(nVertices);
+    /*  
+    8 floats per vertex in world space
+        3 for position, 3 for normal, 2 for texture coordinates
+        Not counting tangent vector, therefore 8 floats (11 - 3 of tangent)
+    */
+   std::vector<Vertex> ret(nVertices);
     
-    int stride = sizeof(Vertex) / sizeof(float);
-    
+    int stride = 8;
+
     for(int i=0; i<nVertices; i++){
         ret[i].pos = glm::vec3(
             vertices[i*stride+0], 
@@ -28,6 +32,80 @@ std::vector<Vertex> Vertex::genList(float* vertices, int nVertices){
     }
 
     return ret;
+}
+
+
+/*
+    Motivation: A lot of vertices are reused, so we want to average the tangent vectors so
+    that we can save memory and have more accurate calculations
+    Ex:
+    Two values a, b and average m
+    m = (a + b) / 2
+    add new value c and get new average m'
+    m' = (a + b + c) / 3 = k*m + l, where k is the weight of the previous average and l is the weight of the new value
+    2 = existing contributions
+    2 + 1 = 3 = new number of values (contributions)
+    Proof:
+    m' = (2/3)*(m) + c/3 =(2/3)*((a+b)/2) + c/3 = (a + b + c) / 3
+    
+*/
+void averageVectors(glm::vec3& baseVec, glm::vec3& addition, unsigned char existingContributions){
+    // if no existing contributions, the average of addition of the contribution = contribution
+    if (!existingContributions){
+        baseVec = addition;
+    }
+    else { 
+        /*
+            Otherwise, if there are contributions, calculate the value of the average
+        */
+        float f = 1.0f / (float)(existingContributions + 1);
+
+        baseVec *= (float)existingContributions * f;
+
+        baseVec += addition * f;
+    }
+
+}
+
+void Vertex::calcTanVectors(
+    std::vector<Vertex>& list, 
+    std::vector<unsigned int>& indices
+){
+    unsigned char* counts = (unsigned char*)malloc(list.size() * sizeof(unsigned char));
+    for (unsigned int i = 0, len = list.size(); i < len; i++){
+        counts[i] = 0;
+    }
+
+    // Iterate through indices and calculate vectors for each face
+    for (unsigned int i = 0, len = indices.size(); i < len; i += 3){
+        // 3 vertices per face
+        Vertex v1 = list[indices[i + 0]];
+        Vertex v2 = list[indices[i + 1]];
+        Vertex v3 = list[indices[i + 2]];
+
+        // Calculate edges
+        glm::vec3 edge1 = v2.pos - v1.pos;
+        glm::vec3 edge2 = v3.pos - v1.pos;
+        
+        // Calculates delta UVs
+        glm::vec2 deltaUV1 = v2.texCoord - v1.texCoord;
+        glm::vec2 deltaUV2 = v3.texCoord - v1.texCoord;
+
+        // Use inverse of UV matrix to determine tangent (f=1/det)
+        float f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
+
+        // Tangent components
+        glm::vec3 tangent = {
+            f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x),
+            f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y),
+            f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z)
+        };
+
+        // Average in the new tangent vector
+        averageVectors(list[indices[i + 0]].tangent, tangent, counts[indices[i + 0]]++);
+        averageVectors(list[indices[i + 1]].tangent, tangent, counts[indices[i + 1]]++);
+        averageVectors(list[indices[i + 2]].tangent, tangent, counts[indices[i + 2]]++);
+    }
 }
 
 // Default constructor
@@ -71,11 +149,15 @@ void Mesh::loadData(std::vector<Vertex> _vertices, std::vector<unsigned int> _in
 
     VAO["VBO"].setData<Vertex>(size, &this->vertices[0], GL_STATIC_DRAW);
  
-    // Set the vertex attribute pointers
+    /*
+        Set the vertex attribute pointers
+        Stride = 11;    3 for position, 3 for normal, 2 for texture coordinates, 3 for tangent
+    */
     VAO["VBO"].bind();
-    VAO["VBO"].setAttrPointer<GLfloat>(0, 3, GL_FLOAT, 8, 0);   // Vertex Positions
-    VAO["VBO"].setAttrPointer<GLfloat>(1, 3, GL_FLOAT, 8, 3);   // Normal ray
-    VAO["VBO"].setAttrPointer<GLfloat>(2, 3, GL_FLOAT, 8, 6);   // Vertex texture coords
+    VAO["VBO"].setAttrPointer<GLfloat>(0, 3, GL_FLOAT, 11, 0);   // Vertex Positions
+    VAO["VBO"].setAttrPointer<GLfloat>(1, 3, GL_FLOAT, 11, 3);   // Normal ray
+    VAO["VBO"].setAttrPointer<GLfloat>(2, 3, GL_FLOAT, 11, 6);   // Vertex texture coords
+    VAO["VBO"].setAttrPointer<GLfloat>(3, 3, GL_FLOAT, 11, 8);   // Tangent vector
     
     VAO["VBO"].clear();
  

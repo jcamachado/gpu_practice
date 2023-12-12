@@ -13,7 +13,7 @@ Scene
         return pointer
 
 Model(ID)
-    -RB,    +MaxNumInstances - allocate like modelArray
+    -RB,    +maxNInstances - allocate like modelArray
     render(numInstances)
 
     initInstances(std::vector<RB>)

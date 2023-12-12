@@ -19,18 +19,17 @@ uniform sampler2D spotLightBuffers[MAX_SPOT_LIGHTS];
 
 out vec4 FragColor;
 
-in VS_OUT {
-    vec3 FragPos;
-    vec3 Normal;
-    vec2 TexCoord;
-} fs_in;
-
 uniform Material material;
 
+in VS_OUT {
+    vec3 FragPos;
+    vec2 TexCoord;
+
+    TangentLights tanLights;
+} fs_in;
 uniform bool noNormalMap;
 uniform bool noTexture;
 uniform bool skipNormalMapping;
-uniform vec3 viewPos;
 
 vec4 calcDirLight(vec3 norm, vec3 viewVec, vec3 viewDir, vec4 diffMap, vec4 specMap);
 vec4 calcPointLight(int idx, vec3 norm, vec3 viewVec, vec3 viewDir, vec4 diffMap, vec4 specMap);
@@ -53,12 +52,12 @@ vec3 sampleOffsetDirections[NUM_SAMPLES] = vec3[]
 
 // TODO - make Blinn always true
 void main(){
-    vec3 norm = normalize(fs_in.Normal);
+    vec3 norm = normalize(fs_in.tanLights.Normal);
 
     if (!skipNormalMapping && !noNormalMap){
         norm = normalize(texture(normal0, fs_in.TexCoord).rgb * 2.0 - 1.0); // map from [0, 1] to [-1, 1]
     }
-    vec3 viewVec = viewPos - fs_in.FragPos; // Will be used for soft shadow
+    vec3 viewVec = fs_in.tanLights.ViewPos - fs_in.tanLights.FragPos; // Will be used for soft shadow
     vec3 viewDir = normalize(viewVec);
 
     vec4 diffMap;
@@ -109,6 +108,11 @@ void main(){
 
     FragColor = result;
 }
+
+/*
+    About shadows
+      Shadows are calculated based on the light in the world space
+*/
 
 float calcDirLightShadow(vec3 norm, vec3 viewVec, vec3 lightDir){
     /*
@@ -179,7 +183,7 @@ vec4 calcDirLight(vec3 norm, vec3 viewVec, vec3 viewDir, vec4 diffMap, vec4 spec
         Diffuse
         diff value: When the angle between pointLight vector and  normal are more than 90 degrees, dot product is 0
     */
-    vec3 lightDir = normalize(-dirLight.direction);
+    vec3 lightDir = normalize(-fs_in.tanLights.dirLightDirection);
     float diff = max(dot(norm, lightDir), 0.0);
     vec4 diffuse = dirLight.diffuse * (diff * diffMap);
 
@@ -247,7 +251,7 @@ vec4 calcPointLight(int idx, vec3 norm, vec3 viewVec, vec3 viewDir, vec4 diffMap
     // Ambient -> constant
     vec4 ambient = pointLights[idx].ambient * diffMap;
 
-    vec3 lightDir = normalize(pointLights[idx].position - fs_in.FragPos);
+    vec3 lightDir = normalize(fs_in.tanLights.pointLightPositions[idx] - fs_in.tanLights.FragPos);
     // When pointLight is > perpendicular to the normal, dot product is 0
     float diff = max(dot(norm, lightDir), 0.0);
     vec4 diffuse = pointLights[idx].diffuse * (diff * diffMap);
@@ -258,17 +262,15 @@ vec4 calcPointLight(int idx, vec3 norm, vec3 viewVec, vec3 viewDir, vec4 diffMap
         as of how the pointLight gets more concentrated as you get closer to a reflected ray
         - If diff <= 0, object is behind the light
     */
-    /*
-        Specular
-    */
     vec4 specular = vec4(0.0, 0.0, 0.0, 1.0);
     if (diff > 0) {
         float dotProd = 0.0;
-        //Calculate using Blinn-Phong model
+        // Calculate using Blinn-Phong model
         vec3 halfwayDir = normalize(lightDir + viewDir);
         dotProd = dot(norm, halfwayDir);
+
         float spec = pow(max(dotProd, 0.0), material.shininess*128);
-        specular = dirLight.specular * (spec * specMap);
+        specular = pointLights[idx].specular * (spec * specMap);
     }
 
     float dist = length(pointLights[idx].position - fs_in.FragPos);
@@ -304,7 +306,7 @@ float calcSpotLightShadow(int idx, vec3 norm, vec3 viewVec, vec3 lightDir){
     float bias = max(maxBias * (1.0 - dot(norm, lightDir)), minBias);
 
     /*
-    PCF (Percentage Closer Filtering)
+        PCF (Percentage Closer Filtering)
     */
 
     float shadowSum = 0.0;
@@ -328,10 +330,11 @@ float calcSpotLightShadow(int idx, vec3 norm, vec3 viewVec, vec3 lightDir){
 }
 
 vec4 calcSpotLight(int idx, vec3 norm, vec3 viewVec, vec3 viewDir, vec4 diffMap, vec4 specMap){
-    vec3 lightDir = normalize(spotLights[idx].position - fs_in.FragPos); //same as pointLight
-
+    vec3 lightDir = normalize(                                                  //same as pointLight
+        fs_in.tanLights.spotLightPositions[idx] - fs_in.tanLights.FragPos
+    );
      // Angle between lightDir and spotLight direction, cossine
-    float theta = dot(lightDir, normalize(-spotLights[idx].direction));
+    float theta = dot(lightDir, normalize(-fs_in.tanLights.spotLightDirections[idx]));
 
     //cossine and theta have inverse relationship
     vec4 ambient = spotLights[idx].ambient * diffMap;
@@ -340,18 +343,18 @@ vec4 calcSpotLight(int idx, vec3 norm, vec3 viewVec, vec3 viewDir, vec4 diffMap,
 
         float diff = max(dot(norm, lightDir), 0.0); //when pointLight > perpendicular or more to the normal, dot product is 0
         vec4 diffuse = spotLights[idx].diffuse * (diff * diffMap);
-
         /*
             Specular
             - If diff <= 0, object is behind the light
         */
+        
         vec4 specular = vec4(0.0, 0.0, 0.0, 1.0);
         if (diff > 0) {
             float dotProd = 0.0;
             vec3 halfwayDir = normalize(lightDir + viewDir);
             dotProd = dot(norm, halfwayDir);
             float spec = pow(max(dotProd, 0.0), material.shininess*128);
-            specular = dirLight.specular * (spec * specMap);
+            specular = spotLights[idx].specular * (spec * specMap);
         }
 
         float intensity = (theta - spotLights[idx].outerCutOff)/(spotLights[idx].cutOff - spotLights[idx].outerCutOff);

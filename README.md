@@ -21,8 +21,8 @@ Abaixo tem alguns detalhes. Estou a disposicao.
 ===== 
 
 OpenGL
-
-This project's OpenGL base is heavily inspired by the work of Michael Grieco (https://github.com/michaelg29/yt-tutorials/tree/master/CPP/OpenGL) and of learnopengl.com by Joey de Vries.
+Disclaimer:
+This project's OpenGL base is heavily based and inspired by the works of Michael Grieco [https://github.com/michaelg29/yt-tutorials/tree/master/CPP/OpenGL], [https://michaelg29.github.io/] and of Joey de Vries (learnopengl.com).
 
 Assimp is not uploaded (just indication where to place its files)
 Follow this to get to the correct path (also, the assimp-M-m-n folder is the original downloaded one, the other was composed just like on the video below suggests from building) 
