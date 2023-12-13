@@ -31,6 +31,13 @@ add_executable(my_particle_system
     src/algorithms/octree.cpp
     src/algorithms/trie.hpp
 
+    src/algorithms/cmathematics/cmathematics.h
+    src/algorithms/cmathematics/cmathematics.cpp
+    src/algorithms/cmathematics/matrix.h
+    src/algorithms/cmathematics/matrix.cpp
+    src/algorithms/cmathematics/vec.h
+    src/algorithms/cmathematics/vec.cpp
+
     src/graphics/memory/vertexmemory.hpp
     src/graphics/memory/framememory.hpp
     src/graphics/memory/uniformmemory.hpp
@@ -70,6 +77,10 @@ add_executable(my_particle_system
     src/io/mouse.h
     src/io/mouse.cpp
 
+    src/physics/collisionmodel.h
+    src/physics/collisionmodel.cpp
+    src/physics/collisionmesh.h
+    src/physics/collisionmesh.cpp
     src/physics/rigidbody.h
     src/physics/rigidbody.cpp
     src/physics/environment.h

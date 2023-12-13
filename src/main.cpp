@@ -65,7 +65,37 @@ BrickWall wall;
 Lamp lamp(nLamps);
 // Sphere sphere(nSpheres);
 
+#include "physics/collisionmesh.h"
+
 int main(){
+
+    float P[9] = {
+        0.0f, 0.0f, 1.0f, 
+        0.0f, 1.0f, 0.0f, 
+        1.0f, 0.0f, 0.0f
+    };
+
+    unsigned int Pi[3] = {
+        0, 1, 2
+    };
+
+    float U[9] = {
+        -1.0f, 1.0f, 1.0f, 
+         0.0f, 0.0f, 0.0f, 
+         1.0f, 2.0f, 0.5f
+    };
+    unsigned int Ui[3] = {
+        0, 1, 2
+    };
+
+    CollisionMesh PF(3, P, 1, Pi);
+    CollisionMesh UF(3, U, 1, Ui);
+
+    std::cout << PF.faces[0].collidesWith(UF.faces[0]) << std::endl;
+
+    return 0;
+
+
     scene = Scene(3, 3, "Particle System", 1200, 720); // Create scene
     
     if (!scene.init()){ // Initialize scene

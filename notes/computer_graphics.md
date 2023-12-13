@@ -269,3 +269,10 @@ A-1 * [_ E1 _] = A-1 * A -> goes out to identity matrix I
 ### Interface blocks
     
 The only purpose of this structure is to pass the vertex shader and the fragment shader or  the geometry shader. So its just to pass it between the shader files.
+
+
+## COLLISIONS
+First of all, for this project. Collision was the only video I skipped until now, so I will make comments with Collision Theory checkpoint in them so we can facilitate some understanding through the programming part.
+In other words, whenever a comment block starts with "Collision Theory checkpoint", it will be related to some part of the skipped theory video(48)
+
+We create collision model and mesh that will be a simplified version of model and mesh for collision.
