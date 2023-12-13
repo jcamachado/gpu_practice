@@ -80,12 +80,12 @@ int main(){
     };
 
     float U[9] = {
-        -1.0f, 1.0f, 1.0f, 
+        -1.0f, 1.0f, 0.0f, 
          0.0f, 0.0f, 0.0f, 
          1.0f, 2.0f, 0.5f
     };
     unsigned int Ui[3] = {
-        0, 1, 2
+        2, 0, 1
     };
 
     CollisionMesh PF(3, P, 1, Pi);

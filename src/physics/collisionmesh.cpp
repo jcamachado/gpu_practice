@@ -50,7 +50,7 @@ char linePlaneIntersection(vec P1, vec norm, vec U1, vec size, float& t){
     else {
         // Can divide
         t = tnum / tden;
-        return (t >= 0.0f && t <= 1.0f) ? CASE2 : CASE3;
+        return t >= 0.0f && t <= 1.0f ? CASE2 : CASE3;
     }
 }
 
@@ -94,9 +94,8 @@ bool Face::collidesWith(Face& face){
         // Get intersection with this plane
         float t = 0.0f;
         char currentCase = linePlaneIntersection(P1, this->norm, sideOrigins[i], sides[i], t);
-
         switch (currentCase) {
-            case CASE0:
+            case CASE0: {
                 // line in the plane
                 // determine the intersection with the 3 bounding lines of this face
                 for (int j = 0; j < 3; j++){    // Iterate through the lines of this plane 
@@ -122,6 +121,7 @@ bool Face::collidesWith(Face& face){
                     }
                 }
                 continue;
+            }
 
             case CASE1:
                 // No intersection with the plane -> no collision
@@ -136,7 +136,7 @@ bool Face::collidesWith(Face& face){
                                     sideOrigins[i], 
                                     vecScalarMultiplication(sides[i], t)
                                 );
-                
+                printf("%f: ", t); printVec(intersection);
                 // Represent the intersection point as a linear combination of P2 and P3
                 // With float point precision erros, we add normal vector to be sure
                 mat m = newColMat(3, 4, 
@@ -146,16 +146,21 @@ bool Face::collidesWith(Face& face){
                     intersection
                 );
 
+                // RREF (Its broken for now)
+                // rref(&m);
+
                 // Obtain the coefficients of the linear combination
                 // c3 ~= 0.0 because point is in the plane
-                c1 = m.elements[0][3];
-                c2 = m.elements[1][3];
+                c1 = m.elements[0][2];
+                c2 = m.elements[1][2];
                 if (c1 >= 0.0f && c2 >= 0.0f &&
                     c1 + c2 <= 1.0f) 
                 {
+                    
                     // Intersection with the triangle setup by A, B and C
                     return true;
                 }
+
 
                 continue;
             }
@@ -205,7 +210,7 @@ CollisionMesh::CollisionMesh(
         faces[i] = {
             this,
             i1, i2, i3, // Indices making up the triangle
-        N,              // Normal placeholder
+            N,          // Normal placeholder
             N           // Initial value for transformmed normal is the same as the base normal
         };  
     }
