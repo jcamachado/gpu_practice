@@ -15,12 +15,12 @@
 
 #include "mesh.h"
 
-#include "models/box.hpp"
+#include "../models/box.hpp"
 
-#include "../algorithms/bounds.h"
-#include "../physics/rigidbody.h"
+#include "../../algorithms/bounds.h"
+#include "../../physics/rigidbody.h"
 
-#include "../scene.h"
+#include "../../scene.h"
 
 /*
     Model switches

@@ -6,8 +6,8 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <vector>
-#include "../vertexmemory.hpp"
-#include "../shader.h"
+#include "../memory/vertexmemory.hpp"
+#include "../rendering/shader.h"
 #include "../../algorithms/bounds.h"
 
 #define UPPER_BOUND 100 //3d vectors, max number of instances

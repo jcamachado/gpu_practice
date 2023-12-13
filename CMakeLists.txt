@@ -22,6 +22,8 @@ add_executable(my_particle_system
     src/scene.h 
     src/scene.cpp 
 
+    src/algorithms/avl.h
+    src/algorithms/avl.cpp
     src/algorithms/bounds.h
     src/algorithms/bounds.cpp
     src/algorithms/list.hpp
@@ -29,25 +31,9 @@ add_executable(my_particle_system
     src/algorithms/octree.cpp
     src/algorithms/trie.hpp
 
-    src/graphics/cubemap.h
-    src/graphics/cubemap.cpp
-    src/graphics/vertexmemory.hpp
-    src/graphics/framememory.hpp
-    src/graphics/light.h
-    src/graphics/light.cpp
-    src/graphics/material.h
-    src/graphics/material.cpp
-    src/graphics/mesh.h
-    src/graphics/mesh.cpp
-    src/graphics/model.h
-    src/graphics/model.cpp
-    src/graphics/shader.h
-    src/graphics/shader.cpp
-    src/graphics/text.h
-    src/graphics/text.cpp
-    src/graphics/texture.h
-    src/graphics/texture.cpp
-    src/graphics/uniformmemory.hpp
+    src/graphics/memory/vertexmemory.hpp
+    src/graphics/memory/framememory.hpp
+    src/graphics/memory/uniformmemory.hpp
 
     src/graphics/models/box.hpp
     src/graphics/models/brickwall.hpp
@@ -56,6 +42,24 @@ add_executable(my_particle_system
     src/graphics/models/gun.hpp
     src/graphics/models/plane.hpp
     src/graphics/models/sphere.hpp
+
+    src/graphics/objects/mesh.h
+    src/graphics/objects/mesh.cpp
+    src/graphics/objects/model.h
+    src/graphics/objects/model.cpp
+
+    src/graphics/rendering/cubemap.h
+    src/graphics/rendering/cubemap.cpp
+    src/graphics/rendering/light.h
+    src/graphics/rendering/light.cpp
+    src/graphics/rendering/material.h
+    src/graphics/rendering/material.cpp
+    src/graphics/rendering/shader.h
+    src/graphics/rendering/shader.cpp
+    src/graphics/rendering/text.h
+    src/graphics/rendering/text.cpp
+    src/graphics/rendering/texture.h
+    src/graphics/rendering/texture.cpp
 
     src/io/camera.h
     src/io/camera.cpp

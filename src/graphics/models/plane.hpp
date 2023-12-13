@@ -1,7 +1,7 @@
 #ifndef PLANE_HPP
 #define PLANE_HPP
 
-#include "../model.h"
+#include "../objects/model.h"
 
 class Plane: public Model{
     public:

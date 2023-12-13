@@ -1,5 +1,5 @@
 #include "cubemap.h"
-#include "../scene.h"       // we call scene methods here
+#include "../../scene.h"       // we call scene methods here
 
 Cubemap::Cubemap(): hasTextures(false) {}
 

@@ -139,6 +139,12 @@ bool Scene::init() {
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     /*
+        Init model/instance trees
+    */
+    models = avl_createEmptyRoot(strkeycmp);
+    instances = avl_createEmptyRoot(strkeycmp);
+
+    /*
         Init octree
     */
     octree = new Octree::node(BoundingRegion(glm::vec3(-16.0f), glm::vec3(16.0f)));
@@ -154,24 +160,30 @@ bool Scene::init() {
     /*
         Insert font
     */
-    fonts.insert("comic", TextRenderer(32));
-    if (!fonts["comic"].loadFont(ft, "assets/fonts/Comic_Sans_MS.ttf")){
-        std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
-        return false;
-    }
-
-    FT_Done_FreeType(ft);
+    fonts = avl_createEmptyRoot(strkeycmp);
 
     variableLog["skipNormalMapping"] = false;
 
     return true;
 }
 
+bool Scene::registerFont(TextRenderer* tr, std::string name, std::string path) {
+    if (tr->loadFont(ft, path)) {
+        fonts = avl_insert(fonts, (void*)name.c_str(), tr);
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
 /*
     Prepare for mainloop (after object generation, etc and before main while loop)
 */
 void Scene::prepare(Box &box, std::vector<Shader> shaders){
-    // octree->build();
+    // Close FT library
+    FT_Done_FreeType(ft);
+    // Process current instances
     octree->update(box);        // Calls octree->build() if it hasn't been built yet
 
     // Set lighting UBO, mapped with Lights in defaultHeader.gh
@@ -473,8 +485,12 @@ void Scene::renderPointLightShader(Shader shader, unsigned int idx){
 }
 
 void Scene::renderInstances(std::string modelId, Shader shader, float dt){
-    shader.activate();
-    models[modelId]->render(shader, dt, this);
+    void* val = avl_get(models, (void*)modelId.c_str());
+    if (val) {
+        // render each mesh in specified model
+        shader.activate();
+        ((Model*)val)->render(shader, dt, this);
+    }
 }
 
 void Scene::renderText(
@@ -486,29 +502,27 @@ void Scene::renderText(
     glm::vec2 scale, 
     glm::vec3 color
 ){
-    shader.activate();
-    shader.setMat4("projection", textProjection);
-
-    fonts[font].render(shader, text, x, y, scale, color);
+    void* val = avl_get(fonts, (void*)font.c_str());
+    if (val) {
+        shader.activate();
+        shader.setMat4("projection", textProjection);
+        ((TextRenderer*)val)->render(shader, text, x, y, scale, color);
+    }
 }
 
 /*
     Cleanup method
 */
 void Scene::cleanup(){
+    // clean up instances
+    avl_free(instances);
+
     // Cleanup models
-    models.traverse([](Model* model) -> void {      // Lambda function, return is type(->) void
-        model->cleanup();
+    avl_postorderTraverse(models, [](avl* node) -> void {
+        ((Model*)node->val)->cleanup();
     });
-
-    // Cleanup Tries
-    models.cleanup();
-    instances.cleanup();
-
-    // Cleanup fonts
-    fonts.traverse([](TextRenderer tr) -> void {
-        tr.cleanup();
-    });
+    avl_free(models);
+    avl_free(fonts);
     
     // Destroy octree
     octree->destroy();
@@ -562,33 +576,39 @@ RigidBody* Scene::generateInstance(std::string modelId, glm::vec3 size, float ma
         octree->addToPending(rb, models);     Add all bounding regions from the models to the pending queue
         and since processPending calls update, prepare() doesnt need to call update.
     */
-    RigidBody* rb = models[modelId]->generateInstance(size, mass, pos);
-    if (rb) {
-        // Instance was created successfully
-        std::string id = generateId();
-        rb->instanceId = id;
-        instances.insert(id, rb);
-        octree->addToPending(rb, models);               // Add all bounding regions from the models to the pending queue
-        return rb;
+    void* val = avl_get(models, (void*)modelId.c_str());
+    if (val) {
+        Model* model = (Model*)val;
+        RigidBody* rb = model->generateInstance(size, mass, pos);
+        if (rb) {
+            // successfully generated, set new and unique id for instance
+            std::string id = generateId();
+            rb->instanceId = id;
+            // insert into trie
+            instances = avl_insert(instances, (void*)id.c_str(), rb);
+            // insert into pending queue
+            octree->addToPending(rb, model);
+            return rb;
+        }
     }
     return nullptr;
 }
 
 
 void Scene::initInstances(){
-    models.traverse([](Model* model) -> void {          // Iteration over models in Trie structure 
-        model->initInstances();
+    avl_inorderTraverse(models, [](avl* node) -> void {
+        ((Model*)node->val)->initInstances();
     });
 }
 
 void Scene::loadModels(){
-    models.traverse([](Model* model) -> void {
-        model->init();
+    avl_inorderTraverse(models, [](avl* node) -> void {
+        ((Model*)node->val)->init();
     });
 }
 
 void Scene::registerModel(Model* model){
-    models.insert(model->id, model);
+    models = avl_insert(models, (void*)model->id.c_str(), model);
 }
 
 void Scene::removeInstance(std::string instanceId){
@@ -597,15 +617,22 @@ void Scene::removeInstance(std::string instanceId){
         -Scene::instances
         -Model::instances
     */
-    std::string targetModel = instances[instanceId]->modelId;
-    models[targetModel]->removeInstance(instanceId);
-    instances[instanceId] = nullptr;
-    instances.erase(instanceId);                        // erasee() doesnt know the type of <T>Trie, so, deletes the nullptr
+    RigidBody* instance = (RigidBody*)avl_get(instances, (void*)instanceId.c_str());
+    
+    std::string targetModel = instance->modelId;
+    Model* model = (Model*)avl_get(models, (void*)targetModel.c_str());
+    
+    // delete instance from model
+    model->removeInstance(instanceId);
+
+    // remove from tree
+    instances = avl_remove(instances, (void*)instanceId.c_str());
 }
 
 void Scene::markForDeletion(std::string instanceId){
-    States::activate(&instances[instanceId]->state, INSTANCE_DEAD);
-    instancesToDelete.push_back(instances[instanceId]);
+    RigidBody* instance = (RigidBody*)avl_get(instances, (void*)instanceId.c_str());
+    States::activate(&instance->state, INSTANCE_DEAD);  // Activate kill switch
+    instancesToDelete.push_back(instance);
 }
 
 void Scene::clearDeadInstances(){

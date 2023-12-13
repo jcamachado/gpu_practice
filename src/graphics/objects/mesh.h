@@ -8,13 +8,13 @@
 #include <vector>
 #include <glm/glm.hpp>
 
-#include "shader.h"
-#include "texture.h"
-#include "vertexmemory.hpp"
+#include "../memory/vertexmemory.hpp"
 
-#include "models/box.hpp"
+#include "../models/box.hpp"
+#include "../rendering/shader.h"
+#include "../rendering/texture.h"
 
-#include "../algorithms/bounds.h"
+#include "../../algorithms/bounds.h"
 /*
     All base coordinates are here
 

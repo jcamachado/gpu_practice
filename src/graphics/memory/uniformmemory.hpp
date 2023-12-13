@@ -8,7 +8,8 @@
 #include <string>
 
 #include "vertexmemory.hpp"
-#include "shader.h"
+
+#include "../rendering/shader.h"
 
 /*
     Same structure as VertexMemory.hpp but using a different buffer type

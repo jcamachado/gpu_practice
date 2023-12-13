@@ -5,8 +5,8 @@
 #include <glm/glm.hpp>
 
 #include "shader.h"
-#include "../algorithms/bounds.h"
-#include "framememory.hpp"
+#include "../memory/framememory.hpp"
+#include "../../algorithms/bounds.h"
 
 struct DirLight {
     glm::vec3 direction;

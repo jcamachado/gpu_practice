@@ -1,9 +1,9 @@
 #ifndef CUBE_HPP
 #define CUBE_HPP
 
-#include "../model.h"
-#include "../material.h"
-
+#include "../objects/model.h"
+#include "../rendering/texture.h"
+#include "../rendering/material.h"
 //does not use ebo because the normal vectors are not the same for each side
 class Cube : public Model {
     public:

@@ -9,8 +9,8 @@
 #include <string>
 #include <vector>
 
-#include "shader.h"
-#include "vertexmemory.hpp"
+#include "../memory/vertexmemory.hpp"
+#include "../rendering/shader.h"
 
 class Scene;
 

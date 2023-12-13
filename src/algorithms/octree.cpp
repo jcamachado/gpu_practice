@@ -1,4 +1,5 @@
 #include "octree.h"
+#include "avl.h"
 #include "../graphics/models/box.hpp"
 
 // For each octant, a new bounding region is calculated and stored in out
@@ -42,9 +43,9 @@ Octree::node::node(BoundingRegion bounds, std::vector<BoundingRegion> objectList
         objects.insert(objects.end(), objectList.begin(), objectList.end());
 }
 
-void Octree::node::addToPending(RigidBody* instance, trie::Trie<Model*> models){
+void Octree::node::addToPending(RigidBody* instance, Model *model){
     // Get all the bounding regions of the models
-    for (BoundingRegion br : models[instance->modelId]->boundingRegions){
+    for (BoundingRegion br : model->boundingRegions){
         br.instance = instance;
         br.transform();
         queue.push(br);

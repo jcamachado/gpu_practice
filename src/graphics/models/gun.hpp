@@ -1,4 +1,5 @@
-#include "../model.h"
+#include "../objects/model.h"
+
 #include "../../io/camera.h"
 #include "../../io/keyboard.h"
 
@@ -15,9 +16,7 @@ class Gun : public Model {
         }
 
         
-        void render(Shader shader, float dt, Scene *scene, bool setModel = false ){
-            glm::mat4 model = glm::mat4(1.0f);
-            
+        void render(Shader shader, float dt, Scene *scene, glm::mat4 model){
             // Set position
             // Multiply offset by unit vector in 2 directions
             rb.pos = scene->getActiveCamera()->cameraPos + 

@@ -1,12 +1,12 @@
 #ifndef LAMP_HPP
 #define LAMP_HPP
 
-#include "cube.hpp"
-#include "../material.h"
-#include "../shader.h"
-#include "../light.h"
-
 #include <glm/glm.hpp>
+
+#include "cube.hpp"
+#include "../rendering/material.h"
+#include "../rendering/light.h"
+#include "../rendering/shader.h"
 
 class Lamp : public Cube {
     public:

@@ -6,8 +6,8 @@
 
 #include <vector>
 
-#include "cubemap.h"
-#include "texture.h"
+#include "../rendering/cubemap.h"
+#include "../rendering/texture.h"
 
 class FramebufferObject {
     public:

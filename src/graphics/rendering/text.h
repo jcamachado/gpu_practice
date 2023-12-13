@@ -12,8 +12,8 @@
 #include <string>
 #include <map>
 
-#include "vertexmemory.hpp"
-#include "shader.h"
+#include "../memory/vertexmemory.hpp"
+#include "../rendering/shader.h"
 
 /*
     A character is created using a set of metrics.

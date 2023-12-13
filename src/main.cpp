@@ -19,13 +19,18 @@
 
 #include "algorithms/states.hpp"
 
-#include "graphics/cubemap.h"
-#include "graphics/framememory.hpp"
-#include "graphics/light.h"
-#include "graphics/model.h"
-#include "graphics/shader.h"
-#include "graphics/texture.h"
-#include "graphics/uniformmemory.hpp"
+#include "io/camera.h"
+#include "io/keyboard.h"
+#include "io/mouse.h"
+#include "io/joystick.h"
+
+#include "physics/environment.h"
+
+
+#include "graphics/memory/framememory.hpp"
+#include "graphics/memory/uniformmemory.hpp"
+
+#include "graphics/objects/model.h"
 
 #include "graphics/models/box.hpp" 
 #include "graphics/models/brickwall.hpp"
@@ -35,15 +40,13 @@
 #include "graphics/models/plane.hpp"
 #include "graphics/models/sphere.hpp"
 
-#include "io/camera.h"
-#include "io/keyboard.h"
-#include "io/mouse.h"
-#include "io/joystick.h"
-
-#include "physics/environment.h"
+#include "graphics/rendering/cubemap.h"
+#include "graphics/rendering/light.h"
+#include "graphics/rendering/shader.h"
+#include "graphics/rendering/texture.h"
+#include "graphics/rendering/text.h"
 
 Scene scene;
-std::string Shader::defaultDirectory = "assets/shaders";
 
 void processInput(double dt);
 void renderScene(Shader shader);
@@ -55,6 +58,7 @@ float lastFrame = 0.0f; // Time of last frame
 
 unsigned int nSpheres = 10;
 unsigned int nLamps = 1;
+std::string Shader::defaultDirectory = "assets/shaders";
 
 BrickWall wall;
 // Cube cube(10);
@@ -101,6 +105,10 @@ int main(){
     );
 
     Shader::clearDefault();
+    TextRenderer font(32);
+    if (!scene.registerFont(&font, "comic", "assets/fonts/Comic_Sans_MS.ttf")) {
+        std::cout << "Could not load font" << std::endl;
+    }
 
     /*
         Models

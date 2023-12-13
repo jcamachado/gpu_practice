@@ -12,13 +12,14 @@
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
+#include "graphics/memory/framememory.hpp"
+#include "graphics/memory/uniformmemory.hpp"
 
-#include "graphics/framememory.hpp"
-#include "graphics/model.h"
-#include "graphics/light.h"
-#include "graphics/shader.h"
-#include "graphics/text.h"
-#include "graphics/uniformmemory.hpp"
+#include "graphics/objects/model.h"
+
+#include "graphics/rendering/light.h"
+#include "graphics/rendering/shader.h"
+#include "graphics/rendering/text.h"
 
 #include "graphics/models/box.hpp"
 
@@ -29,7 +30,7 @@
 
 #include "algorithms/states.hpp"
 #include "algorithms/octree.h"
-#include "algorithms/trie.hpp"
+#include "algorithms/avl.h"
 
 /*
     Forward declaration
@@ -41,8 +42,8 @@ namespace Octree {
 class Model; 
 class Scene {
     public:
-        trie::Trie<Model*> models;
-        trie::Trie<RigidBody*> instances;
+        avl* models;
+        avl* instances;
         std::vector<RigidBody*> instancesToDelete;
         Octree::node* octree;                           // Root for the scene
         
@@ -51,7 +52,7 @@ class Scene {
         */
         jsoncpp::json variableLog;
         FT_Library ft;
-        trie::Trie<TextRenderer> fonts;
+        avl* fonts;
 
         FramebufferObject defaultFBO;                // By default, glfw sets the default framebuffer to the screen
 
@@ -82,6 +83,10 @@ class Scene {
             with the UBO
         */
         bool init();    
+
+        // Register a font family
+        bool registerFont(TextRenderer* tr, std::string name, std::string path);
+
         void prepare(Box &box, std::vector<Shader> shaders);                                       
 
         /*

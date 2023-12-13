@@ -10,11 +10,9 @@
 
 #include "list.hpp"
 #include "states.hpp"
-#include "trie.hpp"
 #include "bounds.h"
 
-#include "../graphics/model.h"
-#include "../graphics/models/box.hpp"
+#include "../graphics/objects/model.h"
 
 
 /*
@@ -79,7 +77,7 @@ namespace Octree {
                 This function will take an instance and will add all of its models rigid bodies
                 a new rigid body for the actual thing (words from the video)
             */
-            void addToPending(RigidBody* instance, trie::Trie<Model*> models);
+            void addToPending(RigidBody* instance, Model *model);
 
             void build();
 
