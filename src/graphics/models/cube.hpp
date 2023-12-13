@@ -13,7 +13,9 @@ class Cube : public Model {
             : Model("cube", BoundTypes::AABB, maxNInstances, CONST_INSTANCES | NO_TEX), material(material) {}
         void init(){
             int nVertices = 36;
-             //each face of the cube have to have a texture
+            /*
+                each face of the cube have to have a texture
+            */
             float vertices[] = {
                 // position					normal				texturecoord
                 -0.5f, -0.5f, -0.5f,	 0.0f,  0.0f, -1.0f,	0.0f, 0.0f,
@@ -58,32 +60,56 @@ class Cube : public Model {
                 -0.5f,  0.5f,  0.5f,	 0.0f,  1.0f,  0.0f,	0.0f, 0.0f,
                 -0.5f,  0.5f, -0.5f,	 0.0f,  1.0f,  0.0f,	0.0f, 1.0f
             };
-            std::vector<unsigned int> indices(nVertices);
-            for(unsigned int i=0; i<nVertices; i++){
-                indices[i] = i;
-            }
+
+            // Since we reuse many vertices, we can have only 8 vertices and reuse them
+
+            float collisionVertices[] = {
+                -0.5f, -0.5f, -0.5f,	 //0 => --- => 000 
+                -0.5f, -0.5f,  0.5f,	 //1 => --+ => 001
+                -0.5f,  0.5f, -0.5f,	 //2 => -+- => 010
+                -0.5f,  0.5f,  0.5f,	 //3 => -++ => 011
+                 0.5f, -0.5f, -0.5f,	 //4 => +-- => 100
+                 0.5f, -0.5f,  0.5f,	 //5 => +-+ => 101
+                 0.5f,  0.5f, -0.5f,	 //6 => ++- => 110
+                 0.5f,  0.5f,  0.5f,	 //7 => +++ => 111
+            };
+            unsigned int collisionIndices[] ={
+                0, 4, 6,    //left
+                6, 2, 0,
+
+                1, 5, 7,    //right
+                7, 3, 1,
+
+                3, 2, 0,    //front
+                0, 1, 3,
+
+                7, 6, 4,    //back
+                4, 5, 7,
+
+                0, 4, 5,    //bottom
+                5, 1, 0,
+
+                2, 6, 7,    //top
+                7, 3, 2
+            };
+
             BoundingRegion br(glm::vec3(-0.5f), glm::vec3(0.5f));
-
-            aiColor4D diff(
-                material.diffuse.r, 
-                material.diffuse.g, 
-                material.diffuse.b, 
-                1.0f
+            
+            /*
+                Seems like number of indices = number o vertices 
+                And without passing indices, we copy the indices sequentially in the index list 
+            */
+            Mesh ret = processMesh(
+                br,
+                nVertices, vertices,
+                nVertices, NULL,            
+                true,
+                8, collisionVertices,
+                12, collisionIndices
             );
-            aiColor4D spec(
-                material.specular.r, 
-                material.specular.g, 
-                material.specular.b, 
-                1.0f
-            );
-            std::vector<Vertex> vertexList = Vertex::genList(vertices, nVertices);
-            Vertex::calcTanVectors(vertexList, indices);
+            ret.setupMaterial(material);
+            addMesh(&ret);
 
-            Mesh ret(br, diff, spec);
-            ret.loadData(vertexList, indices);
-
-            meshes.push_back(ret);
-            boundingRegions.push_back(br);
         }
 };
 

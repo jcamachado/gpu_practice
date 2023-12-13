@@ -146,7 +146,7 @@ bool Face::collidesWith(Face& face){
                     intersection
                 );
 
-                // RREF
+                // RREF (Its broken for now)
                 rref(&m);
 
                 // Obtain the coefficients of the linear combination

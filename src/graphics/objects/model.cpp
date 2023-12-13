@@ -2,6 +2,8 @@
 
 #include "../../physics/environment.h"
 
+#include "../../scene.h"
+
 #include <iostream>
 
 
@@ -10,7 +12,8 @@ Model::Model(std::string id, BoundTypes boundType, unsigned int maxNInstances, u
     boundType(boundType), 
     switches(flags),
     currentNInstances(0), 
-    maxNInstances(maxNInstances) {}
+    maxNInstances(maxNInstances),
+    collision(NULL) {}
 
 RigidBody* Model::generateInstance(glm::vec3 size, float mass, glm::vec3 pos){
     if (currentNInstances >= maxNInstances){
@@ -201,6 +204,17 @@ void Model::loadModel(std::string path){
     processNode(scene->mRootNode, scene);
 }
 
+void Model::enableCollisionModel(){
+    if (!this->collision){
+        this->collision = new CollisionModel(this);
+    }
+}
+
+void Model::addMesh(Mesh* mesh){
+    meshes.push_back(*mesh);
+    boundingRegions.push_back(mesh->br);
+}
+
 void Model::processNode(aiNode *node, const aiScene *scene){
     /*
         Process all the node's meshes (Generate all the meshes),
@@ -209,8 +223,7 @@ void Model::processNode(aiNode *node, const aiScene *scene){
     for(unsigned int i = 0; i < node->mNumMeshes; i++) {
         aiMesh *mesh = scene->mMeshes[node->mMeshes[i]]; 
         Mesh newMesh = processMesh(mesh, scene);
-        meshes.push_back(newMesh);
-        boundingRegions.push_back(newMesh.br);
+        addMesh(&newMesh);
     }
     for(unsigned int i = 0; i < node->mNumChildren; i++) {
         processNode(node->mChildren[i], scene);
@@ -361,6 +374,46 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene){
     return ret;
 }
 
+Mesh Model::processMesh(
+    BoundingRegion br,
+    unsigned int nVertices, float *vertices,
+    unsigned int nIndices, unsigned int *indices,
+    bool calcTanVectors,
+    unsigned int nCollisionPoints, float *collisionPoints,
+    unsigned int nCollisionFaces, unsigned int *collisionIndices,
+    bool pad
+){
+    // Process vertex array
+    std::vector<Vertex> vertexList = Vertex::genList(vertices, nVertices);
+    std::vector<unsigned int> indexList(nIndices);                          // Create index list
+    if (indices){
+        // Copy array
+        memcpy(indexList.data(), indices, nIndices * sizeof(unsigned int));
+    }
+    else {
+        // Insert sequential indices
+        for (unsigned int i = 0; i < nIndices; i++) {
+            indexList[i] = i;
+        }
+    }
+
+    // Calculate light values
+    if (calcTanVectors) {
+        Vertex::calcTanVectors(vertexList, indexList);
+    }
+
+    // Set return mesh
+    Mesh ret(br);
+    ret.loadData(vertexList, indexList, pad);
+
+    // Allocate memory for collision mesh if necessary
+    if (nCollisionPoints) {
+        enableCollisionModel();
+        ret.loadCollisionMesh(nCollisionPoints, collisionPoints, nCollisionFaces, collisionIndices);
+    }
+
+    return ret;
+}
 std::vector<Texture> Model::loadTextures(aiMaterial *mat, aiTextureType type){
     std::vector<Texture> textures;
 

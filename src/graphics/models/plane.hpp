@@ -17,21 +17,37 @@ class Plane: public Model{
                  0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,   1.0f, 0.0f  // bottom right
             };
 
-            std::vector<unsigned int> indices = {
+            float collisionVertices[] = {
+                // Position
+                 0.5f,  0.5f, 0.0f,                                 // top right
+                -0.5f,  0.5f, 0.0f,                                 // top left
+                -0.5f, -0.5f, 0.0f,                                 // bottom left
+                 0.5f, -0.5f, 0.0f                                  // bottom right
+            };
+
+            unsigned int indices[] = {
                 0, 1, 3, // first triangle
                 1, 2, 3  // second triangle
             };
 
             BoundingRegion br(glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec3(0.5f, 0.5f, 0.0f));
             
-            std::vector<Vertex> vertexList = Vertex::genList(quadVertices, nVertices);
-            Vertex::calcTanVectors(vertexList, indices);
-            
-            Mesh ret(br, textures);
-            ret.loadData(vertexList, indices, true);
+            /*
+                We can only use the position from quadVertices for process mesh, so 
+                we will pass in the collision vertices separately.
+            */ 
+            Mesh ret = processMesh(
+                br,
+                nVertices, quadVertices,
+                6, indices,
+                true, 
+                nVertices, collisionVertices,
+                2, indices                              // Face is the group of indices 
+            );
 
-            meshes.push_back(ret);
-            boundingRegions.push_back(br);
+            ret.setupTextures(textures);
+
+            addMesh(&ret);
         }
 };
 

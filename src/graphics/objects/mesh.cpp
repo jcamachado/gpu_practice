@@ -108,19 +108,36 @@ void Vertex::calcTanVectors(
     }
 }
 
-// Default constructor
-Mesh::Mesh() {}
+/*
+    Constructors
+*/
+Mesh::Mesh()                                                        //1 Default
+    : collision(NULL) {}                                            
+
+Mesh::Mesh(BoundingRegion br)                                       //2 Init with bounding region
+    : br(br), collision(NULL){}
+
+Mesh::Mesh(BoundingRegion br, std::vector<Texture> textures)        //3 Init as textured object
+    : Mesh(br) {
+    setupTextures(textures);
+}
  
-// Initialize as textured object
-Mesh::Mesh(BoundingRegion br, std::vector<Texture> textures)
-    : br(br), textures(textures), noTextures(false) {}
- 
-// Initialize as material object
-Mesh::Mesh(BoundingRegion br, aiColor4D diff, aiColor4D spec)
-    : br(br), diffuse(diff), specular(spec), noTextures(true) {}
+Mesh::Mesh(BoundingRegion br, aiColor4D diff, aiColor4D spec)       //4 Initialize as material object
+    : Mesh(br) {
+    setupColors(diff, spec);
+}
+
+Mesh::Mesh(BoundingRegion br, Material m)                           //5 Initialize with a material (analog to 4)  
+    : Mesh(br) {
+    setupMaterial(m);
+}
 
 // Load vertex and index data
-void Mesh::loadData(std::vector<Vertex> _vertices, std::vector<unsigned int> _indices, bool pad) {
+void Mesh::loadData(
+    std::vector<Vertex> _vertices, 
+    std::vector<unsigned int> _indices, 
+    bool pad
+) {
     this->vertices = _vertices;
     this->indices = _indices;
  
@@ -162,6 +179,33 @@ void Mesh::loadData(std::vector<Vertex> _vertices, std::vector<unsigned int> _in
     VAO["VBO"].clear();
  
     ArrayObject::clear();
+}
+
+void Mesh::loadCollisionMesh(
+    unsigned int nPoints, 
+    float* coordinates, 
+    unsigned int nFaces, 
+    unsigned int* indices
+){
+    this->collision = new CollisionMesh(nPoints, coordinates, nFaces, indices);
+    this->br = this->collision->br;
+}
+
+void Mesh::setupTextures(std::vector<Texture> textures){
+    this->noTextures = false;
+    this->textures.insert(this->textures.end(), textures.begin(), textures.end());
+}
+
+void Mesh::setupColors(aiColor4D diff, aiColor4D spec){
+    this->noTextures = true;
+    this->diffuse = diff;
+    this->specular = spec;
+}
+
+void Mesh::setupMaterial(Material material){
+    this->noTextures = true;
+    this->diffuse = {material.diffuse.r, material.diffuse.g, material.diffuse.b, 1.0f};
+    this->specular = {material.specular.r, material.specular.g, material.specular.b, 1.0f};
 }
 
 void Mesh::render(Shader shader, unsigned int numInstances){

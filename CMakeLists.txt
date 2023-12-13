@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(my_particle_system VERSION 0.1.0)
 set(CMAKE_CXX_STANDARD 20)
+add_subdirectory(lib/assimp-5.3.1)
+add_subdirectory(lib/freetype-2.13.2)
 set(CMAKE_C_COMPILER "/usr/bin/clang")
 set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
@@ -8,8 +10,6 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++ -lc++abi")
 cmake_policy(SET CMP0072 NEW)
 set(OpenGL_GL_PREFERENCE GLVND)
 find_package(Freetype REQUIRED VERSION 2.13.2)
-add_subdirectory(lib/assimp-5.3.1)
-add_subdirectory(lib/freetype-2.13.2)
 add_executable(my_particle_system
 
     lib/glad/glad.h

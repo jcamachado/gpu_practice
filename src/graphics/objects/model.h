@@ -18,6 +18,8 @@
 #include "../models/box.hpp"
 
 #include "../../algorithms/bounds.h"
+
+#include "../../physics/collisionmodel.h"
 #include "../../physics/rigidbody.h"
 
 #include "../../scene.h"
@@ -34,12 +36,16 @@
 #define CONST_INSTANCES	    (unsigned int)2     // 0b00000010
 #define NO_TEX			    (unsigned int)4	    // 0b00000100       
 
-// Forward declaration so wont have circular dependency
-class Scene;                                            
+/*
+    Forward declaration so wont have circular dependency
+*/
+class CollisionModel;
+class Scene;                                     
 
 class Model {
     public:
         std::string id;                                 // ID of model in scene
+
 
         RigidBody rb;
         glm::vec3 size;
@@ -47,10 +53,11 @@ class Model {
         BoundTypes boundType;                           // Type of bounding region for all meshes
         
         std::vector<Mesh> meshes;
+        CollisionModel* collision;                      // Pointer to Collision model
         std::vector<BoundingRegion> boundingRegions;    // List of bounding regions (1 for each mesh)
         std::vector<RigidBody*> instances;              // For forces applied (collisions and such)
 
-        int maxNInstances;                            // Max indices allowed
+        int maxNInstances;                              // Max indices allowed
         int currentNInstances;
 
         unsigned int switches;                          // Combination of switches above
@@ -69,6 +76,8 @@ class Model {
         */
         virtual void init();
         void loadModel(std::string path);
+        void enableCollisionModel();                    // Enable collision model
+        void addMesh(Mesh* mesh);                        // Add mesh to the list
         virtual void render(
             Shader shader, 
             float dt, 
@@ -96,11 +105,20 @@ class Model {
         /*
             Model loading functions (ASSIMP)
             
-            Obs: _ai_ on related to assimp stands for (a)ss(i)mp 
+            Obs: _ai_ related to assimp lib stands for (a)ss(i)mp 
 
         */
         void processNode(aiNode *node, const aiScene *scene);   // Process node in object file
         Mesh processMesh(aiMesh *mesh, const aiScene *scene);   // Process mesh in object file
+        Mesh processMesh(                                       // Process custom mesh
+            BoundingRegion br,
+            unsigned int nVertices, float *vertices,
+            unsigned int nIndices, unsigned int *indices,
+            bool calcTanVectors = true,
+            unsigned int nCollisionPoints = 0, float *collisionPoints = NULL,
+            unsigned int nCollisionFaces = 0, unsigned int *collisionIndices = NULL,
+            bool pad = false
+        );
         std::vector<Texture> loadTextures(aiMaterial *mat, aiTextureType type);
 
         /*
