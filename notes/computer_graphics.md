@@ -276,3 +276,5 @@ First of all, for this project. Collision was the only video I skipped until now
 In other words, whenever a comment block starts with "Collision Theory checkpoint", it will be related to some part of the skipped theory video(48)
 
 We create collision model and mesh that will be a simplified version of model and mesh for collision.
+
+When we test collisions, we want to test against the transformed points.
