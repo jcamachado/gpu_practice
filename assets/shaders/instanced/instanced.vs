@@ -5,8 +5,9 @@ layout (location = 0) in vec3 aPos;         // vertex position
 layout (location = 1) in vec3 aNormal;      // vertex normal
 layout (location = 2) in vec2 aTexCoord;    // vertex texture coordinates
 layout (location = 3) in vec3 aTangent;     // vertex tangent
-layout (location = 4) in vec3 aOffset;      // vertex position in instanced array (posVBO)
-layout (location = 5) in vec3 aSize;        // vertex size in instanced array      (posVBO)
+layout (location = 4) in mat4 model;       // model matrix, replaces offSet and size (4x4 occupies 4 memory slots)
+layout (location = 8) in mat3 normalModel;  // values in tangent space
+
 
 // We will keep some data in world space but we will also pass in tangent data
 out VS_OUT {     
@@ -16,8 +17,6 @@ out VS_OUT {
     TangentLights tanLights;
 } vs_out;
 
-uniform mat4 model;
-uniform mat3 normalModel;
 uniform mat4 view;
 uniform mat4 projection;
 
@@ -25,11 +24,14 @@ uniform vec3 viewPos;
 uniform bool noNormalMap;
 
 void main() {
-    // Get position in world space
-    vec3 pos = aPos * aSize + aOffset;
+    /*
+        Get position in world space
 
-    // Apply model transformation
-    vs_out.FragPos = vec3(model * vec4(pos, 1.0));
+        We need to transform the vertex pos to vec4 (4x1) to be able to multiply by the model matrix(4x4)
+        Apply model transformation
+    */
+    vs_out.FragPos = vec3(model * vec4(aPos, 1.0));      
+                    
 
     // Set texture coordinates
     vs_out.TexCoord = aTexCoord;

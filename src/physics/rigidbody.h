@@ -10,17 +10,31 @@
 
 class RigidBody {
     public:
-        /*
-            State
-            -_state_ will be read by the octree to know if it should update the position of the instance
-        */
-        unsigned char state;
+        unsigned char state;                    // Combination of above switches in octree
 
-        float mass;
-        glm::vec3 pos, velocity, acceleration, size;
+        // Physics
+        float mass;                             // kg
+        glm::vec3 size;                         // Dimensions of the object
+
+        //Linear
+        glm::vec3 pos, velocity, acceleration;  // (m, m/s, m/s^2  
+        
+        // Rotation in Euler angles
+        glm::vec3 eRotation; // (rad, rad/s, rad/s^2)
+
+        // Model matrix
+        glm::mat4 model;
+        glm::mat3 normalModel;   // From tangent spaces
+
+        /*
+            Freeze values. Custom made by me.
+            Used to freeze motion of model objects
+        */
         glm::vec3 storedVelocity, storedAcceleration;
         
-
+        /*
+            Ids. For fast access to the model and instance
+        */
         std::string modelId;
         std::string instanceId;
 
@@ -32,7 +46,8 @@ class RigidBody {
         RigidBody(std::string modelId, 
             glm::vec3 size = glm::vec3(1.0f), 
             float mass= 1.0f,
-            glm::vec3 pos = glm::vec3(0.0f)
+            glm::vec3 pos = glm::vec3(0.0f),
+            glm::vec3 eRotation = glm::vec3(0.0f)
         );
 
         void update(float dt);

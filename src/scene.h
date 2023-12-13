@@ -156,8 +156,9 @@ class Scene {
         RigidBody* generateInstance(
             std::string modelId, 
             glm::vec3 size, 
-            float mass, 
-            glm::vec3 pos
+            float mass = 1.0f, 
+            glm::vec3 pos = glm::vec3(0.0f),
+            glm::vec3 eRotation = glm::vec3(0.0f)
         );
         void initInstances();                                           // Will call model.initInstances()
         void loadModels();                                              // Will call model.init()

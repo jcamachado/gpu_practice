@@ -26,7 +26,7 @@
 
 /*
     Model switches
-    -DYNAMIC: Instances update every render
+    -DYNAMIC: Instances update every render (frame)
     -CONST_INSTANCES: VBO set at the beginning and stays forever so dont need to call glBufferSubdata all the time
     -NO_TEX: Bool on constructor if model is texture or material
 
@@ -81,15 +81,14 @@ class Model {
         virtual void render(
             Shader shader, 
             float dt, 
-            Scene *scene, 
-            glm::mat4 model = glm::mat4(1.0f)
+            Scene *scene
         );
         void cleanup();                                 // Free memory
 
         /*
             Instance methods
         */
-        RigidBody* generateInstance(glm::vec3 size, float mass, glm::vec3 pos);
+        RigidBody* generateInstance(glm::vec3 size, float mass, glm::vec3 pos, glm::vec3 eRotation);
 
         void initInstances();                           // Initialize memory for instances
         void removeInstance(unsigned int idx);          // Remove instance at idx
@@ -122,12 +121,10 @@ class Model {
         std::vector<Texture> loadTextures(aiMaterial *mat, aiTextureType type);
 
         /*
-           VBOs for positions and sizes
-           Are these only for instances? Since its for optimization and 
-           are called offset in shader, maybe they are like 
+           VBOs for model matrices
         */
-        BufferObject posVBO;                // Instance position?
-        BufferObject sizeVBO;               // Instance size?
+        BufferObject modelVBO;
+        BufferObject normalModelVBO;
 };
 
 #endif

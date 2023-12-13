@@ -1,3 +1,15 @@
+Notation: 
+**- means its my note outside de code.
+So: 
+/*
+    Hi, this was already in code block copied in this document. But not sure if all this was made at original code file, since
+    notation as created later
+*/
+
+/*
+    **-This is my comment made in this document in some code about this same code 
+*/
+
 We can make changes to the shaderSrc before passing it to openGL.
 We will add a header to the gls file.
 
@@ -221,3 +233,127 @@ void main() {
     glm::mat4 m = glm::translate(glm::mat4(1.0f), glm::vec3(3.0f, 0.0f, -5.0f));
     ubo.writeArrayContainer<glm::mat4, glm::vec4>(&m, 4);
     ubo.clear();
+
+
+
+(My understanding, incomplete and needs confirmation)
+// layout (location = 4) in vec3 aOffset;      // vertex position in instanced array (posVBO)
+// layout (location = 5) in vec3 aSize;        // vertex size in instanced array      (posVBO)
+Offset is like the position vector. And instances are like a single model.
+So, offset enters like the coordinates of the next instance, and the next instance, etc.
+so, the position
+vec3 pos = aPos * size + Offset
+is like, Hey, you Are this models object, but, as an instance, your position is not the model position,
+but it + some offset, that is where you are in the world.
+
+Like this function
+
+
+void Model::initInstances() {
+    glm::vec3* posData = nullptr;
+    glm::vec3* sizeData = nullptr;
+    GLenum usage = GL_DYNAMIC_DRAW;
+
+    std::vector<glm::vec3> positions, sizes;
+
+    if (States::isActive(&switches, CONST_INSTANCES)){
+        // Set data pointers
+        for(unsigned int i = 0; i < currentNInstances; i++){
+            positions.push_back(instances[i]->pos);
+            sizes.push_back(instances[i]->size);
+        }
+
+        if (positions.size() > 0) {         // **- If any position, add data of instance
+            posData = &positions[0];
+            sizeData = &sizes[0];
+        }
+    /*
+        CONST_INSTANCES kind of a synonym for static instances
+    */
+        usage = GL_STATIC_DRAW;                                 
+    }
+
+    /*
+        This is for whole objects
+        - Generate positions VBO
+        - Generate sizes VBO
+    */
+    posVBO = BufferObject(GL_ARRAY_BUFFER);
+    posVBO.generate();
+    posVBO.bind();
+    posVBO.setData<glm::vec3>(UPPER_BOUND, posData, GL_DYNAMIC_DRAW);
+    
+    sizeVBO = BufferObject(GL_ARRAY_BUFFER);
+    sizeVBO.generate();
+    sizeVBO.bind();
+    sizeVBO.setData<glm::vec3>(UPPER_BOUND, sizeData, GL_DYNAMIC_DRAW);
+
+    /*
+        Important detail. These changed happened in the context of the 
+        model matrix being inside RigidBody instead of Model
+
+
+        **- Here, pos and size are set for instances in VBO. 
+        setting the values in VAO, setting the Attributes that are in the Buffer
+        sets posVBO to offset location layout
+        sets sizeVBO to size location layout
+        they both are 3 dim float vecs, so (Ox, Oy, Oz) and (Sx, Sy, Sz)
+
+        stride is 1 vec 3, so it can be allocated
+        offSet=0, offset of the size of the template<vec3>, so 3 Floats * 0, no offset in VAO
+        and this happens every 1 instance. This value is if exists, is passed to glVertexAttribDivisor
+
+        This is like a mold to how data will be store. 
+        and in Draw, glDrawElementsInstanced() receives the amount of instances to be draw.
+        still need to connect deeply layout aOffset to the posVBO that is diffenent from the
+        regular position.
+
+        In instanced.vs, it was only called once.
+        void main(){
+        // Get position in world space
+          vec3 pos = aPos * aSize + aOffset;
+        ...
+        
+        This offset doesnt relate to anything else in the code other than posVBO
+
+        
+        Conjecture 1 - Maybe offset is the next position? like, current position of instance  + difference to next
+        then translate (why not add offset to translation? )
+        When we added model matrix to Model class, we removed aOffset and aPos(and posVBO and sizeVBO)
+        Since modelMatrix has all the transformations applied to it. This deleted code is in changes.md
+        *Attention to model render function
+        Conjecture 2 - Maybe it is something internal from opengl. But I have to study it.
+
+    */
+
+    /*
+        Set attribute pointers for each mesh
+        - For positions
+        - For sizes
+    */
+    for(unsigned int i=0, size = meshes.size(); i<size; i++){
+        meshes[i].VAO.bind();
+
+        // Set vertex attribute pointers
+        posVBO.bind();
+        /*
+            .setAttrPointer<template>();
+            1st param: index of attribute
+                In mesh, the indices 0, 1, 2, 3  are used for position, normal, texCoord and tangent
+                So: 4 is used for instance vbo positions
+                And 5 is used for instance vbo sizes
+
+
+            2nd param and 3rd are related, so 3 GL_FLOATs
+            4th param: stride is 1 glm::vec3 (related to template)
+            6th param: reset every 1 instance
+        */
+        posVBO.setAttrPointer<glm::vec3>(4, 3, GL_FLOAT, 1, 0, 1); 
+
+        sizeVBO.bind();
+        sizeVBO.setAttrPointer<glm::vec3>(5, 3, GL_FLOAT, 1, 0, 1);
+
+        ArrayObject::clear();
+    }
+}
+

@@ -15,32 +15,41 @@ Model::Model(std::string id, BoundTypes boundType, unsigned int maxNInstances, u
     maxNInstances(maxNInstances),
     collision(NULL) {}
 
-RigidBody* Model::generateInstance(glm::vec3 size, float mass, glm::vec3 pos){
+RigidBody* Model::generateInstance(
+    glm::vec3 size, 
+    float mass, 
+    glm::vec3 pos, 
+    glm::vec3 eRotation
+){
     if (currentNInstances >= maxNInstances){
         return nullptr;                                                  // All slots filled 
     }
 
-    instances.push_back(new RigidBody(id, size, mass, pos));
+    instances.push_back(new RigidBody(id, size, mass, pos, eRotation));
     return instances[currentNInstances++];
 }
 
 void Model::initInstances() {
-    glm::vec3* posData = nullptr;
-    glm::vec3* sizeData = nullptr;
+    /*
+        Default values
+    */
     GLenum usage = GL_DYNAMIC_DRAW;
+    glm::mat4* modelData = nullptr;
+    glm::mat3* normalModelData = nullptr; 
 
-    std::vector<glm::vec3> positions, sizes;
+    std::vector<glm::mat4> models(currentNInstances);
+    std::vector<glm::mat3> normalModels(currentNInstances);
 
     if (States::isActive(&switches, CONST_INSTANCES)){
         // Set data pointers
         for(unsigned int i = 0; i < currentNInstances; i++){
-            positions.push_back(instances[i]->pos);
-            sizes.push_back(instances[i]->size);
+            models[i] = instances[i]->model;
+            normalModels[i] = instances[i]->normalModel;
         }
 
-        if (positions.size() > 0) {
-            posData = &positions[0];
-            sizeData = &sizes[0];
+        if (currentNInstances) {
+            modelData = &models[0];
+            normalModelData = &normalModels[0];
         }
     /*
         CONST_INSTANCES kind of a synonym for static instances
@@ -48,47 +57,43 @@ void Model::initInstances() {
         usage = GL_STATIC_DRAW;                                 
     }
 
-    /*
-        This is for whole objects
-        - Generate positions VBO
-        - Generate sizes VBO
-    */
-    posVBO = BufferObject(GL_ARRAY_BUFFER);
-    posVBO.generate();
-    posVBO.bind();
-    posVBO.setData<glm::vec3>(UPPER_BOUND, posData, GL_DYNAMIC_DRAW);
-    
-    sizeVBO = BufferObject(GL_ARRAY_BUFFER);
-    sizeVBO.generate();
-    sizeVBO.bind();
-    sizeVBO.setData<glm::vec3>(UPPER_BOUND, sizeData, GL_DYNAMIC_DRAW);
+    //    Generate matrix VBOs
+    modelVBO = BufferObject(GL_ARRAY_BUFFER);
+    modelVBO.generate();
+    modelVBO.bind();
+    modelVBO.setData<glm::mat4>(UPPER_BOUND, modelData, usage);
 
-    /*
-        Set attribute pointers for each mesh
-        - For positions
-        - For sizes
-    */
+    normalModelVBO = BufferObject(GL_ARRAY_BUFFER);
+    normalModelVBO.generate();
+    normalModelVBO.bind();
+    normalModelVBO.setData<glm::mat3>(currentNInstances, normalModelData, usage);
+
+
+    // Set attribute pointers for each mesh
     for(unsigned int i=0, size = meshes.size(); i<size; i++){
         meshes[i].VAO.bind();
 
-        // Set vertex attribute pointers
-        posVBO.bind();
         /*
-            .setAttrPointer<template>();
-            1st param: index of attribute
-                In mesh, the indices 0, 1, 2, 3  are used for position, normal, texCoord and tangent
-                So: 4 is used for instance vbo positions
-                And 5 is used for instance vbo sizes
+            Set vertex attribute pointers
+            -Example for m(4x4) but 3x3 is analog 
+            For matrices the data type is the same as the column, vec4 (matrix 4x4)
+            Stride = 4, each matrix will be separated by 4 4d vectors
+            Set 4 times, onde for each layout location
+            Offset changes because thats how many columns we need to skip to get to the target column
 
-
-            2nd param and 3rd are related, so 3 GL_FLOATs
-            4th param: stride is 1 glm::vec3 (related to template)
-            6th param: reset every 1 instance
         */
-        posVBO.setAttrPointer<glm::vec3>(4, 3, GL_FLOAT, 1, 0, 1); 
+        modelVBO.bind();
+        modelVBO.setAttrPointer<glm::vec4>(4, 4, GL_FLOAT, 4, 0, 1);        
+        modelVBO.setAttrPointer<glm::vec4>(5, 4, GL_FLOAT, 4, 1, 1);        
+        modelVBO.setAttrPointer<glm::vec4>(6, 4, GL_FLOAT, 4, 2, 1);        
+        modelVBO.setAttrPointer<glm::vec4>(7, 4, GL_FLOAT, 4, 3, 1);        
 
-        sizeVBO.bind();
-        sizeVBO.setAttrPointer<glm::vec3>(5, 3, GL_FLOAT, 1, 0, 1);
+        normalModelVBO.bind();
+        normalModelVBO.setAttrPointer<glm::vec3>(8, 3, GL_FLOAT, 3, 0, 1);
+        normalModelVBO.setAttrPointer<glm::vec3>(9, 3, GL_FLOAT, 3, 1, 1);
+        normalModelVBO.setAttrPointer<glm::vec3>(10, 3, GL_FLOAT, 3, 2, 1);
+        
+        
 
         ArrayObject::clear();
     }
@@ -123,19 +128,14 @@ void Model::init() {}
         Just like we are doing for the model and the instances.
         We will be this to all models.
     */
-void Model::render(Shader shader, float dt, Scene *scene, glm::mat4 model){
-    // Set model matrix
-    shader.setMat4("model", model);
-    // Avoid doing this per phase(Phase or face?), its the same per model 
-    shader.setMat3("normalModel", glm::mat3(glm::transpose(glm::inverse(model))));
-    
-    
+void Model::render(Shader shader, float dt, Scene *scene){
     if (!States::isActive(&switches, CONST_INSTANCES)){
         /*
             Dynamic instances - Update VBO data
         */
-        std::vector<glm::vec3> positions, sizes;
-        bool doUpdate = States::isActive(&switches, DYNAMIC);
+        std::vector<glm::mat4> models(currentNInstances);
+        std::vector<glm::mat3> normalModels(currentNInstances);
+        bool doUpdate = States::isActive(&switches, DYNAMIC);   // Instances moving?
 
         for (int i = 0; i < currentNInstances; i++){
             if (doUpdate){
@@ -144,14 +144,18 @@ void Model::render(Shader shader, float dt, Scene *scene, glm::mat4 model){
             }else{
                 States::deactivate(&instances[i]->state, INSTANCE_MOVED);
             }
-            positions.push_back(instances[i]->pos);
-            sizes.push_back(instances[i]->size);
+            models[i] = instances[i]->model;
+            normalModels[i] = instances[i]->normalModel;
         }
-        
-        posVBO.bind();
-        posVBO.updateData<glm::vec3>(0, currentNInstances, &positions[0]);
-        sizeVBO.bind();
-        sizeVBO.updateData<glm::vec3>(0, currentNInstances, &sizes[0]);
+
+        if (currentNInstances){
+            modelVBO.bind();
+            modelVBO.updateData<glm::mat4>(0, currentNInstances, &models[0]);
+            
+            normalModelVBO.bind();
+            normalModelVBO.updateData<glm::mat3>(0, currentNInstances, &normalModels[0]);
+
+        }
     }
 
     shader.setFloat("material.shininess", 0.5f);
@@ -169,8 +173,8 @@ void Model::cleanup(){
         meshes[i].cleanup();
     }
 
-    posVBO.cleanup();
-    sizeVBO.cleanup();
+    modelVBO.cleanup();
+    normalModelVBO.cleanup();
 }
 
 /*

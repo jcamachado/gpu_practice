@@ -571,7 +571,13 @@ std::string Scene::generateId(){
     return currentId;
 }
 
-RigidBody* Scene::generateInstance(std::string modelId, glm::vec3 size, float mass, glm::vec3 pos){
+RigidBody* Scene::generateInstance(
+    std::string modelId, 
+    glm::vec3 size, 
+    float mass, 
+    glm::vec3 pos,
+    glm::vec3 eRotation
+){
     /*
         octree->addToPending(rb, models);     Add all bounding regions from the models to the pending queue
         and since processPending calls update, prepare() doesnt need to call update.
@@ -579,7 +585,7 @@ RigidBody* Scene::generateInstance(std::string modelId, glm::vec3 size, float ma
     void* val = avl_get(models, (void*)modelId.c_str());
     if (val) {
         Model* model = (Model*)val;
-        RigidBody* rb = model->generateInstance(size, mass, pos);
+        RigidBody* rb = model->generateInstance(size, mass, pos, eRotation);
         if (rb) {
             // successfully generated, set new and unique id for instance
             std::string id = generateId();
