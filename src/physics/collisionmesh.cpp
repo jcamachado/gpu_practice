@@ -146,8 +146,8 @@ bool Face::collidesWith(Face& face){
                     intersection
                 );
 
-                // RREF (Its broken for now)
-                // rref(&m);
+                // RREF
+                rref(&m);
 
                 // Obtain the coefficients of the linear combination
                 // c3 ~= 0.0 because point is in the plane

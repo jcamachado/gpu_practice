@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <iostream>
 
 const mat MAT_UNDEFINED = {0, 0, NULL}; // undefined vector (no dimension)
 
@@ -702,7 +703,6 @@ bool swapRows(mat *m, unsigned int r1, unsigned int r2)
 {
     r1--;
     r2--;
-
     if (r1 >= m->rows || r2 >= m->rows ||
         r1 == r2)
     {
@@ -782,7 +782,6 @@ bool addMultiple(mat *m, unsigned int r1, unsigned int r2, float k)
 {
     r1--;
     r2--;
-
     if (r1 >= m->rows || r2 >= m->rows ||
         r1 == r2 ||
         k == 0.0f)
@@ -795,6 +794,8 @@ bool addMultiple(mat *m, unsigned int r1, unsigned int r2, float k)
         // add corresponding elements
         m->elements[r1][c] += k * m->elements[r2][c];
     }
+
+    return true;                // I added this
 }
 
 /**
@@ -856,6 +857,7 @@ void ref(mat *m)
  */
 void rref(mat *m)
 {
+
     unsigned int currentRow = 0;
     for (unsigned int c = 0; c < m->cols; c++)
     {
@@ -892,6 +894,7 @@ void rref(mat *m)
         {
             m->elements[currentRow][col] *= factor;
         }
+        
 
         // clear out rows above and below
         for (r = 0; r < m->rows; r++)
@@ -901,6 +904,7 @@ void rref(mat *m)
                 continue;
             }
             addMultiple(m, r + 1, currentRow + 1, -1 * m->elements[r][c]);
+
         }
 
         currentRow++;
