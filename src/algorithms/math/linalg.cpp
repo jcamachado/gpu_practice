@@ -48,30 +48,30 @@
 //     }
 // }
 
-// glm::vec3 mat4vec3mult(glm::mat4& m, glm::vec3& v) {
-//     glm::vec3 ret;
-//     for (int i = 0; i < 3; i++) {
-//         ret[i] = v[0] * m[0][i] + v[1] * m[1][i] + v[2] * m[2][i] + m[3][i];
-//     }
-//     return ret;
-// }
+glm::vec3 mat4vec3mult(glm::mat4& m, glm::vec3& v) {
+    glm::vec3 ret;
+    for (int i = 0; i < 3; i++) {
+        ret[i] = v[0] * m[0][i] + v[1] * m[1][i] + v[2] * m[2][i] + m[3][i];
+    }
+    return ret;
+}
 
-// glm::vec3 linCombSolution(glm::vec3 A, glm::vec3 B, glm::vec3 C, glm::vec3 point) {
-//     // represent the point as a linear combination of the 3 basis vectors
-//     glm::mat4x3 m(A, B, C, point);
+glm::vec3 linCombSolution(glm::vec3 A, glm::vec3 B, glm::vec3 C, glm::vec3 point) {
+    // represent the point as a linear combination of the 3 basis vectors
+    glm::mat4x3 m(A, B, C, point);
 
-//     // do RREF
-//     rref<4, 3>(m);
+    // do RREF
+    rref<4, 3>(m);
 
-//     return m[3];
-// }
+    return m[3];
+}
 
-// bool faceContainsPointRange(glm::vec3 A, glm::vec3 B, glm::vec3 N, glm::vec3 point, float radius) {
-//     glm::vec3 c = linCombSolution(A, B, N, point);
+bool faceContainsPointRange(glm::vec3 A, glm::vec3 B, glm::vec3 N, glm::vec3 point, float radius) {
+    glm::vec3 c = linCombSolution(A, B, N, point);
 
-//     return c[0] >= -radius && c[1] >= -radius && c[0] + c[1] <= 1.0f + radius;
-// }
+    return c[0] >= -radius && c[1] >= -radius && c[0] + c[1] <= 1.0f + radius;
+}
 
-// bool faceContainsPoint(glm::vec3 A, glm::vec3 B, glm::vec3 N, glm::vec3 point) {
-//     return faceContainsPointRange(A, B, N, point, 0.0f);
-// }
+bool faceContainsPoint(glm::vec3 A, glm::vec3 B, glm::vec3 N, glm::vec3 point) {
+    return faceContainsPointRange(A, B, N, point, 0.0f);
+}

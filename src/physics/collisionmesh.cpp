@@ -119,38 +119,24 @@ char linePlaneIntersection(glm::vec3 P1, glm::vec3 norm, glm::vec3 U1, glm::vec3
     }
 }
 
-glm::vec3 mat4vec3mult(glm::mat4& m, glm::vec3& v){ // #CUDABLE
-    /*
-        GLM matrices are column-major
-        v is vec3, but we can use it as vec4 with last element 1.0f
-        so we can multiply the values by the rows simples avoiding overhead
-    */
+// glm::vec3 linCombSolution(glm::vec3 A, glm::vec3 B, glm::vec3 C, glm::vec3 point) {
+// 	// represent the point as a linear combination of the 3 basis vectors
+// 	glm::mat4x3 m(A, B, C, point);
 
-    glm::vec3 ret;
-    for (int i = 0; i < 3; i++) {
-        ret[i] = v[0] * m[0][i] + v[1] * m[1][i] + v[2] * m[2][i] + m[3][i];
-    }
-    return ret;
-}
+// 	// do RREF
+// 	rref(m);
 
-glm::vec3 linCombSolution(glm::vec3 A, glm::vec3 B, glm::vec3 C, glm::vec3 point) {
-	// represent the point as a linear combination of the 3 basis vectors
-	glm::mat4x3 m(A, B, C, point);
+// 	return m[3];
+// }
+// bool faceContainsPointRange(glm::vec3 A, glm::vec3 B, glm::vec3 N, glm::vec3 point, float radius) {
+// 	glm::vec3 c = linCombSolution(A, B, N, point);
 
-	// do RREF
-	rref(m);
+// 	return c[0] >= -radius && c[1] >= -radius && c[0] + c[1] <= 1.0f + radius;
+// }
 
-	return m[3];
-}
-bool faceContainsPointRange(glm::vec3 A, glm::vec3 B, glm::vec3 N, glm::vec3 point, float radius) {
-	glm::vec3 c = linCombSolution(A, B, N, point);
-
-	return c[0] >= -radius && c[1] >= -radius && c[0] + c[1] <= 1.0f + radius;
-}
-
-bool faceContainsPoint(glm::vec3 A, glm::vec3 B, glm::vec3 N, glm::vec3 point) {
-	return faceContainsPointRange(A, B, N, point, 0.0f);
-}
+// bool faceContainsPoint(glm::vec3 A, glm::vec3 B, glm::vec3 N, glm::vec3 point) {
+// 	return faceContainsPointRange(A, B, N, point, 0.0f);
+// }
 bool Face::collidesWithFace(RigidBody* thisRB, Face& face, RigidBody* faceRB){
     // Transform coordinates so that the P1 is the origin
     glm::vec3 P1 = mat4vec3mult(thisRB->model, this->mesh->points[this->i1]);

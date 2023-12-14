@@ -50,11 +50,11 @@ enum class LinePlaneIntCase : char {
 
 glm::vec3 mat4vec3mult(glm::mat4& m, glm::vec3& v);
 
-// glm::vec3 linCombSolution(glm::vec3 A, glm::vec3 B, glm::vec3 C, glm::vec3 point);
+glm::vec3 linCombSolution(glm::vec3 A, glm::vec3 B, glm::vec3 C, glm::vec3 point);
 
-// bool faceContainsPointRange(glm::vec3 A, glm::vec3 B, glm::vec3 N, glm::vec3 point, float radius);
+bool faceContainsPointRange(glm::vec3 A, glm::vec3 B, glm::vec3 N, glm::vec3 point, float radius);
 
-// bool faceContainsPoint(glm::vec3 A, glm::vec3 B, glm::vec3 N, glm::vec3 point);
+bool faceContainsPoint(glm::vec3 A, glm::vec3 B, glm::vec3 N, glm::vec3 point);
 
 template <int C, int R>
 void rref(glm::mat<C, R, float>& m) {

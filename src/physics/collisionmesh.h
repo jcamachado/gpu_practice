@@ -4,7 +4,6 @@
 #include <vector>
 
 #include "../algorithms/bounds.h"
-#include "../algorithms/cmathematics/vec.h"             // Remember to distinguish between vec, glm::vec3 and std::vector
 
 /*
     Forward declarations
