@@ -14,8 +14,6 @@ bool RigidBody::operator==(std::string id){
     return instanceId == id;
 }
 
-RigidBody::RigidBody() {}
-
 RigidBody::RigidBody(
     std::string modelId, 
     glm::vec3 size,

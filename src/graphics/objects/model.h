@@ -46,10 +46,6 @@ class Model {
     public:
         std::string id;                                 // ID of model in scene
 
-
-        RigidBody rb;
-        glm::vec3 size;
-
         BoundTypes boundType;                           // Type of bounding region for all meshes
         
         std::vector<Mesh> meshes;

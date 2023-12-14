@@ -7,6 +7,7 @@
 #include "collisionmesh.h"
 #include "collisionmodel.h"
 #include "rigidbody.h"  
+#include <iostream>
 
 #include "../algorithms/math/linalg.h"
 
@@ -39,65 +40,8 @@
 #define CASE2 (char)2
 #define CASE3 (char)3
 
-/*
-void rref(glm::mat<C, R, float>& m) {
-	unsigned int currentRow = 0;
-	for (unsigned int c = 0; c < C; c++) {
-		unsigned int r = currentRow;
-		if (r >= R)
-		{
-			// no more rows
-			break;
-		}
-		// find nonzero entry
-		for (; r < R; r++)
-		{
-			if (m[c][r] != 0.0f)
-			{
-				// non-zero value
-				break;
-			}
-		}
-		// didn't find a nonzero entry in column
-		if (r == R)
-		{
-			continue;
-		}
-		// swap with proper row
-		if (r != currentRow) {
-			for (unsigned int i = 0; i < C; i++) {
-				float tmp = m[i][currentRow];
-				m[i][currentRow] = m[i][r];
-				m[i][r] = tmp;
-			}
-		}
-		// multiply row by 1 / value
-		if (m[c][currentRow] != 0.0f) {
-			float k = 1 / m[c][currentRow];
-			m[c][currentRow] = 1.0f;
-			for (unsigned int col = c + 1; col < C; col++)
-			{
-				m[col][currentRow] *= k;
-			}
-		}
-		// clear out rows above and below
-		for (r = 0; r < R; r++)
-		{
-			if (r == currentRow)
-			{
-				continue;
-			}
-			float k = -m[c][r];
-			for (unsigned int i = 0; i < C; i++) {
-				m[i][r] += k * m[i][currentRow];
-			}
-		}
-		currentRow++;
-	}
-}
-*/
 
-char linePlaneIntersection(glm::vec3 P1, glm::vec3 norm, glm::vec3 U1, glm::vec3 size, float& t){
+char linePlaneIntersection(glm::vec3 P1, glm::vec3 norm, glm::vec3 U1, glm::vec3 side, float& t){
     /*
         Calculate the parameter t of the line { U1 + side * t } at the point of intersection
         t = (N dot U1P1) / (N dot U1U2)..
@@ -106,7 +50,7 @@ char linePlaneIntersection(glm::vec3 P1, glm::vec3 norm, glm::vec3 U1, glm::vec3
 
     // Calculate the numerator and denominator of the t parameter
     float tnum = glm::dot(norm, U1P1);    
-    float tden = glm::dot(norm, size);
+    float tden = glm::dot(norm, side);
 
     if (tden == 0.0f) {
         return tnum == 0.0f ? CASE0 : CASE1;
@@ -119,24 +63,99 @@ char linePlaneIntersection(glm::vec3 P1, glm::vec3 norm, glm::vec3 U1, glm::vec3
     }
 }
 
-// glm::vec3 linCombSolution(glm::vec3 A, glm::vec3 B, glm::vec3 C, glm::vec3 point) {
-// 	// represent the point as a linear combination of the 3 basis vectors
-// 	glm::mat4x3 m(A, B, C, point);
+template <int C, int R>
+void rref(glm::mat<C, R, float>& m) {
+	unsigned int currentRow = 0;
+	for (unsigned int c = 0; c < C; c++) {
+		unsigned int r = currentRow;
+		if (r >= R)
+		{
+			// no more rows
+			break;
+		}
 
-// 	// do RREF
-// 	rref(m);
+		// find nonzero entry
+		for (; r < R; r++)
+		{
+			if (m[c][r] != 0.0f)
+			{
+				// non-zero value
+				break;
+			}
+		}
 
-// 	return m[3];
-// }
-// bool faceContainsPointRange(glm::vec3 A, glm::vec3 B, glm::vec3 N, glm::vec3 point, float radius) {
-// 	glm::vec3 c = linCombSolution(A, B, N, point);
+		// didn't find a nonzero entry in column
+		if (r == R)
+		{
+			continue;
+		}
 
-// 	return c[0] >= -radius && c[1] >= -radius && c[0] + c[1] <= 1.0f + radius;
-// }
+		// swap with proper row
+		if (r != currentRow) {
+			for (unsigned int i = 0; i < C; i++) {
+				float tmp = m[i][currentRow];
+				m[i][currentRow] = m[i][r];
+				m[i][r] = tmp;
+			}
+		}
 
-// bool faceContainsPoint(glm::vec3 A, glm::vec3 B, glm::vec3 N, glm::vec3 point) {
-// 	return faceContainsPointRange(A, B, N, point, 0.0f);
-// }
+		// multiply row by 1 / value
+		if (m[c][currentRow] != 0.0f) {
+			float k = 1 / m[c][currentRow];
+			m[c][currentRow] = 1.0f;
+			for (unsigned int col = c + 1; col < C; col++)
+			{
+				m[col][currentRow] *= k;
+			}
+		}
+
+		// clear out rows above and below
+		for (r = 0; r < R; r++)
+		{
+			if (r == currentRow)
+			{
+				continue;
+			}
+			float k = -m[c][r];
+			for (unsigned int i = 0; i < C; i++) {
+
+				m[i][r] += k * m[i][currentRow];
+			}
+		}
+
+		currentRow++;
+	}
+}
+
+glm::vec3 mat4vec3mult(glm::mat4& m, glm::vec3& v) {
+	glm::vec3 ret;
+	for (int i = 0; i < 3; i++) {
+		ret[i] = v[0] * m[0][i] + v[1] * m[1][i] + v[2] * m[2][i] + m[3][i];
+	}
+	return ret;
+}
+
+glm::vec3 linCombSolution(glm::vec3 A, glm::vec3 B, glm::vec3 C, glm::vec3 point) {
+	// represent the point as a linear combination of the 3 basis vectors
+	glm::mat4x3 m(A, B, C, point);
+
+	// do RREF
+	rref(m);
+
+	return m[3];
+}
+
+bool faceContainsPointRange(glm::vec3 A, glm::vec3 B, glm::vec3 N, glm::vec3 point, float radius) {
+	glm::vec3 c = linCombSolution(A, B, N, point);
+
+	return c[0] >= -radius && c[1] >= -radius && c[0] + c[1] <= 1.0f + radius;
+}
+
+bool faceContainsPoint(glm::vec3 A, glm::vec3 B, glm::vec3 N, glm::vec3 point) {
+	return faceContainsPointRange(A, B, N, point, 0.0f);
+}
+
+
 bool Face::collidesWithFace(RigidBody* thisRB, Face& face, RigidBody* faceRB){
     // Transform coordinates so that the P1 is the origin
     glm::vec3 P1 = mat4vec3mult(thisRB->model, this->mesh->points[this->i1]);
@@ -148,8 +167,9 @@ bool Face::collidesWithFace(RigidBody* thisRB, Face& face, RigidBody* faceRB){
 		P3 - P2
 	};
 
+    // Model matrix transformations and normal cuts off translation since its only directions
     glm::vec3 thisNorm = thisRB->normalModel * this->norm;
-
+    
     glm::vec3 U1 = mat4vec3mult(faceRB->model, face.mesh->points[face.i1]) - P1;
 	glm::vec3 U2 = mat4vec3mult(faceRB->model, face.mesh->points[face.i2]) - P1;
 	glm::vec3 U3 = mat4vec3mult(faceRB->model, face.mesh->points[face.i3]) - P1;
@@ -181,12 +201,12 @@ bool Face::collidesWithFace(RigidBody* thisRB, Face& face, RigidBody* faceRB){
         char currentCase = linePlaneIntersection(P1, thisNorm, sideOrigins[i], sides[i], t);
         switch (currentCase) {
             case CASE0: {
-                // line in the plane
-                // determine the intersection with the 3 bounding lines of this face
+                // Check intersection of the 3 bounding lines of this face (line in the plane )
                 for (int j = 0; j < 3; j++){    // Iterate through the lines of this plane 
                     glm::mat3 m(lines[j], -1.0f * sides[i], sideOrigins[i]);
                     
                     // Do reduction RREF (reduced row echelon form)
+                    
                     rref(m);
                     if (m[2][2] != 0.0f) {
 					    // no intersection
@@ -240,6 +260,9 @@ bool Face::collidesWithFace(RigidBody* thisRB, Face& face, RigidBody* faceRB){
     return false;
 }
 
+/*
+    Gotta check if this works with particles as spheres
+*/
 bool Face::collidesWithSphere(RigidBody* thisRB, BoundingRegion& br) {
 	if (br.type != BoundTypes::SPHERE) {
 		return false;
@@ -250,10 +273,12 @@ bool Face::collidesWithSphere(RigidBody* thisRB, BoundingRegion& br) {
 	glm::vec3 P2 = mat4vec3mult(thisRB->model, this->mesh->points[i2]);
 	glm::vec3 P3 = mat4vec3mult(thisRB->model, this->mesh->points[i3]);
 
+    // Transform the normal
 	glm::vec3 norm = thisRB->normalModel * this->norm;
-	glm::vec3 unitN = norm / glm::length(norm);
+	glm::vec3 unitN = norm / glm::length(norm); // Always = 1
 
-	glm::vec3 distanceVec = br.center - P1;
+    // Vector from P1 to the center of the sphere
+	glm::vec3 distanceVec = br.center - P1;     
 	float distance = glm::dot(distanceVec, unitN);
 
 	if (abs(distance) < br.radius) {

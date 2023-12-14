@@ -69,30 +69,54 @@ Lamp lamp(nLamps);
 
 int main(){
 
-//     float P[9] = {
-//         0.0f, 0.0f, 1.0f, 
-//         0.0f, 1.0f, 0.0f, 
-//         1.0f, 0.0f, 0.0f
-//     };
+    float P[9] = {
+        0.0f, 0.0f, 1.0f, 
+        0.0f, 1.0f, 0.0f, 
+        1.0f, 0.0f, 0.0f
+    };
 
-//     unsigned int Pi[3] = {
-//         0, 1, 2
-//     };
+    unsigned int Pi[3] = {
+        0, 1, 2
+    };
 
-//     float U[9] = {
-//         -1.0f, 1.0f, 0.0f, 
-//          0.0f, 0.0f, 0.0f, 
-//          1.0f, 2.0f, 0.5f
-//     };
-//     unsigned int Ui[3] = {
-//         2, 0, 1
-//     };
+    float U[9] = {
+        -1.0f, 1.0f, 0.0f, 
+         0.0f, 0.0f, 0.0f, 
+         1.0f, 2.0f, 0.5f
+    };
+    unsigned int Ui[3] = {
+        0, 1, 2 
+    };
 
-//     CollisionMesh PF(3, P, 1, Pi);
-//     CollisionMesh UF(3, U, 1, Ui);
+    CollisionMesh PF(3, P, 1, Pi);
+    CollisionMesh UF(3, U, 1, Ui);
 
-//     std::cout << PF.faces[0].collidesWith(UF.faces[0]) << std::endl;
+    RigidBody prb;
+    RigidBody urb;
 
+    std::cout << PF.faces[0].collidesWithFace(&prb, UF.faces[0], &urb) << std::endl;
+
+    float V[9] = {
+         0.0f, 0.0f,  0.0f, 
+         3.0f, 1.0f,  sqrt(3.0f), 
+        -3.0f, 0.6f, -sqrt(3.0f)
+    };
+
+    unsigned int Vi[3] = {
+        0, 1, 2
+    };
+
+
+    CollisionMesh VF(3, V, 1, Vi);
+
+    RigidBody vrb;
+    BoundingRegion br({ 1.0f, 0.0f, -1.0f }, 2.0f);
+    RigidBody rb2;
+    br.instance = &rb2;
+    br.transform();
+
+    std::cout << VF.faces[0].collidesWithSphere(&vrb, br) << std::endl;
+    return 0;
 
     scene = Scene(3, 3, "Particle System", 1200, 720); // Create scene
     
@@ -101,6 +125,7 @@ int main(){
         glfwTerminate();
         return -1;
     }
+
 
     scene.cameras.push_back(&cam);
     scene.activeCamera = 0; // It is an index 
