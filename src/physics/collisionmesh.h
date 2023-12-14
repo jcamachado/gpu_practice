@@ -9,17 +9,19 @@
 /*
     Forward declarations
 */
-class CollisionModel;
 class CollisionMesh;
+class CollisionModel;
+class RigidBody;
 
 typedef struct Face {
     CollisionMesh* mesh;
     unsigned int i1, i2, i3;        // Indices for vertex list in the mesh
 
-    vec baseNormal;
-    vec norm;       // Transform normal, affected by rotation and scaling but not translation
+    glm::vec3 baseNormal;
+    glm::vec3 norm;       // Transform normal, affected by rotation and scaling but not translation
 
-    bool collidesWith(struct Face& face);
+    bool collidesWithFace(RigidBody* thisRB, Face& face, RigidBody* faceRB);
+    bool collidesWithSphere(RigidBody* thisRB, BoundingRegion& br);
 } Face;      
 
 class CollisionMesh {
@@ -27,7 +29,7 @@ class CollisionMesh {
         CollisionModel* model;
         BoundingRegion br;
 
-        std::vector<vec> points;
+        std::vector<glm::vec3> points;
         std::vector<Face> faces;
 
 

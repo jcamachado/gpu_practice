@@ -31,12 +31,8 @@ add_executable(my_particle_system
     src/algorithms/octree.cpp
     src/algorithms/trie.hpp
 
-    src/algorithms/cmathematics/cmathematics.h
-    src/algorithms/cmathematics/cmathematics.cpp
-    src/algorithms/cmathematics/matrix.h
-    src/algorithms/cmathematics/matrix.cpp
-    src/algorithms/cmathematics/vec.h
-    src/algorithms/cmathematics/vec.cpp
+    src/algorithms/math/linalg.h
+    src/algorithms/math/linalg.cpp
 
     src/graphics/memory/vertexmemory.hpp
     src/graphics/memory/framememory.hpp
