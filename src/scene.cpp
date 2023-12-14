@@ -142,7 +142,8 @@ bool Scene::init() {
         Init model/instance trees
     */
     models = avl_createEmptyRoot(strkeycmp);
-    instances = avl_createEmptyRoot(strkeycmp);
+    // instances = avl_createEmptyRoot(strkeycmp);
+    instances = trie::Trie<RigidBody*>(trie::ascii_lowercase);
 
     /*
         Init octree
@@ -486,7 +487,6 @@ void Scene::renderPointLightShader(Shader shader, unsigned int idx){
 
 void Scene::renderInstances(std::string modelId, Shader shader, float dt){
     void* val = avl_get(models, (void*)modelId.c_str());
-    
     if (val) {
         // render each mesh in specified model
         shader.activate();
@@ -516,7 +516,7 @@ void Scene::renderText(
 */
 void Scene::cleanup(){
     // clean up instances
-    avl_free(instances);
+    instances.cleanup();
 
     // Cleanup models
     avl_postorderTraverse(models, [](avl* node) -> void {
@@ -592,7 +592,7 @@ RigidBody* Scene::generateInstance(
             std::string id = generateId();
             rb->instanceId = id;
             // insert into trie
-            instances = avl_insert(instances, (void*)id.c_str(), rb);
+            instances.insert(rb->instanceId, rb);
             // insert into pending queue
             octree->addToPending(rb, model);
             return rb;
@@ -624,7 +624,7 @@ void Scene::removeInstance(std::string instanceId){
         -Scene::instances
         -Model::instances
     */
-    RigidBody* instance = (RigidBody*)avl_get(instances, (void*)instanceId.c_str());
+    RigidBody* instance = instances[instanceId];
     
     std::string targetModel = instance->modelId;
     Model* model = (Model*)avl_get(models, (void*)targetModel.c_str());
@@ -633,11 +633,14 @@ void Scene::removeInstance(std::string instanceId){
     model->removeInstance(instanceId);
 
     // remove from tree
-    instances = avl_remove(instances, (void*)instanceId.c_str());
+    instances[instanceId] = NULL;
+    instances.erase(instanceId);
+    free(instance);
 }
 
 void Scene::markForDeletion(std::string instanceId){
-    RigidBody* instance = (RigidBody*)avl_get(instances, (void*)instanceId.c_str());
+
+    RigidBody* instance = instances[instanceId];
     States::activate(&instance->state, INSTANCE_DEAD);  // Activate kill switch
     instancesToDelete.push_back(instance);
 }

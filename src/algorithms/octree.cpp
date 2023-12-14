@@ -258,11 +258,9 @@ void Octree::node::update(Box &box){    //build and update seems to be having se
 
             // Parents
             while (current->parent){
-            // while (current->parent){
                 current = current->parent;
                 current->checkCollisionsSelf(movedObj);
             }
-
         }
     }
     else {
@@ -270,7 +268,6 @@ void Octree::node::update(Box &box){    //build and update seems to be having se
         if (queue.size() > 0) {
             processPending();
         }
-        // processPending();
     }
 }
 

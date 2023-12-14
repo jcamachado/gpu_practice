@@ -28,10 +28,10 @@
 #include "io/mouse.h"
 // #include "io/joystick.h"
 
-#include "algorithms/states.hpp"
-#include "algorithms/octree.h"
 #include "algorithms/avl.h"
-
+#include "algorithms/octree.h"
+#include "algorithms/states.hpp"
+#include "algorithms/trie.hpp"
 /*
     Forward declaration
 */
@@ -43,7 +43,7 @@ class Model;
 class Scene {
     public:
         avl* models;
-        avl* instances;
+        trie::Trie<RigidBody*> instances;
         std::vector<RigidBody*> instancesToDelete;
         Octree::node* octree;                           // Root for the scene
         

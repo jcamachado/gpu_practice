@@ -227,8 +227,10 @@ int main(){
 
 
         for (int i = 0; i < sphere.currentNInstances; i++){
-            if (glm::length(cam.cameraPos - sphere.instances[i]->pos) > 250.0f){
+            if (glm::length(cam.cameraPos - sphere.instances[i]->pos) > 250.0f)
+            {
                 scene.markForDeletion(sphere.instances[i]->instanceId);
+                std::cout << " CHECKPOINT next" << std::endl;
             }
         }
 
