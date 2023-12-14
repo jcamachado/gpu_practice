@@ -71,6 +71,10 @@ void Vertex::calcTanVectors(
     std::vector<Vertex>& list, 
     std::vector<unsigned int>& indices
 ){
+    if (indices.size() % 3 != 0){
+        std::cout << "Error: Indices size is not divisible by 3. Not a face?" << std::endl;
+        return;
+    }
     unsigned char* counts = (unsigned char*)malloc(list.size() * sizeof(unsigned char));
     for (unsigned int i = 0, len = list.size(); i < len; i++){
         counts[i] = 0;
@@ -92,7 +96,15 @@ void Vertex::calcTanVectors(
         glm::vec2 deltaUV2 = v3.texCoord - v1.texCoord;
 
         // Use inverse of UV matrix to determine tangent (f=1/det)
-        float f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
+        float det = deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y;
+
+        // inverse of determinant = 0
+        if (det == 0.0f){
+            std::cout << "Error: Determinant is 0. Cannot calculate tangent vector" << std::endl;
+            return;
+        }
+
+        float f = 1.0f / det;
 
         // Tangent components
         glm::vec3 tangent = {
@@ -106,6 +118,7 @@ void Vertex::calcTanVectors(
         averageVectors(list[indices[i + 1]].tangent, tangent, counts[indices[i + 1]]++);
         averageVectors(list[indices[i + 2]].tangent, tangent, counts[indices[i + 2]]++);
     }
+    free(counts);
 }
 
 /*
