@@ -125,28 +125,11 @@ setVars:
 
 void Octree::node::update(Box &box){    //build and update seems to be having segmenation faults
     if (treeBuilt && treeReady){
+        std::cout << "DEBUG OCTREE STAAART" << std::endl;
+
         // Countdown timer
         box.positions.push_back(region.calculateCenter());
         box.sizes.push_back(region.calculateDimensions());
-        
-        if(objects.size() == 0){
-            if(!!hasChildren){
-                if (currentLifespan==-1){
-                    currentLifespan = maxLifespan;
-                }
-                else if (currentLifespan > 0){
-                    currentLifespan--;
-                }
-            }
-        }
-        else{
-            if (currentLifespan != -1){
-                if(maxLifespan <= 64){
-                    // Extend lifespan because "hotspot" 
-                    maxLifespan <<= 2;
-                }
-            }
-        }
 
         /*
             Remove objects that dont exist anymore
@@ -155,20 +138,29 @@ void Octree::node::update(Box &box){    //build and update seems to be having se
             ABCDEFGHI          (list of objects),
             ABCDFGHI            if E dies (i=4), we want, everything will (has to) be left shifted
                                 so we need to update _i_ and _listSize_
-            
             since we do i++ with i--, we still get the next element F (i=4)
-            i
         */
-        for (int i = 0, listSize = objects.size(); i < listSize; i++){
+        std::cout << "DEBUG OCTREE issue 1 - start" << std::endl;
+        if (objects.size() == 0){
+            std::cout << "DEBUG OCTREE issue 1 - EMPTY OBJECTS SIZE" << std::endl;
+            return;
+        }
+        for (int i = 0, listSize = objects.size(); i < listSize-1; i++){
             // Remove if on list of dead objects
+            std::cout << "DEBUG OCTREE issue 1 - MId1" << std::endl;
             if (States::isActive(&objects[i].instance->state, INSTANCE_DEAD)){
+                std::cout << "DEBUG OCTREE issue 1 - MID2" << std::endl;
                 objects.erase(objects.begin() + i);
+                std::cout << "DEBUG OCTREE issue 1 - end, passed" << std::endl;
                 // Update counter and size accordingly
                 i--;
                 listSize--;
-
+                if (listSize == 0){
+                    break;
+                }
             }
         }
+        
         // Get moved objects that were in this leaf in previous frame
         std::stack<int> movedObjects;
         for (int i = 0, listSize = objects.size(); i < listSize; i++){
@@ -205,27 +197,30 @@ void Octree::node::update(Box &box){    //build and update seems to be having se
         }
         
         // Update child nodes
-        if (children != nullptr){
-            for (unsigned char flags = activeOctants, i = 0;
-                flags > 0;
-                flags >>= 1, i++){                      // Iterates over each bit in flags, each octant
-                if (States::isIndexActive(&flags, 0)){
+        for (unsigned char flags = activeOctants, i = 0;
+            flags > 0;
+            flags >>= 1, i++){                      // Iterates over each bit in flags, each octant
+            if (States::isIndexActive(&flags, 0)){
+                if (children != nullptr){
                     // Active octant
-                    if (children[i] != nullptr){
-                        children[i]->update(box);
-                    }
+                    std::cout << "DEBUG OCTREE before update" << std::endl;
+                    children[i]->update(box);
+                    std::cout << "DEBUG OCTREE after update" << std::endl;
                 }
             }
         }
         // Move moved objects to new nodes
         BoundingRegion movedObj;
+        int stackTop = 0;
         while (movedObjects.size() != 0){
+            stackTop = movedObjects.top();
             /*
                 For each moved object
                 - Traverse up tree (start with current node) until find a node that completely encloses the object
                 - Call insert (push object as far down as possible)
             */
-            movedObj = objects[movedObjects.top()];       // Set to top object in stack
+
+            movedObj = objects[stackTop];       // Set to top object in stack
             node* current = this;                       // Placeholder
 
             while (!current->region.containsRegion(movedObj)){
@@ -243,7 +238,7 @@ void Octree::node::update(Box &box){    //build and update seems to be having se
                 - remove from movedObjects stack
                 - insert into found region
             */
-            objects.erase(objects.begin() + movedObjects.top());
+            objects.erase(objects.begin() + stackTop);
             movedObjects.pop();
             // current->insert(movedObj);
             current->insert(movedObj);
@@ -252,6 +247,7 @@ void Octree::node::update(Box &box){    //build and update seems to be having se
             // Itself
             current=movedObj.cell;      // Current node might have changed node after previous code
             current->checkCollisionsSelf(movedObj);
+            std::cout << "DEBUG OCTREE issue 2 - start" << std::endl;
 
             // Children
             current->checkCollisionsChildren(movedObj);
@@ -261,12 +257,16 @@ void Octree::node::update(Box &box){    //build and update seems to be having se
                 current = current->parent;
                 current->checkCollisionsSelf(movedObj);
             }
+            std::cout << "DEBUG OCTREE issue 2 - end" << std::endl;
         }
     }
     else {
         // Process pending results
+        std::cout << "DEBUG OCTREE J" << std::endl;
         if (queue.size() > 0) {
+            std::cout << "DEBUG OCTREE K" << std::endl;
             processPending();
+            std::cout << "DEBUG OCTREE J" << std::endl;
         }
     }
 }
@@ -393,37 +393,62 @@ bool Octree::node::insert(BoundingRegion obj){
 
 
 void Octree::node::checkCollisionsSelf(BoundingRegion obj){ // CUDABLE?
-    for (BoundingRegion br : objects){
-        // Coarse check for bounding region intersection
-        // Coarse  significa bruto, amarrotado, grosso, logo, uma verificação rápida
-        if (br.instance == obj.instance) {
-            continue; // Skip if same instance
-        }
+    try{
+        
+        for (BoundingRegion br : objects){
+            // Coarse check for bounding region intersection
+            // Coarse  significa bruto, amarrotado, grosso, logo, uma verificação rápida
+            // std::cout << "before COLLISION" << std::endl;
+            if (br.instance == obj.instance) {
+                continue; // Skip if same instance
+            }
 
-        if (br.intersectsWith(obj)){
-            // Coarse check passed
+            if (br.intersectsWith(obj)){
+                // Coarse check passed
+                std::cout << "COLLISION COARSE CHECK" << std::endl;
 
-            unsigned int nFacesBr = br.collisionMesh==nullptr ? br.collisionMesh->faces.size() : 0;
-            unsigned int nFacesObj = obj.collisionMesh==nullptr ? obj.collisionMesh->faces.size() : 0;
+                unsigned int nFacesBr = br.collisionMesh==nullptr ? br.collisionMesh->faces.size() : 0;
+                unsigned int nFacesObj = obj.collisionMesh==nullptr ? obj.collisionMesh->faces.size() : 0;
 
-            glm::vec3 norm;     // For handleCollision
-            
-            if(nFacesBr){
-                if(obj.collisionMesh){      // Both have collision meshes
-                    // Check all faces in br against all faces in obj. Quadratic hell O(n^2)
-                    bool collisionFound = false;
-                    for (unsigned int i = 0; i < nFacesBr && !collisionFound; i++){
-                        for (unsigned int j = 0; j < nFacesObj && !collisionFound; j++){  //Cubic hell O(n^3)
-                            if (br.collisionMesh->faces[i].collidesWithFace(
+                glm::vec3 norm;     // For handleCollision
+                
+                if(nFacesBr){
+                    if(obj.collisionMesh){      // Both have collision meshes
+                        // Check all faces in br against all faces in obj. Quadratic hell O(n^2)
+                        std::cout << "COLLISION C1" << std::endl;
+                        bool collisionFound = false;
+                        for (unsigned int i = 0; i < nFacesBr && !collisionFound; i++){
+                            for (unsigned int j = 0; j < nFacesObj && !collisionFound; j++){  //Cubic hell O(n^3)
+                                if (br.collisionMesh->faces[i].collidesWithFace(
+                                    br.instance,
+                                    obj.collisionMesh->faces[j],
+                                    obj.instance,
+                                    norm
+                                )){
+                                    std::cout << "Case 1: Instance " << br.instance->instanceId << 
+                                    "(" << br.instance->modelId << ") collided with instance " << obj.instance->instanceId << 
+                                    "(" << obj.instance->modelId << ")" << std::endl;
+                                    // collisionFound = true;
+                                    obj.instance->handleCollision(br.instance, norm);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        // Br has collision mesh, obj doesnt
+                        // Check all faces in br against objs sphere
+                        std::cout << "COLLISION C2" << std::endl;
+
+                        for (unsigned int i = 0; i < nFacesBr; i++){
+                            if (br.collisionMesh->faces[i].collidesWithSphere(
                                 br.instance,
-                                obj.collisionMesh->faces[j],
-                                obj.instance,
+                                obj,
                                 norm
                             )){
-                                std::cout << "Case 1: Instance " << br.instance->instanceId << 
+                                std::cout << "Case 2: Instance " << br.instance->instanceId << 
                                 "(" << br.instance->modelId << ") collided with instance " << obj.instance->instanceId << 
                                 "(" << obj.instance->modelId << ")" << std::endl;
-                                // collisionFound = true;
                                 obj.instance->handleCollision(br.instance, norm);
                                 break;
                             }
@@ -431,55 +456,43 @@ void Octree::node::checkCollisionsSelf(BoundingRegion obj){ // CUDABLE?
                     }
                 }
                 else {
-                    // Br has collision mesh, obj doesnt
-                    // Check all faces in br against objs sphere
-                    for (unsigned int i = 0; i < nFacesBr; i++){
-                        if (br.collisionMesh->faces[i].collidesWithSphere(
-                            br.instance,
-                            obj,
-                            norm
-                        )){
-                            std::cout << "Case 2: Instance " << br.instance->instanceId << 
-                            "(" << br.instance->modelId << ") collided with instance " << obj.instance->instanceId << 
-                            "(" << obj.instance->modelId << ")" << std::endl;
-                            obj.instance->handleCollision(br.instance, norm);
-                            break;
+                    if (nFacesObj) {
+                        std::cout << "COLLISION C3" << std::endl;
+
+                        // Obj has collision mesh, br doesnt
+                        // Check all faces in obj against brs sphere
+                        for (int i = 0; i < nFacesObj; i++){
+                            if (obj.collisionMesh->faces[i].collidesWithSphere(
+                                obj.instance,
+                                br,
+                                norm
+                            )){
+                                std::cout << "Case 3: Instance " << br.instance->instanceId << 
+                                "(" << br.instance->modelId << ") collided with instance " << obj.instance->instanceId << 
+                                "(" << obj.instance->modelId << ")" << std::endl;
+                                obj.instance->handleCollision(br.instance, norm);
+                                break;
+                            }
                         }
                     }
-                }
-            }
-            else {
-                if (nFacesObj) {
-                    // Obj has collision mesh, br doesnt
-                    // Check all faces in obj against brs sphere
-                    for (int i = 0; i < nFacesObj; i++){
-                        if (obj.collisionMesh->faces[i].collidesWithSphere(
-                            obj.instance,
-                            br,
-                            norm
-                        )){
-                            std::cout << "Case 3: Instance " << br.instance->instanceId << 
-                            "(" << br.instance->modelId << ") collided with instance " << obj.instance->instanceId << 
-                            "(" << obj.instance->modelId << ")" << std::endl;
+                    else {
+                        std::cout << "COLLISION C4" << std::endl;
+                        // Neither have collision mesh
+                        // Coarse check passed (Teste collision between spheres)
+                        // Check if spheres intersect
+                        if (br.intersectsWith(obj)){
+                            std::cout << "COLLISION C4 in" << std::endl;
+                            norm = obj.center - br.center;
                             obj.instance->handleCollision(br.instance, norm);
-                            break;
+                            std::cout << "COLLISION C4 in after" << std::endl;
                         }
                     }
-                }
-                else {
-                    // Neither have collision mesh
-                    // Coarse check passed (Teste collision between spheres)
-                    // Check if spheres intersect
-                    if (br.intersectsWith(obj)){
-                        std::cout << "Case 4: Instance " << br.instance->instanceId << 
-                        "(" << br.instance->modelId << ") collided with instance " << obj.instance->instanceId << 
-                        "(" << obj.instance->modelId << ")" << std::endl;
-                    }
-                    norm = obj.center - br.center;
-                    obj.instance->handleCollision(br.instance, norm);
                 }
             }
         }
+        std::cout << "COLLISION end" << std::endl;
+    } catch (const std::exception& e) {
+        std::cout << "Skipped collision, COLLISION ERROR: " << e.what() << std::endl;
     }
 }
 
@@ -511,6 +524,7 @@ void Octree::node::destroy() {
                 if (children[i] != nullptr){
                     children[i]->destroy();
                     children[i] = nullptr;
+                    delete children[i];
                 }
             }
         }
