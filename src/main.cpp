@@ -68,56 +68,6 @@ Sphere sphere(nSpheres);
 #include "physics/collisionmesh.h"
 
 int main(){
-
-    // float P[9] = {
-    //     0.0f, 0.0f, 1.0f, 
-    //     0.0f, 1.0f, 0.0f, 
-    //     1.0f, 0.0f, 0.0f
-    // };
-
-    // unsigned int Pi[3] = {
-    //     0, 1, 2
-    // };
-
-    // float U[9] = {
-    //     -1.0f, 1.0f, 0.0f, 
-    //      0.0f, 0.0f, 0.0f, 
-    //      1.0f, 2.0f, 0.5f
-    // };
-    // unsigned int Ui[3] = {
-    //     0, 1, 2 
-    // };
-
-    // CollisionMesh PF(3, P, 1, Pi);
-    // CollisionMesh UF(3, U, 1, Ui);
-
-    // RigidBody prb;
-    // RigidBody urb;
-
-    // std::cout << PF.faces[0].collidesWithFace(&prb, UF.faces[0], &urb) << std::endl;
-
-    // float V[9] = {
-    //      0.0f, 0.0f,  0.0f, 
-    //      3.0f, 1.0f,  sqrt(3.0f), 
-    //     -3.0f, 0.6f, -sqrt(3.0f)
-    // };
-
-    // unsigned int Vi[3] = {
-    //     0, 1, 2
-    // };
-
-
-    // CollisionMesh VF(3, V, 1, Vi);
-
-    // RigidBody vrb;
-    // BoundingRegion br({ 1.0f, 0.0f, -1.0f }, 2.0f);
-    // RigidBody rb2;
-    // br.instance = &rb2;
-    // br.transform();
-
-    // std::cout << VF.faces[0].collidesWithSphere(&vrb, br) << std::endl;
-    // return 0;
-
     scene = Scene(3, 3, "Particle System", 1200, 720); // Create scene
     
     if (!scene.init()){ // Initialize scene
@@ -345,7 +295,7 @@ void launchItem(float dt){
 
     // RigidBody* rb = scene.generateInstance(sphere.id, glm::vec3(1.0f), 1.0f, cam.cameraPos-glm::vec3(-15.0f, 10.0f, 10.0f));
     if (rb != nullptr){
-        rb->transferEnergy(100.0f, cam.cameraFront);
+        rb->transferEnergy(25.0f, cam.cameraFront);
         rb->applyAcceleration(Environment::gravity);
     }
 }

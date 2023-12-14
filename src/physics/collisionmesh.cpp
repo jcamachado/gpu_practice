@@ -144,18 +144,30 @@ glm::vec3 linCombSolution(glm::vec3 A, glm::vec3 B, glm::vec3 C, glm::vec3 point
 	return m[3];
 }
 
-bool faceContainsPointRange(glm::vec3 A, glm::vec3 B, glm::vec3 N, glm::vec3 point, float radius) {
+bool faceContainsPointRange(
+    glm::vec3 A, glm::vec3 B, glm::vec3 N, 
+    glm::vec3 point, 
+    float radius
+) {
 	glm::vec3 c = linCombSolution(A, B, N, point);
 
 	return c[0] >= -radius && c[1] >= -radius && c[0] + c[1] <= 1.0f + radius;
 }
 
-bool faceContainsPoint(glm::vec3 A, glm::vec3 B, glm::vec3 N, glm::vec3 point) {
+bool faceContainsPoint(
+    glm::vec3 A, glm::vec3 B, glm::vec3 N, 
+    glm::vec3 point
+) {
 	return faceContainsPointRange(A, B, N, point, 0.0f);
 }
 
-
-bool Face::collidesWithFace(RigidBody* thisRB, Face& face, RigidBody* faceRB){
+bool Face::collidesWithFace(
+    RigidBody* thisRB, 
+    Face& face, 
+    RigidBody* faceRB, 
+    glm::vec3& retNorm
+){  
+    // retNorm is the noram to return to be used in handleCollision
     // Transform coordinates so that the P1 is the origin
     glm::vec3 P1 = mat4vec3mult(thisRB->model, this->mesh->points[this->i1]);
 	glm::vec3 P2 = mat4vec3mult(thisRB->model, this->mesh->points[this->i2]) - P1;
@@ -172,6 +184,8 @@ bool Face::collidesWithFace(RigidBody* thisRB, Face& face, RigidBody* faceRB){
     glm::vec3 U1 = mat4vec3mult(faceRB->model, face.mesh->points[face.i1]) - P1;
 	glm::vec3 U2 = mat4vec3mult(faceRB->model, face.mesh->points[face.i2]) - P1;
 	glm::vec3 U3 = mat4vec3mult(faceRB->model, face.mesh->points[face.i3]) - P1;
+
+    retNorm = faceRB->normalModel *  face.norm;
 
     // Set P1 as the origin (zero vector)
     P1[0] = 0.0f; P1[1] = 0.0f; P1[2] = 0.0f;
@@ -223,11 +237,9 @@ bool Face::collidesWithFace(RigidBody* thisRB, Face& face, RigidBody* faceRB){
                 }
                 continue;
             }
-
             case CASE1:
                 // No intersection with the plane -> no collision
                 continue;
-            
             case CASE2: {
                 // Intersection with the plane, in range. 
                 // Determine if inside this triangle (Bounded by P1, P2 and P3)
@@ -248,12 +260,10 @@ bool Face::collidesWithFace(RigidBody* thisRB, Face& face, RigidBody* faceRB){
 
                 continue;
             }
-            
             case CASE3:
                 // Intersection with the plane, outside range. 
                 // No collision
                 continue;
-
         }
     }
     return false;
@@ -262,7 +272,7 @@ bool Face::collidesWithFace(RigidBody* thisRB, Face& face, RigidBody* faceRB){
 /*
     Gotta check if this works with particles as spheres
 */
-bool Face::collidesWithSphere(RigidBody* thisRB, BoundingRegion& br) {
+bool Face::collidesWithSphere(RigidBody* thisRB, BoundingRegion& br, glm::vec3& retNorm) {
 	// if (br.type != BoundTypes::SPHERE) {
 	// 	return false;
 	// }
@@ -282,6 +292,7 @@ bool Face::collidesWithSphere(RigidBody* thisRB, BoundingRegion& br) {
 
 	if (abs(distance) < br.radius) {
 		glm::vec3 circCenter = br.center + distance * unitN;
+        retNorm = unitN;
 
 		return faceContainsPointRange(P2 - P1, P3 - P1, norm, circCenter - P1, br.radius);
 	}

@@ -408,6 +408,8 @@ void Octree::node::checkCollisionsSelf(BoundingRegion obj){ // CUDABLE?
 
             unsigned int nFacesBr = br.collisionMesh==nullptr ? br.collisionMesh->faces.size() : 0;
             unsigned int nFacesObj = obj.collisionMesh==nullptr ? obj.collisionMesh->faces.size() : 0;
+
+            glm::vec3 norm;     // For handleCollision
             
             if(nFacesBr){
                 if(obj.collisionMesh){      // Both have collision meshes
@@ -418,12 +420,14 @@ void Octree::node::checkCollisionsSelf(BoundingRegion obj){ // CUDABLE?
                             if (br.collisionMesh->faces[i].collidesWithFace(
                                 br.instance,
                                 obj.collisionMesh->faces[j],
-                                obj.instance
+                                obj.instance,
+                                norm
                             )){
                                 std::cout << "Case 1: Instance " << br.instance->instanceId << 
                                 "(" << br.instance->modelId << ") collided with instance " << obj.instance->instanceId << 
                                 "(" << obj.instance->modelId << ")" << std::endl;
-                                collisionFound = true;
+                                // collisionFound = true;
+                                obj.instance->handleCollision(br.instance, norm);
                                 break;
                             }
                         }
@@ -435,11 +439,13 @@ void Octree::node::checkCollisionsSelf(BoundingRegion obj){ // CUDABLE?
                     for (unsigned int i = 0; i < nFacesBr; i++){
                         if (br.collisionMesh->faces[i].collidesWithSphere(
                             br.instance,
-                            obj
+                            obj,
+                            norm
                         )){
                             std::cout << "Case 2: Instance " << br.instance->instanceId << 
                             "(" << br.instance->modelId << ") collided with instance " << obj.instance->instanceId << 
                             "(" << obj.instance->modelId << ")" << std::endl;
+                            obj.instance->handleCollision(br.instance, norm);
                             break;
                         }
                     }
@@ -452,11 +458,13 @@ void Octree::node::checkCollisionsSelf(BoundingRegion obj){ // CUDABLE?
                     for (int i = 0; i < nFacesObj; i++){
                         if (obj.collisionMesh->faces[i].collidesWithSphere(
                             obj.instance,
-                            br
+                            br,
+                            norm
                         )){
                             std::cout << "Case 3: Instance " << br.instance->instanceId << 
                             "(" << br.instance->modelId << ") collided with instance " << obj.instance->instanceId << 
                             "(" << obj.instance->modelId << ")" << std::endl;
+                            obj.instance->handleCollision(br.instance, norm);
                             break;
                         }
                     }
@@ -470,6 +478,8 @@ void Octree::node::checkCollisionsSelf(BoundingRegion obj){ // CUDABLE?
                         "(" << br.instance->modelId << ") collided with instance " << obj.instance->instanceId << 
                         "(" << obj.instance->modelId << ")" << std::endl;
                     }
+                    norm = obj.center - br.center;
+                    obj.instance->handleCollision(br.instance, norm);
                 }
             }
         }
