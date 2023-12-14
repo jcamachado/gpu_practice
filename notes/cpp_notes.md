@@ -37,3 +37,25 @@ Classes
 
 Pointers
     nullptr - Object of "no value" for pointer
+
+void foo(CDummy& x);
+//you pass x by reference
+//if you modify x inside the function, the change will be applied to the original variable
+//a copy is not created for x, the original one is used
+//this is preffered for passing large objects
+//to prevent changes, pass by const reference:
+void fooconst(const CDummy& x);
+
+Should you write it like this: void myfunc(int *a) or like this void myfunc(int &a)?
+
+
+Pointers (ie. the '*') should be used where the passing "NULL" is meaningful. For example, you might use a NULL to represent that a particular object needs to be created, or that a particular action doesn't need to be taken. Or if it ever needs to be called from non-C++ code. (eg. for use in shared libraries)
+
+eg. The libc function time_t time (time_t *result);
+
+If result is not NULL, the current time will be stored. But if result is NULL, then no action is taken.
+
+If the function that you're writing doesn't need to use NULL as a meaningful value then using references (ie. the '&') will probably be less confusing - assuming that is the convention that your project uses.
+
+\* = pointer
+& = reference

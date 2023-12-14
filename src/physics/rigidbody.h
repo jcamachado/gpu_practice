@@ -8,6 +8,8 @@
 #define INSTANCE_DEAD       (unsigned char)0b00000001
 #define INSTANCE_MOVED      (unsigned char)0b00000010
 
+#define COLLISION_THRESHOLD 0.05f   // in seconds
+
 class RigidBody {
     public:
         unsigned char state;                    // Combination of above switches in octree
@@ -37,6 +39,12 @@ class RigidBody {
         */
         std::string modelId;
         std::string instanceId;
+
+        /*
+            Data from previous collision
+        */
+        float lastCollision;            // Time of last collision
+        std::string lastCollisionId;
 
         bool operator==(RigidBody rb);
         bool operator==(std::string id);
@@ -72,6 +80,11 @@ class RigidBody {
         void transferEnergy(float joules, glm::vec3 direction);
         bool freeze();
         bool unfreeze();
+
+        /*
+            Collisions
+        */
+        void handleCollision(RigidBody* inst, glm::vec3 normal);
 };
 
 
