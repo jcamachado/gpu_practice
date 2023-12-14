@@ -63,60 +63,60 @@ std::string Shader::defaultDirectory = "assets/shaders";
 BrickWall wall;
 // Cube cube(10);
 Lamp lamp(nLamps);
-// Sphere sphere(nSpheres);
+Sphere sphere(nSpheres);
 
 #include "physics/collisionmesh.h"
 
 int main(){
 
-    float P[9] = {
-        0.0f, 0.0f, 1.0f, 
-        0.0f, 1.0f, 0.0f, 
-        1.0f, 0.0f, 0.0f
-    };
+    // float P[9] = {
+    //     0.0f, 0.0f, 1.0f, 
+    //     0.0f, 1.0f, 0.0f, 
+    //     1.0f, 0.0f, 0.0f
+    // };
 
-    unsigned int Pi[3] = {
-        0, 1, 2
-    };
+    // unsigned int Pi[3] = {
+    //     0, 1, 2
+    // };
 
-    float U[9] = {
-        -1.0f, 1.0f, 0.0f, 
-         0.0f, 0.0f, 0.0f, 
-         1.0f, 2.0f, 0.5f
-    };
-    unsigned int Ui[3] = {
-        0, 1, 2 
-    };
+    // float U[9] = {
+    //     -1.0f, 1.0f, 0.0f, 
+    //      0.0f, 0.0f, 0.0f, 
+    //      1.0f, 2.0f, 0.5f
+    // };
+    // unsigned int Ui[3] = {
+    //     0, 1, 2 
+    // };
 
-    CollisionMesh PF(3, P, 1, Pi);
-    CollisionMesh UF(3, U, 1, Ui);
+    // CollisionMesh PF(3, P, 1, Pi);
+    // CollisionMesh UF(3, U, 1, Ui);
 
-    RigidBody prb;
-    RigidBody urb;
+    // RigidBody prb;
+    // RigidBody urb;
 
-    std::cout << PF.faces[0].collidesWithFace(&prb, UF.faces[0], &urb) << std::endl;
+    // std::cout << PF.faces[0].collidesWithFace(&prb, UF.faces[0], &urb) << std::endl;
 
-    float V[9] = {
-         0.0f, 0.0f,  0.0f, 
-         3.0f, 1.0f,  sqrt(3.0f), 
-        -3.0f, 0.6f, -sqrt(3.0f)
-    };
+    // float V[9] = {
+    //      0.0f, 0.0f,  0.0f, 
+    //      3.0f, 1.0f,  sqrt(3.0f), 
+    //     -3.0f, 0.6f, -sqrt(3.0f)
+    // };
 
-    unsigned int Vi[3] = {
-        0, 1, 2
-    };
+    // unsigned int Vi[3] = {
+    //     0, 1, 2
+    // };
 
 
-    CollisionMesh VF(3, V, 1, Vi);
+    // CollisionMesh VF(3, V, 1, Vi);
 
-    RigidBody vrb;
-    BoundingRegion br({ 1.0f, 0.0f, -1.0f }, 2.0f);
-    RigidBody rb2;
-    br.instance = &rb2;
-    br.transform();
+    // RigidBody vrb;
+    // BoundingRegion br({ 1.0f, 0.0f, -1.0f }, 2.0f);
+    // RigidBody rb2;
+    // br.instance = &rb2;
+    // br.transform();
 
-    std::cout << VF.faces[0].collidesWithSphere(&vrb, br) << std::endl;
-    return 0;
+    // std::cout << VF.faces[0].collidesWithSphere(&vrb, br) << std::endl;
+    // return 0;
 
     scene = Scene(3, 3, "Particle System", 1200, 720); // Create scene
     
@@ -168,7 +168,7 @@ int main(){
     */
     // scene.registerModel(&cube);
     scene.registerModel(&lamp);
-    // scene.registerModel(&sphere);
+    scene.registerModel(&sphere);
     scene.registerModel(&wall);
 
     Box box;
@@ -276,11 +276,11 @@ int main(){
         // Everything rendered after this will be rendered to this FBO
 
 
-        // for (int i = 0; i < sphere.currentNInstances; i++){
-        //     if (glm::length(cam.cameraPos - sphere.instances[i]->pos) > 250.0f){
-        //         scene.markForDeletion(sphere.instances[i]->instanceId);
-        //     }
-        // }
+        for (int i = 0; i < sphere.currentNInstances; i++){
+            if (glm::length(cam.cameraPos - sphere.instances[i]->pos) > 250.0f){
+                scene.markForDeletion(sphere.instances[i]->instanceId);
+            }
+        }
 
         // // Render scene to dirlight FBO
         // dirLight.shadowFBO.activate();
@@ -319,8 +319,8 @@ int main(){
         scene.renderShader(shader);               // Render scene normally
         renderScene(shader);
 
-        // scene.renderShader(boxShader, false);           // Render boxes
-        // box.render(boxShader);                          // Box is not instanced
+        scene.renderShader(boxShader, false);           // Render boxes
+        box.render(boxShader);                          // Box is not instanced
 
         // Send new frame to window
         scene.newFrame(box);
@@ -331,22 +331,24 @@ int main(){
 }
 
 void renderScene(Shader shader){                // assumes shader is prepared accordingly
-    // if (sphere.currentNInstances > 0) {            // Render launch objects
-    //         scene.renderInstances(sphere.id, shader, dt);
-    // }
+    
+    if (sphere.currentNInstances > 0) {            // Render launch objects
+            scene.renderInstances(sphere.id, shader, dt);
+    }
     // scene.renderInstances(cube.id, shader, dt);     // Render cubes
     scene.renderInstances(lamp.id, shader, dt);     // Render lamps
     scene.renderInstances(wall.id, shader, dt);     // Render wall
 }
 
-// void launchItem(float dt){
-//     RigidBody* rb = scene.generateInstance(sphere.id, glm::vec3(0.05f), 1.0f, cam.cameraPos-glm::vec3(0.0f, 0.0f, 0.0f));
-//     // RigidBody* rb = scene.generateInstance(sphere.id, glm::vec3(1.0f), 1.0f, cam.cameraPos-glm::vec3(-15.0f, 10.0f, 10.0f));
-//     if (rb){
-//         rb->transferEnergy(100.0f, cam.cameraFront);
-//         rb->applyAcceleration(Environment::gravity);
-//     }
-// }
+void launchItem(float dt){
+    RigidBody* rb = scene.generateInstance(sphere.id, glm::vec3(0.05f), 1.0f, cam.cameraPos);
+
+    // RigidBody* rb = scene.generateInstance(sphere.id, glm::vec3(1.0f), 1.0f, cam.cameraPos-glm::vec3(-15.0f, 10.0f, 10.0f));
+    if (rb != nullptr){
+        rb->transferEnergy(100.0f, cam.cameraFront);
+        rb->applyAcceleration(Environment::gravity);
+    }
+}
 
 void processInput(double dt){ // Function for processing input
     scene.processInput(dt); // Process input for scene
@@ -368,16 +370,17 @@ void processInput(double dt){ // Function for processing input
         States::toggleIndex(&scene.activeSpotLights, 0);
     }
 
-    // if (Keyboard::keyWentDown(GLFW_KEY_F)){
-    //     launchItem(dt);
-    // }
-    // if (Keyboard::keyWentDown(GLFW_KEY_T)){
-    //     for (int i = 0; i < sphere.currentNInstances; i++){
-    //         if (!sphere.instances[i]->freeze()){
-    //             sphere.instances[i]->unfreeze();
-    //         }
-    //     }
-    // }
+    if (Keyboard::keyWentDown(GLFW_KEY_F)){
+
+        launchItem(dt);
+    }
+    if (Keyboard::keyWentDown(GLFW_KEY_T)){
+        for (int i = 0; i < sphere.currentNInstances; i++){
+            if (!sphere.instances[i]->freeze()){
+                sphere.instances[i]->unfreeze();
+            }
+        }
+    }
     //reset octree
     if (Keyboard::keyWentDown(GLFW_KEY_R)){
         scene.octree = new Octree::node(BoundingRegion(glm::vec3(-16.0f), glm::vec3(16.0f)));

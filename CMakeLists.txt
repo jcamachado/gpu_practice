@@ -16,7 +16,7 @@ add_executable(my_particle_system
     lib/jsoncpp/json.hpp
     lib/stb.cpp 
     lib/stb/stb_image.h
-    
+
     src/glad.c
     src/main.cpp 
     src/scene.h 
@@ -77,10 +77,10 @@ add_executable(my_particle_system
     src/physics/collisionmodel.cpp
     src/physics/collisionmesh.h
     src/physics/collisionmesh.cpp
-    src/physics/rigidbody.h
-    src/physics/rigidbody.cpp
     src/physics/environment.h
     src/physics/environment.cpp
+    src/physics/rigidbody.h
+    src/physics/rigidbody.cpp
 )
 target_include_directories(my_particle_system PRIVATE ${FREETYPE_INCLUDE_DIRS} ${CMAKE_SOURCE_DIR}/lib/jsoncpp)
 #including the header files glad/glad.h and stb_image

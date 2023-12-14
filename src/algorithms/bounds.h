@@ -8,6 +8,9 @@
 /*
     Forward declaration
 */
+class RigidBody;
+class CollisionMesh;
+
 namespace Octree {
     class node;
 }
@@ -27,8 +30,10 @@ class BoundingRegion {
         /*
             Octree region values
 
+            Pointers for quick access to instance and collision mesh
         */
-        RigidBody* instance; // Instance of the rigidbody that is inside the region
+        RigidBody* instance;
+        CollisionMesh* collisionMesh;
 
         /*
             Octree node values

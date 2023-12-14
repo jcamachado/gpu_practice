@@ -149,8 +149,6 @@ void Mesh::loadData(
     VAO["EBO"] = BufferObject(GL_ELEMENT_ARRAY_BUFFER);
     VAO["EBO"].generate();
     VAO["EBO"].bind();
-
-    
     VAO["EBO"].setData<GLuint>(this->indices.size(), &this->indices[0], GL_STATIC_DRAW);
  
     // Load data into vertex buffers
@@ -159,7 +157,7 @@ void Mesh::loadData(
     VAO["VBO"].bind();
 
 
-    unsigned int size = this->indices.size();
+    unsigned int size = this->vertices.size();
     if (pad && size){
         size++;
     }
@@ -186,7 +184,7 @@ void Mesh::loadCollisionMesh(
     float* coordinates, 
     unsigned int nFaces, 
     unsigned int* indices
-){
+){    
     this->collision = new CollisionMesh(nPoints, coordinates, nFaces, indices);
     this->br = this->collision->br;
 }
@@ -255,6 +253,7 @@ void Mesh::render(Shader shader, unsigned int numInstances){
     VAO.bind();                                                                 // Bind VAO
     VAO.draw(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0, numInstances);   // Draw
     ArrayObject::clear();
+
     glActiveTexture(GL_TEXTURE0);                                               // Reset texture unit
 }
 

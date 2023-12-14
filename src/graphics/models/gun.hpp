@@ -9,7 +9,7 @@ class Gun : public Model {
     public:
         // CONST_INSTANCES eh relativo a vbo e pois as mudancas de gun vao ocorrer na propria classe model
         Gun(unsigned int maxNInstances)      
-            : Model("m4a1", BoundTypes::AABB, maxNInstances, CONST_INSTANCES | NO_TEX) {} 
+            : Model("m4a1", maxNInstances, CONST_INSTANCES | NO_TEX) {} 
 
         void init(){
             loadModel("assets/models/m4a1/scene.gltf");

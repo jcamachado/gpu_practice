@@ -10,7 +10,7 @@ class Cube : public Model {
         Material material;
 
         Cube(unsigned int maxNInstances, Material material = Material::red_plastic)
-            : Model("cube", BoundTypes::AABB, maxNInstances, CONST_INSTANCES | NO_TEX), material(material) {}
+            : Model("cube", maxNInstances, CONST_INSTANCES | NO_TEX), material(material) {}
         void init(){
             int nVertices = 36;
             /*
@@ -93,12 +93,15 @@ class Cube : public Model {
                 7, 3, 2
             };
 
-            BoundingRegion br(glm::vec3(-0.5f), glm::vec3(0.5f));
+            // BoundingRegion br(glm::vec3(-0.5f), glm::vec3(0.5f));
+            BoundingRegion br(glm::vec3(0.0f), sqrt(3.0f)/2.0f);
             
             /*
                 Seems like number of indices = number o vertices 
                 And without passing indices, we copy the indices sequentially in the index list 
             */
+
+
             Mesh ret = processMesh(
                 br,
                 nVertices, vertices,
@@ -108,8 +111,7 @@ class Cube : public Model {
                 12, collisionIndices
             );
             ret.setupMaterial(material);
-            addMesh(&ret);
-
+            addMesh(&ret); 
         }
 };
 

@@ -2,7 +2,7 @@
 
 #include "bounds.h"
 #include "octree.h"
-
+#include "../physics/collisionmesh.h"
 
 BoundingRegion::BoundingRegion(BoundTypes type)
     : type(type){

@@ -8,8 +8,7 @@
 #include "collisionmodel.h"
 #include "rigidbody.h"  
 #include <iostream>
-
-#include "../algorithms/math/linalg.h"
+#include <limits>
 
 /*
     Line-plane intersection cases, checked sequentially:
@@ -264,9 +263,9 @@ bool Face::collidesWithFace(RigidBody* thisRB, Face& face, RigidBody* faceRB){
     Gotta check if this works with particles as spheres
 */
 bool Face::collidesWithSphere(RigidBody* thisRB, BoundingRegion& br) {
-	if (br.type != BoundTypes::SPHERE) {
-		return false;
-	}
+	// if (br.type != BoundTypes::SPHERE) {
+	// 	return false;
+	// }
 
 	// apply model transformations
 	glm::vec3 P1 = mat4vec3mult(thisRB->model, this->mesh->points[i1]);
@@ -295,7 +294,12 @@ CollisionMesh::CollisionMesh(
     float* coordinates, 
     unsigned int nFaces, 
     unsigned int* indices)
-    : points(nPoints), faces(nFaces) {
+    : points(nPoints), faces(nFaces) 
+{
+    
+    glm::vec3 min(std::numeric_limits<float>::infinity());  // +infinity
+    glm::vec3 max = -1.0f * min;                                   // -infinity
+
     // Insert points into list
     for (unsigned int i = 0; i < nPoints; i++) {
         points[i] = {                  // Like in Vertex::genlist
@@ -303,7 +307,33 @@ CollisionMesh::CollisionMesh(
             coordinates[i * 3 + 1],
             coordinates[i * 3 + 2]
         };
+
+        for (int j = 0; j < 3; j++) {
+            if (points[i][j] < min[j]) {
+                min[j] = points[i][j];
+            }
+
+            if (points[i][j] > max[j]) {
+                max[j] = points[i][j];
+            }
+        }
     }
+
+    glm::vec3 center = (min + max) / 2.0f;
+    float maxRadiusSquared = 0.0f;
+    for (unsigned int i = 0; i < nPoints; i++) {
+        float radiusSquared = 0.0f;
+        for (int j = 0; j < 3; j++) {
+            float dist = points[i][j] - center[j];
+            radiusSquared += dist * dist;
+        }
+        if (radiusSquared > maxRadiusSquared) {
+            maxRadiusSquared = radiusSquared;
+        }
+    }
+
+    this->br = BoundingRegion(center, sqrt(maxRadiusSquared));  // Bounding regions are still boxes
+    this->br.collisionMesh = this;
 
     // Calculate face normals
     for (unsigned int i = 0; i < nFaces; i++){

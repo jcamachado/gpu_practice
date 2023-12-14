@@ -46,7 +46,6 @@ class Model {
     public:
         std::string id;                                 // ID of model in scene
 
-        BoundTypes boundType;                           // Type of bounding region for all meshes
         
         std::vector<Mesh> meshes;
         CollisionModel* collision;                      // Pointer to Collision model
@@ -61,7 +60,7 @@ class Model {
         /*
             Constructors
         */
-        Model(std::string id, BoundTypes boundType, unsigned int maxNInstances, unsigned int flags = 0);
+        Model(std::string id, unsigned int maxNInstances, unsigned int flags = 0);
 
         /*
             Process functions
@@ -121,6 +120,7 @@ class Model {
         */
         BufferObject modelVBO;
         BufferObject normalModelVBO;
+        static const BoundTypes boundType = BoundTypes::SPHERE;
 };
 
 #endif

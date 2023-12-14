@@ -486,6 +486,7 @@ void Scene::renderPointLightShader(Shader shader, unsigned int idx){
 
 void Scene::renderInstances(std::string modelId, Shader shader, float dt){
     void* val = avl_get(models, (void*)modelId.c_str());
+    
     if (val) {
         // render each mesh in specified model
         shader.activate();

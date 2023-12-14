@@ -7,13 +7,13 @@
 #include <iostream>
 
 
-Model::Model(std::string id, BoundTypes boundType, unsigned int maxNInstances, unsigned int flags)
+Model::Model(std::string id, unsigned int maxNInstances, unsigned int flags)
     :id (id), 
-    boundType(boundType), 
     switches(flags),
     currentNInstances(0), 
     maxNInstances(maxNInstances),
     collision(NULL) {}
+
 
 RigidBody* Model::generateInstance(
     glm::vec3 size, 
@@ -66,7 +66,7 @@ void Model::initInstances() {
     normalModelVBO = BufferObject(GL_ARRAY_BUFFER);
     normalModelVBO.generate();
     normalModelVBO.bind();
-    normalModelVBO.setData<glm::mat3>(currentNInstances, normalModelData, usage);
+    normalModelVBO.setData<glm::mat3>(UPPER_BOUND, normalModelData, usage);
 
 
     // Set attribute pointers for each mesh
@@ -93,8 +93,6 @@ void Model::initInstances() {
         normalModelVBO.setAttrPointer<glm::vec3>(9, 3, GL_FLOAT, 3, 1, 1);
         normalModelVBO.setAttrPointer<glm::vec3>(10, 3, GL_FLOAT, 3, 2, 1);
         
-        
-
         ArrayObject::clear();
     }
 }
@@ -136,7 +134,6 @@ void Model::render(Shader shader, float dt, Scene *scene){
         std::vector<glm::mat4> models(currentNInstances);
         std::vector<glm::mat3> normalModels(currentNInstances);
         bool doUpdate = States::isActive(&switches, DYNAMIC);   // Instances moving?
-
         for (int i = 0; i < currentNInstances; i++){
             if (doUpdate){
                 instances[i]->update(dt);               // Update RigidBody
@@ -154,12 +151,10 @@ void Model::render(Shader shader, float dt, Scene *scene){
             
             normalModelVBO.bind();
             normalModelVBO.updateData<glm::mat3>(0, currentNInstances, &normalModels[0]);
-
         }
     }
 
     shader.setFloat("material.shininess", 0.5f);
-
     
     for (unsigned int i = 0, noMeshes = meshes.size();
         i < noMeshes;
@@ -304,31 +299,30 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene){
     }
 
     // process min/max for bounding region BR
-    if (boundType == BoundTypes::AABB){
-        // min and max are already calculated
-        br.min = min;
-        br.ogMin = min;
-        br.max = max;
-        br.ogMax = max;
-    }else{
-        // calculate center and radius
-        br.center = BoundingRegion(min, max).calculateCenter();
-        br.ogCenter = br.center;
-        float maxRadiusSquare = 0.0f;
-        for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
-            float radiusSquared = 0.0f;                 // Distance for this vertex
-            for (int j = 0; j < 3; j++) {
-                radiusSquared += (vertices[i].pos[j] - br.center[j]) * (vertices[i].pos[j] - br.center[j]);
-            }
-            if (radiusSquared > maxRadiusSquare) {      // If this distance is larger than the current max, set it as the new max
-                maxRadiusSquare = radiusSquared;        // If a^2 > b^2, then |a| > |b, saves sqrt calls 
-                
-            }
+    // calculate center and radius
+    // br.center = BoundingRegion(min, max).calculateCenter();
+    br.center = (min + max) / 2.0f;
+    br.ogCenter = br.center;
+    br.collisionMesh = NULL;    // When importing file, we dont know if have collision mesh
+    float maxRadiusSquare = 0.0f;
+
+    /*
+        If we dont know the maximun distance from center (ex: in plane)
+        we need to calculate using a loop like this
+    */
+    for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
+        float radiusSquared = 0.0f;                 // Distance for this vertex
+        for (int j = 0; j < 3; j++) {
+            radiusSquared += (vertices[i].pos[j] - br.center[j]) * (vertices[i].pos[j] - br.center[j]);
         }
-        // calling here sqrt is more efficient than calling it everytime
-        br.radius = sqrt(maxRadiusSquare);
-        br.ogRadius = br.radius;
+        if (radiusSquared > maxRadiusSquare) {      // If this distance is larger than the current max, set it as the new max
+            maxRadiusSquare = radiusSquared;        // If a^2 > b^2, then |a| > |b, saves sqrt calls 
+            
+        }
     }
+    // calling here sqrt is more efficient than calling it everytime
+    br.radius = sqrt(maxRadiusSquare);
+    br.ogRadius = br.radius;
 
 
     // process indices
@@ -405,16 +399,17 @@ Mesh Model::processMesh(
     if (calcTanVectors) {
         Vertex::calcTanVectors(vertexList, indexList);
     }
-
+    
     // Set return mesh
     Mesh ret(br);
     ret.loadData(vertexList, indexList, pad);
-
+    
     // Allocate memory for collision mesh if necessary
     if (nCollisionPoints) {
         enableCollisionModel();
         ret.loadCollisionMesh(nCollisionPoints, collisionPoints, nCollisionFaces, collisionIndices);
     }
+    
 
     return ret;
 }
