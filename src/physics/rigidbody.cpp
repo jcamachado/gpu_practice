@@ -27,7 +27,9 @@ RigidBody::RigidBody(
     eRotation(eRotation),
     velocity(0.0f), 
     acceleration(0.0f),
-    state(0) 
+    state(0),
+    lastCollision(COLLISION_THRESHOLD),     // Seconds between collisions
+    lastCollisionId("")
 {
     // if object is not dynamic, we have to set baseline for transformation matrix
     update(0.0f);           
@@ -56,6 +58,7 @@ void RigidBody::update(float dt){
         So, only gets the upper left 3x3 matrix from model matrix
     */
     normalModel = glm::mat3(glm::transpose(glm::inverse(model)));
+    lastCollision += dt;
 }
 
 void RigidBody::applyForce(glm::vec3 force){
@@ -115,4 +118,22 @@ bool RigidBody::unfreeze(){
     velocity = storedVelocity;
     acceleration = storedAcceleration;
     return true;
+}
+
+/*
+    Collisions
+    -inst: is the instance that this rb collided with
+    -normal: is the normal of inst's surface
+*/
+void RigidBody::handleCollision(RigidBody* inst, glm::vec3 normal){
+    if (lastCollision >= COLLISION_THRESHOLD || lastCollisionId != inst->instanceId){
+        // Reflect velocity, effectively bouncing off the surface
+        this->velocity = glm::reflect(this->velocity, glm::normalize(normal));  // Register elastic collision
+        lastCollision = 0.0f;   // Reset timer
+    }
+    lastCollisionId = inst->instanceId;
+
+
+
+
 }
