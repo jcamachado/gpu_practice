@@ -144,8 +144,12 @@ void Octree::node::update(Box &box){    //build and update seems to be having se
             if (objects.size() == 0){
                 return;
             }
+            
+            // Goes through list of objects
             for (int i = 0, listSize = objects.size(); i < listSize-1; i++){
-                // Remove if on list of dead objects
+                /*
+                    Remove if on list of dead objects
+                */
                 if (States::isActive(&objects[i].instance->state, INSTANCE_DEAD)){
                     objects.erase(objects.begin() + i);
                     // Update counter and size accordingly
@@ -155,6 +159,10 @@ void Octree::node::update(Box &box){    //build and update seems to be having se
                         break;
                     }
                 }
+                // else{ TODO
+                //     // Object is alive
+                //     // if lost its collision mesh, readd it
+                // }
             }
             
             // Get moved objects that were in this leaf in previous frame
