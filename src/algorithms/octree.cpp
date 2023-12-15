@@ -45,10 +45,16 @@ Octree::node::node(BoundingRegion bounds, std::vector<BoundingRegion> objectList
 
 void Octree::node::addToPending(RigidBody* instance, Model *model){
     // Get all the bounding regions of the models
-    for (BoundingRegion br : model->boundingRegions){
-        br.instance = instance;
-        br.transform();
-        queue.push(br);
+    try {
+        for (BoundingRegion br : model->boundingRegions){
+            br.instance = instance;
+            br.transform();
+            queue.push(br);
+        }
+    }
+    catch (const std::exception& e) {
+        std::cout << "OCTREE ERROR: " << e.what() << "Possibly inexistent" << std::endl;
+        throw e;
     }
 }
 
@@ -209,10 +215,8 @@ void Octree::node::update(Box &box){    //build and update seems to be having se
                 if (States::isIndexActive(&flags, 0)){
                     if (hasChildren){
                         // Active octant
-                        // std::cout << "DEBUG OCTREE before update" << std::endl;
                         children[i]->update(box);
                         hasChildren = States::hasActiveState(&activeOctants);
-                        // std::cout << "DEBUG OCTREE after update" << std::endl;
                     }
                 }
             }
@@ -229,7 +233,7 @@ void Octree::node::update(Box &box){    //build and update seems to be having se
 
                 movedObj = objects[stackTop];       // Set to top object in stack
                 node* current = this;                       // Placeholder
-
+                
                 while (!current->region.containsRegion(movedObj)){
                     if (current->parent != nullptr){
                         current = current->parent;
@@ -402,14 +406,6 @@ void Octree::node::checkCollisionsSelf(BoundingRegion obj){ // CUDABLE?
     int collCase = -1;
     try{
         for (BoundingRegion br : objects){
-            // Print last collision
-            if (collCase != -1){
-                std::cout << "Case " << collCase << " - Instance " << br.instance->instanceId 
-                    << "(" << br.instance->modelId << ") collided with instance " 
-                    << obj.instance->instanceId << "(" << obj.instance->modelId << ")" 
-                    << std::endl;
-            };
-
             // Coarse check 
             int collCase = -1;
             if (br.instance == obj.instance) {
@@ -439,11 +435,11 @@ void Octree::node::checkCollisionsSelf(BoundingRegion obj){ // CUDABLE?
                                     // std::cout << "before" << std::endl;
 
                                     obj.instance->handleCollision(br.instance, norm);
+                                    std::cout << "Case " << collCase << " - Instance " << br.instance->instanceId 
+                                    << "(" << br.instance->modelId << ") collided with instance " 
+                                    << obj.instance->instanceId << "(" << obj.instance->modelId << ")" 
+                                    << std::endl;
                                     
-                                    // std::cout << "Case " << collCase << " - Instance " << br.instance->instanceId 
-                                    // << "(" << br.instance->modelId << ") collided with instance " 
-                                    // << obj.instance->instanceId << "(" << obj.instance->modelId << ")" 
-                                    // << std::endl;
                                     break;
                                 }
                             }
@@ -461,6 +457,10 @@ void Octree::node::checkCollisionsSelf(BoundingRegion obj){ // CUDABLE?
                                 norm
                             )){
                                 obj.instance->handleCollision(br.instance, norm);
+                                std::cout << "Case " << collCase << " - Instance " << br.instance->instanceId 
+                                    << "(" << br.instance->modelId << ") collided with instance " 
+                                    << obj.instance->instanceId << "(" << obj.instance->modelId << ")" 
+                                    << std::endl;
                                 break;
                             }
                         }
@@ -478,6 +478,10 @@ void Octree::node::checkCollisionsSelf(BoundingRegion obj){ // CUDABLE?
                                 norm
                             )){
                                 obj.instance->handleCollision(br.instance, norm);
+                                std::cout << "Case " << collCase << " - Instance " << br.instance->instanceId 
+                                    << "(" << br.instance->modelId << ") collided with instance " 
+                                    << obj.instance->instanceId << "(" << obj.instance->modelId << ")" 
+                                    << std::endl;
                                 break;
                             }
                         }
@@ -494,6 +498,10 @@ void Octree::node::checkCollisionsSelf(BoundingRegion obj){ // CUDABLE?
                             continue;
                         }
                         obj.instance->handleCollision(br.instance, norm);
+                        std::cout << "Case " << collCase << " - Instance " << br.instance->instanceId 
+                                    << "(" << br.instance->modelId << ") collided with instance " 
+                                    << obj.instance->instanceId << "(" << obj.instance->modelId << ")" 
+                                    << std::endl;
                     }
                 }
             }
@@ -535,16 +543,13 @@ void Octree::node::destroy() {
                 // If this child is active
                 if (children[i] != nullptr){
                     children[i]->destroy();
-                    children[i] = nullptr;
                     delete children[i];
+                    children[i] = nullptr;
                     States::deactivateIndex(&activeOctants, i);
-                    hasChildren = false;
                 }
             }
         }
     }
-
-
     // Clear this node
     objects.clear();
     while (queue.size() != 0){
