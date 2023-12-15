@@ -361,6 +361,7 @@ CollisionMesh::CollisionMesh(
         glm::vec3 A = points[i2] - points[i1];  // A = P2 - P1
 		glm::vec3 B = points[i3] - points[i1];  // B = P3 - P1 
         glm::vec3 N = glm::cross(A, B);         // N = A x B
+        N = glm::normalize(N);
 
         faces[i] = {
             this,

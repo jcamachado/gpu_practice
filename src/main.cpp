@@ -46,10 +46,10 @@
 #include "graphics/rendering/texture.h"
 #include "graphics/rendering/text.h"
 
+#include "physics/collisionmesh.h"
+
 Scene scene;
 
-void processInput(double dt);
-void renderScene(Shader shader);
 
 Camera cam;
 
@@ -61,11 +61,14 @@ unsigned int nLamps = 1;
 std::string Shader::defaultDirectory = "assets/shaders";
 
 BrickWall wall;
-// Cube cube(10);
+Cube cube(1);
 Lamp lamp(nLamps);
 Sphere sphere(nSpheres);
+Plane map;
 
-#include "physics/collisionmesh.h"
+void processInput(double dt);
+void renderScene(Shader shader);
+void setSceneLights(Scene *scene);
 
 int main(){
     scene = Scene(3, 3, "Particle System", 1200, 720); // Create scene
@@ -125,24 +128,18 @@ int main(){
     box.init();                 // Box is not instanced
 
     // Setup plane to display texture
-    // Plane map;
-    // map.init(dirLight.shadowFBO.textures[0]);
-    // scene.registerModel(&map);
+    
+    
+    
     scene.loadModels();         // Load all model data
 
     /*
         Lights
     */
     
-    DirLight dirLight(
-        glm::vec3(-0.2f, -0.9f, -0.2f), 
-        glm::vec4(0.1f, 0.1f, 0.1f, 1.0f), 
-        glm::vec4(0.6f, 0.6f, 0.6f, 1.0f),
-        glm::vec4(0.7f, 0.7f, 0.7f, 1.0f), 
-        BoundingRegion(glm::vec3(-20.0f, -20.0f, 0.5f), glm::vec3(20.0f, 20.0f, 50.0f))
-    );
-
-    scene.dirLight = &dirLight;
+    setSceneLights(&scene);
+    map.init({scene.dirLight->shadowFBO.textures[0]});
+    scene.registerModel(&map);
 
     glm::vec3 pointLightPositions[] = {
         glm::vec3(1.0f,  1.0f,  0.0f),
@@ -186,22 +183,28 @@ int main(){
     // scene.activeSpotLights = 1;                         // 0b00000001
     
     // scene.generateInstance(cube.id, glm::vec3(20.0f, 0.1f, 20.0f), 100.0f, glm::vec3(0.0f, -3.0f, 0.0f));
-    glm::vec3 cubePositions[] = {
-        { 1.0f, 3.0f, -5.0f },
-        { -7.25f, 2.1f, 1.5f },
-        { -15.0f, 2.55f, 9.0f },
-        { 4.0f, -3.5f, 5.0f },
-        { 2.8f, 1.9f, -6.2f },
-        { 3.5f, 6.3f, -1.0f },
-        { -3.4f, 10.9f, -5.5f },
-        { 0.0f, 11.0f, 0.2f },
-        { 0.0f, 5.0f, 0.0f },
-    };
+    // glm::vec3 cubePositions[] = {
+    //     { 1.0f, 3.0f, -5.0f },
+    //     { -7.25f, 2.1f, 1.5f },
+    //     { -15.0f, 2.55f, 9.0f },
+    //     { 4.0f, -3.5f, 5.0f },
+    //     { 2.8f, 1.9f, -6.2f },
+    //     { 3.5f, 6.3f, -1.0f },
+    //     { -3.4f, 10.9f, -5.5f },
+    //     { 0.0f, 11.0f, 0.2f },
+    //     { 0.0f, 5.0f, 0.0f },
+    // };
     for (unsigned int i = 0; i < 9; i++) {
         // scene.generateInstance(cube.id, glm::vec3(0.5f), 1.0f, cubePositions[i]);
     }
     // Instantiate brickwall
-    scene.generateInstance(wall.id, glm::vec3(1.0f), 1.0f, glm::vec3(0.0f, 0.0f, -2.0f));
+    scene.generateInstance(
+        wall.id, 
+        glm::vec3(5.0f, 5.0f, 5.0f), 
+        1.0f, 
+        glm::vec3(0.0f, -2.0f, -2.0f), 
+        glm::vec3(glm::radians(90.0f), 0.0f, 0.0f)
+    );
 
     // instantiate texture plane
     // scene.generateInstance(map.id, glm::vec3(2.0f, 2.0f, 0.0f), 0.0f, glm::vec3(0.0f)); 
@@ -219,10 +222,7 @@ int main(){
 
             scene.variableLog["time"] += dt;
             scene.variableLog["fps"] = 1.0f/dt;
-            // Print fps
-            // std::cout << "START MAIN" << std::endl;
             scene.update();                                 // Update screen values
-            // std::cout << "MAIN PASSED SCENE UPDATE" << std::endl;
             processInput(dt);                               // Process input
 
             for (int i = 0; i < sphere.currentNInstances; i++){
@@ -235,7 +235,7 @@ int main(){
             // Everything rendered after this will be rendered to this FBO
 
             // // Render scene to dirlight FBO
-            // dirLight.shadowFBO.activate();
+            // scene.dirLight->shadowFBO.activate();
             // scene.renderDirLightShader(dirShadowShader);    // Render scene from light's perspective     
             // renderScene(dirShadowShader);
 
@@ -265,24 +265,17 @@ int main(){
             //     }
             // }
 
-
             // Render scene normally
             scene.defaultFBO.activate();
             scene.renderShader(shader);               // Render scene normally
-            // std::cout << "ISSUE MAIN 1 START" << std::endl;
             renderScene(shader);
-            // std::cout << "ISSUE MAIN 1 END" << std::endl;
 
             scene.renderShader(boxShader, false);           // Render boxes
             box.render(boxShader);                          // Box is not instanced
-            // std::cout << "START NEW FRAME " << std::endl;
 
             // Send new frame to window
             scene.newFrame(box);
-            // std::cout << "Teste 5" << std::endl;
-            // std::cout << "END NEW FRAME " << std::endl;
             scene.clearDeadInstances();             // Delete instances after updating octree
-            // std::cout << "END MAIN" << std::endl;
         }
     } catch (const std::exception& e) {
         std::cout << e.what() << std::endl;
@@ -296,18 +289,32 @@ void renderScene(Shader shader){                // assumes shader is prepared ac
     if (sphere.currentNInstances > 0) {            // Render launch objects
             scene.renderInstances(sphere.id, shader, dt);
     }
-    //std::cout << "render scene AFETER SPHERES" << std::endl;
-    // scene.renderInstances(cube.id, shader, dt);     // Render cubes
+    scene.renderInstances(cube.id, shader, dt);     // Render cubes
     scene.renderInstances(lamp.id, shader, dt);     // Render lamps
-    // std::cout << "render scene 3" << std::endl;
     scene.renderInstances(wall.id, shader, dt);     // Render wall
-    // std::cout << "render scene 4" << std::endl;
+}
+
+void setSceneDirLights(Scene *scene) {
+    DirLight dirLight(
+        glm::vec3(-0.2f, -0.9f, -0.2f), 
+        glm::vec4(0.1f, 0.1f, 0.1f, 1.0f), 
+        glm::vec4(0.6f, 0.6f, 0.6f, 1.0f),
+        glm::vec4(0.7f, 0.7f, 0.7f, 1.0f), 
+        BoundingRegion(glm::vec3(-20.0f, -20.0f, 0.5f), glm::vec3(20.0f, 20.0f, 50.0f))
+    );
+
+    scene->dirLight = &dirLight;
+}
+
+void setSceneLights(Scene *scene){
+    setSceneDirLights(scene);
+    // setScenePointLights();
+    // setSceneSpotLights();
 }
 
 void launchItem(float dt){
     RigidBody* rb = scene.generateInstance(sphere.id, glm::vec3(0.05f), 1.0f, cam.cameraPos);
 
-    // RigidBody* rb = scene.generateInstance(sphere.id, glm::vec3(1.0f), 1.0f, cam.cameraPos-glm::vec3(-15.0f, 10.0f, 10.0f));
     if (rb != nullptr){
         rb->transferEnergy(100.0f, cam.cameraFront);
         rb->applyAcceleration(Environment::gravity);

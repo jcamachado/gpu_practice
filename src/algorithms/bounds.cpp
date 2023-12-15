@@ -2,6 +2,8 @@
 
 #include "bounds.h"
 #include "octree.h"
+#include <glm/gtc/quaternion.hpp>   
+#include <glm/gtx/quaternion.hpp>
 #include "../physics/collisionmesh.h"
 
 BoundingRegion::BoundingRegion(BoundTypes type)
@@ -26,8 +28,18 @@ BoundingRegion::BoundingRegion(glm::vec3 min, glm::vec3 max)
 void BoundingRegion::transform(){
     if (instance){
         if (type == BoundTypes::AABB) {
-            min = ogMin * instance->size + instance->pos;
-            max = ogMax * instance->size + instance->pos;
+            // Apply scale
+            glm::vec3 scaledMin = ogMin * instance->size;
+            glm::vec3 scaledMax = ogMax * instance->size;
+
+            // Apply rotation
+            glm::mat4 rotationMatrix = glm::toMat4(glm::quat(instance->eRotation));
+            min = rotationMatrix * glm::vec4(scaledMin, 1.0f);
+            max = rotationMatrix * glm::vec4(scaledMax, 1.0f);
+
+            // Apply translation
+            min += instance->pos;
+            max += instance->pos;
         }
         else {
             center = ogCenter * instance->size + instance->pos;
