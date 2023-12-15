@@ -25,14 +25,21 @@ BoundingRegion::BoundingRegion(glm::vec3 min, glm::vec3 max)
 
 void BoundingRegion::transform(){
     if (instance){
-        if(type == BoundTypes::AABB){
+        if (type == BoundTypes::AABB) {
             min = ogMin * instance->size + instance->pos;
             max = ogMax * instance->size + instance->pos;
         }
-        // else if(type == BoundTypes::SPHERE){
-        else{
+        else {
             center = ogCenter * instance->size + instance->pos;
-            radius = ogRadius * instance->size.x;                   // Radius is scalar, only needs 1 axis
+            
+            float maxDim = instance->size[0];
+            for (int i = 1; i < 3; i++) {
+                if (instance->size[i] > maxDim) {
+                    maxDim = instance->size[i];
+                }
+            }
+
+            radius = ogRadius * maxDim;
         }
     }
 }
@@ -60,9 +67,6 @@ bool BoundingRegion::containsPoint(glm::vec3 point) {
         }
         return distSquared < (radius * radius);
     }
-    // else {
-    //     return false;
-    // }
 }
 
 bool BoundingRegion::containsRegion(BoundingRegion br) {
@@ -119,7 +123,16 @@ bool BoundingRegion::intersectsWith(BoundingRegion br) {
     }
     else if (type == BoundTypes::SPHERE && br.type == BoundTypes::SPHERE){
     //both spheres - distance between centers is less than the sum of the radii
-        return glm::length(center - br.center) < radius + br.radius;
+        glm::vec3 centerDiff = center - br.center;
+        float distSquared = 0.0f;
+        for (int i = 0; i < 3; i++) {
+            distSquared += centerDiff[i] * centerDiff[i];
+        }
+
+        float maxMagSquared = radius + br.radius;
+        maxMagSquared *= maxMagSquared;
+
+        return distSquared <= maxMagSquared;
     }
     else if (type == BoundTypes::SPHERE) {
         // this is a sphere, br is a box
