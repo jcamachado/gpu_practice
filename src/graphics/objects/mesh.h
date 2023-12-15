@@ -48,7 +48,7 @@ typedef struct Vertex Vertex;
 class Mesh {
     public:
         BoundingRegion br;                          // Bounding region for mesh
-        CollisionMesh* collision;                   // Pointer to attached collision mesh
+        CollisionMesh* collision;                   // Pointer to attached collision mesh TODO rename to collisionMesh
         std::vector<Vertex> vertices;               // List of vertices
         std::vector<unsigned int> indices;          // List of indices
         ArrayObject VAO;                            // VAO pointing to all data for the mesh
