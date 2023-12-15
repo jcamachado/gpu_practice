@@ -230,9 +230,11 @@ int main(){
             processInput(dt);                               // Process input
 
             for (int i = 0; i < sphere.currentNInstances; i++){
-                if (glm::length(cam.cameraPos - sphere.instances[i]->pos) > 100.0f)
-                {
-                    scene.markForDeletion(sphere.instances[i]->instanceId);
+                if(sphere.instances[i] != nullptr && !States::isActive(&sphere.instances[i]->state, INSTANCE_DEAD) ){
+                    if (glm::length(cam.cameraPos - sphere.instances[i]->pos) > 100.0f)
+                    {
+                        scene.markForDeletion(sphere.instances[i]->instanceId);
+                    }
                 }
             }
             // Activate the directional light's FBO
