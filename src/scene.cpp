@@ -392,11 +392,9 @@ void Scene::update(){
 void Scene::newFrame(Box &box){
     box.positions.clear();
     box.sizes.clear();
-
     // Process pending.
     octree->processPending();       // "Process new objects"
     octree->update(box);            // "Are there any destroyed objects?"
-
     // Send new frame to window
     glfwSwapBuffers(window);
     glfwPollEvents();
@@ -624,18 +622,24 @@ void Scene::removeInstance(std::string instanceId){
         -Scene::instances
         -Model::instances
     */
-    RigidBody* instance = instances[instanceId];
-    
-    std::string targetModel = instance->modelId;
-    Model* model = (Model*)avl_get(models, (void*)targetModel.c_str());
-    
-    // delete instance from model
-    model->removeInstance(instanceId);
+    try {
+        RigidBody* instance = instances[instanceId];
+        
+        std::string targetModel = instance->modelId;
+        Model* model = (Model*)avl_get(models, (void*)targetModel.c_str());
+        
+        // delete instance from model
+        model->removeInstance(instanceId);
 
-    // remove from tree
-    instances[instanceId] = NULL;
-    instances.erase(instanceId);
-    free(instance);
+        // remove from tree
+        instances[instanceId] = NULL;
+        instances.erase(instanceId);
+        free(instance);
+    }
+    catch (std::exception e) {
+        std::cout << "ERROR::SCENE::removeInstance: " << e.what() << std::endl;
+        throw e;
+    }
 }
 
 void Scene::markForDeletion(std::string instanceId){

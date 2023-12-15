@@ -113,7 +113,7 @@ namespace States {
  
     // deactivate state
     template<typename T>
-    void deactivate(T* states, T state) {
+    void deactivate(T* states, T state = 0) {
         *states &= ~state;
     }
  
@@ -121,6 +121,11 @@ namespace States {
     template<typename T>
     void toggle(T* states, T state) {
         *states ^= state;
+    }
+
+    template<typename T>
+    bool hasActiveState(T* states) {
+        return *states != 0;       
     }
 
 };

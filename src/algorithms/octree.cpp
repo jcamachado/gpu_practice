@@ -124,150 +124,146 @@ setVars:
 }
 
 void Octree::node::update(Box &box){    //build and update seems to be having segmenation faults
-    if (treeBuilt && treeReady){
-        std::cout << "DEBUG OCTREE STAAART" << std::endl;
+    try{
+        if (treeBuilt && treeReady){
+            // std::cout << "DEBUG OCTREE STAAART" << std::endl;
+            // Countdown timer
+            box.positions.push_back(region.calculateCenter());
+            box.sizes.push_back(region.calculateDimensions());
 
-        // Countdown timer
-        box.positions.push_back(region.calculateCenter());
-        box.sizes.push_back(region.calculateDimensions());
-
-        /*
-            Remove objects that dont exist anymore
-
-            012345678
-            ABCDEFGHI          (list of objects),
-            ABCDFGHI            if E dies (i=4), we want, everything will (has to) be left shifted
-                                so we need to update _i_ and _listSize_
-            since we do i++ with i--, we still get the next element F (i=4)
-        */
-        std::cout << "DEBUG OCTREE issue 1 - start" << std::endl;
-        if (objects.size() == 0){
-            std::cout << "DEBUG OCTREE issue 1 - EMPTY OBJECTS SIZE" << std::endl;
-            return;
-        }
-        for (int i = 0, listSize = objects.size(); i < listSize-1; i++){
-            // Remove if on list of dead objects
-            std::cout << "DEBUG OCTREE issue 1 - MId1" << std::endl;
-            if (States::isActive(&objects[i].instance->state, INSTANCE_DEAD)){
-                std::cout << "DEBUG OCTREE issue 1 - MID2" << std::endl;
-                objects.erase(objects.begin() + i);
-                std::cout << "DEBUG OCTREE issue 1 - end, passed" << std::endl;
-                // Update counter and size accordingly
-                i--;
-                listSize--;
-                if (listSize == 0){
-                    break;
-                }
-            }
-        }
-        
-        // Get moved objects that were in this leaf in previous frame
-        std::stack<int> movedObjects;
-        for (int i = 0, listSize = objects.size(); i < listSize; i++){
-            if (States::isActive(&objects[i].instance->state, INSTANCE_MOVED)){
-                objects[i].transform();
-                movedObjects.push(i);
-            }
-            box.positions.push_back(objects[i].calculateCenter());
-            box.sizes.push_back(objects[i].calculateDimensions());
-        }
-
-        /*
-            Remove dead branches
-
-            00110001        left shift until we get 00000000
-        */
-        unsigned char flags = activeOctants;
-        for (int i = 0; 
-            flags > 0; 
-            flags >>= 1, i++) 
-        {
-            if (States::isIndexActive(&flags, 0)&&(children[i]->currentLifespan == 0)){
-                // If this child is active and has no lifespan left
-                if (children[i]->objects.size() > 0) {
-                    // Branch is dead but has children, so reset lifespan
-                    children[i]->currentLifespan = -1;
-                }
-                else {
-                    // Branch is dead, remove it
-                    children[i] = nullptr;
-                    States::deactivateIndex(&activeOctants, i);
-                }
-            }
-        }
-        
-        // Update child nodes
-        for (unsigned char flags = activeOctants, i = 0;
-            flags > 0;
-            flags >>= 1, i++){                      // Iterates over each bit in flags, each octant
-            if (States::isIndexActive(&flags, 0)){
-                if (children != nullptr){
-                    // Active octant
-                    std::cout << "DEBUG OCTREE before update" << std::endl;
-                    children[i]->update(box);
-                    std::cout << "DEBUG OCTREE after update" << std::endl;
-                }
-            }
-        }
-        // Move moved objects to new nodes
-        BoundingRegion movedObj;
-        int stackTop = 0;
-        while (movedObjects.size() != 0){
-            stackTop = movedObjects.top();
             /*
-                For each moved object
-                - Traverse up tree (start with current node) until find a node that completely encloses the object
-                - Call insert (push object as far down as possible)
+                Remove objects that dont exist anymore
+
+                012345678
+                ABCDEFGHI          (list of objects),
+                ABCDFGHI            if E dies (i=4), we want, everything will (has to) be left shifted
+                                    so we need to update _i_ and _listSize_
+                since we do i++ with i--, we still get the next element F (i=4)
             */
-
-            movedObj = objects[stackTop];       // Set to top object in stack
-            node* current = this;                       // Placeholder
-
-            while (!current->region.containsRegion(movedObj)){
-                if (current->parent != nullptr){
-                    current = current->parent;
+            // std::cout << "DEBUG OCTREE issue 1 - start" << std::endl;
+            if (objects.size() == 0){
+                return;
+            }
+            for (int i = 0, listSize = objects.size(); i < listSize-1; i++){
+                // Remove if on list of dead objects
+                if (States::isActive(&objects[i].instance->state, INSTANCE_DEAD)){
+                    objects.erase(objects.begin() + i);
+                    // Update counter and size accordingly
+                    i--;
+                    listSize--;
+                    if (listSize == 0){
+                        break;
+                    }
                 }
-                else {
-                    break;                  // If root, leave
+            }
+            
+            // Get moved objects that were in this leaf in previous frame
+            std::stack<int> movedObjects;
+            for (int i = 0, listSize = objects.size(); i < listSize; i++){
+                if (States::isActive(&objects[i].instance->state, INSTANCE_MOVED)){
+                    objects[i].transform();
+                    movedObjects.push(i);
                 }
+                box.positions.push_back(objects[i].calculateCenter());
+                box.sizes.push_back(objects[i].calculateDimensions());
             }
 
             /*
-                Once finished
-                - Remove from objects list
-                - remove from movedObjects stack
-                - insert into found region
+                Remove dead branches
+
+                00110001        left shift until we get 00000000
             */
-            objects.erase(objects.begin() + stackTop);
-            movedObjects.pop();
-            // current->insert(movedObj);
-            current->insert(movedObj);
+            unsigned char flags = activeOctants;
+            for (int i = 0; 
+                flags > 0; 
+                flags >>= 1, i++) 
+            {
+                if (States::isIndexActive(&flags, 0)&&(children[i]->currentLifespan == 0)){
+                    // If this child is active and has no lifespan left
+                    if (children[i]->objects.size() > 0) {
+                        // Branch is dead but has children, so reset lifespan
+                        children[i]->currentLifespan = -1;
+                    }
+                    else {
+                        // Branch is dead, remove it
+                        children[i] = nullptr;
+                        States::deactivateIndex(&activeOctants, i);
+                    }
+                }
+            }
+            
+            // Update child nodes
+            for (unsigned char flags = activeOctants, i = 0;
+                flags > 0;
+                flags >>= 1, i++){                      // Iterates over each bit in flags, each octant
+                if (States::isIndexActive(&flags, 0)){
+                    if (children != nullptr){
+                        // Active octant
+                        // std::cout << "DEBUG OCTREE before update" << std::endl;
+                        children[i]->update(box);
+                        // std::cout << "DEBUG OCTREE after update" << std::endl;
+                    }
+                }
+            }
+            // Move moved objects to new nodes
+            BoundingRegion movedObj;
+            int stackTop = 0;
+            while (movedObjects.size() != 0){
+                stackTop = movedObjects.top();
+                /*
+                    For each moved object
+                    - Traverse up tree (start with current node) until find a node that completely encloses the object
+                    - Call insert (push object as far down as possible)
+                */
 
-            // Collision detection  (We can use bruteforce for now, the number of objects per region is small)
-            // Itself
-            current=movedObj.cell;      // Current node might have changed node after previous code
-            current->checkCollisionsSelf(movedObj);
-            std::cout << "DEBUG OCTREE issue 2 - start" << std::endl;
+                movedObj = objects[stackTop];       // Set to top object in stack
+                node* current = this;                       // Placeholder
 
-            // Children
-            current->checkCollisionsChildren(movedObj);
+                while (!current->region.containsRegion(movedObj)){
+                    if (current->parent != nullptr){
+                        current = current->parent;
+                    }
+                    else {
+                        break;                  // If root, leave
+                    }
+                }
 
-            // Parents
-            while (current->parent){
-                current = current->parent;
+                /*
+                    Once finished
+                    - Remove from objects list
+                    - remove from movedObjects stack
+                    - insert into found region
+                */
+                objects.erase(objects.begin() + stackTop);
+                movedObjects.pop();
+                // current->insert(movedObj);
+                current->insert(movedObj);
+
+                // Collision detection  (We can use bruteforce for now, the number of objects per region is small)
+                // Itself
+                current=movedObj.cell;      // Current node might have changed node after previous code
                 current->checkCollisionsSelf(movedObj);
+
+                // Children
+                current->checkCollisionsChildren(movedObj);
+
+                // Parents
+                while (current->parent){
+                    current = current->parent;
+                    current->checkCollisionsSelf(movedObj);
+                }
             }
-            std::cout << "DEBUG OCTREE issue 2 - end" << std::endl;
+        }
+        else {
+            // Process pending results
+            if (queue.size() > 0) {
+                processPending();
+            }
         }
     }
-    else {
-        // Process pending results
-        std::cout << "DEBUG OCTREE J" << std::endl;
-        if (queue.size() > 0) {
-            std::cout << "DEBUG OCTREE K" << std::endl;
-            processPending();
-            std::cout << "DEBUG OCTREE J" << std::endl;
-        }
+    catch (const std::exception& e) {
+        std::cout << "OCTREE UPDATE ERROR: " << e.what() << std::endl;
+        throw e;
     }
 }
 
@@ -380,32 +376,30 @@ bool Octree::node::insert(BoundingRegion obj){
 
 /*
     Collisions of objects in the node
+    4 Cases inside after coarse check
+    -0: Coarse check: Check if bounding regions intersect
+    Coarse significa bruto, grosso, logo, uma verificação rápida
 
-    -Coarse check: Check if bounding regions intersect
-    -Fine check: Check with actual mesh face (where they collided and how)
-
-    4 cases of collision of objects A and B:
-    - A and B dont have CollisionMesh
-    - A has CollisionMesh, B doesnt
-    - B has CollisionMesh, A doesnt
-    - Both A and B have CollisionMesh
+    -1: Both A and B have CollisionMesh
+    -2: A has CollisionMesh, B doesnt
+    -3: B has CollisionMesh, A doesnt
+    -4: A and B dont have CollisionMesh
 */
 
 
 void Octree::node::checkCollisionsSelf(BoundingRegion obj){ // CUDABLE?
+    int collCase = -1;
     try{
-        
         for (BoundingRegion br : objects){
-            // Coarse check for bounding region intersection
-            // Coarse  significa bruto, amarrotado, grosso, logo, uma verificação rápida
-            // std::cout << "before COLLISION" << std::endl;
+            int collCase = -1;
+            // Coarse check 
             if (br.instance == obj.instance) {
                 continue; // Skip if same instance
             }
 
             if (br.intersectsWith(obj)){
-                // Coarse check passed
-                std::cout << "COLLISION COARSE CHECK" << std::endl;
+                // Case 0  passed
+                collCase = 0;
 
                 unsigned int nFacesBr = br.collisionMesh==nullptr ? br.collisionMesh->faces.size() : 0;
                 unsigned int nFacesObj = obj.collisionMesh==nullptr ? obj.collisionMesh->faces.size() : 0;
@@ -415,7 +409,7 @@ void Octree::node::checkCollisionsSelf(BoundingRegion obj){ // CUDABLE?
                 if(nFacesBr){
                     if(obj.collisionMesh){      // Both have collision meshes
                         // Check all faces in br against all faces in obj. Quadratic hell O(n^2)
-                        std::cout << "COLLISION C1" << std::endl;
+                        collCase = 1;
                         bool collisionFound = false;
                         for (unsigned int i = 0; i < nFacesBr && !collisionFound; i++){
                             for (unsigned int j = 0; j < nFacesObj && !collisionFound; j++){  //Cubic hell O(n^3)
@@ -425,9 +419,6 @@ void Octree::node::checkCollisionsSelf(BoundingRegion obj){ // CUDABLE?
                                     obj.instance,
                                     norm
                                 )){
-                                    std::cout << "Case 1: Instance " << br.instance->instanceId << 
-                                    "(" << br.instance->modelId << ") collided with instance " << obj.instance->instanceId << 
-                                    "(" << obj.instance->modelId << ")" << std::endl;
                                     // collisionFound = true;
                                     obj.instance->handleCollision(br.instance, norm);
                                     break;
@@ -438,7 +429,7 @@ void Octree::node::checkCollisionsSelf(BoundingRegion obj){ // CUDABLE?
                     else {
                         // Br has collision mesh, obj doesnt
                         // Check all faces in br against objs sphere
-                        std::cout << "COLLISION C2" << std::endl;
+                        collCase = 2;
 
                         for (unsigned int i = 0; i < nFacesBr; i++){
                             if (br.collisionMesh->faces[i].collidesWithSphere(
@@ -446,10 +437,6 @@ void Octree::node::checkCollisionsSelf(BoundingRegion obj){ // CUDABLE?
                                 obj,
                                 norm
                             )){
-                                std::cout << "Case 2: Instance " << br.instance->instanceId << 
-                                "(" << br.instance->modelId << ") collided with instance " << obj.instance->instanceId << 
-                                "(" << obj.instance->modelId << ")" << std::endl;
-                                obj.instance->handleCollision(br.instance, norm);
                                 break;
                             }
                         }
@@ -457,8 +444,7 @@ void Octree::node::checkCollisionsSelf(BoundingRegion obj){ // CUDABLE?
                 }
                 else {
                     if (nFacesObj) {
-                        std::cout << "COLLISION C3" << std::endl;
-
+                        collCase = 3;
                         // Obj has collision mesh, br doesnt
                         // Check all faces in obj against brs sphere
                         for (int i = 0; i < nFacesObj; i++){
@@ -467,55 +453,63 @@ void Octree::node::checkCollisionsSelf(BoundingRegion obj){ // CUDABLE?
                                 br,
                                 norm
                             )){
-                                std::cout << "Case 3: Instance " << br.instance->instanceId << 
-                                "(" << br.instance->modelId << ") collided with instance " << obj.instance->instanceId << 
-                                "(" << obj.instance->modelId << ")" << std::endl;
                                 obj.instance->handleCollision(br.instance, norm);
                                 break;
                             }
                         }
                     }
                     else {
-                        std::cout << "COLLISION C4" << std::endl;
+                        collCase = 4;
                         // Neither have collision mesh
                         // Coarse check passed (Teste collision between spheres)
                         // Check if spheres intersect
-                        if (br.intersectsWith(obj)){
-                            std::cout << "COLLISION C4 in" << std::endl;
-                            norm = obj.center - br.center;
-                            obj.instance->handleCollision(br.instance, norm);
-                            std::cout << "COLLISION C4 in after" << std::endl;
+                        norm = obj.center - br.center;
+                        if (br.instance == nullptr || obj.instance == nullptr || 
+                            norm == glm::vec3(0.0f))
+                        {
+                            continue;
                         }
+                        obj.instance->handleCollision(br.instance, norm);
                     }
                 }
             }
+            if (collCase != -1){
+                std::cout << "Case " << collCase << "Instance " << br.instance->instanceId 
+                    << "(" << br.instance->modelId << ") collided with instance " 
+                    << obj.instance->instanceId << "(" << obj.instance->modelId << ")" 
+                    << std::endl;
+            }
         }
-        std::cout << "COLLISION end" << std::endl;
     } catch (const std::exception& e) {
-        std::cout << "Skipped collision, COLLISION ERROR: " << e.what() << std::endl;
+        std::cout << "Collision possibly skipped, COLLISION ERROR: " << e.what() 
+        << " at case " << collCase << std::endl;
+        throw e;
     }
 }
 
+// Inconsistent
 void Octree::node::checkCollisionsChildren(BoundingRegion obj){
-    if(children != nullptr){
-        for (int flags = activeOctants, i = 0;
-            flags > 0;
-            flags >>= 1, i++){
-            if (States::isIndexActive(&flags, 0) && children[i]){
-                // If this child is active
-                // if (children[i] != nullptr){ //by copilot
+    try{
+        if(children != nullptr){
+            for (int flags = activeOctants, i = 0;
+                flags > 0;
+                flags >>= 1, i++){
+                if (States::isIndexActive(&flags, 0) && children[i]){
+                    // If this child is active
                     children[i]->checkCollisionsSelf(obj);
                     children[i]->checkCollisionsChildren(obj);
-                // }
+                }
             }
         }
+    } catch (const std::exception& e) {
+        throw e;
     }
 }
 
 
 void Octree::node::destroy() {
     // Clearing out children
-    if (children != nullptr){
+    if (States::hasActiveState(&activeOctants)){ // If there are active children
         for (int flags = activeOctants, i = 0;
             flags > 0;
             flags >>= 1, i++){
@@ -525,14 +519,21 @@ void Octree::node::destroy() {
                     children[i]->destroy();
                     children[i] = nullptr;
                     delete children[i];
+                    States::deactivateIndex(&activeOctants, i);
                 }
             }
         }
     }
 
+
     // Clear this node
     objects.clear();
     while (queue.size() != 0){
         queue.pop();
+    }
+    States::deactivate(&activeOctants);
+    hasChildren = false;
+    for (int i = 0; i < N_CHILDREN; i++){
+        children[i] = nullptr;
     }
 }

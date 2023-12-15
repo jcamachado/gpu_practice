@@ -56,7 +56,7 @@ Camera cam;
 double dt = 0.0f;       // Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
 
-unsigned int nSpheres = 10;
+unsigned int nSpheres = 20;
 unsigned int nLamps = 1;
 std::string Shader::defaultDirectory = "assets/shaders";
 
@@ -210,86 +210,98 @@ int main(){
     scene.variableLog["time"] = (double)0.0;
 
     scene.defaultFBO.bind(); // rebind default framebuffer
-
-    while (!scene.shouldClose()){                       // Check if window should close
-        double currentTime = glfwGetTime();
-        dt = currentTime - lastFrame;
-        lastFrame = currentTime;
-
-        scene.variableLog["time"] += dt;
-        scene.variableLog["fps"] = 1.0f/dt;
+    try {
         
-        scene.update();                                 // Update screen values
-        processInput(dt);                               // Process input
+        while (!scene.shouldClose()){                       // Check if window should close
+            double currentTime = glfwGetTime();
+            dt = currentTime - lastFrame;
+            lastFrame = currentTime;
 
-        // Activate the directional light's FBO
-        // Everything rendered after this will be rendered to this FBO
+            scene.variableLog["time"] += dt;
+            scene.variableLog["fps"] = 1.0f/dt;
+            // Print fps
+            // std::cout << "START MAIN" << std::endl;
+            scene.update();                                 // Update screen values
+            // std::cout << "MAIN PASSED SCENE UPDATE" << std::endl;
+            processInput(dt);                               // Process input
 
-
-        for (int i = 0; i < sphere.currentNInstances; i++){
-            if (glm::length(cam.cameraPos - sphere.instances[i]->pos) > 250.0f)
-            {
-                scene.markForDeletion(sphere.instances[i]->instanceId);
-                std::cout << " CHECKPOINT next" << std::endl;
+            for (int i = 0; i < sphere.currentNInstances; i++){
+                if (glm::length(cam.cameraPos - sphere.instances[i]->pos) > 100.0f)
+                {
+                    scene.markForDeletion(sphere.instances[i]->instanceId);
+                }
             }
+            // Activate the directional light's FBO
+            // Everything rendered after this will be rendered to this FBO
+
+            // // Render scene to dirlight FBO
+            // dirLight.shadowFBO.activate();
+            // scene.renderDirLightShader(dirShadowShader);    // Render scene from light's perspective     
+            // renderScene(dirShadowShader);
+
+
+            // // Render scene to point light FBO
+            // for (unsigned int i = 0, len = scene.pointLights.size(); i < len; i++){
+            //     if (States::isIndexActive(&scene.activePointLights, i)){
+            //         scene.pointLights[i]->shadowFBO.activate();
+            //         /*
+            //             Render scene from light's perspective  
+            //             1 - Goes through model transformation to put in world coordinates (.vs)  
+            //             2 - then goes to geometry shader and its transformed 6 times to get each face
+            //             and then each one of those 6 triangles is then emmited as a vertex and then passes
+            //             the fragment shader to be colored customly to the depth buffer
+            //         */
+            //         scene.renderPointLightShader(pointShadowShader, i);       
+            //         renderScene(pointShadowShader);
+            //     }
+            // }
+
+            // // Render scene to spot light FBO
+            // for (unsigned int i = 0, len = scene.spotLights.size(); i < len; i++){
+            //     if (States::isIndexActive(&scene.activeSpotLights, i)){
+            //         scene.spotLights[i]->shadowFBO.activate();
+            //         scene.renderSpotLightShader(spotShadowShader, i);    // Render scene from light's perspective     
+            //         renderScene(spotShadowShader);
+            //     }
+            // }
+
+
+            // Render scene normally
+            scene.defaultFBO.activate();
+            scene.renderShader(shader);               // Render scene normally
+            // std::cout << "ISSUE MAIN 1 START" << std::endl;
+            renderScene(shader);
+            // std::cout << "ISSUE MAIN 1 END" << std::endl;
+
+            scene.renderShader(boxShader, false);           // Render boxes
+            box.render(boxShader);                          // Box is not instanced
+            // std::cout << "START NEW FRAME " << std::endl;
+
+            // Send new frame to window
+            scene.newFrame(box);
+            // std::cout << "Teste 5" << std::endl;
+            // std::cout << "END NEW FRAME " << std::endl;
+            scene.clearDeadInstances();             // Delete instances after updating octree
+            // std::cout << "END MAIN" << std::endl;
         }
-
-        // // Render scene to dirlight FBO
-        // dirLight.shadowFBO.activate();
-        // scene.renderDirLightShader(dirShadowShader);    // Render scene from light's perspective     
-        // renderScene(dirShadowShader);
-
-
-        // // Render scene to point light FBO
-        // for (unsigned int i = 0, len = scene.pointLights.size(); i < len; i++){
-        //     if (States::isIndexActive(&scene.activePointLights, i)){
-        //         scene.pointLights[i]->shadowFBO.activate();
-        //         /*
-        //             Render scene from light's perspective  
-        //             1 - Goes through model transformation to put in world coordinates (.vs)  
-        //             2 - then goes to geometry shader and its transformed 6 times to get each face
-        //             and then each one of those 6 triangles is then emmited as a vertex and then passes
-        //             the fragment shader to be colored customly to the depth buffer
-        //         */
-        //         scene.renderPointLightShader(pointShadowShader, i);       
-        //         renderScene(pointShadowShader);
-        //     }
-        // }
-
-        // // Render scene to spot light FBO
-        // for (unsigned int i = 0, len = scene.spotLights.size(); i < len; i++){
-        //     if (States::isIndexActive(&scene.activeSpotLights, i)){
-        //         scene.spotLights[i]->shadowFBO.activate();
-        //         scene.renderSpotLightShader(spotShadowShader, i);    // Render scene from light's perspective     
-        //         renderScene(spotShadowShader);
-        //     }
-        // }
-
-
-        // Render scene normally
-        scene.defaultFBO.activate();
-        scene.renderShader(shader);               // Render scene normally
-        renderScene(shader);
-
-        scene.renderShader(boxShader, false);           // Render boxes
-        box.render(boxShader);                          // Box is not instanced
-
-        // Send new frame to window
-        scene.newFrame(box);
-        scene.clearDeadInstances();             // Delete instances after updating octree
+    } catch (const std::exception& e) {
+        std::cout << e.what() << std::endl;
+        throw e;
     }
     scene.cleanup();
     return 0;
 }
 
 void renderScene(Shader shader){                // assumes shader is prepared accordingly
-    
     if (sphere.currentNInstances > 0) {            // Render launch objects
             scene.renderInstances(sphere.id, shader, dt);
     }
+    //std::cout << "render scene AFETER SPHERES" << std::endl;
     // scene.renderInstances(cube.id, shader, dt);     // Render cubes
     scene.renderInstances(lamp.id, shader, dt);     // Render lamps
+    // std::cout << "render scene 3" << std::endl;
     scene.renderInstances(wall.id, shader, dt);     // Render wall
+    // std::cout << "render scene 4" << std::endl;
 }
 
 void launchItem(float dt){
@@ -297,7 +309,7 @@ void launchItem(float dt){
 
     // RigidBody* rb = scene.generateInstance(sphere.id, glm::vec3(1.0f), 1.0f, cam.cameraPos-glm::vec3(-15.0f, 10.0f, 10.0f));
     if (rb != nullptr){
-        rb->transferEnergy(25.0f, cam.cameraFront);
+        rb->transferEnergy(100.0f, cam.cameraFront);
         rb->applyAcceleration(Environment::gravity);
     }
 }

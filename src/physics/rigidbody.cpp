@@ -5,6 +5,7 @@
 // a+b*i+c*j+d*k where i^2 = j^2 = k^2 = ijk = -1
 #include <glm/gtc/quaternion.hpp>   
 #include <glm/gtx/quaternion.hpp>
+#include <iostream>
 
 bool RigidBody::operator==(RigidBody rb){
     return instanceId == rb.instanceId;
@@ -126,14 +127,16 @@ bool RigidBody::unfreeze(){
     -normal: is the normal of inst's surface
 */
 void RigidBody::handleCollision(RigidBody* inst, glm::vec3 normal){
-    if (lastCollision >= COLLISION_THRESHOLD || lastCollisionId != inst->instanceId){
-        // Reflect velocity, effectively bouncing off the surface
-        this->velocity = glm::reflect(this->velocity, glm::normalize(normal));  // Register elastic collision
-        lastCollision = 0.0f;   // Reset timer
+    try{
+        if (lastCollision >= COLLISION_THRESHOLD || lastCollisionId != inst->instanceId){
+            // Reflect velocity, effectively bouncing off the surface
+            this->velocity = glm::reflect(this->velocity, glm::normalize(normal));  // Register elastic collision
+            lastCollision = 0.0f;   // Reset timer
+        }
+        lastCollisionId = inst->instanceId;
     }
-    lastCollisionId = inst->instanceId;
-
-
-
-
+    catch(const std::exception& e){
+        std::cerr << e.what() << '\n';
+        throw e;
+    }
 }

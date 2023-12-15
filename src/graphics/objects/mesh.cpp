@@ -71,54 +71,63 @@ void Vertex::calcTanVectors(
     std::vector<Vertex>& list, 
     std::vector<unsigned int>& indices
 ){
-    if (indices.size() % 3 != 0){
-        std::cout << "Error: Indices size is not divisible by 3. Not a face?" << std::endl;
-        return;
-    }
-    unsigned char* counts = (unsigned char*)malloc(list.size() * sizeof(unsigned char));
-    for (unsigned int i = 0, len = list.size(); i < len; i++){
-        counts[i] = 0;
-    }
-
-    // Iterate through indices and calculate vectors for each face
-    for (unsigned int i = 0, len = indices.size(); i < len; i += 3){
-        // 3 vertices per face
-        Vertex v1 = list[indices[i + 0]];
-        Vertex v2 = list[indices[i + 1]];
-        Vertex v3 = list[indices[i + 2]];
-
-        // Calculate edges
-        glm::vec3 edge1 = v2.pos - v1.pos;
-        glm::vec3 edge2 = v3.pos - v1.pos;
-        
-        // Calculates delta UVs
-        glm::vec2 deltaUV1 = v2.texCoord - v1.texCoord;
-        glm::vec2 deltaUV2 = v3.texCoord - v1.texCoord;
-
-        // Use inverse of UV matrix to determine tangent (f=1/det)
-        float det = deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y;
-
-        // inverse of determinant = 0
-        if (det == 0.0f){
-            std::cout << "Error: Determinant is 0. Cannot calculate tangent vector" << std::endl;
-            return;
+        unsigned char* counts = (unsigned char*)malloc(list.size() * sizeof(unsigned char));
+        try{
+        // if (indices.size() % 3 != 0){
+        //     std::cout << "Error: Indices size is not divisible by 3. Not a face?" << std::endl;
+        //     return;
+        // }
+        for (unsigned int i = 0, len = list.size(); i < len; i++){
+            counts[i] = 0;
         }
 
-        float f = 1.0f / det;
+        // Iterate through indices and calculate vectors for each face
+        for (unsigned int i = 0, len = indices.size(); i < len; i += 3){
+            // 3 vertices per face
+            Vertex v1 = list[indices[i + 0]];
+            Vertex v2 = list[indices[i + 1]];
+            Vertex v3 = list[indices[i + 2]];
 
-        // Tangent components
-        glm::vec3 tangent = {
-            f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x),
-            f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y),
-            f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z)
-        };
+            // Calculate edges
+            glm::vec3 edge1 = v2.pos - v1.pos;
+            glm::vec3 edge2 = v3.pos - v1.pos;
+            
+            // Calculates delta UVs
+            glm::vec2 deltaUV1 = v2.texCoord - v1.texCoord;
+            glm::vec2 deltaUV2 = v3.texCoord - v1.texCoord;
 
-        // Average in the new tangent vector
-        averageVectors(list[indices[i + 0]].tangent, tangent, counts[indices[i + 0]]++);
-        averageVectors(list[indices[i + 1]].tangent, tangent, counts[indices[i + 1]]++);
-        averageVectors(list[indices[i + 2]].tangent, tangent, counts[indices[i + 2]]++);
+            // Use inverse of UV matrix to determine tangent (f=1/det)
+            float det = deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y;
+
+            // inverse of determinant = 0
+            if (det == 0.0f){
+                std::cout << "Error: Determinant is 0." << std::endl; 
+                std::cout << "Cannot calculate tangent vector" << std::endl; 
+                std::cout << "Parallel" << std::endl; 
+                return;
+            }
+
+            float f = 1.0f / det;
+
+            // Tangent components
+            glm::vec3 tangent = {
+                f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x),
+                f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y),
+                f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z)
+            };
+
+            // Average in the new tangent vector
+            averageVectors(list[indices[i + 0]].tangent, tangent, counts[indices[i + 0]]++);
+            averageVectors(list[indices[i + 1]].tangent, tangent, counts[indices[i + 1]]++);
+            averageVectors(list[indices[i + 2]].tangent, tangent, counts[indices[i + 2]]++);
+        }
+        free(counts);
     }
-    free(counts);
+    catch(std::exception e){
+        std::cout << "Error: " << e.what() << std::endl;
+        free(counts);
+        throw e;
+    }
 }
 
 /*
