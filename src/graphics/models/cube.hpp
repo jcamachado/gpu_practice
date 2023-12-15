@@ -93,8 +93,8 @@ class Cube : public Model {
                 7, 3, 2
             };
 
-            // BoundingRegion br(glm::vec3(-0.5f), glm::vec3(0.5f));
-            BoundingRegion br(glm::vec3(0.0f), sqrt(3.0f)/2.0f);
+            BoundingRegion br(glm::vec3(-0.5f), glm::vec3(0.5f));
+            // BoundingRegion br(glm::vec3(0.0f), sqrt(3.0f)/2.0f);
             
             /*
                 Seems like number of indices = number o vertices 

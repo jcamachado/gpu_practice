@@ -5,6 +5,8 @@
 
 #include "../algorithms/bounds.h"
 
+#define DEFAULT_COLLMESH_SCALE_FACTOR 1.01f
+
 /*
     Forward declarations
 */
@@ -39,7 +41,28 @@ class CollisionMesh {
 
 
         */
-        CollisionMesh(unsigned int nPoints, float* coordinates, unsigned int nFaces, unsigned int* indices);
+        CollisionMesh(
+            unsigned int nPoints, 
+            float* coordinates, 
+            unsigned int nFaces, 
+            unsigned int* indices,  
+            BoundTypes type = BoundTypes::SPHERE    // Default is sphere
+        );
+    private:
+        static void calcSphereCollMeshValues(
+            CollisionMesh* mesh, 
+            unsigned int nPoints, 
+            float* coordinates, 
+            unsigned int nFaces, 
+            unsigned int* indices
+        );
+        static void calcAABBCollMeshValues(
+            CollisionMesh* mesh, 
+            unsigned int nPoints, 
+            float* coordinates, 
+            unsigned int nFaces, 
+            unsigned int* indices
+        );
 };
 
 #endif

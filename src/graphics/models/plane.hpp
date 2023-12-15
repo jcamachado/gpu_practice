@@ -29,9 +29,10 @@ class Plane: public Model{
                 0, 1, 3, // first triangle
                 1, 2, 3  // second triangle
             };
-
-            // BoundingRegion br(glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec3(0.5f, 0.5f, 0.0f));
-            BoundingRegion br(glm::vec3(0.0f), 1 / sqrt(2.0f));
+            // will act as a bounding AABB
+            BoundingRegion br(glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec3(0.5f, 0.5f, 0.0f));
+            // will act as a bounding sphere
+            // BoundingRegion br(glm::vec3(0.0f), 1 / sqrt(2.0f));
 
             
             /*

@@ -207,7 +207,7 @@ void Mesh::loadCollisionMesh(
     unsigned int nFaces, 
     unsigned int* indices
 ){    
-    this->collision = new CollisionMesh(nPoints, coordinates, nFaces, indices);
+    this->collision = new CollisionMesh(nPoints, coordinates, nFaces, indices, this->br.type);
     this->br = this->collision->br;
 }
 

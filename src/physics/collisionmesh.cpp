@@ -304,28 +304,50 @@ CollisionMesh::CollisionMesh(
     unsigned int nPoints, 
     float* coordinates, 
     unsigned int nFaces, 
-    unsigned int* indices)
-    : points(nPoints), faces(nFaces) 
+    unsigned int* indices,
+    BoundTypes type)
+    : points(nPoints), faces(nFaces)
 {
-    
+    /*
+        THIS CONSTRUCTOR MAKES THE FORMAT OF THE VOLUME THAT
+        WILL BE USER FOR THE COLLISION INTERACTIONS, NOT THE
+        VISUALS
+    */
+    if (type == BoundTypes::SPHERE) {
+        calcSphereCollMeshValues(this, nPoints, coordinates, nFaces, indices);
+    }
+    else if (type == BoundTypes::AABB) {
+        calcAABBCollMeshValues(this, nPoints, coordinates, nFaces, indices);
+    }
+}
+
+void CollisionMesh::calcSphereCollMeshValues(
+    CollisionMesh *colMesh, unsigned int nPoints, 
+    float* coordinates, 
+    unsigned int nFaces, 
+    unsigned int* indices)
+{
+    // Calculate the center of the sphere
+    colMesh->points.resize(nPoints);
+    colMesh->faces.resize(nFaces);
     glm::vec3 min(std::numeric_limits<float>::infinity());  // +infinity
     glm::vec3 max = -1.0f * min;                                   // -infinity
 
     // Insert points into list
     for (unsigned int i = 0; i < nPoints; i++) {
-        points[i] = {                  // Like in Vertex::genlist
+        colMesh->points[i] = {                  // Like in Vertex::genlist
             coordinates[i * 3 + 0],
             coordinates[i * 3 + 1],
             coordinates[i * 3 + 2]
         };
 
         for (int j = 0; j < 3; j++) {
-            if (points[i][j] < min[j]) {
-                min[j] = points[i][j];
+            if (colMesh->points[i][j] < min[j]) {
+                min[j] = colMesh->points[i][j];
             }
 
-            if (points[i][j] > max[j]) {
-                max[j] = points[i][j];
+            if (colMesh->points[i][j] > max[j]) {
+                max[j] = colMesh->points[i][j];
             }
         }
     }
@@ -335,7 +357,7 @@ CollisionMesh::CollisionMesh(
     for (unsigned int i = 0; i < nPoints; i++) {
         float radiusSquared = 0.0f;
         for (int j = 0; j < 3; j++) {
-            float dist = points[i][j] - center[j];
+            float dist = colMesh->points[i][j] - center[j];
             radiusSquared += dist * dist;
         }
         if (radiusSquared > maxRadiusSquared) {
@@ -343,8 +365,11 @@ CollisionMesh::CollisionMesh(
         }
     }
 
-    this->br = BoundingRegion(center, sqrt(maxRadiusSquared));  // Bounding regions are still boxes
-    this->br.collisionMesh = this;
+    colMesh->br = BoundingRegion(
+        center, 
+        sqrt(maxRadiusSquared)* DEFAULT_COLLMESH_SCALE_FACTOR
+    );  // Bounding regions are still boxes
+    colMesh->br.collisionMesh = colMesh;
 
     // Calculate face normals
     for (unsigned int i = 0; i < nFaces; i++){
@@ -358,16 +383,140 @@ CollisionMesh::CollisionMesh(
             A vector is resulted from  point[1] - point[0], B = point[2] - point[0], C = point[2] - point[1]
             When we have the indices, A, B and C from the points list, and through cross(A, B) we get the normal
         */
-        glm::vec3 A = points[i2] - points[i1];  // A = P2 - P1
-		glm::vec3 B = points[i3] - points[i1];  // B = P3 - P1 
+        glm::vec3 A = colMesh->points[i2] - colMesh->points[i1];  // A = P2 - P1
+		glm::vec3 B = colMesh->points[i3] - colMesh->points[i1];  // B = P3 - P1 
         glm::vec3 N = glm::cross(A, B);         // N = A x B
         N = glm::normalize(N);
 
-        faces[i] = {
-            this,
+        colMesh->faces[i] = {
+            colMesh,
             i1, i2, i3, // Indices making up the triangle
             N,          // Normal placeholder
             N           // Initial value for transformmed normal is the same as the base normal
         };  
     }
 }
+void CollisionMesh::calcAABBCollMeshValues(
+    CollisionMesh *colMesh, unsigned int nPoints, 
+    float* coordinates, 
+    unsigned int nFaces, 
+    unsigned int* indices)
+{
+    glm::vec3 min(std::numeric_limits<float>::infinity());  // +infinity
+    glm::vec3 max = -1.0f * min;                                   // -infinity
+    glm::vec3 center;
+    glm::vec3 size;
+    for (unsigned int i = 0; i < nPoints; i++) {
+        colMesh->points[i] = {
+            coordinates[i * 3 + 0],
+            coordinates[i * 3 + 1],
+            coordinates[i * 3 + 2]
+        };
+
+        for (int j = 0; j < 3; j++) {
+            if (colMesh->points[i][j] < min[j]) {
+                min[j] = colMesh->points[i][j];
+            }
+
+            if (colMesh->points[i][j] > max[j]) {
+                max[j] = colMesh->points[i][j];
+            }
+        }
+        center = (min + max) / 2.0f;
+        size = max - min;
+        min = center - size * DEFAULT_COLLMESH_SCALE_FACTOR / 2.0f;  // Scale the min point
+        max = center + size * DEFAULT_COLLMESH_SCALE_FACTOR / 2.0f;
+        colMesh->br = BoundingRegion(min, max);
+    }
+
+    // Calculate face normals
+    for (unsigned int i = 0; i < nFaces; i++){
+        unsigned int i1 = indices[i * 3 + 0];
+        unsigned int i2 = indices[i * 3 + 1];
+        unsigned int i3 = indices[i * 3 + 2];
+
+        glm::vec3 A = colMesh->points[i2] - colMesh->points[i1];
+        glm::vec3 B = colMesh->points[i3] - colMesh->points[i1];
+        glm::vec3 N = glm::cross(A, B);
+        N = glm::normalize(N);
+
+        colMesh->faces[i] = {
+            colMesh,
+            i1, i2, i3,
+            N,
+            N
+        };  
+    }
+}
+
+// CollisionMesh::CollisionMesh(
+//     unsigned int nPoints, 
+//     float* coordinates, 
+//     unsigned int nFaces, 
+//     unsigned int* indices)
+//     : points(nPoints), faces(nFaces) 
+// {
+    
+//     glm::vec3 min(std::numeric_limits<float>::infinity());  // +infinity
+//     glm::vec3 max = -1.0f * min;                                   // -infinity
+
+//     // Insert points into list
+//     for (unsigned int i = 0; i < nPoints; i++) {
+//         points[i] = {                  // Like in Vertex::genlist
+//             coordinates[i * 3 + 0],
+//             coordinates[i * 3 + 1],
+//             coordinates[i * 3 + 2]
+//         };
+
+//         for (int j = 0; j < 3; j++) {
+//             if (points[i][j] < min[j]) {
+//                 min[j] = points[i][j];
+//             }
+
+//             if (points[i][j] > max[j]) {
+//                 max[j] = points[i][j];
+//             }
+//         }
+//     }
+
+//     glm::vec3 center = (min + max) / 2.0f;
+//     float maxRadiusSquared = 0.0f;
+//     for (unsigned int i = 0; i < nPoints; i++) {
+//         float radiusSquared = 0.0f;
+//         for (int j = 0; j < 3; j++) {
+//             float dist = points[i][j] - center[j];
+//             radiusSquared += dist * dist;
+//         }
+//         if (radiusSquared > maxRadiusSquared) {
+//             maxRadiusSquared = radiusSquared;
+//         }
+//     }
+
+//     this->br = BoundingRegion(center, sqrt(maxRadiusSquared));  // Bounding regions are still boxes
+//     this->br.collisionMesh = this;
+
+//     // Calculate face normals
+//     for (unsigned int i = 0; i < nFaces; i++){
+//         unsigned int i1 = indices[i * 3 + 0];
+//         unsigned int i2 = indices[i * 3 + 1];
+//         unsigned int i3 = indices[i * 3 + 2];
+
+//         /*
+//             Collison Theory checkpoint:
+//             Given the 3 points point[0], point[1] and point[2] (P1, P2 and P3)): 
+//             A vector is resulted from  point[1] - point[0], B = point[2] - point[0], C = point[2] - point[1]
+//             When we have the indices, A, B and C from the points list, and through cross(A, B) we get the normal
+//         */
+//         glm::vec3 A = points[i2] - points[i1];  // A = P2 - P1
+// 		glm::vec3 B = points[i3] - points[i1];  // B = P3 - P1 
+//         glm::vec3 N = glm::cross(A, B);         // N = A x B
+//         N = glm::normalize(N);
+
+//         faces[i] = {
+//             this,
+//             i1, i2, i3, // Indices making up the triangle
+//             N,          // Normal placeholder
+//             N           // Initial value for transformmed normal is the same as the base normal
+//         };  
+//     }
+// }
