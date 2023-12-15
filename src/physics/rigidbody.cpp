@@ -148,3 +148,11 @@ void RigidBody::handleCollision(RigidBody* inst, glm::vec3 normal){
         throw e;
     }
 }
+// void RigidBody::handleCollision(RigidBody* inst, glm::vec3 normal){
+//     if (lastCollision >= COLLISION_THRESHOLD || lastCollisionId != inst->instanceId) {
+//         this->velocity = glm::reflect(this->velocity, glm::normalize(normal)); // register (elastic) collision
+//         lastCollision = 0.0f; // reset counter
+//     }
+
+//     lastCollisionId = inst->instanceId;
+// }

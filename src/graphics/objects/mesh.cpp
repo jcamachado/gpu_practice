@@ -124,7 +124,7 @@ void Vertex::calcTanVectors(
         free(counts);
     }
     catch(std::exception e){
-        std::cout << "Error: " << e.what() << std::endl;
+        std::cout << "Error:  at TAN CALC" << e.what() << std::endl;
         free(counts);
         throw e;
     }
@@ -209,6 +209,8 @@ void Mesh::loadCollisionMesh(
 ){    
     this->collision = new CollisionMesh(nPoints, coordinates, nFaces, indices, this->br.type);
     this->br = this->collision->br;
+    //    this->collision->br = this->br;
+
 }
 
 void Mesh::setupTextures(std::vector<Texture> textures){

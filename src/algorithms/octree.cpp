@@ -109,6 +109,7 @@ void Octree::node::build(){
         if (octLists[i].size() != 0){
             children[i] = new node(octants[i], octLists[i]);
             States::activateIndex(&activeOctants, i);
+            
             children[i]->parent = this;
             children[i]->build();
             hasChildren = true;
@@ -196,6 +197,7 @@ void Octree::node::update(Box &box){    //build and update seems to be having se
                         // Branch is dead, remove it
                         children[i] = nullptr;
                         States::deactivateIndex(&activeOctants, i);
+                        hasChildren = States::hasActiveState(&activeOctants);
                     }
                 }
             }
@@ -205,10 +207,11 @@ void Octree::node::update(Box &box){    //build and update seems to be having se
                 flags > 0;
                 flags >>= 1, i++){                      // Iterates over each bit in flags, each octant
                 if (States::isIndexActive(&flags, 0)){
-                    if (children != nullptr){
+                    if (hasChildren){
                         // Active octant
                         // std::cout << "DEBUG OCTREE before update" << std::endl;
                         children[i]->update(box);
+                        hasChildren = States::hasActiveState(&activeOctants);
                         // std::cout << "DEBUG OCTREE after update" << std::endl;
                     }
                 }
@@ -399,12 +402,19 @@ void Octree::node::checkCollisionsSelf(BoundingRegion obj){ // CUDABLE?
     int collCase = -1;
     try{
         for (BoundingRegion br : objects){
-            int collCase = -1;
+            // Print last collision
+            if (collCase != -1){
+                std::cout << "Case " << collCase << " - Instance " << br.instance->instanceId 
+                    << "(" << br.instance->modelId << ") collided with instance " 
+                    << obj.instance->instanceId << "(" << obj.instance->modelId << ")" 
+                    << std::endl;
+            };
+
             // Coarse check 
+            int collCase = -1;
             if (br.instance == obj.instance) {
                 continue; // Skip if same instance
             }
-
             if (br.intersectsWith(obj)){
                 // Case 0  passed
                 collCase = 0;
@@ -418,17 +428,22 @@ void Octree::node::checkCollisionsSelf(BoundingRegion obj){ // CUDABLE?
                     if(obj.collisionMesh){      // Both have collision meshes
                         // Check all faces in br against all faces in obj. Quadratic hell O(n^2)
                         collCase = 1;
-                        bool collisionFound = false;
-                        for (unsigned int i = 0; i < nFacesBr && !collisionFound; i++){
-                            for (unsigned int j = 0; j < nFacesObj && !collisionFound; j++){  //Cubic hell O(n^3)
+                        for (unsigned int i = 0; i < nFacesBr; i++){
+                            for (unsigned int j = 0; j < nFacesObj; j++){  //Cubic hell O(n^3)
                                 if (br.collisionMesh->faces[i].collidesWithFace(
                                     br.instance,
                                     obj.collisionMesh->faces[j],
                                     obj.instance,
                                     norm
                                 )){
-                                    // collisionFound = true;
+                                    // std::cout << "before" << std::endl;
+
                                     obj.instance->handleCollision(br.instance, norm);
+                                    
+                                    // std::cout << "Case " << collCase << " - Instance " << br.instance->instanceId 
+                                    // << "(" << br.instance->modelId << ") collided with instance " 
+                                    // << obj.instance->instanceId << "(" << obj.instance->modelId << ")" 
+                                    // << std::endl;
                                     break;
                                 }
                             }
@@ -445,6 +460,7 @@ void Octree::node::checkCollisionsSelf(BoundingRegion obj){ // CUDABLE?
                                 obj,
                                 norm
                             )){
+                                obj.instance->handleCollision(br.instance, norm);
                                 break;
                             }
                         }
@@ -473,19 +489,13 @@ void Octree::node::checkCollisionsSelf(BoundingRegion obj){ // CUDABLE?
                         // Check if spheres intersect
                         norm = obj.center - br.center;
                         if (br.instance == nullptr || obj.instance == nullptr || 
-                            norm == glm::vec3(0.0f))
+                            norm == glm::vec3(0.0f, 0.0f, 0.0f)) 
                         {
                             continue;
                         }
                         obj.instance->handleCollision(br.instance, norm);
                     }
                 }
-            }
-            if (collCase != -1){
-                std::cout << "Case " << collCase << "Instance " << br.instance->instanceId 
-                    << "(" << br.instance->modelId << ") collided with instance " 
-                    << obj.instance->instanceId << "(" << obj.instance->modelId << ")" 
-                    << std::endl;
             }
         }
     } catch (const std::exception& e) {
@@ -528,6 +538,7 @@ void Octree::node::destroy() {
                     children[i] = nullptr;
                     delete children[i];
                     States::deactivateIndex(&activeOctants, i);
+                    hasChildren = false;
                 }
             }
         }

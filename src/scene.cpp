@@ -390,14 +390,14 @@ void Scene::update(){
 
 // Update screen before after each frame
 void Scene::newFrame(Box &box){
-    box.positions.clear();
-    box.sizes.clear();
-    // Process pending.
-    octree->processPending();       // "Process new objects"
-    octree->update(box);            // "Are there any destroyed objects?"
-    // Send new frame to window
-    glfwSwapBuffers(window);
-    glfwPollEvents();
+        box.positions.clear();
+        box.sizes.clear();
+        // Process pending.
+        octree->processPending();       // "Process new objects"
+        octree->update(box);            // "Are there any destroyed objects?"
+        // Send new frame to window
+        glfwSwapBuffers(window);
+        glfwPollEvents();
 }
 
 void Scene::renderShader(Shader shader, bool applyLighting){

@@ -40,6 +40,8 @@ void BoundingRegion::transform(){
             // Apply translation
             min += instance->pos;
             max += instance->pos;
+            // min = ogMin * instance->size + instance->pos;
+            // max = ogMax * instance->size + instance->pos;
         }
         else {
             center = ogCenter * instance->size + instance->pos;

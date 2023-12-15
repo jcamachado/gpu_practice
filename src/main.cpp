@@ -119,10 +119,10 @@ int main(){
     /*
         Models
     */
-    // scene.registerModel(&cube);
+    scene.registerModel(&cube);
     scene.registerModel(&lamp);
     scene.registerModel(&sphere);
-    scene.registerModel(&wall);
+    // scene.registerModel(&wall);
 
     Box box;
     box.init();                 // Box is not instanced
@@ -183,28 +183,33 @@ int main(){
     // scene.activeSpotLights = 1;                         // 0b00000001
     
     // scene.generateInstance(cube.id, glm::vec3(20.0f, 0.1f, 20.0f), 100.0f, glm::vec3(0.0f, -3.0f, 0.0f));
-    // glm::vec3 cubePositions[] = {
-    //     { 1.0f, 3.0f, -5.0f },
-    //     { -7.25f, 2.1f, 1.5f },
-    //     { -15.0f, 2.55f, 9.0f },
-    //     { 4.0f, -3.5f, 5.0f },
-    //     { 2.8f, 1.9f, -6.2f },
-    //     { 3.5f, 6.3f, -1.0f },
-    //     { -3.4f, 10.9f, -5.5f },
-    //     { 0.0f, 11.0f, 0.2f },
-    //     { 0.0f, 5.0f, 0.0f },
-    // };
+    glm::vec3 cubePositions[] = {
+        { 0.0f, -3.0f, 0.0f },  //base floor
+        { -7.25f, 2.1f, 1.5f },
+        { -15.0f, 2.55f, 9.0f },
+        { 4.0f, -3.5f, 5.0f },
+        { 2.8f, 1.9f, -6.2f },
+        { 3.5f, 6.3f, -1.0f },
+        { -3.4f, 10.9f, -5.5f },
+        { 0.0f, 11.0f, 0.2f },
+        { 0.0f, 5.0f, 0.0f },
+    };
     for (unsigned int i = 0; i < 9; i++) {
-        // scene.generateInstance(cube.id, glm::vec3(0.5f), 1.0f, cubePositions[i]);
+        scene.generateInstance(
+            cube.id,
+            glm::vec3(10.0f, 10.0f, 1.0f), 
+            1.0f, cubePositions[i],
+            glm::vec3(glm::radians(90.0f), 0.0f, 0.0f)
+        );
     }
     // Instantiate brickwall
-    scene.generateInstance(
-        wall.id, 
-        glm::vec3(5.0f, 5.0f, 5.0f), 
-        1.0f, 
-        glm::vec3(0.0f, -2.0f, -2.0f), 
-        glm::vec3(glm::radians(90.0f), 0.0f, 0.0f)
-    );
+    // scene.generateInstance(
+    //     wall.id, 
+    //     glm::vec3(1.0f, 1.0f, 1.0f), 
+    //     1.0f, 
+    //     glm::vec3(0.0f, -2.0f, -2.0f), 
+    //     glm::vec3(glm::radians(90.0f), 0.0f, 0.0f)
+    // );
 
     // instantiate texture plane
     // scene.generateInstance(map.id, glm::vec3(2.0f, 2.0f, 0.0f), 0.0f, glm::vec3(0.0f)); 
@@ -214,7 +219,6 @@ int main(){
 
     scene.defaultFBO.bind(); // rebind default framebuffer
     try {
-        
         while (!scene.shouldClose()){                       // Check if window should close
             double currentTime = glfwGetTime();
             dt = currentTime - lastFrame;
@@ -278,7 +282,7 @@ int main(){
             scene.clearDeadInstances();             // Delete instances after updating octree
         }
     } catch (const std::exception& e) {
-        std::cout << e.what() << std::endl;
+        std::cout << "BROKE IN MAIN" << e.what() << std::endl;
         throw e;
     }
     scene.cleanup();
@@ -291,7 +295,7 @@ void renderScene(Shader shader){                // assumes shader is prepared ac
     }
     scene.renderInstances(cube.id, shader, dt);     // Render cubes
     scene.renderInstances(lamp.id, shader, dt);     // Render lamps
-    scene.renderInstances(wall.id, shader, dt);     // Render wall
+    // scene.renderInstances(wall.id, shader, dt);     // Render wall
 }
 
 void setSceneDirLights(Scene *scene) {

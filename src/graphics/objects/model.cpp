@@ -127,6 +127,7 @@ void Model::init() {}
         We will be this to all models.
     */
 void Model::render(Shader shader, float dt, Scene *scene){
+    
     if (!States::isActive(&switches, CONST_INSTANCES)){
         /*
             Dynamic instances - Update VBO data

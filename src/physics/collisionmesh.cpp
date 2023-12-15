@@ -313,12 +313,15 @@ CollisionMesh::CollisionMesh(
         WILL BE USER FOR THE COLLISION INTERACTIONS, NOT THE
         VISUALS
     */
-    if (type == BoundTypes::SPHERE) {
-        calcSphereCollMeshValues(this, nPoints, coordinates, nFaces, indices);
-    }
-    else if (type == BoundTypes::AABB) {
-        calcAABBCollMeshValues(this, nPoints, coordinates, nFaces, indices);
-    }
+    // if (type == BoundTypes::SPHERE) {
+    //     calcSphereCollMeshValues(this, nPoints, coordinates, nFaces, indices);
+    // }
+    // else if (type == BoundTypes::AABB) {
+    //     calcAABBCollMeshValues(this, nPoints, coordinates, nFaces, indices);
+    // }
+    // calcSphereCollMeshValues(this, nPoints, coordinates, nFaces, indices);
+    calcAABBCollMeshValues(this, nPoints, coordinates, nFaces, indices);
+
 }
 
 void CollisionMesh::calcSphereCollMeshValues(
