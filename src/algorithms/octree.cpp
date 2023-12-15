@@ -408,13 +408,16 @@ void Octree::node::checkCollisionsSelf(BoundingRegion obj){ // CUDABLE?
         for (BoundingRegion br : objects){
             // Coarse check 
             int collCase = -1;
+            if (br.instance == nullptr || obj.instance == nullptr){
+                continue;
+            }
             if (br.instance == obj.instance) {
                 continue; // Skip if same instance
             }
             if (br.intersectsWith(obj)){
                 // Case 0  passed
                 collCase = 0;
-
+                
                 unsigned int nFacesBr = br.collisionMesh==nullptr ? br.collisionMesh->faces.size() : 0;
                 unsigned int nFacesObj = obj.collisionMesh==nullptr ? obj.collisionMesh->faces.size() : 0;
 
@@ -543,7 +546,6 @@ void Octree::node::destroy() {
                 // If this child is active
                 if (children[i] != nullptr){
                     children[i]->destroy();
-                    delete children[i];
                     children[i] = nullptr;
                     States::deactivateIndex(&activeOctants, i);
                 }
