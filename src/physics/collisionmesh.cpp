@@ -182,13 +182,15 @@ bool Face::collidesWithFace(
 	};
 
     // Model matrix transformations and normal cuts off translation since its only directions
-    glm::vec3 thisNorm = thisRB->normalModel * this->norm;
+    glm::vec3 thisNorm = glm::normalize(thisRB->normalModel * this->norm);
+    // glm::vec3 thisNorm = thisRB->normalModel * this->norm;
     
     glm::vec3 U1 = mat4vec3mult(faceRB->model, face.mesh->points[face.i1]) - P1;
 	glm::vec3 U2 = mat4vec3mult(faceRB->model, face.mesh->points[face.i2]) - P1;
 	glm::vec3 U3 = mat4vec3mult(faceRB->model, face.mesh->points[face.i3]) - P1;
 
-    retNorm = faceRB->normalModel *  face.norm;
+    retNorm = glm::normalize(faceRB->normalModel *  face.norm);
+    // retNorm = faceRB->normalModel *  face.norm;
 
     // Set P1 as the origin (zero vector)
     P1[0] = 0.0f; P1[1] = 0.0f; P1[2] = 0.0f;
@@ -319,14 +321,21 @@ CollisionMesh::CollisionMesh(
         WILL BE USER FOR THE COLLISION INTERACTIONS, NOT THE
         VISUALS
     */
-    // if (type == BoundTypes::SPHERE) {
-    //     calcSphereCollMeshValues(this, nPoints, coordinates, nFaces, indices);
-    // }
-    // else if (type == BoundTypes::AABB) {
-    //     calcAABBCollMeshValues(this, nPoints, coordinates, nFaces, indices);
-    // }
+    
+
+
+
+    if (type == BoundTypes::SPHERE) {
+        calcSphereCollMeshValues(this, nPoints, coordinates, nFaces, indices);
+        std::cout << "nPoints: " << nPoints << std::endl;
+        std::cout << "nFaces: " << nFaces << std::endl;
+    }
+    else if (type == BoundTypes::AABB) {
+        calcAABBCollMeshValues(this, nPoints, coordinates, nFaces, indices);
+    }
+    
     // calcSphereCollMeshValues(this, nPoints, coordinates, nFaces, indices);
-    calcAABBCollMeshValues(this, nPoints, coordinates, nFaces, indices);
+    // calcAABBCollMeshValues(this, nPoints, coordinates, nFaces, indices);
 
 }
 
@@ -341,7 +350,6 @@ void CollisionMesh::calcSphereCollMeshValues(
     colMesh->faces.resize(nFaces);
     glm::vec3 min(std::numeric_limits<float>::infinity());  // +infinity
     glm::vec3 max = -1.0f * min;                                   // -infinity
-
     // Insert points into list
     for (unsigned int i = 0; i < nPoints; i++) {
         colMesh->points[i] = {                  // Like in Vertex::genlist
@@ -381,11 +389,13 @@ void CollisionMesh::calcSphereCollMeshValues(
     colMesh->br.collisionMesh = colMesh;
 
     // Calculate face normals
-    for (unsigned int i = 0; i < nFaces; i++){
+    // TODO Needs to be revised about shared vertices OR ANYTHING ELSE
+    // BROKEN, FACES/3 IS JUST TO NOT GET OUT OF BOUNDS
+    for (unsigned int i = 0; i < nFaces/3; i++){ 
         unsigned int i1 = indices[i * 3 + 0];
         unsigned int i2 = indices[i * 3 + 1];
         unsigned int i3 = indices[i * 3 + 2];
-
+        
         /*
             Collison Theory checkpoint:
             Given the 3 points point[0], point[1] and point[2] (P1, P2 and P3)): 
@@ -396,6 +406,9 @@ void CollisionMesh::calcSphereCollMeshValues(
 		glm::vec3 B = colMesh->points[i3] - colMesh->points[i1];  // B = P3 - P1 
         glm::vec3 N = glm::cross(A, B);         // N = A x B
         N = glm::normalize(N);
+        std::cout << "Index: " << nFaces << std::endl;
+        std::cout << "nFaces: " << nFaces << std::endl;
+        std::cout << "nPoints: " << nPoints << std::endl;
 
         colMesh->faces[i] = {
             colMesh,
