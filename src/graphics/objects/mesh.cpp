@@ -320,9 +320,19 @@ void Mesh::setup(){
 }
 
 void Mesh::cleanup(){
-    VAO.cleanup();
+    try{
+        VAO.cleanup();
+        if (collision){
+            delete collision;
+        }
 
-    for (Texture t: textures) {
-        t.cleanup();
+        for (Texture t: textures) {
+            t.cleanup();
+        }
     }
+    catch(std::exception e){
+        std::cout << "Error:  at MESH CLEANUP" << e.what() << std::endl;
+        throw e;
+    }
+        
 }
