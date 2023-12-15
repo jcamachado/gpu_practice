@@ -8,7 +8,7 @@
 #define INSTANCE_DEAD       (unsigned char)0b00000001
 #define INSTANCE_MOVED      (unsigned char)0b00000010
 
-#define COLLISION_THRESHOLD 0.05f   // in seconds
+#define COLLISION_THRESHOLD 0.1f   // in seconds
 
 class RigidBody {
     public:
@@ -16,6 +16,7 @@ class RigidBody {
 
         // Physics
         float mass;                             // kg
+        float restitution;                      // Coefficient of restitution (elasticity and energy loss)
         glm::vec3 size;                         // Dimensions of the object
 
         //Linear

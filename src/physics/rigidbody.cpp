@@ -24,6 +24,7 @@ RigidBody::RigidBody(
 ) : modelId(modelId),
     size(size),
     mass(mass), 
+    restitution(0.8f),
     pos(pos), 
     eRotation(eRotation),
     velocity(0.0f), 
@@ -131,6 +132,13 @@ void RigidBody::handleCollision(RigidBody* inst, glm::vec3 normal){
         if (lastCollision >= COLLISION_THRESHOLD || lastCollisionId != inst->instanceId){
             // Reflect velocity, effectively bouncing off the surface
             this->velocity = glm::reflect(this->velocity, glm::normalize(normal));  // Register elastic collision
+            
+            // Calculate combined restitution
+            float restitution = sqrt(this->restitution * inst->restitution);
+
+            // Apply restitution
+            this->velocity *= restitution;
+            
             lastCollision = 0.0f;   // Reset timer
         }
         lastCollisionId = inst->instanceId;
