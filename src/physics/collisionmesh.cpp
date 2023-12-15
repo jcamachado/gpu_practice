@@ -167,6 +167,9 @@ bool Face::collidesWithFace(
     RigidBody* faceRB, 
     glm::vec3& retNorm
 ){  
+    if(thisRB != nullptr || faceRB != nullptr){
+        return false;
+    }
     // retNorm is the noram to return to be used in handleCollision
     // Transform coordinates so that the P1 is the origin
     glm::vec3 P1 = mat4vec3mult(thisRB->model, this->mesh->points[this->i1]);
@@ -278,6 +281,9 @@ bool Face::collidesWithSphere(RigidBody* thisRB, BoundingRegion& br, glm::vec3& 
 	// }
 
 	// apply model transformations
+    if (thisRB == nullptr || br.isEmptyInstance) {
+        return false;
+    }
 	glm::vec3 P1 = mat4vec3mult(thisRB->model, this->mesh->points[i1]);
 	glm::vec3 P2 = mat4vec3mult(thisRB->model, this->mesh->points[i2]);
 	glm::vec3 P3 = mat4vec3mult(thisRB->model, this->mesh->points[i3]);
