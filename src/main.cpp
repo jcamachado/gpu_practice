@@ -47,6 +47,7 @@
 #include "graphics/rendering/text.h"
 
 #include "physics/collisionmesh.h"
+#include <random>
 
 Scene scene;
 
@@ -69,6 +70,7 @@ Plane map;
 void processInput(double dt);
 void renderScene(Shader shader);
 void setSceneLights(Scene *scene);
+void textHandler(Shader textShader);
 
 int main(){
     scene = Scene(3, 3, "Particle System", 1200, 720); // Create scene
@@ -89,7 +91,7 @@ int main(){
     Shader::loadIntoDefault("defaultHeader.gh");
     // Shader bufferShader("buffer.vs", "buffer.fs");
     // Shader outlineShader("outline.vs", "outline.fs");
-    // Shader textShader("text.vs", "text.fs");
+    Shader textShader(false, "text.vs", "text.fs");
     
     Shader boxShader(false, "instanced/box.vs", "instanced/box.fs");
     Shader shader(true, "instanced/instanced.vs", "object.fs");
@@ -229,6 +231,9 @@ int main(){
             scene.update();                                 // Update screen values
             processInput(dt);                               // Process input
 
+            scene.renderShader(textShader, false);          // Render text
+            textHandler(textShader);
+
             for (int i = 0; i < sphere.currentNInstances; i++){
                 if(sphere.instances[i] != nullptr && !States::isActive(&sphere.instances[i]->state, INSTANCE_DEAD) ){
                     if (glm::length(cam.cameraPos - sphere.instances[i]->pos) > 100.0f)
@@ -327,6 +332,58 @@ void launchItem(float dt){
     }
 }
 
+void textHandler(Shader textShader){
+    scene.renderText(
+            "comic", 
+            textShader, 
+            "Particles", 
+            50.0f, 
+            50.0f, 
+            glm::vec2(1.0f), 
+            glm::vec3(0.5f, 0.6f, 1.0f)
+        );
+    scene.renderText(
+            "comic", 
+            textShader, 
+            "Time: " + scene.variableLog["time"].dump(), 
+            50.0f, 
+            550.0f, 
+            glm::vec2(1.0f), 
+            glm::vec3(0.5f, 0.6f, 1.0f)
+        );
+    scene.renderText(
+            "comic", 
+            textShader, 
+            "FPS: " + scene.variableLog["fps"].dump(), 
+            50.0f, 
+            550.0f - 40.0f, 
+            glm::vec2(1.0f), 
+            glm::vec3(0.5f, 0.6f, 1.0f)
+        );      
+}
+
+int getRandomInt (int start, int end){
+    std::random_device dev;
+    std::mt19937 rng(dev());
+    std::uniform_int_distribution<std::mt19937::result_type> result(start, end); // distribution in range [1, 6]
+    return result(rng);
+}
+
+void releaseTheSpheres(float dt){
+    // generate random number
+    int rx = getRandomInt(0, 10);
+    int ry = -getRandomInt(5, 10);
+    int rz = getRandomInt(0, 10);
+    glm::vec3 randomVec = glm::vec3(rx, ry, rz);
+
+    RigidBody* rb = scene.generateInstance(sphere.id, glm::vec3(0.5f), 1.0f, cam.cameraPos + glm::vec3(50.0f, 2.0f, 0.0f));
+
+    if (rb != nullptr){
+        rb->transferEnergy(10.0f, cam.worldUp - randomVec);
+        rb->applyAcceleration(Environment::gravity);
+    }
+}
+
 void processInput(double dt){ // Function for processing input
     scene.processInput(dt); // Process input for scene
 
@@ -351,17 +408,13 @@ void processInput(double dt){ // Function for processing input
 
         launchItem(dt);
     }
-    if (Keyboard::keyWentDown(GLFW_KEY_T)){
-        for (int i = 0; i < sphere.currentNInstances; i++){
-            if (!sphere.instances[i]->freeze()){
-                sphere.instances[i]->unfreeze();
-            }
-        }
-    }
-    //reset octree
-    if (Keyboard::keyWentDown(GLFW_KEY_R)){
-        scene.octree = new Octree::node(BoundingRegion(glm::vec3(-16.0f), glm::vec3(16.0f)));
-    }
+    // if (Keyboard::keyWentDown(GLFW_KEY_T)){
+    //     for (int i = 0; i < sphere.currentNInstances; i++){
+    //         if (!sphere.instances[i]->freeze()){
+    //             sphere.instances[i]->unfreeze();
+    //         }
+    //     }
+    // }
     for (int i=0; i<4; i++){
         if (Keyboard::keyWentDown(GLFW_KEY_1 + i)){
             States::toggleIndex(&scene.activePointLights, i);

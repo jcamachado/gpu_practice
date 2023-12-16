@@ -21,7 +21,7 @@ void Scene::frameBufferSizeCallback(GLFWwindow* window, int width, int height) {
 /*
     Constructors
 */
-Scene::Scene() : currentId("aaaaaaaa"), lightUBO(0) {}
+Scene::Scene() : currentId("aaaaaaaa"), lightUBO(0), octreeBuilt(false) {}
 
 Scene::Scene(int glfwVersionMajor, 
     int glfwVersionMinor, 
@@ -35,7 +35,8 @@ Scene::Scene(int glfwVersionMajor,
     activePointLights(0),
     activeSpotLights(0),
     currentId("aaaaaaaa"), 
-    lightUBO(0) {
+    lightUBO(0),
+    octreeBuilt(false) {
 
     Scene::scrWidth = scrWidth;
     Scene::scrHeight = scrHeight;
@@ -149,6 +150,7 @@ bool Scene::init() {
         Init octree
     */
     octree = new Octree::node(BoundingRegion(glm::vec3(-16.0f), glm::vec3(16.0f)));
+    octreeBuilt = true;
 
     /*
         Init FreeType library
@@ -185,7 +187,9 @@ void Scene::prepare(Box &box, std::vector<Shader> shaders){
     // Close FT library
     FT_Done_FreeType(ft);
     // Process current instances
-    octree->update(box);        // Calls octree->build() if it hasn't been built yet
+    if (octreeBuilt){
+        octree->update(box);        // Calls octree->build() if it hasn't been built yet
+    }
 
     // Set lighting UBO, mapped with Lights in defaultHeader.gh
     lightUBO = UBO::UBO(0, {
@@ -354,6 +358,17 @@ void Scene::processInput(float dt){
         if (Keyboard::key(GLFW_KEY_N)){
             variableLog["skipNormalMapping"] = !variableLog["skipNormalMapping"].val<bool>();
         }
+
+        if (Keyboard::keyWentDown(GLFW_KEY_O)){
+            if (octreeBuilt){
+                octree->destroy();
+                octreeBuilt = false;
+            }
+            else{
+                octree->build();
+                octreeBuilt = true;
+            }
+        }
         /*
             if using Joystick (probably deprecated, but the logic is here)
         */
@@ -393,8 +408,11 @@ void Scene::newFrame(Box &box){
         box.positions.clear();
         box.sizes.clear();
         // Process pending.
-        octree->processPending();       // "Process new objects"
-        octree->update(box);            // "Are there any destroyed objects?"
+        if (octreeBuilt){
+            octree->processPending();       // "Process new objects"
+            octree->update(box);            // "Are there any destroyed objects?"
+        }
+            
         // Send new frame to window
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -408,14 +426,13 @@ void Scene::renderShader(Shader shader, bool applyLighting){
     shader.setMat4("view", view);
     shader.setMat4("projection", projection);
     shader.set3Float("viewPos", cameraPos);
-
+    
     // Lighting
     if (applyLighting){
         unsigned int textureIdx = 31;
         // Directional light (only one)
         // set as last texture to guarantee that wont override other textures(solution could be better)
         dirLight->render(shader, textureIdx--);     
-
         // Point lights
         unsigned int nLights = pointLights.size();
         unsigned int nActiveLights = 0;
@@ -525,6 +542,7 @@ void Scene::cleanup(){
     
     // Destroy octree
     octree->destroy();
+    octreeBuilt = false;
 
     glfwTerminate();
 }
@@ -592,7 +610,7 @@ RigidBody* Scene::generateInstance(
             // insert into trie
             instances.insert(rb->instanceId, rb);
             // insert into pending queue
-            octree->addToPending(rb, model);
+            // octree->addToPending(rb, model);
             return rb;
         }
     }

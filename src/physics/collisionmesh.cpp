@@ -327,8 +327,6 @@ CollisionMesh::CollisionMesh(
 
     if (type == BoundTypes::SPHERE) {
         calcSphereCollMeshValues(this, nPoints, coordinates, nFaces, indices);
-        std::cout << "nPoints: " << nPoints << std::endl;
-        std::cout << "nFaces: " << nFaces << std::endl;
     }
     else if (type == BoundTypes::AABB) {
         calcAABBCollMeshValues(this, nPoints, coordinates, nFaces, indices);
@@ -406,9 +404,6 @@ void CollisionMesh::calcSphereCollMeshValues(
 		glm::vec3 B = colMesh->points[i3] - colMesh->points[i1];  // B = P3 - P1 
         glm::vec3 N = glm::cross(A, B);         // N = A x B
         N = glm::normalize(N);
-        std::cout << "Index: " << nFaces << std::endl;
-        std::cout << "nFaces: " << nFaces << std::endl;
-        std::cout << "nPoints: " << nPoints << std::endl;
 
         colMesh->faces[i] = {
             colMesh,

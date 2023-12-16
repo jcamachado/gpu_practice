@@ -46,7 +46,7 @@ class Scene {
         trie::Trie<RigidBody*> instances;
         std::vector<RigidBody*> instancesToDelete;
         Octree::node* octree;                           // Root for the scene
-        
+        bool octreeBuilt;                               // Flag to check if octree is built
         /*
             Map for logging variables
         */
