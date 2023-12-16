@@ -91,7 +91,7 @@ bool TextRenderer::loadFont(FT_Library& ft, std::string path){
 
 // Text will be rendered using orthographic projection
 void TextRenderer::render(
-    Shader shader, 
+    Shader shader,
     std::string text, 
     float x, 
     float y, 
@@ -99,19 +99,15 @@ void TextRenderer::render(
     glm::vec3 color)
 {
     shader.activate();
-    shader.set3Float("textColor", color);
+    // GLint textColorLocation = glGetUniformLocation(shaderProgram, "textColor");
+    // glUniform3f(textColorLocation, color.x, color.y, color.z);
+    shader.set3Float("textColor", color.x, color.y, color.z);
 
     glActiveTexture(GL_TEXTURE0);
 
+    
     VAO.bind();
 
-    /*
-        Iterate through all characters
-
-        float yPos = y - (c.size.y - c.bearing.y) * scale.y;
-        - Since the origin is not the lower most point of the character, 
-        we need to subtract the bearing.y from the size.y to shift the character down
-    */
     for (int i = 0, len = text.size(); i < len; i++){
         Character c = chars[text[i]];
         
@@ -121,11 +117,6 @@ void TextRenderer::render(
         float width = c.size.x * scale.x;
         float height = c.size.y * scale.y;
 
-        /*
-            Update VBO for each character
-            OpenGL (0,0) comes from the top left corner
-            x                 y             texX  texY  
-        */
         float vertices[6 * 4] = {
             xPos,           yPos + height,  0.0f, 0.0f,
             xPos,           yPos,           0.0f, 1.0f,
@@ -136,26 +127,20 @@ void TextRenderer::render(
             xPos + width,   yPos + height,  1.0f, 0.0f
         };
 
-        // Setup texture
         glBindTexture(GL_TEXTURE_2D, c.textureId);
 
-        // Update VB0 data
-        VAO["VBO"].bind();
-        VAO["VBO"].updateData<GLfloat>(0, 6 * 4, vertices);
+        glBindBuffer(GL_ARRAY_BUFFER, 1);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
 
-        // Render quad
-        VAO.draw(GL_TRIANGLES, 0, 6);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
 
-        // Advance cursors for next glyph
-        x += (c.advance >> 6) * scale.x; // Bitshift by 6 to get value in pixels (2^6 = 64)
+        x += (c.advance >> 6) * scale.x;
     }
 
-    ArrayObject::clear();
+    glBindVertexArray(0);
 
     glBindTexture(GL_TEXTURE_2D, 0);
 }
-
-
 void TextRenderer::cleanup(){
     VAO.cleanup();
 }

@@ -7,7 +7,7 @@ class Plane: public Model{
     public:
         Plane(): Model("plane", 1, CONST_INSTANCES){}
 
-        void init(std::vector<Texture> textures){
+        void init(std::vector<Texture> textures) {
             int nVertices = 4;
             float quadVertices[] ={
                 // Position             Normal             TexCoord

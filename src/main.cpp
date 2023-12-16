@@ -57,7 +57,7 @@ Camera cam;
 double dt = 0.0f;       // Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
 
-unsigned int nSpheres = 20000;
+unsigned int nSpheres = UPPER_BOUND;
 unsigned int nLamps = 1;
 std::string Shader::defaultDirectory = "assets/shaders";
 
@@ -372,18 +372,25 @@ int getRandomInt (int start, int end){
 
 void releaseSpheres(float dt){
     // generate random number
-    int rx = getRandomInt(0, 10);
-    int ry = -getRandomInt(5, 10);
-    int rz = getRandomInt(0, 10);
-    glm::vec3 randomVec = glm::vec3(rx, ry, rz);
+    for (int i = 0; i < 20; i++){
+        int rx = getRandomInt(-10, 10);
+        int ry = -getRandomInt(5, 10);
+        int rz = getRandomInt(-10, 10);
+        int randomNum = getRandomInt(0, 10);
+        int randomDen = getRandomInt(1, 10);
+        float randomFactor = (float)randomNum / (float)randomDen;
+        glm::vec3 randomVec = glm::vec3(rx, ry, rz);
 
-    RigidBody* rb = scene.generateInstance(sphere.id, glm::vec3(0.5f), 1.0f, cam.cameraPos + glm::vec3(50.0f, 2.0f, 0.0f));
+        RigidBody* rb = scene.generateInstance(sphere.id, glm::vec3(0.5f), 1.0f, cam.cameraPos + glm::vec3(50.0f, 2.0f, 0.0f));
 
-    if (rb != nullptr){
-        rb->transferEnergy(10.0f, cam.worldUp - randomVec);
-        rb->applyAcceleration(Environment::gravity);
+        if (rb != nullptr){
+            rb->transferEnergy(10.0f, cam.worldUp - (randomFactor*randomVec));
+            rb->applyAcceleration(Environment::gravity);
+        }
     }
 }
+
+// 
 
 void processInput(double dt){ // Function for processing input
     scene.processInput(dt); // Process input for scene
@@ -410,6 +417,7 @@ void processInput(double dt){ // Function for processing input
     // }
     if (Keyboard::key(GLFW_KEY_F)){
         releaseSpheres(dt);
+        
     }
     // if (Keyboard::keyWentDown(GLFW_KEY_T)){
     //     for (int i = 0; i < sphere.currentNInstances; i++){

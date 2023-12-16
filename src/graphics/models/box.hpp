@@ -10,7 +10,7 @@
 #include "../rendering/shader.h"
 #include "../../algorithms/bounds.h"
 
-#define UPPER_BOUND 100 //3d vectors, max number of instances
+#define UPPER_BOUND 10000 //3d vectors, max number of instances
 /*
     This class is just for lines, no meshes, so we cant reuse the Mesh class and 
     we have to generate the VAO, VBO and EBO

@@ -44,6 +44,7 @@ class TextRenderer{
         void render(Shader shader, std::string text, float x, float y, glm::vec2 scale, glm::vec3 color);
 
         void cleanup();
+        const int vl = 24;
 
     private:
         int height;
