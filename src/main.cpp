@@ -57,7 +57,7 @@ Camera cam;
 double dt = 0.0f;       // Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
 
-unsigned int nSpheres = 20;
+unsigned int nSpheres = 20000;
 unsigned int nLamps = 1;
 std::string Shader::defaultDirectory = "assets/shaders";
 
@@ -70,7 +70,6 @@ Plane map;
 void processInput(double dt);
 void renderScene(Shader shader);
 void setSceneLights(Scene *scene);
-void textHandler(Shader textShader);
 
 int main(){
     scene = Scene(3, 3, "Particle System", 1200, 720); // Create scene
@@ -218,6 +217,7 @@ int main(){
     scene.initInstances();                              // Instantiate instances
     scene.prepare(box, { shader });                                 // Builds octree  
     scene.variableLog["time"] = (double)0.0;
+    scene.variableLog["fps"] = (double)0.0;
 
     scene.defaultFBO.bind(); // rebind default framebuffer
     try {
@@ -228,11 +228,13 @@ int main(){
 
             scene.variableLog["time"] += dt;
             scene.variableLog["fps"] = 1.0f/dt;
+            std::cout << "FPS: " << scene.variableLog["fps"].val<float>() << std::endl;
+            std::cout << "Current instances: " << sphere.currentNInstances << std::endl;
+            
             scene.update();                                 // Update screen values
             processInput(dt);                               // Process input
 
             scene.renderShader(textShader, false);          // Render text
-            textHandler(textShader);
 
             for (int i = 0; i < sphere.currentNInstances; i++){
                 if(sphere.instances[i] != nullptr && !States::isActive(&sphere.instances[i]->state, INSTANCE_DEAD) ){
@@ -242,6 +244,35 @@ int main(){
                     }
                 }
             }
+
+            scene.renderText(
+                "comic", 
+                textShader, 
+                "Hello World!!", 
+                50.0f, 
+                50.0f, 
+                glm::vec2(1.0f), 
+                glm::vec3(0.5f, 0.6f, 1.0f)
+            );
+            // scene.renderText(
+            //     "comic", 
+            //     textShader, 
+            //     "Time: " + scene.variableLog["time"].dump(), 
+            //     50.0f, 
+            //     550.0f, 
+            //     glm::vec2(1.0f), 
+            //     glm::vec3(0.5f, 0.6f, 1.0f)
+            // );
+            scene.renderText(
+                "comic", 
+                textShader, 
+                "FPS: " + scene.variableLog["fps"].dump(), 
+                50.0f, 
+                550.0f - 40.0f, 
+                glm::vec2(1.0f), 
+                glm::vec3(0.5f, 0.6f, 1.0f)
+            );
+
             // Activate the directional light's FBO
             // Everything rendered after this will be rendered to this FBO
 
@@ -332,36 +363,6 @@ void launchItem(float dt){
     }
 }
 
-void textHandler(Shader textShader){
-    scene.renderText(
-            "comic", 
-            textShader, 
-            "Particles", 
-            50.0f, 
-            50.0f, 
-            glm::vec2(1.0f), 
-            glm::vec3(0.5f, 0.6f, 1.0f)
-        );
-    scene.renderText(
-            "comic", 
-            textShader, 
-            "Time: " + scene.variableLog["time"].dump(), 
-            50.0f, 
-            550.0f, 
-            glm::vec2(1.0f), 
-            glm::vec3(0.5f, 0.6f, 1.0f)
-        );
-    scene.renderText(
-            "comic", 
-            textShader, 
-            "FPS: " + scene.variableLog["fps"].dump(), 
-            50.0f, 
-            550.0f - 40.0f, 
-            glm::vec2(1.0f), 
-            glm::vec3(0.5f, 0.6f, 1.0f)
-        );      
-}
-
 int getRandomInt (int start, int end){
     std::random_device dev;
     std::mt19937 rng(dev());
@@ -369,7 +370,7 @@ int getRandomInt (int start, int end){
     return result(rng);
 }
 
-void releaseTheSpheres(float dt){
+void releaseSpheres(float dt){
     // generate random number
     int rx = getRandomInt(0, 10);
     int ry = -getRandomInt(5, 10);
@@ -404,9 +405,11 @@ void processInput(double dt){ // Function for processing input
         States::toggleIndex(&scene.activeSpotLights, 0);
     }
 
-    if (Keyboard::keyWentDown(GLFW_KEY_F)){
-
-        launchItem(dt);
+    // if (Keyboard::keyWentDown(GLFW_KEY_F)){
+    //     launchItem(dt);
+    // }
+    if (Keyboard::key(GLFW_KEY_F)){
+        releaseSpheres(dt);
     }
     // if (Keyboard::keyWentDown(GLFW_KEY_T)){
     //     for (int i = 0; i < sphere.currentNInstances; i++){
