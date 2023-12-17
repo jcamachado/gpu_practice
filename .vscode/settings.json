@@ -85,7 +85,8 @@
         "stack": "cpp",
         "filesystem": "cpp",
         "locale": "cpp",
-        "*.gh": "glsl"
+        "*.gh": "glsl",
+        "__node_handle": "cpp"
     },
     "cmake.configureOnOpen": true,
     // "cmake.sourceDirectory": "/home/jaxe/Repositories/gpu_study/gpu_practice"
