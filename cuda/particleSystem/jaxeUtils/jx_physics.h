@@ -12,6 +12,9 @@
 __device__ glm::vec3 weightForce(float mass){
         return GRAVITY * mass;
 }
+glm::vec3 weightForceHost(float mass){
+        return GRAVITY * mass;
+}
 // Drag of a particle
 // Drag = -velocity * drag
 // glm::vec3 returnDrag(glm::vec3 velocity, float drag){
