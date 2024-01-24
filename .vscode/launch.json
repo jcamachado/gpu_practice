@@ -21,6 +21,27 @@
                 }
             ],
             "preLaunchTask": "build CUDA"
+        },
+        {
+            "name": "NSYS CUDA GDB",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/testCuda",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/local/cuda-12.2/bin/cuda-gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "NSYS CUDA"
         }
     ]
 }

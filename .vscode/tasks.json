@@ -12,12 +12,12 @@
                 // "${file}",
                 // "-lfreeimage",
                 "-L/usr/local/cuda-12.2/nsight-compute-2023.2.2/host/linux-desktop-glibc_2_11_3-x64/Mesa/",
-                "-I/usr/include/glad/include/glad",
+                "-I/usr/include/glad/include/glad", // GLAD, delete if using GLEW
                 "${workspaceFolder}/src/glad.c",
                 "-lGL",
                 "-lGLU",
                 "-lglut",
-                "-lGLEW",
+                "-lGLEW",       // GLEW, delete if using GLAD
                 "-lglfw",
                 "-lX11",
                 "-lXxf86vm",
@@ -27,6 +27,20 @@
                 "-ldl",
                 "-lXinerama",
                 "-lXcursor"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [ 
+                "$gcc"
+            ]
+        },
+        {
+            "type": "shell",
+            "label": "NSYS CUDA",
+            "command": "nsys profile --output=myProfileReport ${workspaceFolder}/build/testCuda",
+            "args": [
             ],
             "group": {
                 "kind": "build",
