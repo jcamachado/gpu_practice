@@ -1,13 +1,13 @@
 CFLAGS = -std=c++17 -O2		# 02 is optimization level, but for development, remove it to run faster 
 LDFLAGS = -lglfw -lvulkan -ldl -lpthread -lX11 -lXxf86vm -lXrandr -lXi
 
-VulkanTest: main.cpp
-	g++ $(CFLAGS) -o gpu_practice main.cpp $(LDFLAGS)
+VulkanTest: src/main.cpp
+	g++ $(CFLAGS) -o build/gpu_practice src/main.cpp $(LDFLAGS)
 
 .PHONY: test clean
 
-test: gpu_practice
-	./gpu_practice
+test: ./build/gpu_practice
+	./build/gpu_practice
 
 clean:
-	rm -f VulkanTest
+	rm -f build/gpu_practice
