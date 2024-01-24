@@ -5,10 +5,10 @@
 
 #include <string>
 namespace uffdejavu {
-    class Window {
+    class UDWindow {
         public:
-            Window(int width, int height, std::string name);
-            ~Window();
+            UDWindow(int width, int height, std::string name);
+            ~UDWindow();
 
             /*
                 Delete copy constructor 
@@ -17,8 +17,8 @@ namespace uffdejavu {
                 But it is bad for resources management
                 )
             */
-            Window(const Window&) = delete; 
-            Window& operator=(const Window&) = delete; // Delete copy assignment operator, so that we can't copy the window
+            UDWindow(const UDWindow&) = delete; 
+            UDWindow& operator=(const UDWindow&) = delete; // Delete copy assignment operator, so that we can't copy the window
             
             bool shouldClose() { return glfwWindowShouldClose(window); }
 

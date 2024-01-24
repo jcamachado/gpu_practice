@@ -1,16 +1,16 @@
 #include "window.hpp"
 
 namespace uffdejavu {
-    Window::Window(int width, int height, std::string name) : width(width), height(height), windowName(name) {
+    UDWindow::UDWindow(int width, int height, std::string name) : width(width), height(height), windowName(name) {
         initWindow();
     }
 
-    Window::~Window() {
+    UDWindow::~UDWindow() {
         glfwDestroyWindow(window);
         glfwTerminate();
     }
 
-    void Window::initWindow() {
+    void UDWindow::initWindow() {
         glfwInit();
 
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);   // Don't create an OpenGL context

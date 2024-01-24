@@ -16,6 +16,6 @@ namespace uffdejavu {
             void mainLoop();
             void cleanup();
 
-            Window window{WIDTH, HEIGHT, "Vulkan"};
+            UDWindow window{WIDTH, HEIGHT, "Vulkan"};
     };
 };
