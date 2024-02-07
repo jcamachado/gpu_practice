@@ -1,0 +1,7 @@
+Vulkan sdk
+location
+/etc/vulkan/icd.d/ or /usr/share/vulkan/icd.d 	Vulkan driver JSON manifest file, which is not modified by the SDK installer.
+
+GLSLC
+Location: /usr/local/bin/glslc
+Does not recognise .vs and .fs. But recognized .vs .fs

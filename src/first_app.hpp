@@ -1,5 +1,6 @@
 #pragma once
 
+#include "pipeline.hpp"
 #include "window.hpp"
 
 namespace uffdejavu {
@@ -17,5 +18,6 @@ namespace uffdejavu {
             void cleanup();
 
             UDWindow window{WIDTH, HEIGHT, "Vulkan"};
+            UDPipeline pipeline{"src/shaders/simple_shader.vert.spv", "src/shaders/simple_shader.frag.spv"};
     };
 };
