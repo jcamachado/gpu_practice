@@ -4,7 +4,7 @@
 #include <GLFW/glfw3.h>
 
 #include <string>
-namespace uffdejavu {
+namespace ud {
     class UDWindow {
         public:
             UDWindow(int width, int height, std::string name);
@@ -21,6 +21,9 @@ namespace uffdejavu {
             UDWindow& operator=(const UDWindow&) = delete; // Delete copy assignment operator, so that we can't copy the window
             
             bool shouldClose() { return glfwWindowShouldClose(window); }
+
+            // KHR is the extension for Vulkan
+            void createWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
 
 
         private:

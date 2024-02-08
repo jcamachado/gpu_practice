@@ -1,8 +1,8 @@
 #include "first_app.hpp"
 
-namespace uffdejavu {
+namespace ud {
     void FirstApp::run() {
-        while (!window.shouldClose()) {
+        while (!udWindow.shouldClose()) {
             glfwPollEvents();
         }
     }

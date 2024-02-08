@@ -5,13 +5,14 @@
 #include <iostream>
 #include <stdexcept>
 /*
-    UFFDEJAVU Default Engine by JAxe in VUlkan
+    UFFDEJAVU: Default Engine by JAxe in VUlkan
+    or simply DEJAVU: Default Engine by JAxe in Vulkan from Uff
     ud will be its abbreviation
 */
 
 
 int main() {
-    uffdejavu::FirstApp app{};
+    ud::FirstApp app{};
 
     try {
         app.run();

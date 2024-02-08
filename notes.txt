@@ -5,3 +5,11 @@ location
 GLSLC
 Location: /usr/local/bin/glslc
 Does not recognise .vs and .fs. But recognized .vs .fs
+
+In tutorial, device, pipeline, window and maybe other artifacts are called lve_filename.ext. Ex: lve_window.cpp.
+I'm removing its prefix to be generic, but applied them to classes. But instead of lve, i'm using uffdejavu for namespace and UD for 
+classes prefix.
+
+In vulkan, it happens many times that instead of calling many parameters, we create a struct and refer to its pointer.
+
+Required extensions are defined by glfw to display content
