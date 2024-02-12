@@ -14,7 +14,19 @@ namespace ud {
         easily able to configure the pipeline completely, as well as to share
         the configuration between different pipelines.
     */
-    struct PipelineConfigInfo {};
+    struct PipelineConfigInfo {
+        VkViewport viewport;
+        VkRect2D scissor;
+        VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
+        VkPipelineRasterizationStateCreateInfo rasterizationInfo;
+        VkPipelineMultisampleStateCreateInfo multisampleInfo;
+        VkPipelineColorBlendAttachmentState colorBlendAttachment;
+        VkPipelineColorBlendStateCreateInfo colorBlendInfo;
+        VkPipelineDepthStencilStateCreateInfo depthStencilInfo;    
+        VkPipelineLayout pipelineLayout = nullptr;
+        VkRenderPass renderPass = nullptr;
+        uint32_t subpass = 0;
+    };
 
 
     class UDPipeline {
@@ -25,11 +37,12 @@ namespace ud {
                 const std::string& fragFilepath,
                 const PipelineConfigInfo& configInfo
             );
-            ~UDPipeline() {}
+            ~UDPipeline();
 
             UDPipeline(const UDPipeline&) = delete;
             UDPipeline& operator=(const UDPipeline&) = delete;
 
+            void bind(VkCommandBuffer commandBuffer);
             static PipelineConfigInfo defaultPipelineConfigInfo(uint32_t width, uint32_t height);
 
         private:

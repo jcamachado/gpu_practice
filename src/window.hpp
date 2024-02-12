@@ -21,6 +21,7 @@ namespace ud {
             UDWindow& operator=(const UDWindow&) = delete; // Delete copy assignment operator, so that we can't copy the window
             
             bool shouldClose() { return glfwWindowShouldClose(window); }
+            VkExtent2D getExtent() { return {static_cast<uint32_t>(width), static_cast<uint32_t>(height)}; }
 
             // KHR is the extension for Vulkan
             void createWindowSurface(VkInstance instance, VkSurfaceKHR* surface);

@@ -13,3 +13,27 @@ classes prefix.
 In vulkan, it happens many times that instead of calling many parameters, we create a struct and refer to its pointer.
 
 Required extensions are defined by glfw to display content
+
+Swap chain: Is a series of framebuffers used to dfiplay images to the window. Modern OSs usually have at least 2 buffers
+at once (double buffering). The frontbuffer and backbuffer. Pipeline renders data to the backbuffer, and when ready, 
+the swap chain handles coordinating with the display prior to vertical sync. When swapped, while backbuffer is being displayed,
+the gpu pipeline will output the data into tha frontbuffer. 
+They are basically equal and swapped to display the data.
+
+Tearing: Seeing data from multiple frames at once.
+
+We will work with multiple framebuffers (2 or 3)
+We can use swapChain.acquireNextImage() to get the next index of our framebuffers
+
+
+Sure, in the context of Vulkan, passes and subpasses are related to the concept of Render Passes.
+
+**Render Passes** in Vulkan represent a collection of graphics rendering operations that are related to each other. The operations are grouped together because they are expected to be executed sequentially. A render pass in Vulkan describes the format of the framebuffers, the number of color and depth buffers, the samples used for each buffer, and what to do with the data in the buffers throughout rendering operations.
+
+**Subpasses** are a part of a render pass. They represent a single rendering operation within the larger render pass. Subpasses can depend on each other, meaning the output of one subpass can be used as input to another subpass. This allows for efficient hardware utilization as the output of one subpass can be directly used by another subpass without having to write it to memory and then read it back.
+
+For example, in a deferred shading pipeline, you might have one subpass that writes to a G-buffer, and a second subpass that reads from the G-buffer to perform lighting calculations. By using subpasses, Vulkan can optimize this so that the G-buffer data doesn't need to be written out to memory and then read back in between the two subpasses.
+
+**Passes** in this context usually refer to the entire render pass, which includes all of its subpasses.
+
+In summary, render passes and subpasses are a way for you to tell Vulkan about the dependencies between different rendering operations, which allows Vulkan to optimize the execution of these operations for better performance.
