@@ -7,6 +7,7 @@
 namespace ud {
 
     FirstApp::FirstApp() {
+        loadModels();
         createPipelineLayout();
         createPipeline();
         createCommandBuffers();
@@ -21,6 +22,21 @@ namespace ud {
         }
 
         vkDeviceWaitIdle(udDevice.device());
+    }
+
+    void FirstApp::loadModels() {
+        /*
+            3 pairs os brackets. 
+            The outermost pair is for the vector, 
+            the second pair is for each Vertex struct, 
+            and the innermost pair is for the glm::vec2
+        */ 
+        std::vector<UDModel::Vertex> vertices{
+            {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+            {{0.5f,  0.5f},  {0.0f, 1.0f, 0.0f}},
+            {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}
+        };
+        udModel = std::make_unique<UDModel>(udDevice, vertices);
     }
 
     void FirstApp::createPipelineLayout() {
@@ -89,7 +105,8 @@ namespace ud {
             vkCmdBeginRenderPass(commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
             udPipeline->bind(commandBuffers[i]);
-            vkCmdDraw(commandBuffers[i], 3, 1, 0, 0);
+            udModel->bind(commandBuffers[i]);
+            udModel->draw(commandBuffers[i]);
 
             vkCmdEndRenderPass(commandBuffers[i]);
             if (vkEndCommandBuffer(commandBuffers[i]) != VK_SUCCESS) {

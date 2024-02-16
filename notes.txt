@@ -6,6 +6,9 @@ GLSLC
 Location: /usr/local/bin/glslc
 Does not recognise .vs and .fs. But recognized .vs .fs
 
+Vulkan usa muito typedef para facilitar o gerenciamento dos dados pois os typedef ja definem como os objects serao formatados.
+
+
 In tutorial, device, pipeline, window and maybe other artifacts are called lve_filename.ext. Ex: lve_window.cpp.
 I'm removing its prefix to be generic, but applied them to classes. But instead of lve, i'm using uffdejavu for namespace and UD for 
 classes prefix.
@@ -37,3 +40,47 @@ For example, in a deferred shading pipeline, you might have one subpass that wri
 **Passes** in this context usually refer to the entire render pass, which includes all of its subpasses.
 
 In summary, render passes and subpasses are a way for you to tell Vulkan about the dependencies between different rendering operations, which allows Vulkan to optimize the execution of these operations for better performance.
+
+Ao trocar dados entre shaders, o layout tem que ser o mesmo entre quem envia e quem recebe. O nome das variaveis nao precisa ser igual3
+
+--
+Linear Interpolation (L. I.)
+P = a(1-t) + bt  --// If multi dimensional, Px = ax(1-t) + bt and so on.
+Where a is a and b are points with absolute known values. 
+t is the interpolation point proximity that lies between a and b. Where t = [0,1]
+
+L. I. between many points: Barycentric coordinates.
+
+3 points a, b and c
+What is the interpolated value of a point P inside this triangle?
+P = b*Beta + c*Gamma + a(1-Beta-Gama) (weights of b and c); Alpha = 1 - Beta - Gamma
+then P = a*Alpha + b*Beta = c*Gamma ; Alpha + Beta + Gamma = 1 (constraint). Alpha, Beta and Gamma MUST be (0, 1)
+
+
+
+--Codigo do siepisnki triangle
+
+void FirstApp::sierpinski(
+    std::vector<LveModel::Vertex> &vertices,
+    int depth,
+    glm::vec2 left,
+    glm::vec2 right,
+    glm::vec2 top) {
+  if (depth <= 0) {
+    vertices.push_back({top});
+    vertices.push_back({right});
+    vertices.push_back({left});
+  } else {
+    auto leftTop = 0.5f * (left + top);
+    auto rightTop = 0.5f * (right + top);
+    auto leftRight = 0.5f * (left + right);
+    sierpinski(vertices, depth - 1, left, leftRight, leftTop);
+    sierpinski(vertices, depth - 1, leftRight, right, rightTop);
+    sierpinski(vertices, depth - 1, leftTop, rightTop, top);
+  }
+}
+void FirstApp::loadModels() {
+  std::vector<LveModel::Vertex> vertices{};
+  sierpinski(vertices, 5, {-0.5f, 0.5f}, {0.5f, 0.5f}, {0.0f, -0.5f});
+  lveModel = std::make_unique<LveModel>(lveDevice, vertices);
+}

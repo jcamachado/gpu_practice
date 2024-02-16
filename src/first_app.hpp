@@ -1,6 +1,7 @@
 #pragma once
 
 #include "device.hpp"
+#include "model.hpp" 
 #include "pipeline.hpp"
 #include "swap_chain.hpp"
 #include "window.hpp"
@@ -24,6 +25,7 @@ namespace ud {
             void run();
 
         private:
+            void loadModels();
             void createPipelineLayout();
             void createPipeline();
             void createCommandBuffers();
@@ -37,5 +39,6 @@ namespace ud {
             std::unique_ptr<UDPipeline> udPipeline;
             VkPipelineLayout pipelineLayout;
             std::vector<VkCommandBuffer> commandBuffers;
+            std::unique_ptr<UDModel> udModel;
     };
 };
