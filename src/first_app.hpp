@@ -29,13 +29,16 @@ namespace ud {
             void createPipelineLayout();
             void createPipeline();
             void createCommandBuffers();
+            void freeCommandBuffers();
             void drawFrame();
+            void recreateSwapChain();
+            void recordCommandBuffer(int imageIndex);
 
             UDWindow udWindow{WIDTH, HEIGHT, "Vulkan"};
             UDDevice udDevice{udWindow};
-            UDSwapChain udSwapChain{udDevice, udWindow.getExtent()};
             // unique_ptr is a smart pointer that manages another object through a pointer and 
             // disposes of that object when the unique_ptr goes out of scope
+            std::unique_ptr<UDSwapChain> udSwapChain;
             std::unique_ptr<UDPipeline> udPipeline;
             VkPipelineLayout pipelineLayout;
             std::vector<VkCommandBuffer> commandBuffers;
