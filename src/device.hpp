@@ -36,7 +36,7 @@ namespace ud {
 
         // Not copyable or movable
         UDDevice(const UDDevice &) = delete;
-        void operator=(const UDDevice &) = delete;
+        UDDevice operator=(const UDDevice &) = delete;
         UDDevice(UDDevice &&) = delete;
         UDDevice &operator=(UDDevice &&) = delete;
 
