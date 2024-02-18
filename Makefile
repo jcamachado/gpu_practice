@@ -4,11 +4,11 @@ CFLAGS = -std=c++17 -O2		# 02 is optimization level, but for development, remove
 LDFLAGS = -lglfw -lvulkan -ldl -lpthread -lX11 -lXxf86vm -lXrandr -lXi
 
 # Will cause "no such file" warning when no changes are made to the file
-vertSources = $(shell find ./src/shaders -type f -name "*.vert") 
-# vertSources = $(shell find ./shaders -type f -name "*.vert") 
+# vertSources = $(shell find ./src/shaders -type f -name "*.vert") 
+vertSources = $(shell find ./shaders -type f -name "*.vert") 
 vertObjFiles = $(patsubst %.vert, %.vert.spv, $(vertSources))
-fragSources = $(shell find ./src/shaders -type f -name "*.frag")
-# fragSources = $(shell find ./shaders -type f -name "*.frag")
+# fragSources = $(shell find ./src/shaders -type f -name "*.frag")
+fragSources = $(shell find ./shaders -type f -name "*.frag")
 fragObjFiles = $(patsubst %.frag, %.frag.spv, $(fragSources))
 
 
