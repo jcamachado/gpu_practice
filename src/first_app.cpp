@@ -4,7 +4,7 @@
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
-
+#include <glm/gtc/constants.hpp>    
 
 // std
 #include <array>
@@ -13,12 +13,13 @@
 namespace ud {
 
     struct SimplePushConstantData {
+        glm::mat2 transform{1.f};  // 16 bytes identity matrix
         glm::vec2 offset;   // 8 bytes
         alignas(16) glm::vec3 color;    // 12 bytes
     };
 
     FirstApp::FirstApp() {
-        loadModels();
+        loadGameObjects();
         createPipelineLayout();
         recreateSwapChain();
         createCommandBuffers();
@@ -35,7 +36,7 @@ namespace ud {
         vkDeviceWaitIdle(udDevice.device());
     }
 
-    void FirstApp::loadModels() {
+    void FirstApp::loadGameObjects() {
         /*
             3 pairs os brackets. 
             The outermost pair is for the vector, 
@@ -47,7 +48,16 @@ namespace ud {
             {{0.5f,  0.5f},  {0.0f, 1.0f, 0.0f}},
             {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}
         };
-        udModel = std::make_unique<UDModel>(udDevice, vertices);
+        auto udModel = std::make_shared<UDModel>(udDevice, vertices);
+
+        auto triangle = UDGameObject::createGameObject();
+        triangle.model = udModel;
+        triangle.color = {0.1f, 0.8f, 0.1f};
+        triangle.transform2d.translation.x = 0.2f;
+        triangle.transform2d.scale = {2.0f, 0.5f};
+        triangle.transform2d.rotation = 0.25f * glm::two_pi<float>();   // 360/4 = 90 degrees
+
+        gameObjects.push_back(std::move(triangle));
     }
 
     void FirstApp::createPipelineLayout() {
@@ -107,7 +117,6 @@ namespace ud {
         createPipeline();
     }
 
-
     void FirstApp::createCommandBuffers() {
         commandBuffers.resize(udSwapChain->imageCount());
 
@@ -161,26 +170,7 @@ namespace ud {
         vkCmdSetViewport(commandBuffers[imageIndex], 0, 1, &viewport);
         vkCmdSetScissor(commandBuffers[imageIndex], 0, 1, &scissor);
 
-        udPipeline->bind(commandBuffers[imageIndex]);
-        udModel->bind(commandBuffers[imageIndex]);
-
-        for (int j = 0; j < 4; j++) {
-            SimplePushConstantData push{};
-            push.offset = {0.0f, -0.4f + j * 0.25f};
-            push.color = {0.0f, 0.0f, 0.2 + 0.2f*j};
-
-
-            vkCmdPushConstants(
-                commandBuffers[imageIndex],
-                pipelineLayout,
-                VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
-                0,
-                sizeof(SimplePushConstantData),
-                &push
-            );
-            udModel->draw(commandBuffers[imageIndex]);
-        }
-
+        renderGameObjects(commandBuffers[imageIndex]);
 
         vkCmdEndRenderPass(commandBuffers[imageIndex]);
         if (vkEndCommandBuffer(commandBuffers[imageIndex]) != VK_SUCCESS) {
@@ -195,6 +185,29 @@ namespace ud {
             static_cast<uint32_t>(commandBuffers.size()), 
             commandBuffers.data());
         commandBuffers.clear();
+    }
+
+    void FirstApp::renderGameObjects(VkCommandBuffer commandBuffer) {
+        udPipeline->bind(commandBuffer);
+
+        for (auto& obj : gameObjects) {
+            obj.transform2d.rotation = glm::mod(obj.transform2d.rotation + 0.01f, glm::two_pi<float>()); // Full circle rotation
+
+            SimplePushConstantData push{};
+            push.offset = obj.transform2d.translation;
+            push.color = obj.color;
+            push.transform = obj.transform2d.mat2();
+            vkCmdPushConstants(
+                commandBuffer,
+                pipelineLayout,
+                VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
+                0,
+                sizeof(SimplePushConstantData),
+                &push
+            );
+            obj.model->bind(commandBuffer);
+            obj.model->draw(commandBuffer);
+        }
     }
 
     void FirstApp::drawFrame() {

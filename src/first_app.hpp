@@ -1,7 +1,7 @@
 #pragma once
 
 #include "device.hpp"
-#include "model.hpp" 
+#include "game_object.hpp"
 #include "pipeline.hpp"
 #include "swap_chain.hpp"
 #include "window.hpp"
@@ -25,7 +25,7 @@ namespace ud {
             void run();
 
         private:
-            void loadModels();
+            void loadGameObjects();
             void createPipelineLayout();
             void createPipeline();
             void createCommandBuffers();
@@ -33,6 +33,7 @@ namespace ud {
             void drawFrame();
             void recreateSwapChain();
             void recordCommandBuffer(int imageIndex);
+            void renderGameObjects(VkCommandBuffer commandBuffer);
 
             UDWindow udWindow{WIDTH, HEIGHT, "Vulkan"};
             UDDevice udDevice{udWindow};
@@ -42,6 +43,6 @@ namespace ud {
             std::unique_ptr<UDPipeline> udPipeline;
             VkPipelineLayout pipelineLayout;
             std::vector<VkCommandBuffer> commandBuffers;
-            std::unique_ptr<UDModel> udModel;
+            std::vector<UDGameObject> gameObjects;
     };
 };

@@ -8,6 +8,11 @@ Does not recognise .vs and .fs. But recognized .vs .fs
 
 Vulkan usa muito typedef para facilitar o gerenciamento dos dados pois os typedef ja definem como os objects serao formatados.
 
+In game engines/development, its a good option to go for ECS over Object Oriented (inheritance). ECS stands for Entity component system.
+Its focused on association over inheritance. Like, entities having behavior being applied to an entity (a game object) by a component.
+https://www.kodeco.com/2806-introduction-to-component-based-architecture-in-games
+
+
 
 In tutorial, device, pipeline, window and maybe other artifacts are called lve_filename.ext. Ex: lve_window.cpp.
 I'm removing its prefix to be generic, but applied them to classes. But instead of lve, i'm using uffdejavu for namespace and UD for 
