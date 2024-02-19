@@ -36,8 +36,10 @@ We can use swapChain.acquireNextImage() to get the next index of our framebuffer
 
 Sure, in the context of Vulkan, passes and subpasses are related to the concept of Render Passes.
 
-**Render Passes** in Vulkan represent a collection of graphics rendering operations that are related to each other. The operations are grouped together because they are expected to be executed sequentially. A render pass in Vulkan describes the format of the framebuffers, the number of color and depth buffers, the samples used for each buffer, and what to do with the data in the buffers throughout rendering operations.
-
+**Render Passes** in Vulkan represent a collection of graphics rendering operations that are related to each other. 
+The operations are grouped together because they are expected to be executed sequentially. 
+A render pass in Vulkan describes the format of the framebuffers, the number of color and depth buffers, 
+the samples used for each buffer, and what to do with the data in the buffers throughout rendering operations.
 **Subpasses** are a part of a render pass. They represent a single rendering operation within the larger render pass. Subpasses can depend on each other, meaning the output of one subpass can be used as input to another subpass. This allows for efficient hardware utilization as the output of one subpass can be directly used by another subpass without having to write it to memory and then read it back.
 
 For example, in a deferred shading pipeline, you might have one subpass that writes to a G-buffer, and a second subpass that reads from the G-buffer to perform lighting calculations. By using subpasses, Vulkan can optimize this so that the G-buffer data doesn't need to be written out to memory and then read back in between the two subpasses.
@@ -61,6 +63,9 @@ What is the interpolated value of a point P inside this triangle?
 P = b*Beta + c*Gamma + a(1-Beta-Gama) (weights of b and c); Alpha = 1 - Beta - Gamma
 then P = a*Alpha + b*Beta = c*Gamma ; Alpha + Beta + Gamma = 1 (constraint). Alpha, Beta and Gamma MUST be (0, 1)
 
+assert vs if
+If deals with pathes in the code, the decision conditions.
+Assert is used when you expect only 1 behavior and the assertion should be a big exception (therefore, possibly error handling to some point)
 
 
 --Codigo do siepisnki triangle
