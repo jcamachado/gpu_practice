@@ -25,10 +25,13 @@ namespace ud {
         if (udSwapChain == nullptr) {
             udSwapChain = std::make_unique<UDSwapChain>(udDevice, extent);
         } else {
-            udSwapChain = std::make_unique<UDSwapChain>(udDevice, extent, std::move(udSwapChain));
-            if (udSwapChain->imageCount() != commandBuffers.size()) {
-                freeCommandBuffers();
-                createCommandBuffers();
+            std::shared_ptr<UDSwapChain> oldSwapChain = std::move(udSwapChain);
+            udSwapChain = std::make_unique<UDSwapChain>(udDevice, extent, oldSwapChain);
+
+            if(!oldSwapChain->compareSwapFormats(*udSwapChain.get())) {
+                // Ideally instead of throwing an exception, it would be better to have a callback function
+                // to notify the application that a new incompatible renderpass has been created.
+                throw std::runtime_error("Swap chain image (or depth) format has changed!");
             }
         }
         
@@ -37,7 +40,7 @@ namespace ud {
     }
 
     void UDRenderer::createCommandBuffers() {
-        commandBuffers.resize(udSwapChain->imageCount());
+        commandBuffers.resize(UDSwapChain::MAX_FRAMES_IN_FLIGHT);
 
         VkCommandBufferAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -76,7 +79,7 @@ namespace ud {
         isFrameStarted = true;
 
         auto commandBuffer = getCurrentCommandBuffer();
-                VkCommandBufferBeginInfo beginInfo{};
+        VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
         if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) {
@@ -98,11 +101,12 @@ namespace ud {
             udWindow.resetWindowResizedFlag();
             recreateSwapChain();
         }
-        if (result != VK_SUCCESS) {
+        else if (result != VK_SUCCESS) {
             throw std::runtime_error("failed to present swap chain image!");
         }
 
         isFrameStarted = false;
+        currentFrameIndex = (currentFrameIndex + 1) % UDSwapChain::MAX_FRAMES_IN_FLIGHT;
     }
 
     void UDRenderer::beginSwapChainRenderPass(VkCommandBuffer commandBuffer) {

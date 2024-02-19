@@ -39,6 +39,11 @@ namespace ud {
         VkResult acquireNextImage(uint32_t *imageIndex);
         VkResult submitCommandBuffers(const VkCommandBuffer *buffers, uint32_t *imageIndex);
 
+        bool compareSwapFormats(const UDSwapChain &swapChain) const {
+            return swapChainDepthFormat == swapChain.swapChainDepthFormat &&
+                   swapChainImageFormat == swapChain.swapChainImageFormat;
+        }
+
     private:
         void init();
         void createSwapChain();
@@ -56,6 +61,7 @@ namespace ud {
         VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities);
 
         VkFormat swapChainImageFormat;
+        VkFormat swapChainDepthFormat;
         VkExtent2D swapChainExtent;
 
         std::vector<VkFramebuffer> swapChainFramebuffers;
