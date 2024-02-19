@@ -13,8 +13,7 @@
 namespace ud {
 
     struct SimplePushConstantData {
-        glm::mat2 transform{1.f};  // 16 bytes identity matrix
-        glm::vec2 offset;   // 8 bytes
+        glm::mat4 transform{1.0f};      // 16 bytes identity matrix
         alignas(16) glm::vec3 color;    // 12 bytes
     };
 
@@ -56,17 +55,17 @@ namespace ud {
             "src/shaders/simple_shader.frag.spv",
             pipelineConfig);
     }
-
+    
     void SimpleRenderSystem::renderGameObjects(VkCommandBuffer commandBuffer, std::vector<UDGameObject> &gameObjects) {
         udPipeline->bind(commandBuffer);
 
         for (auto& obj : gameObjects) {
-            obj.transform2d.rotation = glm::mod(obj.transform2d.rotation + 0.01f, glm::two_pi<float>()); // Full circle rotation
+            obj.transform.rotation.y = glm::mod(obj.transform.rotation.y + 0.01f, glm::two_pi<float>()); // Full circle rotation
+            obj.transform.rotation.x = glm::mod(obj.transform.rotation.x + 0.005f, glm::two_pi<float>()); // Full circle rotation
 
             SimplePushConstantData push{};
-            push.offset = obj.transform2d.translation;
             push.color = obj.color;
-            push.transform = obj.transform2d.mat2();
+            push.transform = obj.transform.mat4();
             vkCmdPushConstants(
                 commandBuffer,
                 pipelineLayout,

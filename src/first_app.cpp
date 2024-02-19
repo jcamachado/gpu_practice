@@ -35,27 +35,72 @@ namespace ud {
         vkDeviceWaitIdle(udDevice.device());
     }
 
-    void FirstApp::loadGameObjects() {
-        /*
-            3 pairs os brackets. 
-            The outermost pair is for the vector, 
-            the second pair is for each Vertex struct, 
-            and the innermost pair is for the glm::vec2
-        */ 
+    std::unique_ptr<UDModel> createCubeModel(UDDevice &device, glm::vec3 offset){
         std::vector<UDModel::Vertex> vertices{
-            {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-            {{0.5f,  0.5f},  {0.0f, 1.0f, 0.0f}},
-            {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}
+            // left face (white)
+            {{-0.5f, -0.5f, -0.5f}, {.9f, .9f, .9f}},
+            {{-0.5f,0.5f, .5f}, {.9f, .9f, .9f}},
+            {{-0.5f, -0.5f, .5f}, {.9f, .9f, .9f}},
+            {{-0.5f, -0.5f, -0.5f}, {.9f, .9f, .9f}},
+            {{-0.5f,0.5f, -0.5f}, {.9f, .9f, .9f}},
+            {{-0.5f,0.5f, .5f}, {.9f, .9f, .9f}},
+        
+            // right face (yellow)
+            {{.5f, -0.5f, -0.5f}, {.8f, .8f, .1f}},
+            {{.5f,0.5f, .5f}, {.8f, .8f, .1f}},
+            {{.5f, -0.5f, .5f}, {.8f, .8f, .1f}},
+            {{.5f, -0.5f, -0.5f}, {.8f, .8f, .1f}},
+            {{.5f,0.5f, -0.5f}, {.8f, .8f, .1f}},
+            {{.5f,0.5f, .5f}, {.8f, .8f, .1f}},
+        
+            // top face (orange, remember y axis points down)
+            {{-0.5f, -0.5f, -0.5f}, {.9f, .6f, .1f}},
+            {{.5f, -0.5f, .5f}, {.9f, .6f, .1f}},
+            {{-0.5f, -0.5f, .5f}, {.9f, .6f, .1f}},
+            {{-0.5f, -0.5f, -0.5f}, {.9f, .6f, .1f}},
+            {{.5f, -0.5f, -0.5f}, {.9f, .6f, .1f}},
+            {{.5f, -0.5f, .5f}, {.9f, .6f, .1f}},
+        
+            // bottom face (red)
+            {{-0.5f,0.5f, -0.5f}, {.8f, .1f, .1f}},
+            {{.5f,0.5f, .5f}, {.8f, .1f, .1f}},
+            {{-0.5f,0.5f, .5f}, {.8f, .1f, .1f}},
+            {{-0.5f,0.5f, -0.5f}, {.8f, .1f, .1f}},
+            {{.5f,0.5f, -0.5f}, {.8f, .1f, .1f}},
+            {{.5f,0.5f, .5f}, {.8f, .1f, .1f}},
+        
+            // nose face (blue)
+            {{-0.5f, -0.5f, 0.5f}, {.1f, .1f, .8f}},
+            {{.5f,0.5f, 0.5f}, {.1f, .1f, .8f}},
+            {{-0.5f,0.5f, 0.5f}, {.1f, .1f, .8f}},
+            {{-0.5f, -0.5f, 0.5f}, {.1f, .1f, .8f}},
+            {{.5f, -0.5f, 0.5f}, {.1f, .1f, .8f}},
+            {{.5f,0.5f, 0.5f}, {.1f, .1f, .8f}},
+        
+            // tail face (green)
+            {{-0.5f, -0.5f, -0.5f}, {.1f, .8f, .1f}},
+            {{.5f,0.5f, -0.5f}, {.1f, .8f, .1f}},
+            {{-0.5f,0.5f, -0.5f}, {.1f, .8f, .1f}},
+            {{-0.5f, -0.5f, -0.5f}, {.1f, .8f, .1f}},
+            {{.5f, -0.5f, -0.5f}, {.1f, .8f, .1f}},
+            {{.5f,0.5f, -0.5f}, {.1f, .8f, .1f}},
         };
-        auto udModel = std::make_shared<UDModel>(udDevice, vertices);
 
-        auto triangle = UDGameObject::createGameObject();
-        triangle.model = udModel;
-        triangle.color = {0.1f, 0.8f, 0.1f};
-        triangle.transform2d.translation.x = 0.2f;
-        triangle.transform2d.scale = {2.0f, 0.5f};
-        triangle.transform2d.rotation = 0.25f * glm::two_pi<float>();   // 360/4 = 90 degrees
+        for (auto& vertex : vertices) {
+            vertex.position += offset;
+        }
 
-        gameObjects.push_back(std::move(triangle));
+        return std::make_unique<UDModel>(device, vertices);
+    }
+
+
+    void FirstApp::loadGameObjects() {
+        std::shared_ptr<UDModel> udModel = createCubeModel(udDevice, {0.0f, 0.0f, 0.0f});
+
+        auto cube = UDGameObject::createGameObject();
+        cube.model = udModel;
+        cube.transform.translation = {0.0f, 0.0f, 0.5f};
+        cube.transform.scale = {0.5f, 0.5f, 0.5f}; // x(-1,1) y(-1,1) z(0,1)
+        gameObjects.push_back(std::move(cube));
     }
 } 

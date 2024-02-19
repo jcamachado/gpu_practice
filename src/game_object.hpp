@@ -2,6 +2,10 @@
 
 #include "model.hpp"
 
+// libs
+#include <glm/gtc/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale, glm::perspective
+
+// std
 #include <memory>
 
 namespace ud {
@@ -21,19 +25,54 @@ namespace ud {
             cos(theta) = adjacent/hypotenuse
             tan(theta) = opposite/adjacent
     */
-    struct Transform2dComponent {
+    struct TransformComponent {
         glm::vec3 translation{};                                    // {Position offset}
-        glm::vec2 scale{1.f, 1.f};                                  // {Scale}
-        float rotation;                                      // {Rotation in radians}
-        glm::mat2 mat2() {                  
-            float sin = std::sin(rotation);
-            float cos = std::cos(rotation);
-            glm::mat2 rotationMat{{cos, sin}, {-sin, cos}};   // col1 = {cos, sin}, col2 = {*sin, cos}
+        glm::vec3 scale{1.0f, 1.0f, 1.0f};                                  // {Scale}
+        glm::vec3 rotation{};                                      // {Rotation in radians} euler angles or tait-bryan angles
+        
+        /*
+            mat4 -> 3 spacial dimensions, 1 for the homogeneous coordinates
+            Translation matrix: 3x3 identity matrix with another column for the translation 
+            Rotation convention uses tait-bryan angle with axis order Y(1), X(2), Z(3)
+            https://en.wikipedia.org/wiki/Euler_angles#Rotation_matrix
 
-            glm::mat2 scaleMat{{scale.x, 0.0f}, {0.0f, scale.y}};   // col1 = {scale.x, 0.0f}, col2 = {0.0f, scale.y}
-            return rotationMat * scaleMat; 
-        }
-    };
+            The transform matrix = translation * Ry * Rx * Rz * scale
+
+            Intrinsic vs Extrinsic rotation:
+            - Intrinsic: Rotate the object in its local coordinate system
+                Multiplication order: Ry * Rx * Rz
+            - Extrinsic: Rotate the object in the world coordinate system
+                Multiplication order: Rz * Rx * Ry
+        */
+        glm::mat4 mat4() {
+            const float c3 = glm::cos(rotation.z);
+            const float s3 = glm::sin(rotation.z);
+            const float c2 = glm::cos(rotation.x);
+            const float s2 = glm::sin(rotation.x);
+            const float c1 = glm::cos(rotation.y);
+            const float s1 = glm::sin(rotation.y);
+            return glm::mat4{
+                {
+                    scale.x * (c1 * c3 + s1 * s2 * s3),
+                    scale.x * (c2 * s3),
+                    scale.x * (c1 * s2 * s3 - c3 * s1),
+                    0.0f,
+                },
+                {
+                    scale.y * (c3 * s1 * s2 - c1 * s3),
+                    scale.y * (c2 * c3),
+                    scale.y * (c1 * c3 * s2 + s1 * s3),
+                    0.0f,
+                },
+                {
+                    scale.z * (c2 * s1),
+                    scale.z * (-s2),
+                    scale.z * (c1 * c2),
+                    0.0f,
+                },
+                {translation.x, translation.y, translation.z, 1.0f}};
+            }
+        };
 
     class UDGameObject {
         public:
@@ -54,7 +93,7 @@ namespace ud {
             std::shared_ptr<UDModel> model; // Varios gameobjects vao compartilhar a mesma instancia de modelo
             glm::vec3 color;
 
-            Transform2dComponent transform2d;
+            TransformComponent transform{};
 
         private:
             UDGameObject(id_t objId) : id(objId) {}

@@ -67,6 +67,9 @@ assert vs if
 If deals with pathes in the code, the decision conditions.
 Assert is used when you expect only 1 behavior and the assertion should be a big exception (therefore, possibly error handling to some point)
 
+** Estudar depois com mais calma: Coordandas homogeneas. Para melhor desenvolver questoes de translacao e transformacoes
+
+
 
 --Codigo do siepisnki triangle
 
