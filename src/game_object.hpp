@@ -5,7 +5,6 @@
 #include <memory>
 
 namespace ud {
-
     /*
         GLM Enphasitizes on the row major order, not column major order (cada elemento eh uma coluna)
 
@@ -21,8 +20,12 @@ namespace ud {
             cos(theta) = adjacent/hypotenuse
             tan(theta) = opposite/adjacent
     */
+    struct RigidBody2dComponent {
+        glm::vec2 velocity;
+        float mass{1.0f};
+    };
     struct Transform2dComponent {
-        glm::vec3 translation{};                                    // {Position offset}
+        glm::vec2 translation{};                                    // {Position offset}
         glm::vec2 scale{1.f, 1.f};                                  // {Scale}
         float rotation;                                      // {Rotation in radians}
         glm::mat2 mat2() {                  
@@ -55,6 +58,7 @@ namespace ud {
             glm::vec3 color;
 
             Transform2dComponent transform2d;
+            RigidBody2dComponent rigidBody2d;
 
         private:
             UDGameObject(id_t objId) : id(objId) {}
