@@ -1,5 +1,6 @@
 #include "first_app.hpp"
 
+#include "camera.hpp"
 #include "simple_render_system.hpp"
 
 
@@ -21,12 +22,18 @@ namespace ud {
 
     void FirstApp::run() {
         SimpleRenderSystem simpleRenderSystem{udDevice, udRenderer.getSwapChainRenderPass()};
+        UDCamera camera{};
 
         while (!udWindow.shouldClose()) {
             glfwPollEvents();
+
+            float aspect = udRenderer.getAspectRatio();
+            // Inside the loop, the orthographic projection will be kept to date with the aspect ratio
+            // camera.setOrthographicProjection(-aspect, aspect, -1.0f, 1.0f, -1.0f, 1.0f); // Works only when bottom = -1 and top = 1
+            camera.setPerspectiveProjection(glm::radians(50.0f), aspect, 0.1f, 10.0f);
             if (auto commandBuffer = udRenderer.beginFrame()) { // If nullptr, swapchain needs to be recreated
                 udRenderer.beginSwapChainRenderPass(commandBuffer);
-                simpleRenderSystem.renderGameObjects(commandBuffer, gameObjects);
+                simpleRenderSystem.renderGameObjects(commandBuffer, gameObjects, camera);
                 udRenderer.endSwapChainRenderPass(commandBuffer);
                 udRenderer.endFrame();
             }
@@ -99,7 +106,7 @@ namespace ud {
 
         auto cube = UDGameObject::createGameObject();
         cube.model = udModel;
-        cube.transform.translation = {0.0f, 0.0f, 0.5f};
+        cube.transform.translation = {0.0f, 0.0f, 2.5f};
         cube.transform.scale = {0.5f, 0.5f, 0.5f}; // x(-1,1) y(-1,1) z(0,1)
         gameObjects.push_back(std::move(cube));
     }

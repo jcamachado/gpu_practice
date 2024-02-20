@@ -26,9 +26,9 @@ namespace ud {
             tan(theta) = opposite/adjacent
     */
     struct TransformComponent {
-        glm::vec3 translation{};                                    // {Position offset}
-        glm::vec3 scale{1.0f, 1.0f, 1.0f};                                  // {Scale}
-        glm::vec3 rotation{};                                      // {Rotation in radians} euler angles or tait-bryan angles
+        glm::vec3 translation{};            // {Position offset}
+        glm::vec3 scale{1.0f, 1.0f, 1.0f};  // {Scale}
+        glm::vec3 rotation{};               // {Rotation, radians} euler angles, tait-bryan angles or quaternions
         
         /*
             mat4 -> 3 spacial dimensions, 1 for the homogeneous coordinates

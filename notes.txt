@@ -22,6 +22,150 @@ In vulkan, it happens many times that instead of calling many parameters, we cre
 
 Required extensions are defined by glfw to display content
 
+Vulkan's Canonical ViewVolume(VCVV): Only what is inside this region is displayed. The Canonical view volume
+goes through a viewport transformation to appear on the viewport (screen view)
+
+X from (-1, 1)
+Y from (-1, 1)
+Z from (0, 1)
+6 planes, (l)eft, (r)ight, (t)op, (b)ottom, (n)ear and (f)ar planes.
+
+Positive X points right
+Positive Y points down
+Positive Z points into the screen
+
+How to make VCVV into a ortographic view
+1- Translate center c of the box so that the center of the near plane is at the origin.
+c = ((r+l)/2, (b+t)/2, n)
+Translation matrix:
+| 1   0   0   -(r+l)/2 |
+| 0   1   0   -(b+t)/2 |
+| 0   0   1       -n   |
+| 0   0   0       1    |
+
+
+2- Scale the matrix so that the box have the same value in all dimensions, 
+Numerator will be the canonical volume dimentions and the denominator will be the dimensions 
+of the orthographic view volume
+Scale matrix:
+| 2/(r-l)     0        0        0|
+|   0      2/(b-t)     0        0|
+|   0         0      1/(f-n)    0|
+|   0         0        0        0|
+
+So, the ortographic matrix will be Scale X Translation (VCVV and Coordinate system differs from opengl, etc)
+
+| 2/(r-l)     0        0        -(r+l)/(r-l) |
+|   0      2/(b-t)     0        -(b+t)/(b-t) |
+|   0         0      1/(f-n)        -n/(f-n) |
+|   0         0        0              1      |
+
+
+Perspective matrix: Needs Homogeneous coordinates to make  nx/z and ny/z to work (explanation on video 12 of tutorial)
+Perpective Matrix ?
+  ? X (times)     x     nx/z   
+                  y     ny/z   
+                  z =     ?      
+                  1       
+
+Homogeneous Vector <=> Position vector 
+
+X           X/W
+Y     <=>   Y/W
+Z           Z/W
+W
+ 
+vectors:
+                            position
+1         10    =    2    =    1          
+2         20    =    4    =    2
+3     =   30    =    6    =    3      
+1         10    =    2    =    
+
+This division by W is always applied to gl_Position from vertex shader.
+If we change that last parameter from 1.0 to 2.0, the objects will appear the half of the size
+
+So, now we can represent the result as 
+nx   
+ny   
+?    
+Z     
+
+
+      ?                          
+n   0   0   0       x          nx           
+0   n   0   0   X   y     =    ny           
+0   0   ?   ?       z          ?  
+0   0   1   0       1          Z  
+
+2,2 cant be z, because the result in z where Z/Z = 1 will make us lose our depth
+So we need our solution Z to be Z^2 because the solution Z^2/Z = Z
+
+n   0   0   0       x          nx           
+0   n   0   0   X   y     =    ny           
+0   0   m1  m2      z          Z^2  
+0   0   1   0       1          Z  
+
+
+m1Z + m2 = Z^2
+for z=n, z=f Equacao normal de segundo grau, com Z quadratico, pode ter ate 2 solucoes
+  nx
+  ny
+m1z+m2 
+  Z 
+
+This means that the transformation will not change the values of points in the Near and Far planes.
+But all other Z values will be warped (perspective.) Manero.
+
+1- m1n + m2 = n^2
+2- m1f + m2 = f^2
+
+m1 = f + n
+m2 = -fn
+
+n       0       0       0           x          nx 
+0       n       0       0     X     y     =    ny 
+0       0       (f+n)  -fn          z          (f+n)z - fn
+0       0       1       0           1          Z  
+
+
+
+perspective projection matrix   =  ortographic projection matrix  *   perspective matrix
+
+|2n      0       -(r+l)/(r-l)    0      |       | 2/(r-l)     0      0       -(r+l)/(r-l) |  X | n   0     0     0 |     
+|0     2n/(b-t)  -(b+t)/(b-t)    0      |      =|   0       2/(b-t)  0       -(b+t)/(b-t) |  X | 0   n     0     0 |            
+|0       0          f/(f-n)    -fn/(f-n)|       |   0         0     1/(f-n)      -n/(f-n) |  X | 0   0   (f+n) -fn |    
+|0       0             1         0      |       |   0         0      0             0      |  X | 0   0     1     0 |
+
+In order to simplify: Assuming frustum is centered on the z-axis
+r = -l
+t = -b
+then r+l=0, r-l = 2r  and   b+t=0, b-t=2b
+
+|n/r     0      0        0      |
+|0      n/b     0        0      |
+|0       0    f/(f-n)  -fn/(f-n)|
+|0       0      1        0      |
+
+Aspec Ratio = W/H (of screen, fustrum plane)
+near right bottom corner (r,b,n)
+b=n*tan(theta/2), r=n*(w/h)*tan(theta/2)
+
+By this, the perspective matrix for vulkan is
+
+|1/((w/h)tan(theta/2))    0                 0        0      |
+|0                        1/tan(theta/2)    0        0      |
+|0                        0               f/(f-n)  -fn/(f-n)|
+|0                        0                 1        0      |
+
+By some explanation, near values have higher quality than far values. O intuitivo, mas a explicacao foi feita matematicamente.
+
+
+
+
+
+
+
 Swap chain: Is a series of framebuffers used to dfiplay images to the window. Modern OSs usually have at least 2 buffers
 at once (double buffering). The frontbuffer and backbuffer. Pipeline renders data to the backbuffer, and when ready, 
 the swap chain handles coordinating with the display prior to vertical sync. When swapped, while backbuffer is being displayed,

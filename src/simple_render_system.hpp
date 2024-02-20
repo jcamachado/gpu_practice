@@ -1,5 +1,6 @@
 #pragma once
 
+#include "camera.hpp"   
 #include "device.hpp"
 #include "game_object.hpp"
 #include "pipeline.hpp"
@@ -20,7 +21,10 @@ namespace ud {
             SimpleRenderSystem(const SimpleRenderSystem&) = delete;
             SimpleRenderSystem& operator=(const SimpleRenderSystem&) = delete; 
 
-            void renderGameObjects(VkCommandBuffer commandBuffer, std::vector<UDGameObject> &gameObjects);
+            void renderGameObjects(
+                VkCommandBuffer commandBuffer, 
+                std::vector<UDGameObject> &gameObjects, 
+                const UDCamera &camera);
         private:
             void createPipelineLayout();
             void createPipeline(VkRenderPass renderPass); // Renderpass will be used specifically to create the pipeline

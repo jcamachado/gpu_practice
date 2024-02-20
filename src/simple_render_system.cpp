@@ -56,7 +56,11 @@ namespace ud {
             pipelineConfig);
     }
     
-    void SimpleRenderSystem::renderGameObjects(VkCommandBuffer commandBuffer, std::vector<UDGameObject> &gameObjects) {
+    void SimpleRenderSystem::renderGameObjects(
+        VkCommandBuffer commandBuffer, 
+        std::vector<UDGameObject> &gameObjects, 
+        const UDCamera &camera
+    ) {
         udPipeline->bind(commandBuffer);
 
         for (auto& obj : gameObjects) {
@@ -65,7 +69,7 @@ namespace ud {
 
             SimplePushConstantData push{};
             push.color = obj.color;
-            push.transform = obj.transform.mat4();
+            push.transform = camera.getProjection() * obj.transform.mat4(); // TODO move matrix multiplication to the vertex shader
             vkCmdPushConstants(
                 commandBuffer,
                 pipelineLayout,

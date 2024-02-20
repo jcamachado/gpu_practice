@@ -18,6 +18,8 @@ namespace ud {
             UDRenderer(const UDRenderer&) = delete;
             UDRenderer& operator=(const UDRenderer&) = delete;
 
+            VkRenderPass getSwapChainRenderPass() const { return udSwapChain->getRenderPass(); }
+            float getAspectRatio() const { return udSwapChain->extentAspectRatio(); }
             bool isFrameInProgress() const { return isFrameStarted; }
 
             VkCommandBuffer getCurrentCommandBuffer() const { 
@@ -44,7 +46,6 @@ namespace ud {
             VkCommandBuffer beginFrame();
             void endFrame();
 
-            VkRenderPass getSwapChainRenderPass() const { return udSwapChain->getRenderPass(); }
             void beginSwapChainRenderPass(VkCommandBuffer commandBuffer);
             void endSwapChainRenderPass(VkCommandBuffer commandBuffer);
 
