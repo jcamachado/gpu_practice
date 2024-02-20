@@ -23,6 +23,8 @@ namespace ud {
     void FirstApp::run() {
         SimpleRenderSystem simpleRenderSystem{udDevice, udRenderer.getSwapChainRenderPass()};
         UDCamera camera{};
+        // camera.setViewDirection({0.0f, 0.0f, 0.0f}, {0.5f, 0.0f, 1.0f});
+        camera.setViewTarget({1.0f, -10.0f, 2.0f}, {0.0f, 0.0f, 2.5f});
 
         while (!udWindow.shouldClose()) {
             glfwPollEvents();
@@ -30,7 +32,7 @@ namespace ud {
             float aspect = udRenderer.getAspectRatio();
             // Inside the loop, the orthographic projection will be kept to date with the aspect ratio
             // camera.setOrthographicProjection(-aspect, aspect, -1.0f, 1.0f, -1.0f, 1.0f); // Works only when bottom = -1 and top = 1
-            camera.setPerspectiveProjection(glm::radians(50.0f), aspect, 0.1f, 10.0f);
+            camera.setPerspectiveProjection(glm::radians(50.0f), aspect, 0.1f, 100.0f);
             if (auto commandBuffer = udRenderer.beginFrame()) { // If nullptr, swapchain needs to be recreated
                 udRenderer.beginSwapChainRenderPass(commandBuffer);
                 simpleRenderSystem.renderGameObjects(commandBuffer, gameObjects, camera);
