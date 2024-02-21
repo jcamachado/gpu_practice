@@ -161,6 +161,12 @@ By this, the perspective matrix for vulkan is
 By some explanation, near values have higher quality than far values. O intuitivo, mas a explicacao foi feita matematicamente.
 
 
+Vertex buffeR: Armazena os vertices (x,y,z, ... values)
+Index buffer: organiza os vertices do index buffer indexados de forma a saber quais indices formam triangulos
+ex:
+vertex buffer {v0, v1, v2, v3, v4...}
+index buffer {0, 1, 2, 2, 1, 3, 0}....
+                1tr       2tr    ...  // indices 0, 1, 2 (que sao vertices) compoem o primeiro triangulo, ...
 
 
 
