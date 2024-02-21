@@ -1,9 +1,37 @@
 #include "model.hpp"
 
+#include "ud_utils.hpp"
+
+//libs
+#define TINYOBJLOADER_IMPLEMENTATION // define this in only *one* cpp file for the entire project
+#include <tiny_obj_loader.h>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/hash.hpp>
+
 // std
 #include <cstring>
 #include <cassert>
+#include <unordered_map>
 
+namespace std{
+    /*
+        With this we can take an instance of the Vertex struct and hash it to a
+        single value of type size_t. This is useful for the unordered_map to use
+        it as a key.
+
+        It allows the use of the Vertex struct as a key in an unordered_map.
+        So this is allowed:
+        std::unordered_map<Vertex, int> uniqueVertices{};
+    */
+    template<> 
+    struct hash<ud::UDModel::Vertex> { // Injections of the hash function for the Vertex struct
+        size_t operator()(ud::UDModel::Vertex const& vertex) const {
+            size_t seed = 0;
+            ud::hashCombine(seed, vertex.position, vertex.color, vertex.normal, vertex.uv);
+            return seed;
+        }
+    };
+}
 
 namespace ud {
     UDModel::UDModel(UDDevice &device, const UDModel::Builder &builder) : device{device} {
@@ -19,6 +47,15 @@ namespace ud {
             vkDestroyBuffer(device.device(), indexBuffer, nullptr);
             vkFreeMemory(device.device(), indexBufferMemory, nullptr);
         }
+    }
+
+    std::unique_ptr<UDModel> UDModel::createModelFromFile(
+        // The createModelFromFile function is a static method that creates a new model from a file
+        UDDevice &device, const std::string &filepath
+    ) {
+        Builder builder{};
+        builder.loadModel(filepath);
+        return std::make_unique<UDModel>(device, builder);
     }
 
     void UDModel::bind(VkCommandBuffer commandBuffer) {
@@ -153,6 +190,74 @@ namespace ud {
         attributeDescriptions[1].offset = offsetof(Vertex, color);
 
         return attributeDescriptions; 
+    }
+
+    void UDModel::Builder::loadModel(const std::string &filepath) {
+        // Load the model from the file using tinyobjloader
+        tinyobj::attrib_t attrib; // Vertex attributes
+        std::vector<tinyobj::shape_t> shapes;
+        std::vector<tinyobj::material_t> materials;
+        std::string warn;
+        std::string err;
+
+        if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filepath.c_str())) {
+            throw std::runtime_error(warn + err);
+        }
+
+        vertices.clear();
+        indices.clear();
+
+        // Vertex as key (in hash format)
+        std::unordered_map<Vertex, uint32_t> uniqueVertices{};
+        for (const auto &shape : shapes) {
+            for (const auto &index : shape.mesh.indices) {
+                Vertex vertex{};
+
+                if(index.vertex_index >= 0){
+                    vertex.position = {
+                        attrib.vertices[3 * index.vertex_index + 0],
+                        attrib.vertices[3 * index.vertex_index + 1],
+                        attrib.vertices[3 * index.vertex_index + 2]
+                    };
+                    // Unnofficial extension for vertex color but it is supported by tinyobjloader
+                    // This is not a standard feature of the .obj file format
+                    auto colorIndex = 3 * index.vertex_index + 2;
+                    if (colorIndex < attrib.colors.size()) {
+                        vertex.color = {
+                            attrib.colors[colorIndex - 2],
+                            attrib.colors[colorIndex - 1],
+                            attrib.colors[colorIndex - 0]
+                        };
+                    } else {
+                        vertex.color = {1.0f, 1.0f, 1.0f};
+                    }
+
+                }
+
+                if(index.normal_index >= 0) {
+                    vertex.normal = {
+                        attrib.normals[3 * index.normal_index + 0],
+                        attrib.normals[3 * index.normal_index + 1],
+                        attrib.normals[3 * index.normal_index + 2]
+                    };
+                }
+
+                if(index.texcoord_index >= 0) {
+                    vertex.uv = {
+                        attrib.texcoords[2 * index.texcoord_index + 0],
+                        attrib.texcoords[2 * index.texcoord_index + 1]
+                    };
+                }
+
+                // Check if the vertex is already in the uniqueVertices map
+                // Vertices.size() is the index of a new vertex that will be added to the vertices vector
+                if (uniqueVertices.count(vertex) == 0) {
+                    uniqueVertices[vertex] = static_cast<uint32_t>(vertices.size());
+                    vertices.push_back(vertex);
+                }
+                indices.push_back(uniqueVertices[vertex]);
+            }
+        }
     }
 
 }

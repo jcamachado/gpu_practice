@@ -1,5 +1,6 @@
 include .env
 
+# Needs to add tinyobjloader to the project, here it is linked through the usr/include directory
 CFLAGS = -std=c++17 -O2		# 02 is optimization level, but for development, remove it to run faster 
 LDFLAGS = -lglfw -lvulkan -ldl -lpthread -lX11 -lXxf86vm -lXrandr -lXi
 
