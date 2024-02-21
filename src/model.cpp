@@ -221,16 +221,11 @@ namespace ud {
                     };
                     // Unnofficial extension for vertex color but it is supported by tinyobjloader
                     // This is not a standard feature of the .obj file format
-                    auto colorIndex = 3 * index.vertex_index + 2;
-                    if (colorIndex < attrib.colors.size()) {
-                        vertex.color = {
-                            attrib.colors[colorIndex - 2],
-                            attrib.colors[colorIndex - 1],
-                            attrib.colors[colorIndex - 0]
-                        };
-                    } else {
-                        vertex.color = {1.0f, 1.0f, 1.0f};
-                    }
+                    vertex.color = {
+                        attrib.colors[3 * index.vertex_index + 0],
+                        attrib.colors[3 * index.vertex_index + 1],
+                        attrib.colors[3 * index.vertex_index + 2]
+                    };
 
                 }
 
