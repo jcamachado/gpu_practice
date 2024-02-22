@@ -1,5 +1,6 @@
 #pragma once
 
+#include "buffer.hpp"
 #include "device.hpp"
 
 #define GLM_FORCE_RADIANS
@@ -69,8 +70,7 @@ namespace ud {
         
         UDDevice &device;
 
-        VkBuffer vertexBuffer;
-        VkDeviceMemory vertexBufferMemory;
+        std::unique_ptr<UDBuffer> vertexBuffer;
         uint32_t vertexCount;
 
         /*
@@ -82,10 +82,7 @@ namespace ud {
         */
         
         bool hasIndexBuffer{false};
-        VkBuffer indexBuffer;
-        VkDeviceMemory indexBufferMemory;
+        std::unique_ptr<UDBuffer> indexBuffer;
         uint32_t indexCount;
-
-
     };
 }

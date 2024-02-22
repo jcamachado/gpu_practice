@@ -1,5 +1,6 @@
 #include "first_app.hpp"
 
+#include "buffer.hpp"
 #include "camera.hpp"
 #include "keyboard_movement_controller.hpp"
 #include "simple_render_system.hpp"
@@ -16,13 +17,42 @@
 #include <stdexcept>
 
 namespace ud {
+
+    struct GlobalUBO { // Uniform Buffer Object
+        glm::mat4 projectionView{1.0f};
+        glm::vec3 lightDirection = glm::normalize(glm::vec3{1.0f, -3.0f, -1.0f});
+    };
+
     FirstApp::FirstApp() {
         loadGameObjects();
     }
 
     FirstApp::~FirstApp() {}
 
+    
     void FirstApp::run() {  // The main loop
+        /*
+            Instance count is the number of frames to be rendered simultaneously
+            This way we can safely write to a frames ubo without worrying about 
+            possible synchronization
+
+            Double buffering. Frame 0 is being rendered while frame 1 is being prepared
+            and vice versa
+
+            Not using Host Coherent Memory because we want to selectively flush parts
+            of the memory of the buffer in order to not interfere with the previous
+            frame that may still be rendering
+        */
+        UDBuffer globalUbo{
+            udDevice,                           
+            sizeof(GlobalUBO),                  
+            UDSwapChain::MAX_FRAMES_IN_FLIGHT, 
+            VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
+            udDevice.properties.limits.minUniformBufferOffsetAlignment
+        };
+        globalUbo.map();
+
         SimpleRenderSystem simpleRenderSystem{udDevice, udRenderer.getSwapChainRenderPass()};
         UDCamera camera{};
 
@@ -45,6 +75,17 @@ namespace ud {
             // camera.setOrthographicProjection(-aspect, aspect, -1.0f, 1.0f, -1.0f, 1.0f); // Works only when bottom = -1 and top = 1
             camera.setPerspectiveProjection(glm::radians(50.0f), aspect, 0.1f, 10.0f);
             if (auto commandBuffer = udRenderer.beginFrame()) { // If nullptr, swapchain needs to be recreated
+                int frameIndex = udRenderer.getFrameIndex();
+
+                // update
+                GlobalUBO ubo{};
+                ubo.projectionView = camera.getProjection() * camera.getView();
+                globalUbo.writeToBuffer(&ubo, sizeof(ubo), frameIndex);
+                // Needs to be manually flushed because we are not using host coherent memory
+                globalUbo.flushIndex(frameIndex);
+
+
+                // render (draw calls)
                 udRenderer.beginSwapChainRenderPass(commandBuffer);
                 simpleRenderSystem.renderGameObjects(commandBuffer, gameObjects, camera);
                 udRenderer.endSwapChainRenderPass(commandBuffer);
