@@ -57,12 +57,20 @@ namespace ud {
 
 
     void FirstApp::loadGameObjects() {
-        std::shared_ptr<UDModel> udModel = UDModel::createModelFromFile(udDevice, "src/models/smooth_vase.obj");
+        std::shared_ptr<UDModel> udModel = UDModel::createModelFromFile(udDevice, "src/models/flat_vase.obj");
 
         auto gameObject = UDGameObject::createGameObject();
         gameObject.model = udModel;
-        gameObject.transform.translation = {0.0f, 0.0f, 2.5f};
-        gameObject.transform.scale = glm::vec3(3.0f);
+        gameObject.transform.translation = {-0.5f, 0.5f, 2.5f};
+        gameObject.transform.scale = glm::vec3(3.0f, 1.5f, 3.0f);
+        gameObjects.push_back(std::move(gameObject));
+
+        udModel = UDModel::createModelFromFile(udDevice, "src/models/smooth_vase.obj");
+
+        gameObject = UDGameObject::createGameObject();
+        gameObject.model = udModel;
+        gameObject.transform.translation = {0.5f, 0.5f, 2.5f};
+        gameObject.transform.scale = glm::vec3(3.0f, 1.5f, 3.0f);
         gameObjects.push_back(std::move(gameObject));
     }
 } 

@@ -176,18 +176,17 @@ namespace ud {
         return bindingDescriptions; // Same as {{0, sizeof(Vertex), VK_VERTEX_INPUT_RATE_VERTEX}}
     }
     
+    // Attribute descriptions define how to extract a vertex attribute from a chunk of vertex data originating from a binding description
+    // As an example of attribute description, we have the position and color of the vertex
     std::vector<VkVertexInputAttributeDescription> UDModel::Vertex::getAttributeDescriptions() {
-        std::vector<VkVertexInputAttributeDescription> attributeDescriptions(2);
-        // position
-        attributeDescriptions[0].binding = 0;
-        attributeDescriptions[0].location = 0;
-        attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT; // Only R32G32_SFLOAT because we only have position (x, y)
-        attributeDescriptions[0].offset = offsetof(Vertex, position);
-        // color
-        attributeDescriptions[1].binding = 0;
-        attributeDescriptions[1].location = 1;
-        attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT; 
-        attributeDescriptions[1].offset = offsetof(Vertex, color);
+        std::vector<VkVertexInputAttributeDescription> attributeDescriptions{};
+        
+        // params(location, binding, format, offset)
+        // Similar to OpenGLs glVertexAttribPointer
+        attributeDescriptions.push_back({0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, position)}); // rgb because 3 floats x, y, z
+        attributeDescriptions.push_back({1, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, color)});
+        attributeDescriptions.push_back({2, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, normal)});
+        attributeDescriptions.push_back({3, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, uv)});
 
         return attributeDescriptions; 
     }

@@ -12,9 +12,9 @@
 
 namespace ud {
 
-    struct SimplePushConstantData {
-        glm::mat4 transform{1.0f};      // 16 bytes identity matrix
-        alignas(16) glm::vec3 color;    // 12 bytes
+    struct SimplePushConstantData { // each member occupies 16 bytes even if less than 16 bytes, the remainder bytes are padding
+        glm::mat4 transform{1.0f};      // 64 bytes
+        glm::mat4 normalMatrix{1.0f};    //
     };
 
     SimpleRenderSystem::SimpleRenderSystem(UDDevice& device, VkRenderPass renderPass): udDevice(device) {
@@ -67,8 +67,9 @@ namespace ud {
 
         for (auto& obj : gameObjects) {
             SimplePushConstantData push{};
-            push.color = obj.color;
-            push.transform = projectionView * obj.transform.mat4(); // TODO move matrix multiplication to the vertex shader
+            auto modelMatrix = obj.transform.mat4();
+            push.transform = projectionView * modelMatrix; // TODO move matrix multiplication to the vertex shader
+            push.normalMatrix = obj.transform.normalMatrix(); // GLM converts the mat3 to a mat4
             vkCmdPushConstants(
                 commandBuffer,
                 pipelineLayout,

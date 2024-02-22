@@ -219,6 +219,9 @@ Assert is used when you expect only 1 behavior and the assertion should be a big
 
 ** Estudar depois com mais calma: Coordandas homogeneas. Para melhor desenvolver questoes de translacao e transformacoes
 
+Vertex normals : smooth shading . Normals perpendicular to the implied curved surface. Da uma cara smooth pra parada.
+face-normals: flat shading. Mais usado para lowpoly, pois pega bem cada face. Como vertices sao compartilhados, cada verticesvai ter mais de um valor 
+de normal(correspondente a face)
 
 
 --Codigo do siepisnki triangle
