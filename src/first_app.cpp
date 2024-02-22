@@ -14,6 +14,7 @@
 // std
 #include <array>
 #include <chrono>
+#include <numeric>
 #include <stdexcept>
 
 namespace ud {
@@ -31,6 +32,19 @@ namespace ud {
 
     
     void FirstApp::run() {  // The main loop
+        // This property is used to align the offset of the uniform buffer object
+        std::vector<std::unique_ptr<UDBuffer>> uboBuffers(UDSwapChain::MAX_FRAMES_IN_FLIGHT);
+        for (int i = 0; i < uboBuffers.size(); i++) {
+            uboBuffers[i] = std::make_unique<UDBuffer>(
+                udDevice,                           
+                sizeof(GlobalUBO),                  
+                1, // Only one instance per buffer
+                VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+                VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
+                udDevice.properties.limits.minUniformBufferOffsetAlignment
+            );
+            uboBuffers[i]->map();
+        }
         /*
             Instance count is the number of frames to be rendered simultaneously
             This way we can safely write to a frames ubo without worrying about 
@@ -43,15 +57,6 @@ namespace ud {
             of the memory of the buffer in order to not interfere with the previous
             frame that may still be rendering
         */
-        UDBuffer globalUbo{
-            udDevice,                           
-            sizeof(GlobalUBO),                  
-            UDSwapChain::MAX_FRAMES_IN_FLIGHT, 
-            VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
-            udDevice.properties.limits.minUniformBufferOffsetAlignment
-        };
-        globalUbo.map();
 
         SimpleRenderSystem simpleRenderSystem{udDevice, udRenderer.getSwapChainRenderPass()};
         UDCamera camera{};
@@ -81,10 +86,8 @@ namespace ud {
                 // update
                 GlobalUBO ubo{};
                 ubo.projectionView = camera.getProjection() * camera.getView();
-                globalUbo.writeToBuffer(&ubo, sizeof(ubo), frameIndex);
-                // Needs to be manually flushed because we are not using host coherent memory
-                globalUbo.flushIndex(frameIndex);
-
+                uboBuffers[frameIndex]->writeToBuffer(&ubo);
+                uboBuffers[frameIndex]->flush();
 
                 // render (draw calls)
                 udRenderer.beginSwapChainRenderPass(commandBuffer);
