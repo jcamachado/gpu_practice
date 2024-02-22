@@ -76,6 +76,7 @@ namespace ud {
             camera.setPerspectiveProjection(glm::radians(50.0f), aspect, 0.1f, 10.0f);
             if (auto commandBuffer = udRenderer.beginFrame()) { // If nullptr, swapchain needs to be recreated
                 int frameIndex = udRenderer.getFrameIndex();
+                FrameInfo frameInfo{frameIndex, frameTime, commandBuffer, camera};
 
                 // update
                 GlobalUBO ubo{};
@@ -87,7 +88,7 @@ namespace ud {
 
                 // render (draw calls)
                 udRenderer.beginSwapChainRenderPass(commandBuffer);
-                simpleRenderSystem.renderGameObjects(commandBuffer, gameObjects, camera);
+                simpleRenderSystem.renderGameObjects(frameInfo, gameObjects);
                 udRenderer.endSwapChainRenderPass(commandBuffer);
                 udRenderer.endFrame();
             }

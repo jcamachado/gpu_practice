@@ -2,6 +2,7 @@
 
 #include "camera.hpp"   
 #include "device.hpp"
+#include "frame_info.hpp"
 #include "game_object.hpp"
 #include "pipeline.hpp"
 
@@ -22,9 +23,9 @@ namespace ud {
             SimpleRenderSystem& operator=(const SimpleRenderSystem&) = delete; 
 
             void renderGameObjects(
-                VkCommandBuffer commandBuffer, 
-                std::vector<UDGameObject> &gameObjects, 
-                const UDCamera &camera);
+                FrameInfo &frameInfo,
+                std::vector<UDGameObject> &gameObjects
+            );
         private:
             void createPipelineLayout();
             void createPipeline(VkRenderPass renderPass); // Renderpass will be used specifically to create the pipeline

@@ -57,13 +57,12 @@ namespace ud {
     }
     
     void SimpleRenderSystem::renderGameObjects(
-        VkCommandBuffer commandBuffer, 
-        std::vector<UDGameObject> &gameObjects, 
-        const UDCamera &camera
+        FrameInfo &frameInfo,
+        std::vector<UDGameObject> &gameObjects
     ) {
-        udPipeline->bind(commandBuffer);
+        udPipeline->bind(frameInfo.commandBuffer);
 
-        auto projectionView = camera.getProjection() * camera.getView();
+        auto projectionView = frameInfo.camera.getProjection() * frameInfo.camera.getView();
 
         for (auto& obj : gameObjects) {
             SimplePushConstantData push{};
@@ -71,15 +70,15 @@ namespace ud {
             push.transform = projectionView * modelMatrix; // TODO move matrix multiplication to the vertex shader
             push.normalMatrix = obj.transform.normalMatrix(); // GLM converts the mat3 to a mat4
             vkCmdPushConstants(
-                commandBuffer,
+                frameInfo.commandBuffer,
                 pipelineLayout,
                 VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
                 0,
                 sizeof(SimplePushConstantData),
                 &push
             );
-            obj.model->bind(commandBuffer);
-            obj.model->draw(commandBuffer);
+            obj.model->bind(frameInfo.commandBuffer);
+            obj.model->draw(frameInfo.commandBuffer);
         }
     }
 } 
