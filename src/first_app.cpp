@@ -20,34 +20,55 @@
 namespace ud {
 
     struct GlobalUBO { // Uniform Buffer Object
-        glm::mat4 projectionView{1.0f};
-        glm::vec3 lightDirection = glm::normalize(glm::vec3{1.0f, -3.0f, -1.0f});
+        alignas(16) glm::mat4 projectionView{ 1.0f };
+        alignas(16) glm::vec3 lightDirection = glm::normalize(glm::vec3{ 1.0f, -3.0f, -1.0f });
     };
 
     FirstApp::FirstApp() {
+        // pool with max 2 sets that contains at most 2 uniform buffers in total
+        // Cant have more than sets
+        // Cant have more descriptors than those specified in the pool
+        // One set can have all the descriptors, but then the pool cannot provide more sets
+        // could add more descriptor to the pool using chain call .addPoolSize(..).addPoolSize(..
+        globalPool = UDDescriptorPool::Builder(udDevice)
+            .setMaxSets(UDSwapChain::MAX_FRAMES_IN_FLIGHT) // 2 sets
+            .addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, UDSwapChain::MAX_FRAMES_IN_FLIGHT) // 2 uniform descriptors
+            .build();
         loadGameObjects();
     }
 
     FirstApp::~FirstApp() {}
 
-    
+
     void FirstApp::run() {  // The main loop
         // This property is used to align the offset of the uniform buffer object
         std::vector<std::unique_ptr<UDBuffer>> uboBuffers(UDSwapChain::MAX_FRAMES_IN_FLIGHT);
         for (int i = 0; i < uboBuffers.size(); i++) {
             uboBuffers[i] = std::make_unique<UDBuffer>(
-                udDevice,                           
-                sizeof(GlobalUBO),                  
+                udDevice,
+                sizeof(GlobalUBO),
                 1, // Only one instance per buffer
                 VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-                VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
-                udDevice.properties.limits.minUniformBufferOffsetAlignment
+                VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
             );
             uboBuffers[i]->map();
         }
+
+        auto globalSetLayout = UDDescriptorSetLayout::Builder(udDevice)
+            .addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT)
+            .build();
+
+        std::vector<VkDescriptorSet> globalDescriptorSets(UDSwapChain::MAX_FRAMES_IN_FLIGHT);
+        for (int i = 0; i < globalDescriptorSets.size(); i++) {
+            auto bufferInfo = uboBuffers[i]->descriptorInfo();
+            UDDescriptorWriter(*globalSetLayout, *globalPool)
+                .writeBuffer(0, &bufferInfo)
+                .build(globalDescriptorSets[i]);
+        }
+
         /*
             Instance count is the number of frames to be rendered simultaneously
-            This way we can safely write to a frames ubo without worrying about 
+            This way we can safely write to a frames ubo without worrying about
             possible synchronization
 
             Double buffering. Frame 0 is being rendered while frame 1 is being prepared
@@ -58,7 +79,11 @@ namespace ud {
             frame that may still be rendering
         */
 
-        SimpleRenderSystem simpleRenderSystem{udDevice, udRenderer.getSwapChainRenderPass()};
+        SimpleRenderSystem simpleRenderSystem{ 
+            udDevice, 
+            udRenderer.getSwapChainRenderPass(), 
+            globalSetLayout->getDescriptorSetLayout()
+        };
         UDCamera camera{};
 
         auto viewerObject = UDGameObject::createGameObject(); // stores camera current state
@@ -81,7 +106,7 @@ namespace ud {
             camera.setPerspectiveProjection(glm::radians(50.0f), aspect, 0.1f, 10.0f);
             if (auto commandBuffer = udRenderer.beginFrame()) { // If nullptr, swapchain needs to be recreated
                 int frameIndex = udRenderer.getFrameIndex();
-                FrameInfo frameInfo{frameIndex, frameTime, commandBuffer, camera};
+                FrameInfo frameInfo{ frameIndex, frameTime, commandBuffer, camera , globalDescriptorSets[frameIndex]};
 
                 // update
                 GlobalUBO ubo{};
@@ -106,7 +131,7 @@ namespace ud {
 
         auto gameObject = UDGameObject::createGameObject();
         gameObject.model = udModel;
-        gameObject.transform.translation = {-0.5f, 0.5f, 2.5f};
+        gameObject.transform.translation = { -0.5f, 0.5f, 2.5f };
         gameObject.transform.scale = glm::vec3(3.0f, 1.5f, 3.0f);
         gameObjects.push_back(std::move(gameObject));
 
@@ -114,8 +139,8 @@ namespace ud {
 
         gameObject = UDGameObject::createGameObject();
         gameObject.model = udModel;
-        gameObject.transform.translation = {0.5f, 0.5f, 2.5f};
+        gameObject.transform.translation = { 0.5f, 0.5f, 2.5f };
         gameObject.transform.scale = glm::vec3(3.0f, 1.5f, 3.0f);
         gameObjects.push_back(std::move(gameObject));
     }
-} 
+}

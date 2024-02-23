@@ -16,7 +16,7 @@ namespace ud {
     */
     class SimpleRenderSystem {
         public:
-            SimpleRenderSystem(UDDevice& device, VkRenderPass renderPass);
+            SimpleRenderSystem(UDDevice& device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout);
             ~SimpleRenderSystem();
 
             SimpleRenderSystem(const SimpleRenderSystem&) = delete;
@@ -27,7 +27,7 @@ namespace ud {
                 std::vector<UDGameObject> &gameObjects
             );
         private:
-            void createPipelineLayout();
+            void createPipelineLayout(VkDescriptorSetLayout globalSetLayout);
             void createPipeline(VkRenderPass renderPass); // Renderpass will be used specifically to create the pipeline
 
             UDDevice &udDevice;

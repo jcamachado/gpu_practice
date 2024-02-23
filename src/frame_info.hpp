@@ -11,5 +11,6 @@ namespace ud {
         float frameTime;
         VkCommandBuffer commandBuffer;
         UDCamera &camera;
+        VkDescriptorSet globalDescriptorSet; 
     };
 }

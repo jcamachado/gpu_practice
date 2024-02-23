@@ -25,6 +25,15 @@ Required extensions are defined by glfw to display content
 Vulkan's Canonical ViewVolume(VCVV): Only what is inside this region is displayed. The Canonical view volume
 goes through a viewport transformation to appear on the viewport (screen view)
 
+1- Descriptors: An entity that points to a resource. E.g. Image descriptor points to an image resource. projection matrix, light, model matrix.
+Each descriptor points to one resource. Example: If my project has N material imagens, i would have N descriptors.
+2- Descriptors cant be bound individually in Vulkan, they need to be in a Descriptor Set to  be bound.
+3- DescriptorSetLayout need to be provided at pipeline create. DescriptorSetLayout defines how many descriptors to expect as well as what descriptor types to expect within each set. The indexes inside the setlayouts are indelentend. SetLayout#0 index-0 is different from SetLayout#1 index-1. Each index in the layout will bind to a buffer descriptor.
+4-Bind each descriptor set before draw call
+5-Descriptor sets can only be created using a descriptor pool object. In other words, all memory of descriptor sets will be allocated at once, and these sets will be referred from this pool.
+
+
+
 X from (-1, 1)
 Y from (-1, 1)
 Z from (0, 1)
