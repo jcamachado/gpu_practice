@@ -19,9 +19,11 @@
 
 namespace ud {
 
-    struct GlobalUBO { // Uniform Buffer Object
-        alignas(16) glm::mat4 projectionView{ 1.0f };
-        alignas(16) glm::vec3 lightDirection = glm::normalize(glm::vec3{ 1.0f, -3.0f, -1.0f });
+    struct GlobalUBO { // Uniform Buffer Object (needs alignment)
+        glm::mat4 projectionView{ 1.0f };
+        glm::vec4 ambientLightColor{ 1.0f, 1.0f, 1.0f, 0.02f };
+        glm::vec3 lightPosition{-1.0f};
+        alignas(16) glm::vec4 lightColor{1.0f}; // w is the intensity. rgb [0, 1]. r*w, g*w, b*w
     };
 
     FirstApp::FirstApp() {
@@ -87,6 +89,7 @@ namespace ud {
         UDCamera camera{};
 
         auto viewerObject = UDGameObject::createGameObject(); // stores camera current state
+        viewerObject.transform.translation.z = -2.5f;
         KeyboardMovementController cameraController{};
 
         auto currentTime = std::chrono::high_resolution_clock::now();
@@ -100,10 +103,11 @@ namespace ud {
             cameraController.moveInPlaneXZ(udWindow.getGLFWWindow(), frameTime, viewerObject);
             camera.setViewYXZ(viewerObject.transform.translation, viewerObject.transform.rotation);
 
+            
             float aspect = udRenderer.getAspectRatio();
             // Inside the loop, the orthographic projection will be kept to date with the aspect ratio
             // camera.setOrthographicProjection(-aspect, aspect, -1.0f, 1.0f, -1.0f, 1.0f); // Works only when bottom = -1 and top = 1
-            camera.setPerspectiveProjection(glm::radians(50.0f), aspect, 0.1f, 10.0f);
+            camera.setPerspectiveProjection(glm::radians(50.0f), aspect, NEAR_PLANE, FAR_PLANE);
             if (auto commandBuffer = udRenderer.beginFrame()) { // If nullptr, swapchain needs to be recreated
                 int frameIndex = udRenderer.getFrameIndex();
                 FrameInfo frameInfo{ frameIndex, frameTime, commandBuffer, camera , globalDescriptorSets[frameIndex]};
@@ -131,7 +135,7 @@ namespace ud {
 
         auto gameObject = UDGameObject::createGameObject();
         gameObject.model = udModel;
-        gameObject.transform.translation = { -0.5f, 0.5f, 2.5f };
+        gameObject.transform.translation = { -0.5f, 0.5f, 0.0f };
         gameObject.transform.scale = glm::vec3(3.0f, 1.5f, 3.0f);
         gameObjects.push_back(std::move(gameObject));
 
@@ -139,8 +143,16 @@ namespace ud {
 
         gameObject = UDGameObject::createGameObject();
         gameObject.model = udModel;
-        gameObject.transform.translation = { 0.5f, 0.5f, 2.5f };
+        gameObject.transform.translation = { 0.5f, 0.5f, 0.0f };
         gameObject.transform.scale = glm::vec3(3.0f, 1.5f, 3.0f);
         gameObjects.push_back(std::move(gameObject));
+
+        udModel = UDModel::createModelFromFile(udDevice, "src/models/quad.obj");
+        auto floor = UDGameObject::createGameObject();
+        floor.model = udModel;
+        floor.transform.translation = { 0.0f, 0.5f, 0.0f };
+        floor.transform.scale = glm::vec3(3.0f, 1.0f, 3.0f);
+        gameObjects.push_back(std::move(floor));
+
     }
 }
