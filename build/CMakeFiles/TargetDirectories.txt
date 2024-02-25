@@ -1,0 +1,4 @@
+/home/jaxe/Repositories/gpu_study/gpu_practice/build/CMakeFiles/UFFDEJAVU.dir
+/home/jaxe/Repositories/gpu_study/gpu_practice/build/CMakeFiles/Shaders.dir
+/home/jaxe/Repositories/gpu_study/gpu_practice/build/CMakeFiles/edit_cache.dir
+/home/jaxe/Repositories/gpu_study/gpu_practice/build/CMakeFiles/rebuild_cache.dir

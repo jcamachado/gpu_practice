@@ -1,0 +1,4 @@
+# Hashes of file build rules.
+e7987869240797be58e16a5fb532e226 /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simple_shader.frag.spv
+33c2242acf4d9f50777abd1c79ebebed /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simple_shader.vert.spv
+cb4d8a74856ac520c8ae3f93444f1da9 CMakeFiles/Shaders

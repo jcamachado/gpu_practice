@@ -13,6 +13,10 @@
 #include <cassert>
 #include <unordered_map>
 
+#ifndef ENGINE_DIR
+#define ENGINE_DIR "../"
+#endif
+
 namespace std{
     /*
         With this we can take an instance of the Vertex struct and hash it to a
@@ -177,7 +181,7 @@ namespace ud {
         std::string warn;
         std::string err;
 
-        if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filepath.c_str())) {
+        if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, (ENGINE_DIR + filepath).c_str())) {
             throw std::runtime_error(warn + err);
         }
 

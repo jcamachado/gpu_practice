@@ -56,8 +56,8 @@ namespace ud {
         pipelineConfig.pipelineLayout = pipelineLayout;
         udPipeline = std::make_unique<UDPipeline>(
             udDevice,
-            "src/shaders/simple_shader.vert.spv",
-            "src/shaders/simple_shader.frag.spv",
+            "shaders/simple_shader.vert.spv",
+            "shaders/simple_shader.frag.spv",
             pipelineConfig);
     }
     

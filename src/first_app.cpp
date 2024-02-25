@@ -137,7 +137,7 @@ namespace ud {
 
 
     void FirstApp::loadGameObjects() {
-        std::shared_ptr<UDModel> udModel = UDModel::createModelFromFile(udDevice, "src/models/flat_vase.obj");
+        std::shared_ptr<UDModel> udModel = UDModel::createModelFromFile(udDevice, "models/flat_vase.obj");
 
         auto flatVase = UDGameObject::createGameObject();
         flatVase.model = udModel;
@@ -145,14 +145,14 @@ namespace ud {
         flatVase.transform.scale = glm::vec3(3.0f, 1.5f, 3.0f);
         gameObjects.emplace(flatVase.getId(), std::move(flatVase));
 
-        udModel = UDModel::createModelFromFile(udDevice, "src/models/smooth_vase.obj");
+        udModel = UDModel::createModelFromFile(udDevice, "models/smooth_vase.obj");
         auto smoothVase = UDGameObject::createGameObject();
         smoothVase.model = udModel;
         smoothVase.transform.translation = { 0.5f, 0.5f, 0.0f };
         smoothVase.transform.scale = glm::vec3(3.0f, 1.5f, 3.0f);
         gameObjects.emplace(smoothVase.getId(), std::move(smoothVase));
 
-        udModel = UDModel::createModelFromFile(udDevice, "src/models/quad.obj");
+        udModel = UDModel::createModelFromFile(udDevice, "models/quad.obj");
         auto floor = UDGameObject::createGameObject();
         floor.model = udModel;
         floor.transform.translation = { 0.0f, 0.5f, 0.0f };

@@ -7,6 +7,9 @@
 #include <iostream>
 #include <stdexcept>
 
+#ifndef ENGINE_DIR
+#define ENGINE_DIR "../"
+#endif
 
 namespace ud {
     UDPipeline::UDPipeline(
@@ -31,10 +34,11 @@ namespace ud {
     std::vector<char> UDPipeline::readFile(const std::string& filepath) {
         // ate flag: start reading at the end of the file to get the file size
         // binary flag: read the file as binary
-        std::ifstream file(filepath, std::ios::ate | std::ios::binary);
+        std::string enginePath = ENGINE_DIR + filepath;
+        std::ifstream file(enginePath, std::ios::ate | std::ios::binary);
 
         if (!file.is_open()) {
-            throw std::runtime_error("Failed to open file: " + filepath);
+            throw std::runtime_error("Failed to open file: " + enginePath);
         }
 
         // size_t fileSize = (size_t) file.tellg();
