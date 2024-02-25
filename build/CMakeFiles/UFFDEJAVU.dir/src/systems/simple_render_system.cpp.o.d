@@ -1,7 +1,7 @@
-CMakeFiles/UFFDEJAVU.dir/src/simple_render_system.cpp.o: \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/simple_render_system.cpp \
+CMakeFiles/UFFDEJAVU.dir/src/systems/simple_render_system.cpp.o: \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/systems/simple_render_system.cpp \
  /usr/include/stdc-predef.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/simple_render_system.hpp \
+ /home/jaxe/Repositories/gpu_study/gpu_practice/src/systems/simple_render_system.hpp \
  /home/jaxe/Repositories/gpu_study/gpu_practice/src/camera.hpp \
  /usr/include/glm/glm.hpp /usr/include/glm/detail/_fixes.hpp \
  /usr/include/c++/11/cmath \

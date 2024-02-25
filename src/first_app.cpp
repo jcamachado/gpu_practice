@@ -3,7 +3,8 @@
 #include "buffer.hpp"
 #include "camera.hpp"
 #include "keyboard_movement_controller.hpp"
-#include "simple_render_system.hpp"
+#include "systems/simple_render_system.hpp"
+#include "systems/point_light_system.hpp"
 
 
 #define GLM_FORCE_RADIANS
@@ -87,6 +88,11 @@ namespace ud {
             udRenderer.getSwapChainRenderPass(), 
             globalSetLayout->getDescriptorSetLayout()
         };
+        PointLightSystem pointLightSystem{ 
+            udDevice, 
+            udRenderer.getSwapChainRenderPass(), 
+            globalSetLayout->getDescriptorSetLayout()
+        };
         UDCamera camera{};
 
         auto viewerObject = UDGameObject::createGameObject(); // stores camera current state
@@ -129,6 +135,7 @@ namespace ud {
                 // render (draw calls)
                 udRenderer.beginSwapChainRenderPass(commandBuffer);
                 simpleRenderSystem.renderGameObjects(frameInfo);
+                pointLightSystem.render(frameInfo);
                 udRenderer.endSwapChainRenderPass(commandBuffer);
                 udRenderer.endFrame();
             }

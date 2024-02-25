@@ -19,8 +19,9 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/jaxe/Repositories/gpu_study/gpu_practice/src/model.cpp" "CMakeFiles/UFFDEJAVU.dir/src/model.cpp.o" "gcc" "CMakeFiles/UFFDEJAVU.dir/src/model.cpp.o.d"
   "/home/jaxe/Repositories/gpu_study/gpu_practice/src/pipeline.cpp" "CMakeFiles/UFFDEJAVU.dir/src/pipeline.cpp.o" "gcc" "CMakeFiles/UFFDEJAVU.dir/src/pipeline.cpp.o.d"
   "/home/jaxe/Repositories/gpu_study/gpu_practice/src/renderer.cpp" "CMakeFiles/UFFDEJAVU.dir/src/renderer.cpp.o" "gcc" "CMakeFiles/UFFDEJAVU.dir/src/renderer.cpp.o.d"
-  "/home/jaxe/Repositories/gpu_study/gpu_practice/src/simple_render_system.cpp" "CMakeFiles/UFFDEJAVU.dir/src/simple_render_system.cpp.o" "gcc" "CMakeFiles/UFFDEJAVU.dir/src/simple_render_system.cpp.o.d"
   "/home/jaxe/Repositories/gpu_study/gpu_practice/src/swap_chain.cpp" "CMakeFiles/UFFDEJAVU.dir/src/swap_chain.cpp.o" "gcc" "CMakeFiles/UFFDEJAVU.dir/src/swap_chain.cpp.o.d"
+  "/home/jaxe/Repositories/gpu_study/gpu_practice/src/systems/point_light_system.cpp" "CMakeFiles/UFFDEJAVU.dir/src/systems/point_light_system.cpp.o" "gcc" "CMakeFiles/UFFDEJAVU.dir/src/systems/point_light_system.cpp.o.d"
+  "/home/jaxe/Repositories/gpu_study/gpu_practice/src/systems/simple_render_system.cpp" "CMakeFiles/UFFDEJAVU.dir/src/systems/simple_render_system.cpp.o" "gcc" "CMakeFiles/UFFDEJAVU.dir/src/systems/simple_render_system.cpp.o.d"
   "/home/jaxe/Repositories/gpu_study/gpu_practice/src/window.cpp" "CMakeFiles/UFFDEJAVU.dir/src/window.cpp.o" "gcc" "CMakeFiles/UFFDEJAVU.dir/src/window.cpp.o.d"
   )
 

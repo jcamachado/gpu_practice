@@ -1,4 +1,6 @@
 file(REMOVE_RECURSE
+  "/home/jaxe/Repositories/gpu_study/gpu_practice/shaders/point_light.frag.spv"
+  "/home/jaxe/Repositories/gpu_study/gpu_practice/shaders/point_light.vert.spv"
   "/home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simple_shader.frag.spv"
   "/home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simple_shader.vert.spv"
   "CMakeFiles/Shaders"

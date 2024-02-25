@@ -13,6 +13,7 @@ layout(location = 1) out vec3 fragPosWorld;
 layout(location = 2) out vec3 fragNormalWorld;
 
 // Descriptor set. set and binding must match the C++ code of descriptor set layout
+// This will be the same to all shaders. If needed, we will create a new descriptor set to be shader specific.
 layout(set = 0, binding = 0) uniform GlobalUbo { 
     mat4 projection;
     mat4 view;

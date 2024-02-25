@@ -66,18 +66,30 @@ include CMakeFiles/Shaders.dir/compiler_depend.make
 # Include the progress variables for this target.
 include CMakeFiles/Shaders.dir/progress.make
 
+CMakeFiles/Shaders: /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/point_light.frag.spv
+CMakeFiles/Shaders: /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/point_light.vert.spv
 CMakeFiles/Shaders: /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simple_shader.frag.spv
 CMakeFiles/Shaders: /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simple_shader.vert.spv
 
+/home/jaxe/Repositories/gpu_study/gpu_practice/shaders/point_light.frag.spv: /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/point_light.frag
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/jaxe/Repositories/gpu_study/gpu_practice/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Generating /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/point_light.frag.spv"
+	/usr/local/bin/glslangValidator -V /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/point_light.frag -o /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/point_light.frag.spv
+
+/home/jaxe/Repositories/gpu_study/gpu_practice/shaders/point_light.vert.spv: /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/point_light.vert
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/jaxe/Repositories/gpu_study/gpu_practice/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Generating /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/point_light.vert.spv"
+	/usr/local/bin/glslangValidator -V /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/point_light.vert -o /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/point_light.vert.spv
+
 /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simple_shader.frag.spv: /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simple_shader.frag
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/jaxe/Repositories/gpu_study/gpu_practice/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Generating /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simple_shader.frag.spv"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/jaxe/Repositories/gpu_study/gpu_practice/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Generating /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simple_shader.frag.spv"
 	/usr/local/bin/glslangValidator -V /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simple_shader.frag -o /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simple_shader.frag.spv
 
 /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simple_shader.vert.spv: /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simple_shader.vert
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/jaxe/Repositories/gpu_study/gpu_practice/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Generating /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simple_shader.vert.spv"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/jaxe/Repositories/gpu_study/gpu_practice/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Generating /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simple_shader.vert.spv"
 	/usr/local/bin/glslangValidator -V /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simple_shader.vert -o /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simple_shader.vert.spv
 
 Shaders: CMakeFiles/Shaders
+Shaders: /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/point_light.frag.spv
+Shaders: /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/point_light.vert.spv
 Shaders: /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simple_shader.frag.spv
 Shaders: /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simple_shader.vert.spv
 Shaders: CMakeFiles/Shaders.dir/build.make
