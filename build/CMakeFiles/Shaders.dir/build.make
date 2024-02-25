@@ -71,11 +71,11 @@ CMakeFiles/Shaders: /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simpl
 
 /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simple_shader.frag.spv: /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simple_shader.frag
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/jaxe/Repositories/gpu_study/gpu_practice/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Generating /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simple_shader.frag.spv"
-	GLSL_VALIDATOR-NOTFOUND -V /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simple_shader.frag -o /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simple_shader.frag.spv
+	/usr/local/bin/glslangValidator -V /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simple_shader.frag -o /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simple_shader.frag.spv
 
 /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simple_shader.vert.spv: /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simple_shader.vert
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/jaxe/Repositories/gpu_study/gpu_practice/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Generating /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simple_shader.vert.spv"
-	GLSL_VALIDATOR-NOTFOUND -V /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simple_shader.vert -o /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simple_shader.vert.spv
+	/usr/local/bin/glslangValidator -V /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simple_shader.vert -o /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simple_shader.vert.spv
 
 Shaders: CMakeFiles/Shaders
 Shaders: /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simple_shader.frag.spv

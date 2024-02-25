@@ -20,7 +20,8 @@
 namespace ud {
 
     struct GlobalUBO { // Uniform Buffer Object (needs alignment)
-        glm::mat4 projectionView{ 1.0f };
+        glm::mat4 projection{ 1.0f };
+        glm::mat4 view{ 1.0f };
         glm::vec4 ambientLightColor{ 1.0f, 1.0f, 1.0f, 0.02f };
         glm::vec3 lightPosition{-1.0f};
         alignas(16) glm::vec4 lightColor{1.0f}; // w is the intensity. rgb [0, 1]. r*w, g*w, b*w
@@ -120,7 +121,8 @@ namespace ud {
 
                 // update
                 GlobalUBO ubo{};
-                ubo.projectionView = camera.getProjection() * camera.getView();
+                ubo.projection = camera.getProjection();
+                ubo.view = camera.getView();
                 uboBuffers[frameIndex]->writeToBuffer(&ubo);
                 uboBuffers[frameIndex]->flush();
 
