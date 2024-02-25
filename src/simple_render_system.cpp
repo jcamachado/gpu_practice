@@ -61,10 +61,7 @@ namespace ud {
             pipelineConfig);
     }
     
-    void SimpleRenderSystem::renderGameObjects(
-        FrameInfo &frameInfo,
-        std::vector<UDGameObject> &gameObjects
-    ) {
+    void SimpleRenderSystem::renderGameObjects(FrameInfo &frameInfo) {
         udPipeline->bind(frameInfo.commandBuffer);
 
         // Must specify the starting set
@@ -79,9 +76,11 @@ namespace ud {
             nullptr
         );
 
-
-
-        for (auto& obj : gameObjects) {
+        for (auto& kv : frameInfo.gameObjects) {
+            auto &obj = kv.second;
+            if (obj.model == nullptr) {
+                continue;
+            }
             SimplePushConstantData push{};
             push.modelMatrix = obj.transform.mat4(); // TODO move matrix multiplication to the vertex shader
             push.normalMatrix = obj.transform.normalMatrix(); // GLM converts the mat3 to a mat4

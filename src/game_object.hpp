@@ -7,9 +7,9 @@
 
 // std
 #include <memory>
+#include <unordered_map>
 
 namespace ud {
-
     /*
         GLM Enphasitizes on the row major order, not column major order (cada elemento eh uma coluna)
 
@@ -50,7 +50,8 @@ namespace ud {
 
     class UDGameObject {
         public:
-            using id_t = unsigned int; // id_t is an alias for unsigned int
+            using id_t = unsigned int;
+            using Map = std::unordered_map<id_t, UDGameObject>;
 
             static UDGameObject createGameObject() {
                 static id_t currentId = 0;

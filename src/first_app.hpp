@@ -36,6 +36,6 @@ namespace ud {
         // unique_ptr is a smart pointer that manages another object through a pointer and 
         // disposes of that object when the unique_ptr goes out of scope
         std::unique_ptr<UDDescriptorPool> globalPool{}; // Must be declared after device bc must be destroyed before the device
-        std::vector<UDGameObject> gameObjects;
+        UDGameObject::Map gameObjects;
     };
 };

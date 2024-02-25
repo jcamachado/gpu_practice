@@ -22,10 +22,7 @@ namespace ud {
             SimpleRenderSystem(const SimpleRenderSystem&) = delete;
             SimpleRenderSystem& operator=(const SimpleRenderSystem&) = delete; 
 
-            void renderGameObjects(
-                FrameInfo &frameInfo,
-                std::vector<UDGameObject> &gameObjects
-            );
+            void renderGameObjects(FrameInfo &frameInfo);
         private:
             void createPipelineLayout(VkDescriptorSetLayout globalSetLayout);
             void createPipeline(VkRenderPass renderPass); // Renderpass will be used specifically to create the pipeline

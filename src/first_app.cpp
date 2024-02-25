@@ -57,7 +57,7 @@ namespace ud {
         }
 
         auto globalSetLayout = UDDescriptorSetLayout::Builder(udDevice)
-            .addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT)
+            .addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS)
             .build();
 
         std::vector<VkDescriptorSet> globalDescriptorSets(UDSwapChain::MAX_FRAMES_IN_FLIGHT);
@@ -110,7 +110,13 @@ namespace ud {
             camera.setPerspectiveProjection(glm::radians(50.0f), aspect, NEAR_PLANE, FAR_PLANE);
             if (auto commandBuffer = udRenderer.beginFrame()) { // If nullptr, swapchain needs to be recreated
                 int frameIndex = udRenderer.getFrameIndex();
-                FrameInfo frameInfo{ frameIndex, frameTime, commandBuffer, camera , globalDescriptorSets[frameIndex]};
+                FrameInfo frameInfo{ frameIndex, 
+                    frameTime, 
+                    commandBuffer, 
+                    camera , 
+                    globalDescriptorSets[frameIndex],
+                    gameObjects
+                };
 
                 // update
                 GlobalUBO ubo{};
@@ -120,7 +126,7 @@ namespace ud {
 
                 // render (draw calls)
                 udRenderer.beginSwapChainRenderPass(commandBuffer);
-                simpleRenderSystem.renderGameObjects(frameInfo, gameObjects);
+                simpleRenderSystem.renderGameObjects(frameInfo);
                 udRenderer.endSwapChainRenderPass(commandBuffer);
                 udRenderer.endFrame();
             }
@@ -133,26 +139,24 @@ namespace ud {
     void FirstApp::loadGameObjects() {
         std::shared_ptr<UDModel> udModel = UDModel::createModelFromFile(udDevice, "src/models/flat_vase.obj");
 
-        auto gameObject = UDGameObject::createGameObject();
-        gameObject.model = udModel;
-        gameObject.transform.translation = { -0.5f, 0.5f, 0.0f };
-        gameObject.transform.scale = glm::vec3(3.0f, 1.5f, 3.0f);
-        gameObjects.push_back(std::move(gameObject));
+        auto flatVase = UDGameObject::createGameObject();
+        flatVase.model = udModel;
+        flatVase.transform.translation = { -0.5f, 0.5f, 0.0f };
+        flatVase.transform.scale = glm::vec3(3.0f, 1.5f, 3.0f);
+        gameObjects.emplace(flatVase.getId(), std::move(flatVase));
 
         udModel = UDModel::createModelFromFile(udDevice, "src/models/smooth_vase.obj");
-
-        gameObject = UDGameObject::createGameObject();
-        gameObject.model = udModel;
-        gameObject.transform.translation = { 0.5f, 0.5f, 0.0f };
-        gameObject.transform.scale = glm::vec3(3.0f, 1.5f, 3.0f);
-        gameObjects.push_back(std::move(gameObject));
+        auto smoothVase = UDGameObject::createGameObject();
+        smoothVase.model = udModel;
+        smoothVase.transform.translation = { 0.5f, 0.5f, 0.0f };
+        smoothVase.transform.scale = glm::vec3(3.0f, 1.5f, 3.0f);
+        gameObjects.emplace(smoothVase.getId(), std::move(smoothVase));
 
         udModel = UDModel::createModelFromFile(udDevice, "src/models/quad.obj");
         auto floor = UDGameObject::createGameObject();
         floor.model = udModel;
         floor.transform.translation = { 0.0f, 0.5f, 0.0f };
         floor.transform.scale = glm::vec3(3.0f, 1.0f, 3.0f);
-        gameObjects.push_back(std::move(floor));
-
+        gameObjects.emplace(floor.getId(), std::move(floor));
     }
 }

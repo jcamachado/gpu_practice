@@ -32,7 +32,11 @@ namespace ud {
         uint32_t subpass = 0;
     };
 
-
+    /*
+        The pipeline class is responsible for creating the graphics pipeline
+        and managing the shader modules. It is also responsible for binding the
+        pipeline to a command buffer.
+    */
     class UDPipeline {
         public:
             UDPipeline(
