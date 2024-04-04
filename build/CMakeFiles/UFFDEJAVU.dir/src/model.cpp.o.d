@@ -1,11 +1,11 @@
 CMakeFiles/UFFDEJAVU.dir/src/model.cpp.o: \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/model.cpp \
+ /home/jaxe/Repositories/gpu_practice/src/model.cpp \
  /usr/include/stdc-predef.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/model.hpp \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/buffer.hpp \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/device.hpp \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/window.hpp \
- /usr/local/include/GLFW/glfw3.h \
+ /home/jaxe/Repositories/gpu_practice/src/model.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/buffer.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/device.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/window.hpp \
+ /usr/include/GLFW/glfw3.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stdint.h /usr/include/stdint.h \
  /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
@@ -307,7 +307,7 @@ CMakeFiles/UFFDEJAVU.dir/src/model.cpp.o: \
  /usr/include/c++/11/backward/auto_ptr.h \
  /usr/include/c++/11/pstl/glue_memory_defs.h \
  /usr/include/c++/11/pstl/execution_defs.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/ud_utils.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/ud_utils.hpp \
  /usr/include/c++/11/functional /usr/include/c++/11/bits/std_function.h \
  /usr/include/c++/11/unordered_map /usr/include/c++/11/bits/hashtable.h \
  /usr/include/c++/11/bits/hashtable_policy.h \
@@ -318,8 +318,9 @@ CMakeFiles/UFFDEJAVU.dir/src/model.cpp.o: \
  /usr/include/c++/11/bits/algorithmfwd.h \
  /usr/include/c++/11/bits/stl_heap.h \
  /usr/include/c++/11/bits/uniform_int_dist.h \
- /usr/include/tiny_obj_loader.h /usr/include/c++/11/map \
- /usr/include/c++/11/bits/stl_tree.h /usr/include/c++/11/bits/stl_map.h \
+ /usr/local/include/tinyobjloader/tiny_obj_loader.h \
+ /usr/include/c++/11/map /usr/include/c++/11/bits/stl_tree.h \
+ /usr/include/c++/11/bits/stl_map.h \
  /usr/include/c++/11/bits/stl_multimap.h /usr/include/c++/11/cstring \
  /usr/include/string.h /usr/include/strings.h /usr/include/c++/11/fstream \
  /usr/include/c++/11/istream /usr/include/c++/11/ios \

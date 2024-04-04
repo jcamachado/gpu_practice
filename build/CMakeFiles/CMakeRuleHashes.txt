@@ -1,6 +1,6 @@
 # Hashes of file build rules.
-6df5d202ce6687836b304bd7f36cd027 /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/point_light.frag.spv
-81862ac64e1d3a797b5f308cb13646b2 /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/point_light.vert.spv
-3aabf936db694c56785c13680b84c304 /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simple_shader.frag.spv
-a61d8969d056e06f38fc4652455e0f4f /home/jaxe/Repositories/gpu_study/gpu_practice/shaders/simple_shader.vert.spv
-cb4d8a74856ac520c8ae3f93444f1da9 CMakeFiles/Shaders
+4293d45c476c06bb6e27e5411d7e6a3a ../shaders/point_light.frag.spv
+9d1df7157fafe25787a7795aad2adc0a ../shaders/point_light.vert.spv
+5ded6c158d94fce86e16944abf045de1 ../shaders/simple_shader.frag.spv
+463e3fa055acb96318f1fee9169bf532 ../shaders/simple_shader.vert.spv
+f61fbaa84697343512090d4b3b3fb9a4 CMakeFiles/Shaders

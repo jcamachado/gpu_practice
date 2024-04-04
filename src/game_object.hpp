@@ -48,6 +48,10 @@ namespace ud {
         glm::mat3 normalMatrix();
     };
 
+    struct PointLightComponent {
+        float lightIntensity = 1.0f;
+    };
+
     class UDGameObject {
         public:
             using id_t = unsigned int;
@@ -58,6 +62,12 @@ namespace ud {
                 return UDGameObject(currentId++);
             }
 
+            static UDGameObject makePointLight(
+                float intensity = 10.0f, 
+                float radius = 0.1f, 
+                glm::vec3 color = glm::vec3{1.0f}
+            );
+
             UDGameObject(const UDGameObject&) = delete; // Copy constructor
             UDGameObject& operator=(const UDGameObject&) = delete;  // Copy assignment operator
             UDGameObject(UDGameObject&&) = default; // Move constructor
@@ -65,10 +75,12 @@ namespace ud {
 
             id_t getId() const { return id; }
 
-            std::shared_ptr<UDModel> model; // Varios gameobjects vao compartilhar a mesma instancia de modelo
             glm::vec3 color;
-
             TransformComponent transform{};
+
+            // Optional pointer components
+            std::shared_ptr<UDModel> model; // Varios gameobjects vao compartilhar a mesma instancia de modelo
+            std::unique_ptr<PointLightComponent> pointLight = nullptr;
 
         private:
             UDGameObject(id_t objId) : id(objId) {}

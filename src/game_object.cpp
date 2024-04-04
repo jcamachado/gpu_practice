@@ -63,4 +63,13 @@ namespace ud {
             },
         };
     }
+
+    UDGameObject UDGameObject::makePointLight(float intensity, float radius, glm::vec3 color) {
+        UDGameObject gameObject = UDGameObject::createGameObject();
+        gameObject.color = color;
+        gameObject.transform.scale.x = radius;
+        gameObject.pointLight = std::make_unique<PointLightComponent>();
+        gameObject.pointLight->lightIntensity = intensity;
+        return gameObject;
+    }
 } // namespace ud

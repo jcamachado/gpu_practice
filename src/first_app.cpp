@@ -19,15 +19,6 @@
 #include <stdexcept>
 
 namespace ud {
-
-    struct GlobalUBO { // Uniform Buffer Object (needs alignment)
-        glm::mat4 projection{ 1.0f };
-        glm::mat4 view{ 1.0f };
-        glm::vec4 ambientLightColor{ 1.0f, 1.0f, 1.0f, 0.02f };
-        glm::vec3 lightPosition{-1.0f};
-        alignas(16) glm::vec4 lightColor{1.0f}; // w is the intensity. rgb [0, 1]. r*w, g*w, b*w
-    };
-
     FirstApp::FirstApp() {
         // pool with max 2 sets that contains at most 2 uniform buffers in total
         // Cant have more than sets
@@ -129,6 +120,7 @@ namespace ud {
                 GlobalUBO ubo{};
                 ubo.projection = camera.getProjection();
                 ubo.view = camera.getView();
+                pointLightSystem.update(frameInfo, ubo);
                 uboBuffers[frameIndex]->writeToBuffer(&ubo);
                 uboBuffers[frameIndex]->flush();
 
@@ -167,5 +159,26 @@ namespace ud {
         floor.transform.translation = { 0.0f, 0.5f, 0.0f };
         floor.transform.scale = glm::vec3(3.0f, 1.0f, 3.0f);
         gameObjects.emplace(floor.getId(), std::move(floor));
+
+        std::vector<glm::vec3> lightColors{
+            {1.f, .1f, .1f},
+            {.1f, .1f, 1.f},
+            {.1f, 1.f, .1f},
+            {1.f, 1.f, .1f},
+            {.1f, 1.f, 1.f},
+            {1.f, 1.f, 1.f}
+        };
+        
+        for (int i = 0; i < lightColors.size(); i++) {
+            auto pointLight = UDGameObject::makePointLight(0.2f);
+            pointLight.color = lightColors[i];
+            auto rotateLight = glm::rotate(
+                glm::mat4(1.0f), 
+                (i*glm::two_pi<float>()) / lightColors.size(), 
+                {0.0f, -1.0f, 0.0f}
+            );
+            pointLight.transform.translation = glm::vec3(rotateLight * glm::vec4(-1.0f, -1.0f, -1.0f, 1.0f));
+            gameObjects.emplace(pointLight.getId(), std::move(pointLight));
+        }
     }
 }

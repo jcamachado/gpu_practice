@@ -1,11 +1,11 @@
 CMakeFiles/UFFDEJAVU.dir/src/first_app.cpp.o: \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/first_app.cpp \
+ /home/jaxe/Repositories/gpu_practice/src/first_app.cpp \
  /usr/include/stdc-predef.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/first_app.hpp \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/descriptors.hpp \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/device.hpp \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/window.hpp \
- /usr/local/include/GLFW/glfw3.h \
+ /home/jaxe/Repositories/gpu_practice/src/first_app.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/descriptors.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/device.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/window.hpp \
+ /usr/include/GLFW/glfw3.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stdint.h /usr/include/stdint.h \
  /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
@@ -167,9 +167,9 @@ CMakeFiles/UFFDEJAVU.dir/src/first_app.cpp.o: \
  /usr/include/c++/11/bits/node_handle.h \
  /usr/include/c++/11/bits/unordered_map.h \
  /usr/include/c++/11/bits/erase_if.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/game_object.hpp \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/model.hpp \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/buffer.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/game_object.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/model.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/buffer.hpp \
  /usr/include/glm/glm.hpp /usr/include/glm/detail/_fixes.hpp \
  /usr/include/c++/11/cmath /usr/include/math.h \
  /usr/include/x86_64-linux-gnu/bits/math-vector.h \
@@ -329,14 +329,14 @@ CMakeFiles/UFFDEJAVU.dir/src/first_app.cpp.o: \
  /usr/include/glm/ext/matrix_transform.hpp \
  /usr/include/glm/ext/matrix_transform.inl \
  /usr/include/glm/gtc/matrix_transform.inl \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/renderer.hpp \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/swap_chain.hpp \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/camera.hpp \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/keyboard_movement_controller.hpp \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/systems/simple_render_system.hpp \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/frame_info.hpp \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/pipeline.hpp \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/systems/point_light_system.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/renderer.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/swap_chain.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/camera.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/keyboard_movement_controller.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/systems/simple_render_system.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/frame_info.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/pipeline.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/systems/point_light_system.hpp \
  /usr/include/c++/11/chrono /usr/include/c++/11/ratio \
  /usr/include/c++/11/ctime /usr/include/c++/11/bits/parse_numbers.h \
  /usr/include/c++/11/numeric /usr/include/c++/11/bits/stl_numeric.h \

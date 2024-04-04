@@ -1,7 +1,7 @@
 CMakeFiles/UFFDEJAVU.dir/src/camera.cpp.o: \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/camera.cpp \
+ /home/jaxe/Repositories/gpu_practice/src/camera.cpp \
  /usr/include/stdc-predef.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/camera.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/camera.hpp \
  /usr/include/glm/glm.hpp /usr/include/glm/detail/_fixes.hpp \
  /usr/include/c++/11/cmath \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \

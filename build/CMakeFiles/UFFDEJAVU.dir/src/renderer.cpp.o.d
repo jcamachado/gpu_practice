@@ -1,10 +1,10 @@
 CMakeFiles/UFFDEJAVU.dir/src/renderer.cpp.o: \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/renderer.cpp \
+ /home/jaxe/Repositories/gpu_practice/src/renderer.cpp \
  /usr/include/stdc-predef.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/renderer.hpp \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/device.hpp \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/window.hpp \
- /usr/local/include/GLFW/glfw3.h \
+ /home/jaxe/Repositories/gpu_practice/src/renderer.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/device.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/window.hpp \
+ /usr/include/GLFW/glfw3.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stdint.h /usr/include/stdint.h \
  /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
@@ -138,7 +138,7 @@ CMakeFiles/UFFDEJAVU.dir/src/renderer.cpp.o: \
  /usr/include/c++/11/bits/stl_vector.h \
  /usr/include/c++/11/bits/stl_bvector.h \
  /usr/include/c++/11/bits/vector.tcc \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/swap_chain.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/swap_chain.hpp \
  /usr/include/c++/11/memory /usr/include/c++/11/bits/stl_tempbuf.h \
  /usr/include/c++/11/bits/stl_raw_storage_iter.h \
  /usr/include/c++/11/bits/align.h /usr/include/c++/11/bit \

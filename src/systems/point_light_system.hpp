@@ -22,6 +22,7 @@ namespace ud {
             PointLightSystem(const PointLightSystem&) = delete;
             PointLightSystem& operator=(const PointLightSystem&) = delete; 
 
+            void update(FrameInfo &frameInfo, GlobalUBO &ubo);
             void render(FrameInfo &frameInfo);
         private:
             void createPipelineLayout(VkDescriptorSetLayout globalSetLayout);

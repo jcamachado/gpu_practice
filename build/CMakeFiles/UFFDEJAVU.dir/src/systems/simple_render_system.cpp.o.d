@@ -1,8 +1,8 @@
 CMakeFiles/UFFDEJAVU.dir/src/systems/simple_render_system.cpp.o: \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/systems/simple_render_system.cpp \
+ /home/jaxe/Repositories/gpu_practice/src/systems/simple_render_system.cpp \
  /usr/include/stdc-predef.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/systems/simple_render_system.hpp \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/camera.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/systems/simple_render_system.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/camera.hpp \
  /usr/include/glm/glm.hpp /usr/include/glm/detail/_fixes.hpp \
  /usr/include/c++/11/cmath \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
@@ -216,9 +216,9 @@ CMakeFiles/UFFDEJAVU.dir/src/systems/simple_render_system.cpp.o: \
  /usr/include/glm/detail/type_half.hpp \
  /usr/include/glm/detail/type_half.inl /usr/include/glm/integer.hpp \
  /usr/include/glm/detail/func_integer.inl \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/device.hpp \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/window.hpp \
- /usr/local/include/GLFW/glfw3.h /usr/include/vulkan/vulkan.h \
+ /home/jaxe/Repositories/gpu_practice/src/device.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/window.hpp \
+ /usr/include/GLFW/glfw3.h /usr/include/vulkan/vulkan.h \
  /usr/include/vulkan/vk_platform.h /usr/include/vulkan/vulkan_core.h \
  /usr/include/GL/gl.h /usr/include/GL/glext.h \
  /usr/include/KHR/khrplatform.h /usr/include/c++/11/string \
@@ -287,10 +287,10 @@ CMakeFiles/UFFDEJAVU.dir/src/systems/simple_render_system.cpp.o: \
  /usr/include/c++/11/bits/stl_vector.h \
  /usr/include/c++/11/bits/stl_bvector.h \
  /usr/include/c++/11/bits/vector.tcc \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/frame_info.hpp \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/game_object.hpp \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/model.hpp \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/buffer.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/frame_info.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/game_object.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/model.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/buffer.hpp \
  /usr/include/c++/11/memory /usr/include/c++/11/bits/stl_tempbuf.h \
  /usr/include/c++/11/bits/stl_raw_storage_iter.h \
  /usr/include/c++/11/bits/align.h /usr/include/c++/11/bit \
@@ -331,5 +331,5 @@ CMakeFiles/UFFDEJAVU.dir/src/systems/simple_render_system.cpp.o: \
  /usr/include/c++/11/bits/node_handle.h \
  /usr/include/c++/11/bits/unordered_map.h \
  /usr/include/c++/11/bits/erase_if.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/pipeline.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/pipeline.hpp \
  /usr/include/c++/11/stdexcept

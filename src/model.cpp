@@ -4,7 +4,7 @@
 
 //libs
 #define TINYOBJLOADER_IMPLEMENTATION // define this in only *one* cpp file for the entire project
-#include <tiny_obj_loader.h>
+#include <tinyobjloader/tiny_obj_loader.h>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/hash.hpp>
 

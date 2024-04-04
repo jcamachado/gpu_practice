@@ -1,13 +1,13 @@
 CMakeFiles/UFFDEJAVU.dir/src/keyboard_movement_controller.cpp.o: \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/keyboard_movement_controller.cpp \
+ /home/jaxe/Repositories/gpu_practice/src/keyboard_movement_controller.cpp \
  /usr/include/stdc-predef.h \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/keyboard_movement_controller.hpp \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/game_object.hpp \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/model.hpp \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/buffer.hpp \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/device.hpp \
- /home/jaxe/Repositories/gpu_study/gpu_practice/src/window.hpp \
- /usr/local/include/GLFW/glfw3.h \
+ /home/jaxe/Repositories/gpu_practice/src/keyboard_movement_controller.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/game_object.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/model.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/buffer.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/device.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/window.hpp \
+ /usr/include/GLFW/glfw3.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stdint.h /usr/include/stdint.h \
  /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
