@@ -19,6 +19,7 @@ struct PointLight {
 layout(set = 0, binding = 0) uniform GlobalUbo { 
     mat4 projection;
     mat4 view;
+    mat4 inverseView;
     vec4 ambientLightColor; // w is intensity
     // Specialization Constants is a method to define constants that are known at compile time. ath the time of pipeline creation.
     // This value of 10 that is hardcoded here can be replaced by a specialization constant. And it have to match the value in the C++ code.

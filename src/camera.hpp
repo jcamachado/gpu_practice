@@ -45,9 +45,11 @@ namespace ud {
 
             const glm::mat4& getProjection() const { return projectionMat; }
             const glm::mat4& getView() const { return viewMatrix; }
+            const glm::mat4& getInverseView() const { return inverseViewMatrix; }
         
         private:
             glm::mat4 projectionMat = glm::mat4(1.0f);
-            glm::mat4 viewMatrix{1.0f};
+            glm::mat4 viewMatrix{1.0f}; // view matrix used to transform the world space to camera space
+            glm::mat4 inverseViewMatrix{1.0f}; // inverse of the view matrix used to transform the camera space to world space
     };
 }

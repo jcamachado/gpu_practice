@@ -106,6 +106,7 @@ namespace ud {
             // Inside the loop, the orthographic projection will be kept to date with the aspect ratio
             // camera.setOrthographicProjection(-aspect, aspect, -1.0f, 1.0f, -1.0f, 1.0f); // Works only when bottom = -1 and top = 1
             camera.setPerspectiveProjection(glm::radians(50.0f), aspect, NEAR_PLANE, FAR_PLANE);
+
             if (auto commandBuffer = udRenderer.beginFrame()) { // If nullptr, swapchain needs to be recreated
                 int frameIndex = udRenderer.getFrameIndex();
                 FrameInfo frameInfo{ frameIndex, 
@@ -120,6 +121,7 @@ namespace ud {
                 GlobalUBO ubo{};
                 ubo.projection = camera.getProjection();
                 ubo.view = camera.getView();
+                ubo.inverseView = camera.getInverseView();
                 pointLightSystem.update(frameInfo, ubo);
                 uboBuffers[frameIndex]->writeToBuffer(&ubo);
                 uboBuffers[frameIndex]->flush();
