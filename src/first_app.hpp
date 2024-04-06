@@ -28,7 +28,14 @@ namespace ud {
 
     private:
         // Declaration order matters. Allocation happens from top to bottom, and deallocation from bottom to top
+        void loadObjects();
+        void loadParticles();
         void loadGameObjects();
+        void placeNewObject(std::shared_ptr<UDModel> udModel, 
+            UDDevice &udDevice, 
+            const std::string &objFilePath,
+            glm::vec3 translation, 
+            glm::vec3 scale);
 
         UDWindow udWindow{ WIDTH, HEIGHT, "Vulkan" };
         UDDevice udDevice{ udWindow };

@@ -87,7 +87,11 @@
         "locale": "cpp",
         "*.gh": "glsl",
         "csignal": "cpp",
-        "future": "cpp"
+        "future": "cpp",
+        "strstream": "cpp",
+        "ranges": "cpp",
+        "typeindex": "cpp",
+        "valarray": "cpp"
     },
     "cmake.configureOnOpen": true,
     // "cmake.sourceDirectory": "/home/jaxe/Repositories/gpu_study/gpu_practice"

@@ -29,7 +29,7 @@ namespace ud {
             .setMaxSets(UDSwapChain::MAX_FRAMES_IN_FLIGHT) // 2 sets
             .addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, UDSwapChain::MAX_FRAMES_IN_FLIGHT) // 2 uniform descriptors
             .build();
-        loadGameObjects();
+        loadObjects();
     }
 
     FirstApp::~FirstApp() {}
@@ -138,29 +138,52 @@ namespace ud {
         vkDeviceWaitIdle(udDevice.device());
     }
 
+    void FirstApp::loadObjects() {
+        loadGameObjects();
+        loadParticles();
+    }
+
+    void FirstApp::loadParticles() {
+        // auto particleModel = UDModel::createModelFromFile(udDevice, "models/particle.obj");
+        // auto particleTexture = UDTexture::createTextureFromFile(udDevice, "textures/particle.png");
+        // auto particleMaterial = UDMaterial::createMaterial();
+        // particleMaterial->setDiffuseTexture(particleTexture);
+        // particleMaterial->setAmbientColor({ 0.0f, 0.0f, 0.0f });
+        // particleMaterial->setDiffuseColor({ 0.0f, 0.0f, 0.0f });
+        // particleMaterial->setSpecularColor({ 0.0f, 0.0f, 0.0f });
+        // particleMaterial->setSpecularPower(1.0f);
+        // auto particle = UDGameObject::createGameObject();
+        // particle.model = particleModel;
+        // particle.material = particleMaterial;
+        // particle.transform.translation = { 0.0f, 0.0f, 0.0f };
+        // particle.transform.scale = glm::vec3(0.1f);
+        // gameObjects.emplace(particle.getId(), std::move(particle));
+        return;
+    }
+
 
     void FirstApp::loadGameObjects() {
-        std::shared_ptr<UDModel> udModel = UDModel::createModelFromFile(udDevice, "models/flat_vase.obj");
+        // Since I wont be modifying the models, I can use a shared pointer
+        std::shared_ptr<UDModel> udModel = nullptr;
 
-        auto flatVase = UDGameObject::createGameObject();
-        flatVase.model = udModel;
-        flatVase.transform.translation = { -0.5f, 0.5f, 0.0f };
-        flatVase.transform.scale = glm::vec3(3.0f, 1.5f, 3.0f);
-        gameObjects.emplace(flatVase.getId(), std::move(flatVase));
+        // Solids
+        placeNewObject(udModel, 
+            udDevice, 
+            "models/flat_vase.obj", 
+            { -0.5f, 0.5f, 0.0f }, 
+            { 3.0f, 1.5f, 3.0f });
 
-        udModel = UDModel::createModelFromFile(udDevice, "models/smooth_vase.obj");
-        auto smoothVase = UDGameObject::createGameObject();
-        smoothVase.model = udModel;
-        smoothVase.transform.translation = { 0.5f, 0.5f, 0.0f };
-        smoothVase.transform.scale = glm::vec3(3.0f, 1.5f, 3.0f);
-        gameObjects.emplace(smoothVase.getId(), std::move(smoothVase));
-
-        udModel = UDModel::createModelFromFile(udDevice, "models/quad.obj");
-        auto floor = UDGameObject::createGameObject();
-        floor.model = udModel;
-        floor.transform.translation = { 0.0f, 0.5f, 0.0f };
-        floor.transform.scale = glm::vec3(3.0f, 1.0f, 3.0f);
-        gameObjects.emplace(floor.getId(), std::move(floor));
+        placeNewObject(udModel, 
+            udDevice, 
+            "models/smooth_vase.obj", 
+            { 0.5f, 0.5f, 0.0f }, 
+            { 3.0f, 1.5f, 3.0f });
+        
+        placeNewObject(udModel, 
+            udDevice, 
+            "models/quad.obj",
+            { 0.0f, 0.5f, 0.0f }, 
+            { 3.0f, 1.0f, 3.0f });
 
         std::vector<glm::vec3> lightColors{
             {1.f, .1f, .1f},
@@ -171,6 +194,7 @@ namespace ud {
             {1.f, 1.f, 1.f}
         };
         
+        // Lights
         for (int i = 0; i < lightColors.size(); i++) {
             auto pointLight = UDGameObject::makePointLight(0.2f);
             pointLight.color = lightColors[i];
@@ -182,5 +206,20 @@ namespace ud {
             pointLight.transform.translation = glm::vec3(rotateLight * glm::vec4(-1.0f, -1.0f, -1.0f, 1.0f));
             gameObjects.emplace(pointLight.getId(), std::move(pointLight));
         }
+    }
+
+    void FirstApp::placeNewObject(std::shared_ptr<UDModel> udModel, 
+        UDDevice &udDevice,
+        const std::string &objFilePath,
+        glm::vec3 translation, 
+        glm::vec3 scale) 
+    {
+        udModel = UDModel::createModelFromFile(udDevice, objFilePath);
+        auto newObj = UDGameObject::createGameObject();
+        newObj.model = udModel;
+        newObj.transform.translation = translation;
+        newObj.transform.scale = scale;
+        
+        gameObjects.emplace(newObj.getId(), std::move(newObj));
     }
 }
