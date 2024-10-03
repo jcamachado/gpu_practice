@@ -8,7 +8,7 @@
 
 namespace ud {
 
-    #define MAX_LIGHTS 10
+#define MAX_LIGHTS 10
 
     /**
         Specular light has better quality when the gaussian distribution is used
@@ -33,8 +33,9 @@ namespace ud {
         int frameIndex;
         float frameTime;
         VkCommandBuffer commandBuffer;
-        UDCamera &camera;
-        VkDescriptorSet globalDescriptorSet; 
-        UDGameObject::Map &gameObjects;
+        // UDCamera &camera;
+        const UDCamera* camera;
+        VkDescriptorSet globalDescriptorSet;
+        UDGameObject::Map& gameObjects;
     };
 }

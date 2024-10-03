@@ -430,6 +430,30 @@ src/swap_chain.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/UFFDEJAVU.dir/build.make CMakeFiles/UFFDEJAVU.dir/src/swap_chain.cpp.s
 .PHONY : src/swap_chain.cpp.s
 
+src/systems/multiview_render_system.o: src/systems/multiview_render_system.cpp.o
+.PHONY : src/systems/multiview_render_system.o
+
+# target to build an object file
+src/systems/multiview_render_system.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/UFFDEJAVU.dir/build.make CMakeFiles/UFFDEJAVU.dir/src/systems/multiview_render_system.cpp.o
+.PHONY : src/systems/multiview_render_system.cpp.o
+
+src/systems/multiview_render_system.i: src/systems/multiview_render_system.cpp.i
+.PHONY : src/systems/multiview_render_system.i
+
+# target to preprocess a source file
+src/systems/multiview_render_system.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/UFFDEJAVU.dir/build.make CMakeFiles/UFFDEJAVU.dir/src/systems/multiview_render_system.cpp.i
+.PHONY : src/systems/multiview_render_system.cpp.i
+
+src/systems/multiview_render_system.s: src/systems/multiview_render_system.cpp.s
+.PHONY : src/systems/multiview_render_system.s
+
+# target to generate assembly for a file
+src/systems/multiview_render_system.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/UFFDEJAVU.dir/build.make CMakeFiles/UFFDEJAVU.dir/src/systems/multiview_render_system.cpp.s
+.PHONY : src/systems/multiview_render_system.cpp.s
+
 src/systems/point_light_system.o: src/systems/point_light_system.cpp.o
 .PHONY : src/systems/point_light_system.o
 
@@ -548,6 +572,9 @@ help:
 	@echo "... src/swap_chain.o"
 	@echo "... src/swap_chain.i"
 	@echo "... src/swap_chain.s"
+	@echo "... src/systems/multiview_render_system.o"
+	@echo "... src/systems/multiview_render_system.i"
+	@echo "... src/systems/multiview_render_system.s"
 	@echo "... src/systems/point_light_system.o"
 	@echo "... src/systems/point_light_system.i"
 	@echo "... src/systems/point_light_system.s"

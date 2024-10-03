@@ -347,10 +347,11 @@ CMakeFiles/UFFDEJAVU.dir/src/first_app.cpp.o: \
  /home/jaxe/Repositories/gpu_practice/src/swap_chain.hpp \
  /home/jaxe/Repositories/gpu_practice/src/camera.hpp \
  /home/jaxe/Repositories/gpu_practice/src/keyboard_movement_controller.hpp \
- /home/jaxe/Repositories/gpu_practice/src/systems/simple_render_system.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/systems/multiview_render_system.hpp \
  /home/jaxe/Repositories/gpu_practice/src/frame_info.hpp \
  /home/jaxe/Repositories/gpu_practice/src/pipeline.hpp \
  /home/jaxe/Repositories/gpu_practice/src/systems/point_light_system.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/systems/simple_render_system.hpp \
  /usr/include/c++/13/array /usr/include/c++/13/compare \
  /usr/include/c++/13/chrono /usr/include/c++/13/bits/chrono.h \
  /usr/include/c++/13/ratio /usr/include/c++/13/ctime \

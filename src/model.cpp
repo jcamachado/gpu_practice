@@ -48,8 +48,6 @@ namespace ud {
         UDDevice& device, const std::string& filepath
     ) {
         Builder builder{};
-        // display model file path
-        std::cout << "Model file path: " << filepath << std::endl;
         builder.loadModel(filepath);
         return std::make_unique<UDModel>(device, builder);
     }

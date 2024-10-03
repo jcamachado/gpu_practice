@@ -11,59 +11,60 @@
 
 namespace ud {
     class UDRenderer {
-        public:
-            UDRenderer(UDWindow& udWindow, UDDevice& udDevice);
-            ~UDRenderer();
+    public:
+        UDRenderer(UDWindow& udWindow, UDDevice& udDevice);
+        ~UDRenderer();
 
-            UDRenderer(const UDRenderer&) = delete;
-            UDRenderer& operator=(const UDRenderer&) = delete;
+        UDRenderer(const UDRenderer&) = delete;
+        UDRenderer& operator=(const UDRenderer&) = delete;
 
-            VkRenderPass getSwapChainRenderPass() const { return udSwapChain->getRenderPass(); }
-            float getAspectRatio() const { return udSwapChain->extentAspectRatio(); }
-            bool isFrameInProgress() const { return isFrameStarted; }
+        VkRenderPass getSwapChainRenderPass() const { return udSwapChain->getRenderPass(); }
+        float getAspectRatio() const { return udSwapChain->extentAspectRatio(); }
+        bool isFrameInProgress() const { return isFrameStarted; }
 
-            VkCommandBuffer getCurrentCommandBuffer() const { 
-                assert(isFrameStarted && "Cannot get command buffer when frame not in progress.");
-                return commandBuffers[currentFrameIndex]; 
-            }
+        VkCommandBuffer getCurrentCommandBuffer() const {
+            assert(isFrameStarted && "Cannot get command buffer when frame not in progress.");
+            return commandBuffers[currentFrameIndex];
+        }
 
-            int getFrameIndex() const { 
-                assert(isFrameStarted && "Cannot get frame index when frame not in progress.");
-                return currentFrameIndex; 
-            }
+        int getFrameIndex() const {
+            assert(isFrameStarted && "Cannot get frame index when frame not in progress.");
+            return currentFrameIndex;
+        }
 
-            /*
-                Since drawframe will be called outside of the class, it will have to be public.
-                So, we will make 2 functions to draw frames.
-                The first will be called beginFrame and a second function called endFrame().
-                And we will need to keep track of the current frame state.
+        /*
+            Since drawframe will be called outside of the class, it will have to be public.
+            So, we will make 2 functions to draw frames.
+            The first will be called beginFrame and a second function called endFrame().
+            And we will need to keep track of the current frame state.
 
-                We will keep beginFrame and BeginSwapChainRenderPass separate, because we may want to
-                be able down the line to easily integrate multiple render passes for things like
-                reflections, shadows, and post-processing effects.
-            */
+            We will keep beginFrame and BeginSwapChainRenderPass separate, because we may want to
+            be able down the line to easily integrate multiple render passes for things like
+            reflections, shadows, and post-processing effects.
+        */
 
-            VkCommandBuffer beginFrame();
-            void endFrame();
+        VkCommandBuffer beginFrame();
+        void endFrame();
 
-            void beginSwapChainRenderPass(VkCommandBuffer commandBuffer);
-            void endSwapChainRenderPass(VkCommandBuffer commandBuffer);
+        void beginSwapChainRenderPass(VkCommandBuffer commandBuffer);
+        void endSwapChainRenderPass(VkCommandBuffer commandBuffer);
 
-        private:
-            void createCommandBuffers();
-            void freeCommandBuffers();
-            void recreateSwapChain();
+    private:
+        void createCommandBuffers();
+        void freeCommandBuffers();
+        void recreateSwapChain();
+        void setViewport(VkCommandBuffer commandBuffer);
 
-            UDWindow& udWindow;
-            UDDevice& udDevice;
-            // unique_ptr is a smart pointer that manages another object through a pointer and 
-            // disposes of that object when the unique_ptr goes out of scope
-            std::unique_ptr<UDSwapChain> udSwapChain;
-            std::vector<VkCommandBuffer> commandBuffers;
+        UDWindow& udWindow;
+        UDDevice& udDevice;
+        // unique_ptr is a smart pointer that manages another object through a pointer and 
+        // disposes of that object when the unique_ptr goes out of scope
+        std::unique_ptr<UDSwapChain> udSwapChain;
+        std::vector<VkCommandBuffer> commandBuffers;
 
-            uint32_t currentImageIndex;
-            int currentFrameIndex=0;
-            bool isFrameStarted{false};
+        uint32_t currentImageIndex;
+        int currentFrameIndex = 0;
+        bool isFrameStarted{ false };
     };
 };
 /*

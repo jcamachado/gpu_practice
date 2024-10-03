@@ -237,10 +237,24 @@ CMakeFiles/UFFDEJAVU.dir/src/swap_chain.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/UFFDEJAVU.dir/src/swap_chain.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/jaxe/Repositories/gpu_practice/src/swap_chain.cpp -o CMakeFiles/UFFDEJAVU.dir/src/swap_chain.cpp.s
 
+CMakeFiles/UFFDEJAVU.dir/src/systems/multiview_render_system.cpp.o: CMakeFiles/UFFDEJAVU.dir/flags.make
+CMakeFiles/UFFDEJAVU.dir/src/systems/multiview_render_system.cpp.o: /home/jaxe/Repositories/gpu_practice/src/systems/multiview_render_system.cpp
+CMakeFiles/UFFDEJAVU.dir/src/systems/multiview_render_system.cpp.o: CMakeFiles/UFFDEJAVU.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jaxe/Repositories/gpu_practice/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/UFFDEJAVU.dir/src/systems/multiview_render_system.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/UFFDEJAVU.dir/src/systems/multiview_render_system.cpp.o -MF CMakeFiles/UFFDEJAVU.dir/src/systems/multiview_render_system.cpp.o.d -o CMakeFiles/UFFDEJAVU.dir/src/systems/multiview_render_system.cpp.o -c /home/jaxe/Repositories/gpu_practice/src/systems/multiview_render_system.cpp
+
+CMakeFiles/UFFDEJAVU.dir/src/systems/multiview_render_system.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/UFFDEJAVU.dir/src/systems/multiview_render_system.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/jaxe/Repositories/gpu_practice/src/systems/multiview_render_system.cpp > CMakeFiles/UFFDEJAVU.dir/src/systems/multiview_render_system.cpp.i
+
+CMakeFiles/UFFDEJAVU.dir/src/systems/multiview_render_system.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/UFFDEJAVU.dir/src/systems/multiview_render_system.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/jaxe/Repositories/gpu_practice/src/systems/multiview_render_system.cpp -o CMakeFiles/UFFDEJAVU.dir/src/systems/multiview_render_system.cpp.s
+
 CMakeFiles/UFFDEJAVU.dir/src/systems/point_light_system.cpp.o: CMakeFiles/UFFDEJAVU.dir/flags.make
 CMakeFiles/UFFDEJAVU.dir/src/systems/point_light_system.cpp.o: /home/jaxe/Repositories/gpu_practice/src/systems/point_light_system.cpp
 CMakeFiles/UFFDEJAVU.dir/src/systems/point_light_system.cpp.o: CMakeFiles/UFFDEJAVU.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jaxe/Repositories/gpu_practice/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/UFFDEJAVU.dir/src/systems/point_light_system.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jaxe/Repositories/gpu_practice/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/UFFDEJAVU.dir/src/systems/point_light_system.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/UFFDEJAVU.dir/src/systems/point_light_system.cpp.o -MF CMakeFiles/UFFDEJAVU.dir/src/systems/point_light_system.cpp.o.d -o CMakeFiles/UFFDEJAVU.dir/src/systems/point_light_system.cpp.o -c /home/jaxe/Repositories/gpu_practice/src/systems/point_light_system.cpp
 
 CMakeFiles/UFFDEJAVU.dir/src/systems/point_light_system.cpp.i: cmake_force
@@ -254,7 +268,7 @@ CMakeFiles/UFFDEJAVU.dir/src/systems/point_light_system.cpp.s: cmake_force
 CMakeFiles/UFFDEJAVU.dir/src/systems/simple_render_system.cpp.o: CMakeFiles/UFFDEJAVU.dir/flags.make
 CMakeFiles/UFFDEJAVU.dir/src/systems/simple_render_system.cpp.o: /home/jaxe/Repositories/gpu_practice/src/systems/simple_render_system.cpp
 CMakeFiles/UFFDEJAVU.dir/src/systems/simple_render_system.cpp.o: CMakeFiles/UFFDEJAVU.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jaxe/Repositories/gpu_practice/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/UFFDEJAVU.dir/src/systems/simple_render_system.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jaxe/Repositories/gpu_practice/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object CMakeFiles/UFFDEJAVU.dir/src/systems/simple_render_system.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/UFFDEJAVU.dir/src/systems/simple_render_system.cpp.o -MF CMakeFiles/UFFDEJAVU.dir/src/systems/simple_render_system.cpp.o.d -o CMakeFiles/UFFDEJAVU.dir/src/systems/simple_render_system.cpp.o -c /home/jaxe/Repositories/gpu_practice/src/systems/simple_render_system.cpp
 
 CMakeFiles/UFFDEJAVU.dir/src/systems/simple_render_system.cpp.i: cmake_force
@@ -268,7 +282,7 @@ CMakeFiles/UFFDEJAVU.dir/src/systems/simple_render_system.cpp.s: cmake_force
 CMakeFiles/UFFDEJAVU.dir/src/window.cpp.o: CMakeFiles/UFFDEJAVU.dir/flags.make
 CMakeFiles/UFFDEJAVU.dir/src/window.cpp.o: /home/jaxe/Repositories/gpu_practice/src/window.cpp
 CMakeFiles/UFFDEJAVU.dir/src/window.cpp.o: CMakeFiles/UFFDEJAVU.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jaxe/Repositories/gpu_practice/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object CMakeFiles/UFFDEJAVU.dir/src/window.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jaxe/Repositories/gpu_practice/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object CMakeFiles/UFFDEJAVU.dir/src/window.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/UFFDEJAVU.dir/src/window.cpp.o -MF CMakeFiles/UFFDEJAVU.dir/src/window.cpp.o.d -o CMakeFiles/UFFDEJAVU.dir/src/window.cpp.o -c /home/jaxe/Repositories/gpu_practice/src/window.cpp
 
 CMakeFiles/UFFDEJAVU.dir/src/window.cpp.i: cmake_force
@@ -293,6 +307,7 @@ UFFDEJAVU_OBJECTS = \
 "CMakeFiles/UFFDEJAVU.dir/src/pipeline.cpp.o" \
 "CMakeFiles/UFFDEJAVU.dir/src/renderer.cpp.o" \
 "CMakeFiles/UFFDEJAVU.dir/src/swap_chain.cpp.o" \
+"CMakeFiles/UFFDEJAVU.dir/src/systems/multiview_render_system.cpp.o" \
 "CMakeFiles/UFFDEJAVU.dir/src/systems/point_light_system.cpp.o" \
 "CMakeFiles/UFFDEJAVU.dir/src/systems/simple_render_system.cpp.o" \
 "CMakeFiles/UFFDEJAVU.dir/src/window.cpp.o"
@@ -312,6 +327,7 @@ UFFDEJAVU: CMakeFiles/UFFDEJAVU.dir/src/model.cpp.o
 UFFDEJAVU: CMakeFiles/UFFDEJAVU.dir/src/pipeline.cpp.o
 UFFDEJAVU: CMakeFiles/UFFDEJAVU.dir/src/renderer.cpp.o
 UFFDEJAVU: CMakeFiles/UFFDEJAVU.dir/src/swap_chain.cpp.o
+UFFDEJAVU: CMakeFiles/UFFDEJAVU.dir/src/systems/multiview_render_system.cpp.o
 UFFDEJAVU: CMakeFiles/UFFDEJAVU.dir/src/systems/point_light_system.cpp.o
 UFFDEJAVU: CMakeFiles/UFFDEJAVU.dir/src/systems/simple_render_system.cpp.o
 UFFDEJAVU: CMakeFiles/UFFDEJAVU.dir/src/window.cpp.o
@@ -319,7 +335,7 @@ UFFDEJAVU: CMakeFiles/UFFDEJAVU.dir/build.make
 UFFDEJAVU: /usr/lib/x86_64-linux-gnu/libglfw.so.3.3
 UFFDEJAVU: /usr/lib/x86_64-linux-gnu/libvulkan.so
 UFFDEJAVU: CMakeFiles/UFFDEJAVU.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/jaxe/Repositories/gpu_practice/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Linking CXX executable UFFDEJAVU"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/jaxe/Repositories/gpu_practice/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Linking CXX executable UFFDEJAVU"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/UFFDEJAVU.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

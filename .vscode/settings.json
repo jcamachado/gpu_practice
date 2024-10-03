@@ -5,6 +5,7 @@
     "C_Cpp.codeAnalysis.clangTidy.path": "/usr/bin/clang-tidy",
     "files.associations": {
         "ostream": "cpp",
-        "fstream": "cpp"
+        "fstream": "cpp",
+        "stdexcept": "cpp"
     } // Ensure this path is correct if using clang-tidy
 }

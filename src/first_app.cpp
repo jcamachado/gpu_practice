@@ -3,9 +3,9 @@
 #include "buffer.hpp"
 #include "camera.hpp"
 #include "keyboard_movement_controller.hpp"
-#include "systems/simple_render_system.hpp"
+#include "systems/multiview_render_system.hpp"
 #include "systems/point_light_system.hpp"
-
+#include "systems/simple_render_system.hpp"
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -33,7 +33,6 @@ namespace ud {
     }
 
     FirstApp::~FirstApp() {}
-
 
     void FirstApp::run() {  // The main loop
         // This property is used to align the offset of the uniform buffer object
@@ -84,7 +83,15 @@ namespace ud {
             udRenderer.getSwapChainRenderPass(),
             globalSetLayout->getDescriptorSetLayout()
         };
-        UDCamera camera{};
+        MultiViewRenderSystem multiviewRenderSystem{
+            udDevice,
+            udRenderer.getSwapChainRenderPass(),
+            globalSetLayout->getDescriptorSetLayout()
+        };
+
+        // Create two cameras for the left and right eye views
+        UDCamera leftEyeCamera{};
+        UDCamera rightEyeCamera{};
 
         auto viewerObject = UDGameObject::createGameObject(); // stores camera current state
         viewerObject.transform.translation.z = -2.5f;
@@ -99,37 +106,42 @@ namespace ud {
             currentTime = newTime;
 
             cameraController.moveInPlaneXZ(udWindow.getGLFWWindow(), frameTime, viewerObject);
-            camera.setViewYXZ(viewerObject.transform.translation, viewerObject.transform.rotation);
 
+            // Set the view for both cameras
+            leftEyeCamera.setViewYXZ(viewerObject.transform.translation, viewerObject.transform.rotation);
+            rightEyeCamera.setViewYXZ(viewerObject.transform.translation, viewerObject.transform.rotation);
 
             float aspect = udRenderer.getAspectRatio();
-            // Inside the loop, the orthographic projection will be kept to date with the aspect ratio
-            // camera.setOrthographicProjection(-aspect, aspect, -1.0f, 1.0f, -1.0f, 1.0f); // Works only when bottom = -1 and top = 1
-            camera.setPerspectiveProjection(glm::radians(50.0f), aspect, NEAR_PLANE, FAR_PLANE);
+            // Set the perspective projection for both cameras
+            leftEyeCamera.setPerspectiveProjection(glm::radians(50.0f), aspect, NEAR_PLANE, FAR_PLANE);
+            rightEyeCamera.setPerspectiveProjection(glm::radians(50.0f), aspect, NEAR_PLANE, FAR_PLANE);
 
             if (auto commandBuffer = udRenderer.beginFrame()) { // If nullptr, swapchain needs to be recreated
                 int frameIndex = udRenderer.getFrameIndex();
                 FrameInfo frameInfo{ frameIndex,
                     frameTime,
                     commandBuffer,
-                    camera ,
+                    &leftEyeCamera, // Use pointer to left eye camera
                     globalDescriptorSets[frameIndex],
                     gameObjects
                 };
 
                 // update
                 GlobalUBO ubo{};
-                ubo.projection = camera.getProjection();
-                ubo.view = camera.getView();
-                ubo.inverseView = camera.getInverseView();
+                ubo.projection = leftEyeCamera.getProjection();
+                ubo.view = leftEyeCamera.getView();
+                ubo.inverseView = leftEyeCamera.getInverseView();
                 pointLightSystem.update(frameInfo, ubo);
                 uboBuffers[frameIndex]->writeToBuffer(&ubo);
                 uboBuffers[frameIndex]->flush();
 
                 // render (draw calls)
                 udRenderer.beginSwapChainRenderPass(commandBuffer);
-                simpleRenderSystem.renderGameObjects(frameInfo);
+
+                // Render using MultiviewRenderSystem
+                multiviewRenderSystem.renderGameObjects(frameInfo, leftEyeCamera, rightEyeCamera);
                 pointLightSystem.render(frameInfo);
+
                 udRenderer.endSwapChainRenderPass(commandBuffer);
                 udRenderer.endFrame();
             }
@@ -160,7 +172,6 @@ namespace ud {
         // gameObjects.emplace(particle.getId(), std::move(particle));
         return;
     }
-
 
     void FirstApp::loadGameObjects() {
         // Since I wont be modifying the models, I can use a shared pointer

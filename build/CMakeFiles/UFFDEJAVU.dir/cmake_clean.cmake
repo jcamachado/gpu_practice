@@ -23,6 +23,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/UFFDEJAVU.dir/src/renderer.cpp.o.d"
   "CMakeFiles/UFFDEJAVU.dir/src/swap_chain.cpp.o"
   "CMakeFiles/UFFDEJAVU.dir/src/swap_chain.cpp.o.d"
+  "CMakeFiles/UFFDEJAVU.dir/src/systems/multiview_render_system.cpp.o"
+  "CMakeFiles/UFFDEJAVU.dir/src/systems/multiview_render_system.cpp.o.d"
   "CMakeFiles/UFFDEJAVU.dir/src/systems/point_light_system.cpp.o"
   "CMakeFiles/UFFDEJAVU.dir/src/systems/point_light_system.cpp.o.d"
   "CMakeFiles/UFFDEJAVU.dir/src/systems/simple_render_system.cpp.o"
