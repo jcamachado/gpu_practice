@@ -39,9 +39,9 @@ namespace ud {
 
             // Overloading the == operator to compare vertices using hashCombine
             bool operator==(const Vertex& other) const {
-                return position == other.position && 
-                    color == other.color && 
-                    normal == other.normal && 
+                return position == other.position &&
+                    color == other.color &&
+                    normal == other.normal &&
                     uv == other.uv;
             }
         };
@@ -50,38 +50,38 @@ namespace ud {
             std::vector<Vertex> vertices{};
             std::vector<uint32_t> indices{};
 
-            void loadModel(const std::string &filepath);
+            void loadModel(const std::string& filepath);
         };
 
-        UDModel(UDDevice &device, const UDModel::Builder &builder);
+        UDModel(UDDevice& device, const UDModel::Builder& builder);
         ~UDModel();
 
         UDModel(const UDModel&) = delete;
         UDModel& operator=(const UDModel&) = delete;
 
-        static std::unique_ptr<UDModel> createModelFromFile(UDDevice &device, const std::string &filepath);
+        static std::unique_ptr<UDModel> createModelFromFile(UDDevice& device, const std::string& filepath);
 
         void bind(VkCommandBuffer commandBuffer);
         void draw(VkCommandBuffer commandBuffer);
 
     private:
-        void createVertexBuffers(const std::vector<Vertex> &vertices);
-        void createIndexBuffers(const std::vector<uint32_t> &indices);
-        
-        UDDevice &device;
+        void createVertexBuffers(const std::vector<Vertex>& vertices);
+        void createIndexBuffers(const std::vector<uint32_t>& indices);
+
+        UDDevice& device;
 
         std::unique_ptr<UDBuffer> vertexBuffer;
         uint32_t vertexCount;
 
         /*
-            Vulkan only allows one index buffer per model, so we cant use one index buffer 
+            Vulkan only allows one index buffer per model, so we cant use one index buffer
             for each tipe of vertex attrib, such as vertex normal, texture and so one.
             All the vertex attribs must be stored in the same index buffer.
             To do this, we must have a way to know if a loaded vertex has already been loaded
             or if it is a new vertex. We will use a hash table to do this. Hence the ud_utils.hpp.
         */
-        
-        bool hasIndexBuffer{false};
+
+        bool hasIndexBuffer{ false };
         std::unique_ptr<UDBuffer> indexBuffer;
         uint32_t indexCount;
     };

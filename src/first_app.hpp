@@ -31,10 +31,10 @@ namespace ud {
         void loadObjects();
         void loadParticles();
         void loadGameObjects();
-        void placeNewObject(std::shared_ptr<UDModel> udModel, 
-            UDDevice &udDevice, 
-            const std::string &objFilePath,
-            glm::vec3 translation, 
+        void placeNewObject(std::shared_ptr<UDModel> udModel,
+            UDDevice& udDevice,
+            const std::string& objFilePath,
+            glm::vec3 translation,
             glm::vec3 scale);
 
         UDWindow udWindow{ WIDTH, HEIGHT, "Vulkan" };

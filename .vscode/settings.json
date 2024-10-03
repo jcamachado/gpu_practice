@@ -2,5 +2,9 @@
     "C_Cpp.clang_format_style": "file",
     "C_Cpp.clang_format_fallbackStyle": "Google",
     "C_Cpp.codeAnalysis.clangTidy.enabled": true,
-    "C_Cpp.codeAnalysis.clangTidy.path": "/usr/bin/clang-tidy" // Ensure this path is correct if using clang-tidy
+    "C_Cpp.codeAnalysis.clangTidy.path": "/usr/bin/clang-tidy",
+    "files.associations": {
+        "ostream": "cpp",
+        "fstream": "cpp"
+    } // Ensure this path is correct if using clang-tidy
 }

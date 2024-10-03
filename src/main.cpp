@@ -10,13 +10,15 @@
     ud will be its abbreviation
 */
 
+using namespace std;
 
 int main() {
     ud::FirstApp app{};
 
     try {
         app.run();
-    } catch (const std::exception& e) {
+    }
+    catch (const std::exception& e) {
         std::cerr << e.what() << '\n';
         return EXIT_FAILURE;
     }

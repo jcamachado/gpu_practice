@@ -7,13 +7,9 @@
 #include <iostream>
 #include <stdexcept>
 
-#ifndef ENGINE_DIR
-#define ENGINE_DIR "../"
-#endif
-
 namespace ud {
     UDPipeline::UDPipeline(
-        UDDevice &device,
+        UDDevice& device,
         const std::string& vertFilepath,
         const std::string& fragFilepath,
         const PipelineConfigInfo& configInfo
@@ -34,7 +30,7 @@ namespace ud {
     std::vector<char> UDPipeline::readFile(const std::string& filepath) {
         // ate flag: start reading at the end of the file to get the file size
         // binary flag: read the file as binary
-        std::string enginePath = ENGINE_DIR + filepath;
+        std::string enginePath = filepath;
         std::ifstream file(enginePath, std::ios::ate | std::ios::binary);
 
         if (!file.is_open()) {
@@ -54,14 +50,14 @@ namespace ud {
     }
 
     void UDPipeline::createGraphicsPipeline(
-        const std::string& vertFilepath, 
+        const std::string& vertFilepath,
         const std::string& fragFilepath,
         const PipelineConfigInfo& configInfo
     ) {
-        assert (configInfo.pipelineLayout != VK_NULL_HANDLE && 
+        assert(configInfo.pipelineLayout != VK_NULL_HANDLE &&
             "Cannot create graphics pipeline: no pipelineLayout provided in configInfo"
         );
-        assert (configInfo.renderPass != VK_NULL_HANDLE && 
+        assert(configInfo.renderPass != VK_NULL_HANDLE &&
             "Cannot create graphics pipeline: no renderPass provided in configInfo"
         );
         auto vertCode = readFile(vertFilepath);
@@ -107,7 +103,7 @@ namespace ud {
         pipelineInfo.pColorBlendState = &configInfo.colorBlendInfo;
         pipelineInfo.pDepthStencilState = &configInfo.depthStencilInfo;
         pipelineInfo.pDynamicState = &configInfo.dynamicStateInfo;
-        
+
         pipelineInfo.layout = configInfo.pipelineLayout;
         pipelineInfo.renderPass = configInfo.renderPass;
         pipelineInfo.subpass = configInfo.subpass;
@@ -116,12 +112,12 @@ namespace ud {
         pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
         if (vkCreateGraphicsPipelines(
-                udDevice.device(), VK_NULL_HANDLE, 1, &pipelineInfo, 
-                nullptr, &graphicsPipeline) != VK_SUCCESS) 
+            udDevice.device(), VK_NULL_HANDLE, 1, &pipelineInfo,
+            nullptr, &graphicsPipeline) != VK_SUCCESS)
         {
             throw std::runtime_error("Failed to create graphics pipeline!");
         }
-        
+
 
 
     }
@@ -143,9 +139,9 @@ namespace ud {
         *shaderModule = shaderModule_;
     }
 
-    void UDPipeline::defaultPipelineConfigInfo(PipelineConfigInfo &configInfo) {
+    void UDPipeline::defaultPipelineConfigInfo(PipelineConfigInfo& configInfo) {
         /*
-            The input assembly stage is the stage that takes the vertex data and 
+            The input assembly stage is the stage that takes the vertex data and
             assembles it into the shapes that we want to draw.
             We basically tell Vulkan what kind of topology we want to use
             See VkPrimitiveTopology.
@@ -153,7 +149,7 @@ namespace ud {
         configInfo.inputAssemblyInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
         configInfo.inputAssemblyInfo.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
         configInfo.inputAssemblyInfo.primitiveRestartEnable = VK_FALSE;
-        
+
         /*
             The viewport and scissor rectangle define the region of the framebuffer that the output will be rendered to.
             The viewport defines the transformation from the image to the framebuffer.
@@ -165,7 +161,7 @@ namespace ud {
         configInfo.viewportInfo.scissorCount = 1;
         configInfo.viewportInfo.pScissors = nullptr;
         /*
-            The rasterizer takes the geometry that is shaped by the vertices from the vertex shader and 
+            The rasterizer takes the geometry that is shaped by the vertices from the vertex shader and
             turns it into fragments to be colored by the fragment shader.
             It also performs depth testing, face culling and the scissor test.
         */
@@ -203,8 +199,8 @@ namespace ud {
             The color blending stage is used to combine the color of the fragment being written with the color
             that is already in the framebuffer.
         */
-        configInfo.colorBlendAttachment.colorWriteMask = 
-            VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | 
+        configInfo.colorBlendAttachment.colorWriteMask =
+            VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT |
             VK_COLOR_COMPONENT_A_BIT;
         configInfo.colorBlendAttachment.blendEnable = VK_FALSE;
         configInfo.colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
@@ -225,8 +221,8 @@ namespace ud {
         configInfo.colorBlendInfo.blendConstants[3] = 0.0f;
 
         /*
-            The depth and stencil testing stage is used to determine if a fragment is visible and if it should be 
-            written to the depth buffer. Also we can alter fragments based on the stencil buffer, like 
+            The depth and stencil testing stage is used to determine if a fragment is visible and if it should be
+            written to the depth buffer. Also we can alter fragments based on the stencil buffer, like
             making near objects light up and far objects dark.
         */
         configInfo.depthStencilInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;

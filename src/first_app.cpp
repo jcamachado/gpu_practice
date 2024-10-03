@@ -74,14 +74,14 @@ namespace ud {
             frame that may still be rendering
         */
 
-        SimpleRenderSystem simpleRenderSystem{ 
-            udDevice, 
-            udRenderer.getSwapChainRenderPass(), 
+        SimpleRenderSystem simpleRenderSystem{
+            udDevice,
+            udRenderer.getSwapChainRenderPass(),
             globalSetLayout->getDescriptorSetLayout()
         };
-        PointLightSystem pointLightSystem{ 
-            udDevice, 
-            udRenderer.getSwapChainRenderPass(), 
+        PointLightSystem pointLightSystem{
+            udDevice,
+            udRenderer.getSwapChainRenderPass(),
             globalSetLayout->getDescriptorSetLayout()
         };
         UDCamera camera{};
@@ -101,7 +101,7 @@ namespace ud {
             cameraController.moveInPlaneXZ(udWindow.getGLFWWindow(), frameTime, viewerObject);
             camera.setViewYXZ(viewerObject.transform.translation, viewerObject.transform.rotation);
 
-            
+
             float aspect = udRenderer.getAspectRatio();
             // Inside the loop, the orthographic projection will be kept to date with the aspect ratio
             // camera.setOrthographicProjection(-aspect, aspect, -1.0f, 1.0f, -1.0f, 1.0f); // Works only when bottom = -1 and top = 1
@@ -109,10 +109,10 @@ namespace ud {
 
             if (auto commandBuffer = udRenderer.beginFrame()) { // If nullptr, swapchain needs to be recreated
                 int frameIndex = udRenderer.getFrameIndex();
-                FrameInfo frameInfo{ frameIndex, 
-                    frameTime, 
-                    commandBuffer, 
-                    camera , 
+                FrameInfo frameInfo{ frameIndex,
+                    frameTime,
+                    commandBuffer,
+                    camera ,
                     globalDescriptorSets[frameIndex],
                     gameObjects
                 };
@@ -167,22 +167,22 @@ namespace ud {
         std::shared_ptr<UDModel> udModel = nullptr;
 
         // Solids
-        placeNewObject(udModel, 
-            udDevice, 
-            "models/flat_vase.obj", 
-            { -0.5f, 0.5f, 0.0f }, 
+        placeNewObject(udModel,
+            udDevice,
+            "models/flat_vase.obj",
+            { -0.5f, 0.5f, 0.0f },
             { 3.0f, 1.5f, 3.0f });
 
-        placeNewObject(udModel, 
-            udDevice, 
-            "models/smooth_vase.obj", 
-            { 0.5f, 0.5f, 0.0f }, 
+        placeNewObject(udModel,
+            udDevice,
+            "models/smooth_vase.obj",
+            { 0.5f, 0.5f, 0.0f },
             { 3.0f, 1.5f, 3.0f });
-        
-        placeNewObject(udModel, 
-            udDevice, 
+
+        placeNewObject(udModel,
+            udDevice,
             "models/quad.obj",
-            { 0.0f, 0.5f, 0.0f }, 
+            { 0.0f, 0.5f, 0.0f },
             { 3.0f, 1.0f, 3.0f });
 
         std::vector<glm::vec3> lightColors{
@@ -193,33 +193,33 @@ namespace ud {
             {.1f, 1.f, 1.f},
             {1.f, 1.f, 1.f}
         };
-        
+
         // Lights
         for (int i = 0; i < lightColors.size(); i++) {
             auto pointLight = UDGameObject::makePointLight(0.2f);
             pointLight.color = lightColors[i];
             auto rotateLight = glm::rotate(
-                glm::mat4(1.0f), 
-                (i*glm::two_pi<float>()) / lightColors.size(), 
-                {0.0f, -1.0f, 0.0f}
+                glm::mat4(1.0f),
+                (i * glm::two_pi<float>()) / lightColors.size(),
+                { 0.0f, -1.0f, 0.0f }
             );
             pointLight.transform.translation = glm::vec3(rotateLight * glm::vec4(-1.0f, -1.0f, -1.0f, 1.0f));
             gameObjects.emplace(pointLight.getId(), std::move(pointLight));
         }
     }
 
-    void FirstApp::placeNewObject(std::shared_ptr<UDModel> udModel, 
-        UDDevice &udDevice,
-        const std::string &objFilePath,
-        glm::vec3 translation, 
-        glm::vec3 scale) 
+    void FirstApp::placeNewObject(std::shared_ptr<UDModel> udModel,
+        UDDevice& udDevice,
+        const std::string& objFilePath,
+        glm::vec3 translation,
+        glm::vec3 scale)
     {
         udModel = UDModel::createModelFromFile(udDevice, objFilePath);
         auto newObj = UDGameObject::createGameObject();
         newObj.model = udModel;
         newObj.transform.translation = translation;
         newObj.transform.scale = scale;
-        
+
         gameObjects.emplace(newObj.getId(), std::move(newObj));
     }
 }
