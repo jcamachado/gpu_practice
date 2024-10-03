@@ -1,7 +1,0 @@
-assets/models/*
-lib/assimp-5.3.1/*
-build/lib/assimp-5.3.1/*
-build/*
-
-!assets/models/*/scene.gltf
-
