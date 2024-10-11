@@ -48,12 +48,12 @@ namespace ud {
 
         void beginSwapChainRenderPass(VkCommandBuffer commandBuffer);
         void endSwapChainRenderPass(VkCommandBuffer commandBuffer);
+        void setViewport(VkCommandBuffer commandBuffer);
 
     private:
         void createCommandBuffers();
         void freeCommandBuffers();
         void recreateSwapChain();
-        void setViewport(VkCommandBuffer commandBuffer);
 
         UDWindow& udWindow;
         UDDevice& udDevice;

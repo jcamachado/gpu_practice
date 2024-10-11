@@ -128,15 +128,21 @@ namespace ud {
 
                 // update
                 GlobalUBO ubo{};
-                ubo.projection = leftEyeCamera.getProjection();
-                ubo.view = leftEyeCamera.getView();
-                ubo.inverseView = leftEyeCamera.getInverseView();
+                ubo.projection[0] = leftEyeCamera.getProjection();
+                ubo.view[0] = leftEyeCamera.getView();
+                ubo.projection[1] = rightEyeCamera.getProjection();
+                ubo.view[1] = rightEyeCamera.getView();
+
+                ubo.inverseView[0] = glm::inverse(leftEyeCamera.getView());
+                ubo.inverseView[1] = glm::inverse(rightEyeCamera.getView());
                 pointLightSystem.update(frameInfo, ubo);
                 uboBuffers[frameIndex]->writeToBuffer(&ubo);
                 uboBuffers[frameIndex]->flush();
 
                 // render (draw calls)
                 udRenderer.beginSwapChainRenderPass(commandBuffer);
+                // Set viewports and scissors
+                udRenderer.setViewport(commandBuffer);
 
                 // Render using MultiviewRenderSystem
                 multiviewRenderSystem.renderGameObjects(frameInfo, leftEyeCamera, rightEyeCamera);

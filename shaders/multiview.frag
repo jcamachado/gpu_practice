@@ -13,9 +13,10 @@ struct PointLight {
 };
 
 layout(set = 0, binding = 0) uniform GlobalUbo { 
-    mat4 viewProj[2]; // Array to hold view-projection matrices for both eyes
+    mat4 projection[2];
+    mat4 view[2];
     mat4 inverseView[2];
-    vec4 ambientLightColor; // w is intensity
+    vec4 ambientLightColor;
     PointLight pointLights[10]; 
     int numLights;
 } ubo;

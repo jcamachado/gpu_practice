@@ -20,14 +20,26 @@ namespace ud {
         glm::vec4 color{}; // w is intensity
     };
 
-    struct GlobalUBO { // Uniform Buffer Object (needs alignment)
-        glm::mat4 projection{ 1.0f };
-        glm::mat4 view{ 1.0f };
-        glm::mat4 inverseView{ 1.0f }; // get camera position from last column
+    // for 1 camera
+    // struct GlobalUBO { // Uniform Buffer Object (needs alignment) 
+    //     glm::mat4 projection{ 1.0f };
+    //     glm::mat4 view{ 1.0f };
+    //     glm::mat4 inverseView{ 1.0f }; // get camera position from last column
+    //     glm::vec4 ambientLightColor{ 1.0f, 1.0f, 1.0f, 0.02f };
+    //     PointLight pointLights[MAX_LIGHTS];
+    //     int numLights;
+    // };
+
+    // for 2 cameras
+    struct GlobalUBO { // total of bits = 16 * 4 * 4 = 256 bits = 32 bytes
+        glm::mat4 projection[2] = { glm::mat4(1.0f), glm::mat4(1.0f) }; // Projection matrices for left and right eyes
+        glm::mat4 view[2] = { glm::mat4(1.0f), glm::mat4(1.0f) };       // View matrices for left and right eyes
+        glm::mat4 inverseView[2] = { glm::mat4(1.0f), glm::mat4(1.0f) }; // Inverse view matrices for left and right eyes
         glm::vec4 ambientLightColor{ 1.0f, 1.0f, 1.0f, 0.02f };
         PointLight pointLights[MAX_LIGHTS];
         int numLights;
     };
+
 
     struct FrameInfo {
         int frameIndex;
