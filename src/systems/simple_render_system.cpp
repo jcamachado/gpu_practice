@@ -13,13 +13,13 @@
 namespace ud {
 
     struct SimplePushConstantData { // each member occupies 16 bytes even if less than 16 bytes, the remainder bytes are padding
-        glm::mat4 modelMatrix{1.0f};      // 64 bytes
-        glm::mat4 normalMatrix{1.0f};    //
+        glm::mat4 modelMatrix{ 1.0f };      // 64 bytes
+        glm::mat4 normalMatrix{ 1.0f };    //
     };
 
-    SimpleRenderSystem::SimpleRenderSystem(UDDevice& device, 
-        VkRenderPass renderPass, 
-        VkDescriptorSetLayout globalSetLayout): udDevice(device) 
+    SimpleRenderSystem::SimpleRenderSystem(UDDevice& device,
+        VkRenderPass renderPass,
+        VkDescriptorSetLayout globalSetLayout) : udDevice(device)
     {
         createPipelineLayout(globalSetLayout);
         createPipeline(renderPass);
@@ -56,12 +56,12 @@ namespace ud {
         pipelineConfig.pipelineLayout = pipelineLayout;
         udPipeline = std::make_unique<UDPipeline>(
             udDevice,
-            "shaders/simple_shader.vert.spv",
-            "shaders/simple_shader.frag.spv",
+            "build/shaders/simple_shader.vert.spv",
+            "build/shaders/simple_shader.frag.spv",
             pipelineConfig);
     }
-    
-    void SimpleRenderSystem::renderGameObjects(FrameInfo &frameInfo) {
+
+    void SimpleRenderSystem::renderGameObjects(FrameInfo& frameInfo) {
         udPipeline->bind(frameInfo.commandBuffer);
 
         // Must specify the starting set
@@ -77,7 +77,7 @@ namespace ud {
         );
 
         for (auto& kv : frameInfo.gameObjects) {
-            auto &obj = kv.second;
+            auto& obj = kv.second;
             if (obj.model == nullptr) {
                 continue;
             }
@@ -96,4 +96,4 @@ namespace ud {
             obj.model->draw(frameInfo.commandBuffer);
         }
     }
-} 
+}

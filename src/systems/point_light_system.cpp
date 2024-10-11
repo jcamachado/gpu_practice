@@ -15,15 +15,15 @@ namespace ud {
     // Push constants are a way to pass data to a shader from the CPU
     // They are small and have a limited size (128 bytes)
     // They are faster than uniforms, but they are not as flexible
-    struct PointLightPushConstants { 
+    struct PointLightPushConstants {
         glm::vec4 position{};
         glm::vec4 color{};
         float radius;
     };
 
-    PointLightSystem::PointLightSystem(UDDevice& device, 
-        VkRenderPass renderPass, 
-        VkDescriptorSetLayout globalSetLayout): udDevice(device) 
+    PointLightSystem::PointLightSystem(UDDevice& device,
+        VkRenderPass renderPass,
+        VkDescriptorSetLayout globalSetLayout) : udDevice(device)
     {
         createPipelineLayout(globalSetLayout);
         createPipeline(renderPass);
@@ -62,16 +62,16 @@ namespace ud {
         pipelineConfig.pipelineLayout = pipelineLayout;
         udPipeline = std::make_unique<UDPipeline>(
             udDevice,
-            "shaders/point_light.vert.spv",
-            "shaders/point_light.frag.spv",
+            "build/shaders/point_light.vert.spv",
+            "build/shaders/point_light.frag.spv",
             pipelineConfig);
     }
-    
-    void PointLightSystem::update(FrameInfo &frameInfo, GlobalUBO &ubo) {
+
+    void PointLightSystem::update(FrameInfo& frameInfo, GlobalUBO& ubo) {
         auto rotateLight = glm::rotate(glm::mat4(1.0f), frameInfo.frameTime, glm::vec3(0.0f, -1.0f, 0.0f));
-        
+
         int lightIndex = 0;
-        for (auto& kv: frameInfo.gameObjects) {
+        for (auto& kv : frameInfo.gameObjects) {
             auto& gameObject = kv.second;
             if (gameObject.pointLight == nullptr) continue;
 
@@ -83,12 +83,12 @@ namespace ud {
             // copy light to ubo
             ubo.pointLights[lightIndex].position = glm::vec4(gameObject.transform.translation, 1.0f);
             ubo.pointLights[lightIndex].color = glm::vec4(gameObject.color, gameObject.pointLight->lightIntensity);
-            lightIndex += 1; 
+            lightIndex += 1;
         }
         ubo.numLights = lightIndex;
     }
 
-    void PointLightSystem::render(FrameInfo &frameInfo) {
+    void PointLightSystem::render(FrameInfo& frameInfo) {
         udPipeline->bind(frameInfo.commandBuffer);
 
         // Must specify the starting set
@@ -103,7 +103,7 @@ namespace ud {
             nullptr
         );
 
-        for (auto& kv: frameInfo.gameObjects) {
+        for (auto& kv : frameInfo.gameObjects) {
             auto& gameObject = kv.second;
             if (gameObject.pointLight == nullptr) continue;
 
@@ -124,4 +124,4 @@ namespace ud {
             vkCmdDraw(frameInfo.commandBuffer, 6, 1, 0, 0);
         }
     }
-} 
+}

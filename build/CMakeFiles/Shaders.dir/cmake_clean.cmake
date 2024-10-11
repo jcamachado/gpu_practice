@@ -1,11 +1,11 @@
 file(REMOVE_RECURSE
-  "/home/jaxe/Repositories/gpu_practice/shaders/multiview.frag.spv"
-  "/home/jaxe/Repositories/gpu_practice/shaders/multiview.vert.spv"
-  "/home/jaxe/Repositories/gpu_practice/shaders/point_light.frag.spv"
-  "/home/jaxe/Repositories/gpu_practice/shaders/point_light.vert.spv"
-  "/home/jaxe/Repositories/gpu_practice/shaders/simple_shader.frag.spv"
-  "/home/jaxe/Repositories/gpu_practice/shaders/simple_shader.vert.spv"
   "CMakeFiles/Shaders"
+  "shaders/multiview.frag.spv"
+  "shaders/multiview.vert.spv"
+  "shaders/point_light.frag.spv"
+  "shaders/point_light.vert.spv"
+  "shaders/simple_shader.frag.spv"
+  "shaders/simple_shader.vert.spv"
 )
 
 # Per-language clean rules from dependency scanning.
