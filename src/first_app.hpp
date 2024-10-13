@@ -44,5 +44,9 @@ namespace ud {
         // disposes of that object when the unique_ptr goes out of scope
         std::unique_ptr<UDDescriptorPool> globalPool{}; // Must be declared after device bc must be destroyed before the device
         UDGameObject::Map gameObjects;
+        // binocular disparity divided by each eye's focal length
+        // 0.064 is the average interpupillary distance
+        float eyeSeparation = 0.5f; // 6.4 cm
+        float eyeToNose = eyeSeparation / 2.0f; // 3.2 cm
     };
 };

@@ -89,82 +89,84 @@ namespace ud {
         ubo.numLights = lightIndex;
     }
 
-    // void PointLightSystem::render(FrameInfo& frameInfo) {
-    //     udPipeline->bind(frameInfo.commandBuffer);
-
-    //     // Must specify the starting set
-    //     vkCmdBindDescriptorSets(
-    //         frameInfo.commandBuffer,
-    //         VK_PIPELINE_BIND_POINT_GRAPHICS,
-    //         pipelineLayout,
-    //         0,
-    //         1,
-    //         &frameInfo.globalDescriptorSet,
-    //         0,
-    //         nullptr
-    //     );
-
-    //     for (auto& kv : frameInfo.gameObjects) {
-    //         auto& gameObject = kv.second;
-    //         if (gameObject.pointLight == nullptr) continue;
-
-    //         PointLightPushConstants push{};
-    //         push.position = glm::vec4(gameObject.transform.translation, 1.0f);
-    //         push.color = glm::vec4(gameObject.color, gameObject.pointLight->lightIntensity);
-    //         push.radius = gameObject.transform.scale.x;
-
-    //         vkCmdPushConstants(
-    //             frameInfo.commandBuffer,
-    //             pipelineLayout,
-    //             VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
-    //             0,
-    //             sizeof(PointLightPushConstants),
-    //             &push
-    //         );
-    //         // No need to draw model objects. 
-    //         vkCmdDraw(frameInfo.commandBuffer, 6, 1, 0, 0);
-    //     }
-    // }
-
-    //render for eye?
     void PointLightSystem::render(FrameInfo& frameInfo) {
-        for (int eyeIndex = 0; eyeIndex < 2; ++eyeIndex) {
-            // Set the eye index in the push constants
+        udPipeline->bind(frameInfo.commandBuffer);
+
+        // Must specify the starting set
+        vkCmdBindDescriptorSets(
+            frameInfo.commandBuffer,
+            VK_PIPELINE_BIND_POINT_GRAPHICS,
+            pipelineLayout,
+            0,
+            1,
+            &frameInfo.globalDescriptorSet,
+            0,
+            nullptr
+        );
+
+        for (auto& kv : frameInfo.gameObjects) {
+            auto& gameObject = kv.second;
+            if (gameObject.pointLight == nullptr) continue;
+
             PointLightPushConstants push{};
-            push.eyeIndex = eyeIndex;
+            push.position = glm::vec4(gameObject.transform.translation, 1.0f);
+            push.color = glm::vec4(gameObject.color, gameObject.pointLight->lightIntensity);
+            push.radius = gameObject.transform.scale.x;
 
-            // Bind the pipeline and descriptor sets
-            udPipeline->bind(frameInfo.commandBuffer);
-            vkCmdBindDescriptorSets(
+            vkCmdPushConstants(
                 frameInfo.commandBuffer,
-                VK_PIPELINE_BIND_POINT_GRAPHICS,
                 pipelineLayout,
+                VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
                 0,
-                1,
-                &frameInfo.globalDescriptorSet,
-                0,
-                nullptr
+                sizeof(PointLightPushConstants),
+                &push
             );
-
-            // Render the scene for the current eye
-            for (auto& kv : frameInfo.gameObjects) {
-                auto& gameObject = kv.second;
-                if (gameObject.pointLight == nullptr) continue;
-
-                push.position = glm::vec4(gameObject.transform.translation, 1.0f);
-                push.color = glm::vec4(gameObject.color, gameObject.pointLight->lightIntensity);
-                push.radius = gameObject.transform.scale.x;
-
-                vkCmdPushConstants(
-                    frameInfo.commandBuffer,
-                    pipelineLayout,
-                    VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
-                    0,
-                    sizeof(PointLightPushConstants),
-                    &push
-                );
-                vkCmdDraw(frameInfo.commandBuffer, 6, 1, 0, 0);
-            }
+            // No need to draw model objects. 
+            vkCmdDraw(frameInfo.commandBuffer, 6, 1, 0, 0);
         }
     }
+
+    // void PointLightSystem::render(FrameInfo& frameInfo, const UDCamera& leftEyeCamera, const UDCamera& rightEyeCamera) {
+    //     for (int eyeIndex = 0; eyeIndex < 2; ++eyeIndex) {
+    //         // Set the eye index in the push constants
+    //         PointLightPushConstants push{};
+    //         push.eyeIndex = eyeIndex;
+
+    //         // Bind the pipeline and descriptor sets
+    //         udPipeline->bind(frameInfo.commandBuffer);
+    //         vkCmdBindDescriptorSets(
+    //             frameInfo.commandBuffer,
+    //             VK_PIPELINE_BIND_POINT_GRAPHICS,
+    //             pipelineLayout,
+    //             0,
+    //             1,
+    //             &frameInfo.globalDescriptorSet,
+    //             0,
+    //             nullptr
+    //         );
+
+    //         // Select the appropriate camera for the current eye
+    //         const UDCamera& currentCamera = (eyeIndex == 0) ? leftEyeCamera : rightEyeCamera;
+
+    //         // Render the scene for the current eye
+    //         for (auto& kv : frameInfo.gameObjects) {
+    //             auto& gameObject = kv.second;
+    //             if (gameObject.pointLight == nullptr) continue;
+
+    //             push.position = glm::vec4(gameObject.transform.translation, 1.0f);
+    //             push.color = glm::vec4(gameObject.color, gameObject.pointLight->lightIntensity);
+    //             push.radius = gameObject.transform.scale.x;
+
+    //             vkCmdPushConstants(
+    //                 frameInfo.commandBuffer,
+    //                 pipelineLayout,
+    //                 VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
+    //                 0,
+    //                 sizeof(PointLightPushConstants),
+    //                 &push
+    //             );
+    //             vkCmdDraw(frameInfo.commandBuffer, 6, 1, 0, 0);
+    //         }
+    //     }
+    // }
 }

@@ -41,12 +41,22 @@ namespace ud {
     };
 
 
+    // struct FrameInfo {
+    //     int frameIndex;
+    //     float frameTime;
+    //     VkCommandBuffer commandBuffer;
+    //     UDCamera &camera;
+    //     const UDCamera* camera;
+    //     VkDescriptorSet globalDescriptorSet;
+    //     UDGameObject::Map& gameObjects;
+    // };
     struct FrameInfo {
         int frameIndex;
         float frameTime;
         VkCommandBuffer commandBuffer;
         // UDCamera &camera;
-        const UDCamera* camera;
+        const UDCamera* leftEyeCamera;
+        const UDCamera* rightEyeCamera;
         VkDescriptorSet globalDescriptorSet;
         UDGameObject::Map& gameObjects;
     };

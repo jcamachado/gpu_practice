@@ -73,11 +73,11 @@ namespace ud {
             frame that may still be rendering
         */
 
-        SimpleRenderSystem simpleRenderSystem{
-            udDevice,
-            udRenderer.getSwapChainRenderPass(),
-            globalSetLayout->getDescriptorSetLayout()
-        };
+        // SimpleRenderSystem simpleRenderSystem{
+        //     udDevice,
+        //     udRenderer.getSwapChainRenderPass(),
+        //     globalSetLayout->getDescriptorSetLayout()
+        // };
         PointLightSystem pointLightSystem{
             udDevice,
             udRenderer.getSwapChainRenderPass(),
@@ -89,13 +89,17 @@ namespace ud {
             globalSetLayout->getDescriptorSetLayout()
         };
 
+
+        // viewer object should be between the two cameras. "Nose" between the eyes
+        auto viewerObject = UDGameObject::createGameObject();
+        viewerObject.transform.translation.z = -2.5f;
+        KeyboardMovementController cameraController{};
+        glm::vec3 viewerPos = viewerObject.transform.translation; // between the eyes
+
+
         // Create two cameras for the left and right eye views
         UDCamera leftEyeCamera{};
         UDCamera rightEyeCamera{};
-
-        auto viewerObject = UDGameObject::createGameObject(); // stores camera current state
-        viewerObject.transform.translation.z = -2.5f;
-        KeyboardMovementController cameraController{};
 
         auto currentTime = std::chrono::high_resolution_clock::now();
 
@@ -107,9 +111,17 @@ namespace ud {
 
             cameraController.moveInPlaneXZ(udWindow.getGLFWWindow(), frameTime, viewerObject);
 
+            viewerPos = viewerObject.transform.translation;
+
             // Set the view for both cameras
-            leftEyeCamera.setViewYXZ(viewerObject.transform.translation, viewerObject.transform.rotation);
-            rightEyeCamera.setViewYXZ(viewerObject.transform.translation, viewerObject.transform.rotation);
+            leftEyeCamera.setViewYXZ(
+                viewerPos + glm::vec3(-eyeToNose, 0.0f, 0.0f), // left eye
+                viewerObject.transform.rotation // same rotation for both eyes
+            );
+            rightEyeCamera.setViewYXZ(
+                viewerPos + glm::vec3(eyeToNose, 0.0f, 0.0f), // right eye
+                viewerObject.transform.rotation // same rotation for both eyes
+            );
 
             float aspect = udRenderer.getAspectRatio();
             // Set the perspective projection for both cameras
@@ -122,6 +134,7 @@ namespace ud {
                     frameTime,
                     commandBuffer,
                     &leftEyeCamera, // Use pointer to left eye camera
+                    &rightEyeCamera,
                     globalDescriptorSets[frameIndex],
                     gameObjects
                 };
@@ -141,12 +154,17 @@ namespace ud {
 
                 // render (draw calls)
                 udRenderer.beginSwapChainRenderPass(commandBuffer);
-                // Set viewports and scissors
-                udRenderer.setViewport(commandBuffer);
+                // // Set viewports and scissors
 
-                // Render using MultiviewRenderSystem
-                multiviewRenderSystem.renderGameObjects(frameInfo, leftEyeCamera, rightEyeCamera);
+                // Set viewport and scissor for the current eye
+                udRenderer.setViewport(frameInfo.commandBuffer, 0);
+                multiviewRenderSystem.renderGameObjects(frameInfo, leftEyeCamera, 0);
                 pointLightSystem.render(frameInfo);
+
+                udRenderer.setViewport(frameInfo.commandBuffer, 1);
+                multiviewRenderSystem.renderGameObjects(frameInfo, rightEyeCamera, 1);
+                pointLightSystem.render(frameInfo);
+
 
                 udRenderer.endSwapChainRenderPass(commandBuffer);
                 udRenderer.endFrame();

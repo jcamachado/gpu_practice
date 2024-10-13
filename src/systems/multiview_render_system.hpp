@@ -73,8 +73,8 @@ namespace ud {
         MultiViewRenderSystem(const MultiViewRenderSystem&) = delete;
         MultiViewRenderSystem& operator=(const MultiViewRenderSystem&) = delete;
 
-        void renderGameObjects(FrameInfo& frameInfo, const UDCamera& leftEyeCamera, const UDCamera& rightEyeCamera);
-        void renderForEye(FrameInfo& frameInfo, int eyeIndex);
+        void renderGameObjects(FrameInfo& frameInfo, const UDCamera& camera, const int eyeIndex = 0);
+        void render(FrameInfo& frameInfo);
 
     private:
         void createPipelineLayout(VkDescriptorSetLayout globalSetLayout);

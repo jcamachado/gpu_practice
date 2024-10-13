@@ -75,7 +75,11 @@ namespace ud {
             pipelineConfig);
     }
 
-    void MultiViewRenderSystem::renderGameObjects(FrameInfo& frameInfo, const UDCamera& leftEyeCamera, const UDCamera& rightEyeCamera) {
+    void MultiViewRenderSystem::renderGameObjects(
+        FrameInfo& frameInfo,
+        const UDCamera& camera,
+        const int eyeIndex
+    ) {
         udPipeline->bind(frameInfo.commandBuffer);
 
         // Must specify the starting set
@@ -90,16 +94,18 @@ namespace ud {
             nullptr
         );
 
-        // Render for left eye
-        frameInfo.camera = &leftEyeCamera;
-        renderForEye(frameInfo, 0);
 
-        // Render for right eye
-        frameInfo.camera = &rightEyeCamera;
-        renderForEye(frameInfo, 1);
+        // Render for eye
+        if (eyeIndex == 0) {
+            frameInfo.leftEyeCamera = &camera;
+        }
+        else {
+            frameInfo.rightEyeCamera = &camera;
+        }
+        render(frameInfo);
     }
 
-    void MultiViewRenderSystem::renderForEye(FrameInfo& frameInfo, int eyeIndex) {
+    void MultiViewRenderSystem::render(FrameInfo& frameInfo) {
         for (auto& kv : frameInfo.gameObjects) {
             auto& obj = kv.second;
             if (obj.model == nullptr) {

@@ -135,7 +135,7 @@ namespace ud {
         // set the viewport
     }
 
-    void UDRenderer::setViewport(VkCommandBuffer commandBuffer) {
+    void UDRenderer::setViewport(VkCommandBuffer commandBuffer, int eyeIndex) {
         // para 1 viewport
         // VkViewport viewport{};
         // viewport.x = 0.0f;
@@ -167,7 +167,6 @@ namespace ud {
         viewports[1].minDepth = 0.0f;
         viewports[1].maxDepth = 1.0f;
 
-        vkCmdSetViewport(commandBuffer, 0, static_cast<uint32_t>(viewports.size()), viewports.data());
 
         std::array<VkRect2D, 2> scissors{};
         scissors[0].offset = { 0, 0 };
@@ -178,7 +177,11 @@ namespace ud {
         scissors[1].extent.width = udSwapChain->getSwapChainExtent().width / 2;
         scissors[1].extent.height = udSwapChain->getSwapChainExtent().height;
 
-        vkCmdSetScissor(commandBuffer, 0, static_cast<uint32_t>(scissors.size()), scissors.data());
+        // vkCmdSetViewport(commandBuffer, 0, static_cast<uint32_t>(viewports.size()), viewports.data());
+        // vkCmdSetScissor(commandBuffer, 0, static_cast<uint32_t>(scissors.size()), scissors.data());
+
+        vkCmdSetViewport(commandBuffer, 0, 1, &viewports[eyeIndex]);
+        vkCmdSetScissor(commandBuffer, 0, 1, &scissors[eyeIndex]);
     }
 
     void UDRenderer::endSwapChainRenderPass(VkCommandBuffer commandBuffer) {
