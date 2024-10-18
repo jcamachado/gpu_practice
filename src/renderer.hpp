@@ -15,7 +15,6 @@ namespace ud {
         UDRenderer(UDWindow& udWindow, UDDevice& udDevice);
         ~UDRenderer();
 
-        UDRenderer(const UDRenderer&) = delete;
         UDRenderer& operator=(const UDRenderer&) = delete;
 
         VkRenderPass getSwapChainRenderPass() const { return udSwapChain->getRenderPass(); }

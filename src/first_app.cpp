@@ -139,32 +139,36 @@ namespace ud {
                     gameObjects
                 };
 
+                // render (draw calls)
+                udRenderer.beginSwapChainRenderPass(commandBuffer);
+
                 // update
                 GlobalUBO ubo{};
-                ubo.projection[0] = leftEyeCamera.getProjection();
-                ubo.view[0] = leftEyeCamera.getView();
-                ubo.projection[1] = rightEyeCamera.getProjection();
-                ubo.view[1] = rightEyeCamera.getView();
 
-                ubo.inverseView[0] = glm::inverse(leftEyeCamera.getView());
-                ubo.inverseView[1] = glm::inverse(rightEyeCamera.getView());
+                ubo.projection = leftEyeCamera.getProjection();
+                ubo.view = leftEyeCamera.getView();
+                ubo.inverseView = glm::inverse(leftEyeCamera.getView());
                 pointLightSystem.update(frameInfo, ubo);
                 uboBuffers[frameIndex]->writeToBuffer(&ubo);
                 uboBuffers[frameIndex]->flush();
 
-                // render (draw calls)
-                udRenderer.beginSwapChainRenderPass(commandBuffer);
-                // // Set viewports and scissors
-
                 // Set viewport and scissor for the current eye
+                multiviewRenderSystem.bind(frameInfo);
                 udRenderer.setViewport(frameInfo.commandBuffer, 0);
                 multiviewRenderSystem.renderGameObjects(frameInfo, leftEyeCamera, 0);
-                pointLightSystem.render(frameInfo);
+                // pointLightSystem.render(frameInfo);
 
+                ubo.projection = rightEyeCamera.getProjection();
+                ubo.view = rightEyeCamera.getView();
+                ubo.inverseView = glm::inverse(rightEyeCamera.getView());
+                pointLightSystem.update(frameInfo, ubo);
+                uboBuffers[frameIndex]->writeToBuffer(&ubo);
+                uboBuffers[frameIndex]->flush();
+
+                multiviewRenderSystem.bind(frameInfo);
                 udRenderer.setViewport(frameInfo.commandBuffer, 1);
                 multiviewRenderSystem.renderGameObjects(frameInfo, rightEyeCamera, 1);
-                pointLightSystem.render(frameInfo);
-
+                // pointLightSystem.render(frameInfo);
 
                 udRenderer.endSwapChainRenderPass(commandBuffer);
                 udRenderer.endFrame();

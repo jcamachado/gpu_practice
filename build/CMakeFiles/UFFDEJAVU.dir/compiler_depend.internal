@@ -3908,6 +3908,8 @@ CMakeFiles/UFFDEJAVU.dir/src/systems/multiview_render_system.cpp.o
  /home/jaxe/Repositories/gpu_practice/src/game_object.hpp
  /home/jaxe/Repositories/gpu_practice/src/model.hpp
  /home/jaxe/Repositories/gpu_practice/src/pipeline.hpp
+ /home/jaxe/Repositories/gpu_practice/src/renderer.hpp
+ /home/jaxe/Repositories/gpu_practice/src/swap_chain.hpp
  /home/jaxe/Repositories/gpu_practice/src/systems/multiview_render_system.hpp
  /home/jaxe/Repositories/gpu_practice/src/window.hpp
  /usr/include/GL/gl.h

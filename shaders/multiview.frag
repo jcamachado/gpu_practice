@@ -3,7 +3,6 @@
 layout(location = 0) in vec3 fragColor;
 layout(location = 1) in vec3 fragPosWorld;
 layout(location = 2) in vec3 fragNormalWorld;
-layout(location = 3) flat in int eyeIndex; // Receive the eye index as a flat variable
 
 layout(location = 0) out vec4 outColor;
 
@@ -13,10 +12,12 @@ struct PointLight {
 };
 
 layout(set = 0, binding = 0) uniform GlobalUbo { 
-    mat4 projection[2];
-    mat4 view[2];
-    mat4 inverseView[2];
-    vec4 ambientLightColor;
+    mat4 projection;
+    mat4 view;
+    mat4 inverseView;
+    vec4 ambientLightColor; // w is intensity
+    // Specialization Constants is a method to define constants that are known at compile time. ath the time of pipeline creation.
+    // This value of 10 that is hardcoded here can be replaced by a specialization constant. And it have to match the value in the C++ code.
     PointLight pointLights[10]; 
     int numLights;
 } ubo;
@@ -31,29 +32,29 @@ void main() {
     vec3 specularLight = vec3(0.0);
     vec3 surfaceNormal = normalize(fragNormalWorld);
 
-    vec3 cameraPosWorld = ubo.inverseView[eyeIndex][3].xyz;
+    vec3 cameraPosWorld = ubo.inverseView[3].xyz;
     // Calculated for half angle vector.
     vec3 viewDirection = normalize(cameraPosWorld - fragPosWorld); // Direction from the fragment to the camera.
 
-    for (int i = 0; i < ubo.numLights; i++) {
+    for (int i=0; i<ubo.numLights; i++) {
         PointLight light = ubo.pointLights[i];
-        vec3 directionToLight = light.position.xyz - fragPosWorld;
+        vec3 directionToLight = light.position.xyz- fragPosWorld;
         // dot product of a vector with itself is an efficient way to calculate the length of the vector.
         float attenuation = 1.0 / dot(directionToLight, directionToLight); // 1 / length^2
         directionToLight = normalize(directionToLight); // After attenuation.
         // Cosine of the angle of incidence of the light ray on the surface.
         float cosAngIncidence = max(dot(surfaceNormal, directionToLight), 0);
-        vec3 intensity = light.color.xyz * light.color.w * attenuation;
+        vec3 intencity = light.color.xyz * light.color.w * attenuation;
 
-        diffuseLight += intensity * cosAngIncidence;
+        diffuseLight += intencity * cosAngIncidence;
 
         // Specular lighting
         vec3 halfAngle = normalize(directionToLight + viewDirection);
         float blinnTerm = dot(halfAngle, surfaceNormal);
         blinnTerm = clamp(blinnTerm, 0, 1);
         blinnTerm = pow(blinnTerm, 64.0); // higher values -> sharper highlights
-        specularLight += intensity * blinnTerm;
+        specularLight += intencity * blinnTerm;
     }
 
-    outColor = vec4(diffuseLight * fragColor + specularLight * fragColor, 1.0);
+    outColor = vec4(diffuseLight* fragColor + specularLight * fragColor, 1.0);
 }

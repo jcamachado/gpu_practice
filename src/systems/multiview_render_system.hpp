@@ -5,6 +5,7 @@
 #include "frame_info.hpp"
 #include "game_object.hpp"
 #include "pipeline.hpp"
+#include "renderer.hpp"
 
 // std
 #include <memory>
@@ -73,6 +74,7 @@ namespace ud {
         MultiViewRenderSystem(const MultiViewRenderSystem&) = delete;
         MultiViewRenderSystem& operator=(const MultiViewRenderSystem&) = delete;
 
+        void bind(FrameInfo& frameInfo);
         void renderGameObjects(FrameInfo& frameInfo, const UDCamera& camera, const int eyeIndex = 0);
         void render(FrameInfo& frameInfo);
 
@@ -84,6 +86,7 @@ namespace ud {
 
         std::unique_ptr<UDPipeline> udPipeline;
         VkPipelineLayout pipelineLayout;
+
     };
 
     // Camera and view properties

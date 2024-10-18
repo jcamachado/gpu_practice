@@ -344,5 +344,7 @@ CMakeFiles/UFFDEJAVU.dir/src/systems/multiview_render_system.cpp.o: \
  /usr/include/c++/13/bits/node_handle.h \
  /usr/include/c++/13/bits/erase_if.h \
  /home/jaxe/Repositories/gpu_practice/src/pipeline.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/renderer.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/swap_chain.hpp \
  /usr/include/c++/13/array /usr/include/c++/13/compare \
  /usr/include/c++/13/stdexcept
