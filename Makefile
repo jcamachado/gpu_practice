@@ -26,7 +26,7 @@ build: configure
 # Compile shaders
 compile_shaders:
 	mkdir -p $(SHADER_BUILD_DIR)
-	for shader in $(SHADER_DIR)/*.vert $(SHADER_DIR)/*.frag; do \
+	for shader in $(SHADER_DIR)/*.vert $(SHADER_DIR)/*.frag $(SHADER_DIR)/*.geom; do \
 		if [ -f $$shader ]; then \
 			glslc $$shader -o $(SHADER_BUILD_DIR)/$$(basename $$shader .vert).spv; \
 			glslc $$shader -o $(SHADER_BUILD_DIR)/$$(basename $$shader .frag).spv; \

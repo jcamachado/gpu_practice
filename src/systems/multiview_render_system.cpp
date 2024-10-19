@@ -72,7 +72,9 @@ namespace ud {
             udDevice,
             "build/shaders/multiview.vert.spv",
             "build/shaders/multiview.frag.spv",
-            pipelineConfig);
+            pipelineConfig,
+            "build/shaders/multiview.geom.spv"
+        );
     }
 
     void MultiViewRenderSystem::renderGameObjects(
