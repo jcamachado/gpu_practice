@@ -12,14 +12,18 @@ namespace ud {
         UDDevice& device,
         const std::string& vertFilepath,
         const std::string& fragFilepath,
-        const PipelineConfigInfo& configInfo
+        const PipelineConfigInfo& configInfo,
+        const std::optional<std::string>& geomFilepath
     ) : udDevice(device) {
-        createGraphicsPipeline(vertFilepath, fragFilepath, configInfo);
+        createGraphicsPipeline(vertFilepath, fragFilepath, configInfo, geomFilepath);
     }
 
     UDPipeline::~UDPipeline() {
         vkDestroyShaderModule(udDevice.device(), vertShaderModule, nullptr);
         vkDestroyShaderModule(udDevice.device(), fragShaderModule, nullptr);
+        if (geomShaderModule != VK_NULL_HANDLE) {
+            vkDestroyShaderModule(udDevice.device(), geomShaderModule, nullptr);
+        }
         vkDestroyPipeline(udDevice.device(), graphicsPipeline, nullptr);
     }
 
@@ -52,7 +56,8 @@ namespace ud {
     void UDPipeline::createGraphicsPipeline(
         const std::string& vertFilepath,
         const std::string& fragFilepath,
-        const PipelineConfigInfo& configInfo
+        const PipelineConfigInfo& configInfo,
+        const std::optional<std::string>& geomFilepath
     ) {
         assert(configInfo.pipelineLayout != VK_NULL_HANDLE &&
             "Cannot create graphics pipeline: no pipelineLayout provided in configInfo"
@@ -66,35 +71,59 @@ namespace ud {
         createShaderModule(vertCode, &vertShaderModule);
         createShaderModule(fragCode, &fragShaderModule);
 
-        VkPipelineShaderStageCreateInfo shaderStages[2];
-        shaderStages[0].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-        shaderStages[0].stage = VK_SHADER_STAGE_VERTEX_BIT;
-        shaderStages[0].module = vertShaderModule;
-        shaderStages[0].pName = "main";
-        shaderStages[0].flags = 0;
-        shaderStages[0].pNext = nullptr;
-        shaderStages[0].pSpecializationInfo = nullptr;
-        shaderStages[1].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-        shaderStages[1].stage = VK_SHADER_STAGE_FRAGMENT_BIT;
-        shaderStages[1].module = fragShaderModule;
-        shaderStages[1].pName = "main";
-        shaderStages[1].flags = 0;
-        shaderStages[1].pNext = nullptr;
-        shaderStages[1].pSpecializationInfo = nullptr;
+        // VkPipelineShaderStageCreateInfo shaderStages[2];
+        std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
 
-        auto& bindingDescriptions = configInfo.bindingDescriptions;
-        auto& attributeDescriptions = configInfo.attributeDescriptions;
+        VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
+
+        vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+        vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
+        vertShaderStageInfo.module = vertShaderModule;
+        vertShaderStageInfo.pName = "main";
+        // vertShaderStageInfo.flags = 0;
+        // vertShaderStageInfo.pNext = nullptr;
+        // vertShaderStageInfo.pSpecializationInfo = nullptr;
+        shaderStages.push_back(vertShaderStageInfo);
+
+        VkPipelineShaderStageCreateInfo fragShaderStageInfo{};
+        fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+        fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+        fragShaderStageInfo.module = fragShaderModule;
+        fragShaderStageInfo.pName = "main";
+        // fragShaderStageInfo.flags = 0;
+        // fragShaderStageInfo.pNext = nullptr;
+        // fragShaderStageInfo.pSpecializationInfo = nullptr;
+        shaderStages.push_back(fragShaderStageInfo);
+
+        // Conditionally create geometry shader module if file is provided
+        VkShaderModule geomShaderModule = VK_NULL_HANDLE;
+        if (geomFilepath.has_value()) {
+            auto geomCode = readFile(geomFilepath.value());
+            createShaderModule(geomCode, &geomShaderModule);
+
+            VkPipelineShaderStageCreateInfo geomShaderStageInfo{};
+            geomShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+            geomShaderStageInfo.stage = VK_SHADER_STAGE_GEOMETRY_BIT;
+            geomShaderStageInfo.module = geomShaderModule;
+            geomShaderStageInfo.pName = "main";
+            // geomShaderStageInfo.flags = 0;
+            // geomShaderStageInfo.pNext = nullptr;
+            // geomShaderStageInfo.pSpecializationInfo = nullptr;
+            shaderStages.push_back(geomShaderStageInfo);
+        }
+
+
         VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
         vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-        vertexInputInfo.vertexBindingDescriptionCount = static_cast<uint32_t>(bindingDescriptions.size());
-        vertexInputInfo.pVertexBindingDescriptions = bindingDescriptions.data();
-        vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
-        vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
+        vertexInputInfo.vertexBindingDescriptionCount = static_cast<uint32_t>(configInfo.bindingDescriptions.size());
+        vertexInputInfo.pVertexBindingDescriptions = configInfo.bindingDescriptions.data();
+        vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(configInfo.attributeDescriptions.size());
+        vertexInputInfo.pVertexAttributeDescriptions = configInfo.attributeDescriptions.data();
 
         VkGraphicsPipelineCreateInfo pipelineInfo{};
-        pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO; // stype = structure type
-        pipelineInfo.stageCount = 2;
-        pipelineInfo.pStages = shaderStages;
+        pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+        pipelineInfo.stageCount = static_cast<uint32_t>(shaderStages.size());
+        pipelineInfo.pStages = shaderStages.data();
         pipelineInfo.pVertexInputState = &vertexInputInfo;
         pipelineInfo.pInputAssemblyState = &configInfo.inputAssemblyInfo;
         pipelineInfo.pViewportState = &configInfo.viewportInfo;
@@ -117,9 +146,6 @@ namespace ud {
         {
             throw std::runtime_error("Failed to create graphics pipeline!");
         }
-
-
-
     }
 
     void UDPipeline::createShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule) {
