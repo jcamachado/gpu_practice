@@ -1,9 +1,14 @@
 #version 450
 
-layout(location = 0) in vec3 fragColor;
-layout(location = 1) in vec3 fragPosWorld;
-layout(location = 2) in vec3 fragNormalWorld;
-layout(location = 3) flat in int eyeIndex; // Receive the eye index as a flat variable
+// layout(location = 0) in vec3 fragColor;
+// layout(location = 1) in vec3 fragPosWorld;
+// layout(location = 2) in vec3 fragNormalWorld;
+// layout(location = 3) flat in int eyeIndex; // Receive the eye index as a flat variable
+
+layout(location = 0) in vec3 fs_out_fragColor;
+layout(location = 1) in vec3 fs_out_fragPosWorld;
+layout(location = 2) in vec3 fs_out_fragNormalWorld;
+layout(location = 3) flat in int fs_out_eyeIndex; // Receive the eye index as a flat variable
 
 layout(location = 0) out vec4 outColor;
 
@@ -29,15 +34,15 @@ layout(push_constant) uniform Push {    // Limit is 128 bytes to make it compati
 void main() {
     vec3 diffuseLight = ubo.ambientLightColor.xyz * ubo.ambientLightColor.w;
     vec3 specularLight = vec3(0.0);
-    vec3 surfaceNormal = normalize(fragNormalWorld);
+    vec3 surfaceNormal = normalize(fs_out_fragNormalWorld);
 
-    vec3 cameraPosWorld = ubo.inverseView[gl_ViewportIndex][3].xyz;
+    vec3 cameraPosWorld = ubo.inverseView[fs_out_eyeIndex][3].xyz;
     // Calculated for half angle vector.
-    vec3 viewDirection = normalize(cameraPosWorld - fragPosWorld); // Direction from the fragment to the camera.
+    vec3 viewDirection = normalize(cameraPosWorld - fs_out_fragPosWorld); // Direction from the fragment to the camera.
 
     for (int i = 0; i < ubo.numLights; i++) {
         PointLight light = ubo.pointLights[i];
-        vec3 directionToLight = light.position.xyz - fragPosWorld;
+        vec3 directionToLight = light.position.xyz - fs_out_fragPosWorld;
         // dot product of a vector with itself is an efficient way to calculate the length of the vector.
         float attenuation = 1.0 / dot(directionToLight, directionToLight); // 1 / length^2
         directionToLight = normalize(directionToLight); // After attenuation.
@@ -55,5 +60,5 @@ void main() {
         specularLight += intensity * blinnTerm;
     }
 
-    outColor = vec4(diffuseLight * fragColor + specularLight * fragColor, 1.0);
+    outColor = vec4(diffuseLight * fs_out_fragColor + specularLight * fs_out_fragColor, 1.0);
 }

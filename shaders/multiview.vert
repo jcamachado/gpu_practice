@@ -15,14 +15,6 @@ struct PointLight {
     vec4 color; // w is intensity
 };
 
-// layout(set = 0, binding = 0) uniform GlobalUbo { 
-//     mat4 viewProj[2]; // Array to hold view-projection matrices for both eyes
-//     mat4 inverseView[2];
-//     vec4 ambientLightColor; // w is intensity
-//     PointLight pointLights[10]; 
-//     int numLights;
-// } ubo;
-
 // if ubo is too big, we can use push constants to pass the view-projection matrices
 // I can pass projection and view matrices as push constants
 // also multiply the model matrix with the normal matrix to get the normal in world space
@@ -42,14 +34,11 @@ layout(push_constant) uniform Push {    // Limit is 128 bytes to make it compati
 } push;
 
 void main() {
-    // Determine which eye we are rendering for
-    int eyeIndex = gl_InstanceIndex % 2;
-
     // Transform the vertex position
     vec4 positionWorld = push.modelMatrix * vec4(position, 1.0);
-    gl_Position = ubo.projection[eyeIndex] * ubo.view[eyeIndex] * positionWorld;
+    gl_Position = positionWorld; // Pass the world position to the geometry shader
 
-    // Pass the normal and position to the fragment shader
+    // Pass the normal and position to the geometry shader
     fragNormalWorld = normalize(mat3(push.normalMatrix) * normal);
     fragPosWorld = positionWorld.xyz;
     fragColor = color;
