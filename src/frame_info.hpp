@@ -55,8 +55,8 @@ namespace ud {
         float frameTime;
         VkCommandBuffer commandBuffer;
         // UDCamera &camera;
-        const UDCamera* leftEyeCamera;
-        const UDCamera* rightEyeCamera;
+        // const UDCamera* leftEyeCamera;
+        // const UDCamera* rightEyeCamera;
         VkDescriptorSet globalDescriptorSet;
         UDGameObject::Map& gameObjects;
     };

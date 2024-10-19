@@ -79,7 +79,7 @@ namespace ud {
 
     void MultiViewRenderSystem::renderGameObjects(
         FrameInfo& frameInfo,
-        const UDCamera& camera,
+        // const UDCamera& camera,
         const int eyeIndex
     ) {
         udPipeline->bind(frameInfo.commandBuffer);
@@ -96,14 +96,6 @@ namespace ud {
             nullptr
         );
 
-
-        // Render for eye
-        if (eyeIndex == 0) {
-            frameInfo.leftEyeCamera = &camera;
-        }
-        else {
-            frameInfo.rightEyeCamera = &camera;
-        }
         render(frameInfo);
     }
 
@@ -119,7 +111,7 @@ namespace ud {
             vkCmdPushConstants(
                 frameInfo.commandBuffer,
                 pipelineLayout,
-                VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
+                VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT | VK_SHADER_STAGE_GEOMETRY_BIT,
                 0,
                 sizeof(SimplePushConstantData),
                 &push

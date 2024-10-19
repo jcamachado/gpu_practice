@@ -1,7 +1,7 @@
 #version 450
 
 layout(triangles) in;
-layout(triangle_strip, max_vertices = 3) out;
+layout(triangle_strip, max_vertices = 6) out;
 
 layout(location = 0) in vec3 gs_in_fragColor[];
 layout(location = 1) in vec3 gs_in_fragPosWorld[];
@@ -45,7 +45,7 @@ void main() {
         gl_Position = ubo.projection[1] * ubo.view[1] * gl_in[i].gl_Position;
         gl_ViewportIndex = 1;
         fs_out_eyeIndex = 1;
-        
+
         fs_out_fragColor = gs_in_fragColor[i];
         fs_out_fragPosWorld = gs_in_fragPosWorld[i];
         fs_out_fragNormalWorld = gs_in_fragNormalWorld[i];

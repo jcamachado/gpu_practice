@@ -46,20 +46,6 @@ namespace ud {
     */
     class MultiViewRenderSystem {
     public:
-        // struct MultiviewPass {
-        //     struct FrameBufferAttachment {
-        //         VkImage image{ VK_NULL_HANDLE };
-        //         VkDeviceMemory memory{ VK_NULL_HANDLE };
-        //         VkImageView view{ VK_NULL_HANDLE };
-        //     } color, depth;
-        //     VkFramebuffer frameBuffer{ VK_NULL_HANDLE };
-        //     VkRenderPass renderPass{ VK_NULL_HANDLE };
-        //     VkDescriptorImageInfo descriptor{ VK_NULL_HANDLE };
-        //     VkSampler sampler{ VK_NULL_HANDLE };
-        //     VkSemaphore semaphore{ VK_NULL_HANDLE };
-        //     std::vector<VkCommandBuffer> commandBuffers{};
-        //     std::vector<VkFence> waitFences{};
-        // } multiviewPass;
 
         // struct UniformData {
         //     glm::mat4 projection[2];
@@ -73,7 +59,11 @@ namespace ud {
         MultiViewRenderSystem(const MultiViewRenderSystem&) = delete;
         MultiViewRenderSystem& operator=(const MultiViewRenderSystem&) = delete;
 
-        void renderGameObjects(FrameInfo& frameInfo, const UDCamera& camera, const int eyeIndex = 0);
+        void renderGameObjects(
+            FrameInfo& frameInfo,
+            // const UDCamera& camera,
+            const int eyeIndex = 0
+        );
         void render(FrameInfo& frameInfo);
 
     private:

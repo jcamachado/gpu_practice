@@ -123,6 +123,7 @@ namespace ud {
                 viewerObject.transform.rotation // same rotation for both eyes
             );
 
+
             float aspect = udRenderer.getAspectRatio();
             // Set the perspective projection for both cameras
             leftEyeCamera.setPerspectiveProjection(glm::radians(50.0f), aspect, NEAR_PLANE, FAR_PLANE);
@@ -133,8 +134,8 @@ namespace ud {
                 FrameInfo frameInfo{ frameIndex,
                     frameTime,
                     commandBuffer,
-                    &leftEyeCamera, // Use pointer to left eye camera
-                    &rightEyeCamera,
+                    // &leftEyeCamera, // Use pointer to left eye camera
+                    // &rightEyeCamera,
                     globalDescriptorSets[frameIndex],
                     gameObjects
                 };
@@ -157,12 +158,12 @@ namespace ud {
                 // // Set viewports and scissors
 
                 // Set viewport and scissor for the current eye
-                udRenderer.setViewport(frameInfo.commandBuffer, 0);
-                multiviewRenderSystem.renderGameObjects(frameInfo, leftEyeCamera, 0);
+                udRenderer.setViewport(frameInfo.commandBuffer);
+                multiviewRenderSystem.renderGameObjects(frameInfo, 0);
                 pointLightSystem.render(frameInfo);
 
-                udRenderer.setViewport(frameInfo.commandBuffer, 1);
-                multiviewRenderSystem.renderGameObjects(frameInfo, rightEyeCamera, 1);
+                // udRenderer.setViewport(frameInfo.commandBuffer);
+                multiviewRenderSystem.renderGameObjects(frameInfo, 1);
                 pointLightSystem.render(frameInfo);
 
 

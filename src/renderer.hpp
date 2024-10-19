@@ -48,7 +48,7 @@ namespace ud {
 
         void beginSwapChainRenderPass(VkCommandBuffer commandBuffer);
         void endSwapChainRenderPass(VkCommandBuffer commandBuffer);
-        void setViewport(VkCommandBuffer commandBuffer, int eyeIndex = 0);
+        void setViewport(VkCommandBuffer commandBuffer);
 
     private:
         void createCommandBuffers();
