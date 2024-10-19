@@ -1001,6 +1001,7 @@ CMakeFiles/UFFDEJAVU.dir/src/first_app.cpp.o: /home/jaxe/Repositories/gpu_practi
   /usr/include/c++/13/memory \
   /usr/include/c++/13/new \
   /usr/include/c++/13/numeric \
+  /usr/include/c++/13/optional \
   /usr/include/c++/13/pstl/execution_defs.h \
   /usr/include/c++/13/pstl/glue_memory_defs.h \
   /usr/include/c++/13/pstl/glue_numeric_defs.h \
@@ -3054,6 +3055,7 @@ CMakeFiles/UFFDEJAVU.dir/src/pipeline.cpp.o: /home/jaxe/Repositories/gpu_practic
   /usr/include/c++/13/bits/cpp_type_traits.h \
   /usr/include/c++/13/bits/cxxabi_forced.h \
   /usr/include/c++/13/bits/cxxabi_init_exception.h \
+  /usr/include/c++/13/bits/enable_special_members.h \
   /usr/include/c++/13/bits/exception.h \
   /usr/include/c++/13/bits/exception_defines.h \
   /usr/include/c++/13/bits/exception_ptr.h \
@@ -3140,6 +3142,7 @@ CMakeFiles/UFFDEJAVU.dir/src/pipeline.cpp.o: /home/jaxe/Repositories/gpu_practic
   /usr/include/c++/13/limits \
   /usr/include/c++/13/memory \
   /usr/include/c++/13/new \
+  /usr/include/c++/13/optional \
   /usr/include/c++/13/ostream \
   /usr/include/c++/13/pstl/execution_defs.h \
   /usr/include/c++/13/pstl/glue_memory_defs.h \
@@ -4001,6 +4004,7 @@ CMakeFiles/UFFDEJAVU.dir/src/systems/multiview_render_system.cpp.o: /home/jaxe/R
   /usr/include/c++/13/limits \
   /usr/include/c++/13/memory \
   /usr/include/c++/13/new \
+  /usr/include/c++/13/optional \
   /usr/include/c++/13/pstl/execution_defs.h \
   /usr/include/c++/13/pstl/glue_memory_defs.h \
   /usr/include/c++/13/pstl/pstl_config.h \
@@ -4409,6 +4413,7 @@ CMakeFiles/UFFDEJAVU.dir/src/systems/point_light_system.cpp.o: /home/jaxe/Reposi
   /usr/include/c++/13/limits \
   /usr/include/c++/13/memory \
   /usr/include/c++/13/new \
+  /usr/include/c++/13/optional \
   /usr/include/c++/13/pstl/execution_defs.h \
   /usr/include/c++/13/pstl/glue_memory_defs.h \
   /usr/include/c++/13/pstl/pstl_config.h \
@@ -4817,6 +4822,7 @@ CMakeFiles/UFFDEJAVU.dir/src/systems/simple_render_system.cpp.o: /home/jaxe/Repo
   /usr/include/c++/13/limits \
   /usr/include/c++/13/memory \
   /usr/include/c++/13/new \
+  /usr/include/c++/13/optional \
   /usr/include/c++/13/pstl/execution_defs.h \
   /usr/include/c++/13/pstl/glue_memory_defs.h \
   /usr/include/c++/13/pstl/pstl_config.h \
@@ -5834,6 +5840,8 @@ CMakeFiles/UFFDEJAVU.dir/src/window.cpp.o: /home/jaxe/Repositories/gpu_practice/
 /usr/include/glm/vec4.hpp:
 
 /usr/include/glm/ext/matrix_double2x4_precision.hpp:
+
+/usr/include/c++/13/optional:
 
 /usr/include/c++/13/bits/vector.tcc:
 

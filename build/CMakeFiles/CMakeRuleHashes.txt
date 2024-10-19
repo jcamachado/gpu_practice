@@ -1,8 +1,11 @@
 # Hashes of file build rules.
 f61fbaa84697343512090d4b3b3fb9a4 CMakeFiles/Shaders
 80b2fa3c1528acff0b01be337f3e14b1 shaders/multiview.frag.spv
+ab180a35ad2eb9b702fd078f4959d5e3 shaders/multiview.geom.spv
 d2f85e489212faf07b166c1da0c7fae5 shaders/multiview.vert.spv
 c1597df055425a289f89a73aea56b587 shaders/point_light.frag.spv
+e289c1542c29e8a9b56d3744a11d280e shaders/point_light.geom.spv
 a57963d54756be9918e3c2d99eb9a32e shaders/point_light.vert.spv
 aa7b615024091a81192c2d97d21ec35e shaders/simple_shader.frag.spv
+ebad8ca13276d95e74dfaab846bceba9 shaders/simple_shader.geom.spv
 a214aa7a68cde59717aff30ddfda49f2 shaders/simple_shader.vert.spv

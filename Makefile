@@ -30,6 +30,7 @@ compile_shaders:
 		if [ -f $$shader ]; then \
 			glslc $$shader -o $(SHADER_BUILD_DIR)/$$(basename $$shader .vert).spv; \
 			glslc $$shader -o $(SHADER_BUILD_DIR)/$$(basename $$shader .frag).spv; \
+			glslc $$shader -o $(SHADER_BUILD_DIR)/$$(basename $$shader .geom).spv; \
 		fi \
 	done
 

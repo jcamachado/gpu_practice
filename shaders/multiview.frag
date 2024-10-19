@@ -31,7 +31,7 @@ void main() {
     vec3 specularLight = vec3(0.0);
     vec3 surfaceNormal = normalize(fragNormalWorld);
 
-    vec3 cameraPosWorld = ubo.inverseView[eyeIndex][3].xyz;
+    vec3 cameraPosWorld = ubo.inverseView[gl_ViewportIndex][3].xyz;
     // Calculated for half angle vector.
     vec3 viewDirection = normalize(cameraPosWorld - fragPosWorld); // Direction from the fragment to the camera.
 

@@ -59,6 +59,8 @@
         "clocale": "cpp",
         "numbers": "cpp",
         "system_error": "cpp",
-        "__nullptr": "cpp"
+        "__nullptr": "cpp",
+        "charconv": "cpp",
+        "stdfloat": "cpp"
     } // Ensure this path is correct if using clang-tidy
 }
