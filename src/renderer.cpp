@@ -131,58 +131,7 @@ namespace ud {
         renderPassInfo.pClearValues = clearValues.data();
 
         vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-
-        // set the viewport
     }
-
-    // void UDRenderer::setViewport(VkCommandBuffer commandBuffer, int eyeIndex) {
-    //     // para 1 viewport
-    //     // VkViewport viewport{};
-    //     // viewport.x = 0.0f;
-    //     // viewport.y = 0.0f;
-    //     // // viewport.width = static_cast<float>(udSwapChain->width());
-    //     // // viewport.height = static_cast<float>(udSwapChain->height());
-    //     // viewport.width = static_cast<float>(udSwapChain->getSwapChainExtent().width);
-    //     // viewport.height = static_cast<float>(udSwapChain->getSwapChainExtent().height);
-    //     // viewport.minDepth = 0.0f;
-    //     // viewport.maxDepth = 1.0f;
-    //     // // VkRect2D scissor{};
-    //     // VkRect2D scissor{ {0, 0}, udSwapChain->getSwapChainExtent() };
-    //     // vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
-    //     // vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
-
-    //     // para 2 viewports
-    //     std::array<VkViewport, 2> viewports{};
-    //     viewports[0].x = 0.0f;
-    //     viewports[0].y = 0.0f;
-    //     viewports[0].width = static_cast<float>(udSwapChain->getSwapChainExtent().width) / 2.0f;
-    //     viewports[0].height = static_cast<float>(udSwapChain->getSwapChainExtent().height);
-    //     viewports[0].minDepth = 0.0f;
-    //     viewports[0].maxDepth = 1.0f;
-
-    //     viewports[1].x = static_cast<float>(udSwapChain->getSwapChainExtent().width) / 2.0f;
-    //     viewports[1].y = 0.0f;
-    //     viewports[1].width = static_cast<float>(udSwapChain->getSwapChainExtent().width) / 2.0f;
-    //     viewports[1].height = static_cast<float>(udSwapChain->getSwapChainExtent().height);
-    //     viewports[1].minDepth = 0.0f;
-    //     viewports[1].maxDepth = 1.0f;
-
-
-    //     std::array<VkRect2D, 2> scissors{};
-    //     scissors[0].offset = { 0, 0 };
-    //     scissors[0].extent.width = udSwapChain->getSwapChainExtent().width / 2;
-    //     scissors[0].extent.height = udSwapChain->getSwapChainExtent().height;
-
-    //     scissors[1].offset = { static_cast<int32_t>(udSwapChain->getSwapChainExtent().width / 2), 0 };
-    //     scissors[1].extent.width = udSwapChain->getSwapChainExtent().width / 2;
-    //     scissors[1].extent.height = udSwapChain->getSwapChainExtent().height;
-
-    //     // vkCmdSetViewport(commandBuffer, 0, static_cast<uint32_t>(viewports.size()), viewports.data());
-    //     // vkCmdSetScissor(commandBuffer, 0, static_cast<uint32_t>(scissors.size()), scissors.data());
-
-    //     vkCmdSetViewport(commandBuffer, 0, 1, &viewports[eyeIndex]);
-    //     vkCmdSetScissor(commandBuffer, 0, 1, &scissors[eyeIndex]);
-    // }
 
     void UDRenderer::setViewport(VkCommandBuffer commandBuffer) {
         // para 2 viewports
@@ -200,9 +149,6 @@ namespace ud {
         scissors[0].extent.width = udSwapChain->getSwapChainExtent().width / 2;
         scissors[0].extent.height = udSwapChain->getSwapChainExtent().height;
 
-        // vkCmdSetViewport(commandBuffer, 0, 1, &viewports[0]);
-        // vkCmdSetScissor(commandBuffer, 0, 1, &scissors[0]);
-
         viewports[1].x = static_cast<float>(udSwapChain->getSwapChainExtent().width) / 2.0f;
         viewports[1].y = 0.0f;
         viewports[1].width = static_cast<float>(udSwapChain->getSwapChainExtent().width) / 2.0f;
@@ -213,12 +159,6 @@ namespace ud {
         scissors[1].offset = { static_cast<int32_t>(udSwapChain->getSwapChainExtent().width / 2), 0 };
         scissors[1].extent.width = udSwapChain->getSwapChainExtent().width / 2;
         scissors[1].extent.height = udSwapChain->getSwapChainExtent().height;
-
-        // vkCmdSetViewport(commandBuffer, 1, 1, &viewports[1]);
-        // vkCmdSetScissor(commandBuffer, 1, 1, &scissors[1]);
-
-        // vkCmdSetViewport(commandBuffer, 0, static_cast<uint32_t>(viewports.size()), viewports.data());
-        // vkCmdSetScissor(commandBuffer, 0, static_cast<uint32_t>(scissors.size()), scissors.data());
 
         vkCmdSetViewport(commandBuffer, 0, 2, viewports.data());
         vkCmdSetScissor(commandBuffer, 0, 2, scissors.data());

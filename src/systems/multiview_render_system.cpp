@@ -77,11 +77,7 @@ namespace ud {
         );
     }
 
-    void MultiViewRenderSystem::renderGameObjects(
-        FrameInfo& frameInfo,
-        // const UDCamera& camera,
-        const int eyeIndex
-    ) {
+    void MultiViewRenderSystem::renderGameObjects(FrameInfo& frameInfo) {
         udPipeline->bind(frameInfo.commandBuffer);
 
         // Must specify the starting set

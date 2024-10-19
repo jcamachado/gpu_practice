@@ -59,11 +59,7 @@ namespace ud {
         MultiViewRenderSystem(const MultiViewRenderSystem&) = delete;
         MultiViewRenderSystem& operator=(const MultiViewRenderSystem&) = delete;
 
-        void renderGameObjects(
-            FrameInfo& frameInfo,
-            // const UDCamera& camera,
-            const int eyeIndex = 0
-        );
+        void renderGameObjects(FrameInfo& frameInfo);
         void render(FrameInfo& frameInfo);
 
     private:

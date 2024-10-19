@@ -157,13 +157,13 @@ namespace ud {
                 udRenderer.beginSwapChainRenderPass(commandBuffer);
                 // // Set viewports and scissors
 
-                // Set viewport and scissor for the current eye
+                // Set both viewports and scissors
                 udRenderer.setViewport(frameInfo.commandBuffer);
-                multiviewRenderSystem.renderGameObjects(frameInfo, 0);
+
+                multiviewRenderSystem.renderGameObjects(frameInfo);
                 pointLightSystem.render(frameInfo);
 
-                // udRenderer.setViewport(frameInfo.commandBuffer);
-                multiviewRenderSystem.renderGameObjects(frameInfo, 1);
+                multiviewRenderSystem.renderGameObjects(frameInfo);
                 pointLightSystem.render(frameInfo);
 
 

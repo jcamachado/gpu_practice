@@ -46,7 +46,7 @@ namespace ud {
         UDGameObject::Map gameObjects;
         // binocular disparity divided by each eye's focal length
         // 0.064 is the average interpupillary distance
-        float eyeSeparation = 0.5f; // 6.4 cm
+        float eyeSeparation = 0.064f; // 6.4 cm
         float eyeToNose = eyeSeparation / 2.0f; // 3.2 cm
     };
 };
