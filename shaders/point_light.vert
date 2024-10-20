@@ -1,4 +1,5 @@
 #version 450
+#extension GL_ARB_shader_viewport_layer_array : enable
 
 const vec2 OFFSETS[6] = vec2[](
     vec2(-1.0, -1.0),
@@ -36,12 +37,7 @@ layout(set = 0, binding = 0) uniform GlobalUbo {
     int numLights;
 } ubo;
 
-// layout(push_constant) uniform Push {
-//     vec4 position;
-//     vec4 color;
-//     float radius;
-// } push;
-
+// Maybe use one push constant for each eye
 layout(push_constant) uniform Push {
     vec4 position;
     vec4 color;
@@ -55,26 +51,23 @@ layout(push_constant) uniform Push {
 */
 void main() {
     fragOffset = OFFSETS[gl_VertexIndex];
-    vec3 cameraRightWorld = vec3(ubo.view[0][0][0], ubo.view[0][1][0], ubo.view[0][2][0]);
-    vec3 cameraUpWorld = vec3(ubo.view[0][0][1], ubo.view[0][1][1], ubo.view[0][2][1]);
+
+    //  0 for left eye, 1 for right eye, only rendering left eye for now
+    int eyeIndex = 0 % 2; //
+
+    vec3 cameraRightWorld = vec3(ubo.view[eyeIndex][0][0], ubo.view[eyeIndex][1][0], ubo.view[eyeIndex][2][0]);
+    vec3 cameraUpWorld = vec3(ubo.view[eyeIndex][0][1], ubo.view[eyeIndex][1][1], ubo.view[eyeIndex][2][1]);
 
     vec3 positionWorld = push.position.xyz + 
         push.radius * fragOffset.x * cameraRightWorld +
         push.radius * fragOffset.y * cameraUpWorld;
-    gl_Position = ubo.projection[0] * ubo.view[0] * vec4(positionWorld, 1.0);
+    gl_Position = ubo.projection[eyeIndex] * ubo.view[eyeIndex] * vec4(positionWorld, 1.0);
+
+    // Set the viewport index
+    gl_ViewportIndex = eyeIndex;
+ 
+    // Alternative way to calculate the position
+    // vec4 lightInCameraSpace = ubo.view * vec4(ubo.lightPosition, 1.0);
+    // vec4 positionCameraSpace = lightInCameraSpace + LIGHT_RADIUS * vec4(fragOffset, 0.0, 0.0);
+    // gl_Position = ubo.projection * vec4(positionCameraSpace);
 }
-// void main() {
-//     fragOffset = OFFSETS[gl_VertexIndex];
-//     vec3 cameraRightWorld = vec3(ubo.view[0][0][0], ubo.view[0][1][0], ubo.view[0][2][0]); // old solution
-//     vec3 cameraUpWorld = vec3(ubo.view[0][0][1], ubo.view[0][1][1], ubo.view[0][2][1]);
-
-//     vec3 positionWorld = push.position.xyz + 
-//         push.radius * fragOffset.x * cameraRightWorld +
-//         push.radius * fragOffset.y * cameraUpWorld;
-//     gl_Position = ubo.projection[0] * ubo.view[0] * vec4(positionWorld, 1.0);
-
-//     // Alternative way to calculate the position
-//     // vec4 lightInCameraSpace = ubo.view * vec4(ubo.lightPosition, 1.0);
-//     // vec4 positionCameraSpace = lightInCameraSpace + LIGHT_RADIUS * vec4(fragOffset, 0.0, 0.0);
-//     // gl_Position = ubo.projection * vec4(positionCameraSpace);
-// }
