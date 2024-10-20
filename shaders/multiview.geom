@@ -11,6 +11,7 @@ layout(location = 0) out vec3 fs_out_fragColor;
 layout(location = 1) out vec3 fs_out_fragPosWorld;
 layout(location = 2) out vec3 fs_out_fragNormalWorld;
 layout(location = 3) flat out int fs_out_eyeIndex;
+layout(location = 4) out vec2 gsFragOffset;
 
 struct PointLight {
     vec4 position; // ignore w
@@ -27,29 +28,21 @@ layout(set = 0, binding = 0) uniform GlobalUbo {
 } ubo;
 
 void main() {
-    // Emit vertices for the first viewport (left eye)
-    for (int i = 0; i < 3; ++i) {
-        gl_Position = ubo.projection[0] * ubo.view[0] * gl_in[i].gl_Position;
-        gl_ViewportIndex = 0;
-        fs_out_eyeIndex = 0;
+    for (int viewport = 0; viewport < 2; ++viewport) {
+        for (int i = 0; i < 3; ++i) {
+            vec4 ndcPos = ubo.projection[viewport] * ubo.view[viewport] * gl_in[i].gl_Position;
+            // ndcPos /= ndcPos.w; // Convert to normalized device coordinates (NDC)
+            
+            gl_Position = ndcPos;
+            gl_ViewportIndex = viewport;
+            fs_out_eyeIndex = viewport;
 
-        fs_out_fragColor = gs_in_fragColor[i];
-        fs_out_fragPosWorld = gs_in_fragPosWorld[i];
-        fs_out_fragNormalWorld = gs_in_fragNormalWorld[i];
-        EmitVertex();
+            fs_out_fragColor = gs_in_fragColor[i];
+            fs_out_fragPosWorld = gs_in_fragPosWorld[i];
+            fs_out_fragNormalWorld = gs_in_fragNormalWorld[i];
+            // gsFragOffset = ndcPos.xy; // Calculate and pass gsFragOffset based on NDC
+            EmitVertex();
+        }
+        EndPrimitive();
     }
-    EndPrimitive();
-
-    // Emit vertices for the second viewport (right eye)
-    for (int i = 0; i < 3; ++i) {
-        gl_Position = ubo.projection[1] * ubo.view[1] * gl_in[i].gl_Position;
-        gl_ViewportIndex = 1;
-        fs_out_eyeIndex = 1;
-
-        fs_out_fragColor = gs_in_fragColor[i];
-        fs_out_fragPosWorld = gs_in_fragPosWorld[i];
-        fs_out_fragNormalWorld = gs_in_fragNormalWorld[i];
-        EmitVertex();
-    }
-    EndPrimitive();
 }

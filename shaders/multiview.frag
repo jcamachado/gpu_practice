@@ -9,6 +9,7 @@ layout(location = 0) in vec3 fs_out_fragColor;
 layout(location = 1) in vec3 fs_out_fragPosWorld;
 layout(location = 2) in vec3 fs_out_fragNormalWorld;
 layout(location = 3) flat in int fs_out_eyeIndex; // Receive the eye index as a flat variable
+// layout(location = 4) in vec2 gsFragOffset;
 
 layout(location = 0) out vec4 outColor;
 
@@ -32,6 +33,15 @@ layout(push_constant) uniform Push {    // Limit is 128 bytes to make it compati
 } push;
 
 void main() {
+    // // Calculate the distance from the center
+    // float distance = length(gsFragOffset);
+    
+    // // Discard the fragment if it is outside the radius
+    // if (distance > 1.0) {
+    //     discard;
+    // }
+
+
     vec3 diffuseLight = ubo.ambientLightColor.xyz * ubo.ambientLightColor.w;
     vec3 specularLight = vec3(0.0);
     vec3 surfaceNormal = normalize(fs_out_fragNormalWorld);
