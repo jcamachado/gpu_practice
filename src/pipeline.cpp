@@ -182,9 +182,9 @@ namespace ud {
             The scissor rectangle defines in which regions pixels will actually be stored.
         */
         configInfo.viewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
-        configInfo.viewportInfo.viewportCount = 1;
+        configInfo.viewportInfo.viewportCount = 2;
         configInfo.viewportInfo.pViewports = nullptr;
-        configInfo.viewportInfo.scissorCount = 1;
+        configInfo.viewportInfo.scissorCount = 2;
         configInfo.viewportInfo.pScissors = nullptr;
         /*
             The rasterizer takes the geometry that is shaped by the vertices from the vertex shader and

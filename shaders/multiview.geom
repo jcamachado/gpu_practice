@@ -18,29 +18,33 @@ struct PointLight {
     vec4 color; // w is intensity
 };
 
-layout(set = 0, binding = 0) uniform GlobalUbo { 
+layout(set = 0, binding = 0) uniform GlobalUBO { 
     mat4 projection[2]; 
     mat4 view[2];
     mat4 inverseView[2];
-    vec4 ambientLightColor;
-    PointLight pointLights[10]; 
-    int numLights;
+    vec4 ambientLightColor; // w is intensity
 } ubo;
+
+layout(set = 0, binding = 1) uniform PointLightsUBO {
+    PointLight pointLights[10];
+    int numLights;
+} pointLightsUbo;
 
 void main() {
     for (int viewport = 0; viewport < 2; ++viewport) {
         for (int i = 0; i < 3; ++i) {
             vec4 ndcPos = ubo.projection[viewport] * ubo.view[viewport] * gl_in[i].gl_Position;
-            // ndcPos /= ndcPos.w; // Convert to normalized device coordinates (NDC)
             
             gl_Position = ndcPos;
-            gl_ViewportIndex = viewport;
+
+            gl_ViewportIndex = viewport; // necessary for multi-view rendering
             fs_out_eyeIndex = viewport;
 
             fs_out_fragColor = gs_in_fragColor[i];
             fs_out_fragPosWorld = gs_in_fragPosWorld[i];
             fs_out_fragNormalWorld = gs_in_fragNormalWorld[i];
-            // gsFragOffset = ndcPos.xy; // Calculate and pass gsFragOffset based on NDC
+            
+            // gsFragOffset = gl_Position.xy; // Calculate and pass gsFragOffset based on NDC
             EmitVertex();
         }
         EndPrimitive();

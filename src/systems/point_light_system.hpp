@@ -22,7 +22,7 @@ namespace ud {
         PointLightSystem(const PointLightSystem&) = delete;
         PointLightSystem& operator=(const PointLightSystem&) = delete;
 
-        void update(FrameInfo& frameInfo, GlobalUBO& ubo);
+        void update(FrameInfo& frameInfo, PointLightsUBO& plUbo);
         void render(FrameInfo& frameInfo);
         // void render(FrameInfo& frameInfo, const UDCamera& leftEyeCamera, const UDCamera& rightEyeCamera);
     private:

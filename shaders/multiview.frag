@@ -9,7 +9,7 @@ layout(location = 0) in vec3 fs_out_fragColor;
 layout(location = 1) in vec3 fs_out_fragPosWorld;
 layout(location = 2) in vec3 fs_out_fragNormalWorld;
 layout(location = 3) flat in int fs_out_eyeIndex; // Receive the eye index as a flat variable
-// layout(location = 4) in vec2 gsFragOffset;
+layout(location = 4) in vec2 gsFragOffset;
 
 layout(location = 0) out vec4 outColor;
 
@@ -18,14 +18,17 @@ struct PointLight {
     vec4 color; // w is intensity
 };
 
-layout(set = 0, binding = 0) uniform GlobalUbo { 
+layout(set = 0, binding = 0) uniform GlobalUBO { 
     mat4 projection[2];
     mat4 view[2];
     mat4 inverseView[2];
-    vec4 ambientLightColor;
-    PointLight pointLights[10]; 
-    int numLights;
+    vec4 ambientLightColor; // w is intensity
 } ubo;
+
+layout(set = 0, binding = 1) uniform PointLightsUBO {
+    PointLight pointLights[10];
+    int numLights;
+} pointLightsUbo;
 
 layout(push_constant) uniform Push {    // Limit is 128 bytes to make it compatible with all hardware.
     mat4 modelMatrix;
@@ -33,14 +36,6 @@ layout(push_constant) uniform Push {    // Limit is 128 bytes to make it compati
 } push;
 
 void main() {
-    // // Calculate the distance from the center
-    // float distance = length(gsFragOffset);
-    
-    // // Discard the fragment if it is outside the radius
-    // if (distance > 1.0) {
-    //     discard;
-    // }
-
 
     vec3 diffuseLight = ubo.ambientLightColor.xyz * ubo.ambientLightColor.w;
     vec3 specularLight = vec3(0.0);
@@ -50,11 +45,13 @@ void main() {
     // Calculated for half angle vector.
     vec3 viewDirection = normalize(cameraPosWorld - fs_out_fragPosWorld); // Direction from the fragment to the camera.
 
-    for (int i = 0; i < ubo.numLights; i++) {
-        PointLight light = ubo.pointLights[i];
+    for (int i = 0; i < pointLightsUbo.numLights; i++) {
+        PointLight light = pointLightsUbo.pointLights[i];
         vec3 directionToLight = light.position.xyz - fs_out_fragPosWorld;
         // dot product of a vector with itself is an efficient way to calculate the length of the vector.
-        float attenuation = 1.0 / dot(directionToLight, directionToLight); // 1 / length^2
+        // float attenuation = 1.0 / dot(directionToLight, directionToLight); // 1 / length^2
+        float distance = length(directionToLight);
+        float attenuation = 1.0 / (1.0 + 0.09 * distance + 0.032 * (distance * distance));
         directionToLight = normalize(directionToLight); // After attenuation.
         // Cosine of the angle of incidence of the light ray on the surface.
         float cosAngIncidence = max(dot(surfaceNormal, directionToLight), 0);

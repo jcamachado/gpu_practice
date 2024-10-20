@@ -15,6 +15,7 @@
 // std
 #include <array>
 #include <chrono>
+#include <iostream>
 #include <numeric>
 #include <stdexcept>
 
@@ -27,7 +28,7 @@ namespace ud {
         // could add more descriptor to the pool using chain call .addPoolSize(..).addPoolSize(..
         globalPool = UDDescriptorPool::Builder(udDevice)
             .setMaxSets(UDSwapChain::MAX_FRAMES_IN_FLIGHT) // 2 sets
-            .addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, UDSwapChain::MAX_FRAMES_IN_FLIGHT) // 2 uniform descriptors
+            .addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, UDSwapChain::MAX_FRAMES_IN_FLIGHT * 2) // 2 uniform descriptors
             .build();
         loadObjects();
     }
@@ -36,27 +37,42 @@ namespace ud {
 
     void FirstApp::run() {  // The main loop
         // This property is used to align the offset of the uniform buffer object
-        std::vector<std::unique_ptr<UDBuffer>> uboBuffers(UDSwapChain::MAX_FRAMES_IN_FLIGHT);
-        for (int i = 0; i < uboBuffers.size(); i++) {
-            uboBuffers[i] = std::make_unique<UDBuffer>(
+        std::vector<std::unique_ptr<UDBuffer>> globalUboBuffers(UDSwapChain::MAX_FRAMES_IN_FLIGHT);
+        std::vector<std::unique_ptr<UDBuffer>> pointLightsUboBuffers(UDSwapChain::MAX_FRAMES_IN_FLIGHT);
+
+        for (int i = 0; i < UDSwapChain::MAX_FRAMES_IN_FLIGHT; i++) {
+            globalUboBuffers[i] = std::make_unique<UDBuffer>(
                 udDevice,
                 sizeof(GlobalUBO),
                 1, // Only one instance per buffer
                 VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
                 VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
             );
-            uboBuffers[i]->map();
+            globalUboBuffers[i]->map();
+
+            pointLightsUboBuffers[i] = std::make_unique<UDBuffer>(
+                udDevice,
+                sizeof(PointLightsUBO),
+                1, // Only one instance per buffer
+                VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+                VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
+            );
+            pointLightsUboBuffers[i]->map();
         }
 
         auto globalSetLayout = UDDescriptorSetLayout::Builder(udDevice)
             .addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS)
+            .addBinding(1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS)
             .build();
 
         std::vector<VkDescriptorSet> globalDescriptorSets(UDSwapChain::MAX_FRAMES_IN_FLIGHT);
-        for (int i = 0; i < globalDescriptorSets.size(); i++) {
-            auto bufferInfo = uboBuffers[i]->descriptorInfo();
+        for (int i = 0; i < UDSwapChain::MAX_FRAMES_IN_FLIGHT; i++) {
+            VkDescriptorBufferInfo globalBufferInfo = globalUboBuffers[i]->descriptorInfo();
+            VkDescriptorBufferInfo pointLightsBufferInfo = pointLightsUboBuffers[i]->descriptorInfo();
+
             UDDescriptorWriter(*globalSetLayout, *globalPool)
-                .writeBuffer(0, &bufferInfo)
+                .writeBuffer(0, &globalBufferInfo)
+                .writeBuffer(1, &pointLightsBufferInfo)
                 .build(globalDescriptorSets[i]);
         }
 
@@ -139,6 +155,13 @@ namespace ud {
                     globalDescriptorSets[frameIndex],
                     gameObjects
                 };
+                // print list of game objects
+                for (auto& kv : gameObjects) {
+                    auto& obj = kv.second;
+                    std::cout << "Object: " << obj.getId() << std::endl;
+                    // position of each object
+                    std::cout << "Position: " << obj.transform.translation.x << ", " << obj.transform.translation.y << ", " << obj.transform.translation.z << std::endl;
+                }
 
                 // update
                 GlobalUBO ubo{};
@@ -146,27 +169,25 @@ namespace ud {
                 ubo.view[0] = leftEyeCamera.getView();
                 ubo.projection[1] = rightEyeCamera.getProjection();
                 ubo.view[1] = rightEyeCamera.getView();
-
                 ubo.inverseView[0] = glm::inverse(leftEyeCamera.getView());
                 ubo.inverseView[1] = glm::inverse(rightEyeCamera.getView());
-                pointLightSystem.update(frameInfo, ubo);
-                uboBuffers[frameIndex]->writeToBuffer(&ubo);
-                uboBuffers[frameIndex]->flush();
 
-                // render (draw calls)
-                udRenderer.beginSwapChainRenderPass(commandBuffer);
-                // // Set viewports and scissors
+                PointLightsUBO plUbo{};
 
-                // Set both viewports and scissors
-                udRenderer.setViewport(frameInfo.commandBuffer);
+                pointLightSystem.update(frameInfo, plUbo);
 
+
+                globalUboBuffers[frameIndex]->writeToBuffer(&ubo);
+                globalUboBuffers[frameIndex]->flush();
+
+
+                pointLightsUboBuffers[frameIndex]->writeToBuffer(&plUbo);
+                pointLightsUboBuffers[frameIndex]->flush();
+
+
+                udRenderer.beginSwapChainRenderPass(commandBuffer);// render (draw calls)
+                udRenderer.setViewport(frameInfo.commandBuffer);// Set both viewports and scissors
                 multiviewRenderSystem.renderGameObjects(frameInfo);
-                pointLightSystem.render(frameInfo);
-
-                multiviewRenderSystem.renderGameObjects(frameInfo);
-                pointLightSystem.render(frameInfo);
-
-
                 udRenderer.endSwapChainRenderPass(commandBuffer);
                 udRenderer.endFrame();
             }
@@ -177,24 +198,10 @@ namespace ud {
 
     void FirstApp::loadObjects() {
         loadGameObjects();
-        loadParticles();
+        // loadParticles();
     }
 
     void FirstApp::loadParticles() {
-        // auto particleModel = UDModel::createModelFromFile(udDevice, "models/particle.obj");
-        // auto particleTexture = UDTexture::createTextureFromFile(udDevice, "textures/particle.png");
-        // auto particleMaterial = UDMaterial::createMaterial();
-        // particleMaterial->setDiffuseTexture(particleTexture);
-        // particleMaterial->setAmbientColor({ 0.0f, 0.0f, 0.0f });
-        // particleMaterial->setDiffuseColor({ 0.0f, 0.0f, 0.0f });
-        // particleMaterial->setSpecularColor({ 0.0f, 0.0f, 0.0f });
-        // particleMaterial->setSpecularPower(1.0f);
-        // auto particle = UDGameObject::createGameObject();
-        // particle.model = particleModel;
-        // particle.material = particleMaterial;
-        // particle.transform.translation = { 0.0f, 0.0f, 0.0f };
-        // particle.transform.scale = glm::vec3(0.1f);
-        // gameObjects.emplace(particle.getId(), std::move(particle));
         return;
     }
 
@@ -227,7 +234,7 @@ namespace ud {
             {.1f, 1.f, .1f},
             {1.f, 1.f, .1f},
             {.1f, 1.f, 1.f},
-            {1.f, 1.f, 1.f}
+            {1.f, 1.f, 1.f},
         };
 
         // Lights
@@ -239,7 +246,9 @@ namespace ud {
                 (i * glm::two_pi<float>()) / lightColors.size(),
                 { 0.0f, -1.0f, 0.0f }
             );
-            pointLight.transform.translation = glm::vec3(rotateLight * glm::vec4(-1.0f, -1.0f, -1.0f, 1.0f));
+            pointLight.transform.translation =
+                glm::vec3(rotateLight *
+                    glm::vec4(-1.0f, -1.0f, -1.0f, 1.0f)); // rotate the light
             gameObjects.emplace(pointLight.getId(), std::move(pointLight));
         }
     }

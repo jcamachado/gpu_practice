@@ -27,26 +27,22 @@ struct PointLight {
 //     int numLights;
 // } ubo;
 
-layout(set = 0, binding = 0) uniform GlobalUbo { 
+layout(set = 0, binding = 0) uniform GlobalUBO { 
     mat4 projection[2]; // Projection matrices for left and right eyes
     mat4 view[2];       // View matrices for left and right eyes
     mat4 inverseView[2]; // Inverse view matrices for left and right eyes
     vec4 ambientLightColor; // w is intensity
-    PointLight pointLights[10]; 
-    int numLights;
 } ubo;
 
-// layout(push_constant) uniform Push {
-//     vec4 position;
-//     vec4 color;
-//     float radius;
-// } push;
+layout(set = 0, binding = 1) uniform PointLightsUBO {
+    PointLight pointLights[10];
+    int numLights;
+} pointLightsUbo;
 
-layout(push_constant) uniform Push {
+layout(push_constant) uniform PointLightPushConstants {
     vec4 position;
     vec4 color;
     float radius;
-    int eyeIndex; // 0 for left eye, 1 for right eye
 } push;
 
 /*
@@ -56,13 +52,15 @@ layout(push_constant) uniform Push {
 */
 void main() {
     fragOffset = OFFSETS[gl_VertexIndex];
-    vec3 cameraRightWorld = vec3(ubo.view[push.eyeIndex][0][0], ubo.view[push.eyeIndex][1][0], ubo.view[push.eyeIndex][2][0]);
-    vec3 cameraUpWorld = vec3(ubo.view[push.eyeIndex][0][1], ubo.view[push.eyeIndex][1][1], ubo.view[push.eyeIndex][2][1]);
+    vec3 cameraRightWorld = vec3(ubo.view[0][0][0], ubo.view[0][1][0], ubo.view[0][2][0]); // old solution
+    vec3 cameraUpWorld = vec3(ubo.view[0][0][1], ubo.view[0][1][1], ubo.view[0][2][1]);
 
     vec3 positionWorld = push.position.xyz + 
         push.radius * fragOffset.x * cameraRightWorld +
         push.radius * fragOffset.y * cameraUpWorld;
-    gl_Position = ubo.projection[push.eyeIndex] * ubo.view[push.eyeIndex] * vec4(positionWorld, 1.0);
+    gl_Position = ubo.projection[0] * ubo.view[0] * vec4(positionWorld, 1.0);
+
+    
 }
 // void main() {
 //     fragOffset = OFFSETS[gl_VertexIndex];

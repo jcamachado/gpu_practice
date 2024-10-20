@@ -19,14 +19,17 @@ struct PointLight {
 // I can pass projection and view matrices as push constants
 // also multiply the model matrix with the normal matrix to get the normal in world space
 // also pass multiplied projection and view matrices to the fragment shader
-layout(set = 0, binding = 0) uniform GlobalUbo { 
+layout(set = 0, binding = 0) uniform GlobalUBO { 
     mat4 projection[2]; 
     mat4 view[2];
     mat4 inverseView[2];
-    vec4 ambientLightColor;
-    PointLight pointLights[10]; 
-    int numLights;
+    vec4 ambientLightColor; // w is intensity
 } ubo;
+
+layout(set = 0, binding = 1) uniform PointLightsUBO {
+    PointLight pointLights[10];
+    int numLights;
+} pointLightsUbo;
 
 layout(push_constant) uniform Push {    // Limit is 128 bytes to make it compatible with all hardware.
     mat4 modelMatrix;

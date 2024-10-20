@@ -36,6 +36,9 @@ namespace ud {
         glm::mat4 view[2] = { glm::mat4(1.0f), glm::mat4(1.0f) };       // View matrices for left and right eyes
         glm::mat4 inverseView[2] = { glm::mat4(1.0f), glm::mat4(1.0f) }; // Inverse view matrices for left and right eyes
         glm::vec4 ambientLightColor{ 1.0f, 1.0f, 1.0f, 0.02f };
+    };
+
+    struct PointLightsUBO {
         PointLight pointLights[MAX_LIGHTS];
         int numLights;
     };

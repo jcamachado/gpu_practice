@@ -19,7 +19,6 @@ namespace ud {
         glm::vec4 position{};
         glm::vec4 color{};
         float radius;
-        int eyeIndex;
     };
 
     PointLightSystem::PointLightSystem(UDDevice& device,
@@ -68,7 +67,7 @@ namespace ud {
             pipelineConfig);
     }
 
-    void PointLightSystem::update(FrameInfo& frameInfo, GlobalUBO& ubo) {
+    void PointLightSystem::update(FrameInfo& frameInfo, PointLightsUBO& plUbo) {
         auto rotateLight = glm::rotate(glm::mat4(1.0f), frameInfo.frameTime, glm::vec3(0.0f, -1.0f, 0.0f));
 
         int lightIndex = 0;
@@ -82,11 +81,12 @@ namespace ud {
             gameObject.transform.translation = glm::vec3(rotateLight * glm::vec4(gameObject.transform.translation, 1.0f));
 
             // copy light to ubo
-            ubo.pointLights[lightIndex].position = glm::vec4(gameObject.transform.translation, 1.0f);
-            ubo.pointLights[lightIndex].color = glm::vec4(gameObject.color, gameObject.pointLight->lightIntensity);
+            plUbo.pointLights[lightIndex].position = glm::vec4(gameObject.transform.translation, 1.0f);
+            plUbo.pointLights[lightIndex].color = glm::vec4(gameObject.color, gameObject.pointLight->lightIntensity);
             lightIndex += 1;
         }
-        ubo.numLights = lightIndex;
+
+        plUbo.numLights = lightIndex;
     }
 
     void PointLightSystem::render(FrameInfo& frameInfo) {
@@ -125,48 +125,4 @@ namespace ud {
             vkCmdDraw(frameInfo.commandBuffer, 6, 1, 0, 0);
         }
     }
-
-    // void PointLightSystem::render(FrameInfo& frameInfo, const UDCamera& leftEyeCamera, const UDCamera& rightEyeCamera) {
-    //     for (int eyeIndex = 0; eyeIndex < 2; ++eyeIndex) {
-    //         // Set the eye index in the push constants
-    //         PointLightPushConstants push{};
-    //         push.eyeIndex = eyeIndex;
-
-    //         // Bind the pipeline and descriptor sets
-    //         udPipeline->bind(frameInfo.commandBuffer);
-    //         vkCmdBindDescriptorSets(
-    //             frameInfo.commandBuffer,
-    //             VK_PIPELINE_BIND_POINT_GRAPHICS,
-    //             pipelineLayout,
-    //             0,
-    //             1,
-    //             &frameInfo.globalDescriptorSet,
-    //             0,
-    //             nullptr
-    //         );
-
-    //         // Select the appropriate camera for the current eye
-    //         const UDCamera& currentCamera = (eyeIndex == 0) ? leftEyeCamera : rightEyeCamera;
-
-    //         // Render the scene for the current eye
-    //         for (auto& kv : frameInfo.gameObjects) {
-    //             auto& gameObject = kv.second;
-    //             if (gameObject.pointLight == nullptr) continue;
-
-    //             push.position = glm::vec4(gameObject.transform.translation, 1.0f);
-    //             push.color = glm::vec4(gameObject.color, gameObject.pointLight->lightIntensity);
-    //             push.radius = gameObject.transform.scale.x;
-
-    //             vkCmdPushConstants(
-    //                 frameInfo.commandBuffer,
-    //                 pipelineLayout,
-    //                 VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
-    //                 0,
-    //                 sizeof(PointLightPushConstants),
-    //                 &push
-    //             );
-    //             vkCmdDraw(frameInfo.commandBuffer, 6, 1, 0, 0);
-    //         }
-    //     }
-    // }
 }
