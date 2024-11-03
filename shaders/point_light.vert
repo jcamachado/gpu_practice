@@ -42,6 +42,7 @@ layout(push_constant) uniform Push {
     vec4 position;
     vec4 color;
     float radius;
+    int eyeIndex;
 } push;
 
 /*
@@ -53,7 +54,7 @@ void main() {
     fragOffset = OFFSETS[gl_VertexIndex];
 
     //  0 for left eye, 1 for right eye, only rendering left eye for now
-    int eyeIndex = 0 % 2; //
+    int eyeIndex = push.eyeIndex; 
 
     vec3 cameraRightWorld = vec3(ubo.view[eyeIndex][0][0], ubo.view[eyeIndex][1][0], ubo.view[eyeIndex][2][0]);
     vec3 cameraUpWorld = vec3(ubo.view[eyeIndex][0][1], ubo.view[eyeIndex][1][1], ubo.view[eyeIndex][2][1]);

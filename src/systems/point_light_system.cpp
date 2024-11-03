@@ -19,6 +19,7 @@ namespace ud {
         glm::vec4 position{};
         glm::vec4 color{};
         float radius;
+        int eyeIndex;
     };
 
     PointLightSystem::PointLightSystem(UDDevice& device,
@@ -66,7 +67,7 @@ namespace ud {
             "build/shaders/point_light.frag.spv",
             pipelineConfig);
     }
-
+    // The update method is used to update the position of the point lights
     void PointLightSystem::update(FrameInfo& frameInfo, GlobalUBO& ubo) {
         auto rotateLight = glm::rotate(glm::mat4(1.0f), frameInfo.frameTime, glm::vec3(0.0f, -1.0f, 0.0f));
 
@@ -102,26 +103,29 @@ namespace ud {
             0,
             nullptr
         );
+        // make it for each eye index
+        for (int eyeIndex = 0; eyeIndex < 2; eyeIndex++) {
+            for (auto& kv : frameInfo.gameObjects) {
+                auto& gameObject = kv.second;
+                if (gameObject.pointLight == nullptr) continue;
 
-        for (auto& kv : frameInfo.gameObjects) {
-            auto& gameObject = kv.second;
-            if (gameObject.pointLight == nullptr) continue;
+                PointLightPushConstants push{};
+                push.position = glm::vec4(gameObject.transform.translation, 1.0f);
+                push.color = glm::vec4(gameObject.color, gameObject.pointLight->lightIntensity);
+                push.radius = gameObject.transform.scale.x;
+                push.eyeIndex = eyeIndex;
 
-            PointLightPushConstants push{};
-            push.position = glm::vec4(gameObject.transform.translation, 1.0f);
-            push.color = glm::vec4(gameObject.color, gameObject.pointLight->lightIntensity);
-            push.radius = gameObject.transform.scale.x;
-
-            vkCmdPushConstants(
-                frameInfo.commandBuffer,
-                pipelineLayout,
-                VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
-                0,
-                sizeof(PointLightPushConstants),
-                &push
-            );
-            // No need to draw model objects. 
-            vkCmdDraw(frameInfo.commandBuffer, 6, 1, 0, 0);
+                vkCmdPushConstants(
+                    frameInfo.commandBuffer,
+                    pipelineLayout,
+                    VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
+                    0,
+                    sizeof(PointLightPushConstants),
+                    &push
+                );
+                // No need to draw model objects. 
+                vkCmdDraw(frameInfo.commandBuffer, 6, 1, 0, 0);
+            }
         }
     }
 }

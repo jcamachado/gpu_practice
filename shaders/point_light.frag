@@ -21,6 +21,7 @@ layout(push_constant) uniform Push {
     vec4 position;
     vec4 color;
     float radius;
+    int eyeIndex;
 } push;
 
 void main() {
