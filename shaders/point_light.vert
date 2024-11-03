@@ -42,7 +42,7 @@ layout(push_constant) uniform Push {
     vec4 position;
     vec4 color;
     float radius;
-    int eyeIndex;
+    // int eyeIndex;
 } push;
 
 /*
@@ -53,8 +53,8 @@ layout(push_constant) uniform Push {
 void main() {
     fragOffset = OFFSETS[gl_VertexIndex];
 
-    //  0 for left eye, 1 for right eye, only rendering left eye for now
-    int eyeIndex = push.eyeIndex; 
+    // Determine which eye's view and projection matrices to use based on gl_InstanceIndex
+    int eyeIndex = gl_InstanceIndex % 2;
 
     vec3 cameraRightWorld = vec3(ubo.view[eyeIndex][0][0], ubo.view[eyeIndex][1][0], ubo.view[eyeIndex][2][0]);
     vec3 cameraUpWorld = vec3(ubo.view[eyeIndex][0][1], ubo.view[eyeIndex][1][1], ubo.view[eyeIndex][2][1]);
@@ -66,9 +66,4 @@ void main() {
 
     // Set the viewport index
     gl_ViewportIndex = eyeIndex;
- 
-    // Alternative way to calculate the position
-    // vec4 lightInCameraSpace = ubo.view * vec4(ubo.lightPosition, 1.0);
-    // vec4 positionCameraSpace = lightInCameraSpace + LIGHT_RADIUS * vec4(fragOffset, 0.0, 0.0);
-    // gl_Position = ubo.projection * vec4(positionCameraSpace);
 }
