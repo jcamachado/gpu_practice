@@ -123,7 +123,7 @@ namespace ud {
                 sizeof(PointLightPushConstants),
                 &push
             );
-            // No need to draw model objects. 
+            // No need to draw model objects. 2 instances of each point light will be drawn
             vkCmdDraw(frameInfo.commandBuffer, 6, 2, 0, 0);
         }
         // }
