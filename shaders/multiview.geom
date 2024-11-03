@@ -11,7 +11,7 @@ layout(location = 0) out vec3 fs_out_fragColor;
 layout(location = 1) out vec3 fs_out_fragPosWorld;
 layout(location = 2) out vec3 fs_out_fragNormalWorld;
 layout(location = 3) flat out int fs_out_eyeIndex;
-layout(location = 4) out vec2 gsFragOffset;
+// layout(location = 4) out vec2 gsFragOffset;
 
 struct PointLight {
     vec4 position; // ignore w

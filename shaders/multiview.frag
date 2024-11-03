@@ -9,7 +9,7 @@ layout(location = 0) in vec3 fs_out_fragColor;
 layout(location = 1) in vec3 fs_out_fragPosWorld;
 layout(location = 2) in vec3 fs_out_fragNormalWorld;
 layout(location = 3) flat in int fs_out_eyeIndex; // Receive the eye index as a flat variable
-layout(location = 4) in vec2 gsFragOffset; // Receive gsFragOffset from geometry shader
+// layout(location = 4) in vec2 gsFragOffset; // Receive gsFragOffset from geometry shader
 
 layout(location = 0) out vec4 outColor;
 
@@ -33,8 +33,14 @@ layout(push_constant) uniform Push {    // Limit is 128 bytes to make it compati
 } push;
 
 void main() {
-    // Calculate the distance from the center
-    float distance = length(gsFragOffset);
+    // Transform the fragment position to clip space
+    vec4 fragPosClip = ubo.projection[fs_out_eyeIndex] * ubo.view[fs_out_eyeIndex] * vec4(fs_out_fragPosWorld, 1.0);
+    
+    // Transform the fragment position to normalized device coordinates (NDC)
+    vec3 fragPosNDC = fragPosClip.xyz / fragPosClip.w;
+    
+    // Calculate the distance from the center in NDC space
+    float distance = length(fragPosNDC.xy);
     
     // Discard the fragment if it is outside the radius
     if (distance > 1.0) {
