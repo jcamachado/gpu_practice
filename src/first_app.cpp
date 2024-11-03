@@ -163,10 +163,6 @@ namespace ud {
                 multiviewRenderSystem.renderGameObjects(frameInfo);
                 pointLightSystem.render(frameInfo);
 
-                multiviewRenderSystem.renderGameObjects(frameInfo);
-                pointLightSystem.render(frameInfo);
-
-
                 udRenderer.endSwapChainRenderPass(commandBuffer);
                 udRenderer.endFrame();
             }
