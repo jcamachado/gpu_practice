@@ -55,22 +55,28 @@ void main() {
     
     // Transform the fragment position to normalized device coordinates (NDC)
     vec3 fragPosNDC = fragPosClip.xyz / fragPosClip.w;
-    
-    
-    // Calculate the angle from the center in NDC space
+
+    // Calculate the angle from the center in NDC space in radians
     float angle = atan(fragPosNDC.y, fragPosNDC.x);
     
     // Define the field of view (FOV) in radians
     float fov = radians(60.0); // 60 degrees FOV
     
+    float centralToPeriVision = radians(30.0); // Angle in radians from the center to the peripheral vision
+    float centralToFarPeriVision = radians(60.0); // Angle in radians from the center to the far peripheral vision
+
+    float centerMaxRadius = 1.0; // Central vision
+    float periMaxRadius = 0.8; // Peripheral vision
+    float farPeriMaxRadius = 0.6; // Far peripheral vision
+    
     // Define the maximum radius based on the angle
     float maxRadius;
-    if (angle < radians(30.0) || angle > radians(-30.0)) {
-        maxRadius = 1.0; // Central vision
-    } else if (angle < radians(60.0) || angle > radians(-60.0)) {
-        maxRadius = 0.8; // Peripheral vision
+    if (angle < radians(centralToPeriVision) || angle > radians(-centralToPeriVision)) {
+        maxRadius = centerMaxRadius; // Central vision
+    } else if (angle < radians(centralToFarPeriVision) || angle > radians(-centralToFarPeriVision)) {
+        maxRadius = periMaxRadius; // Peripheral vision
     } else {
-        maxRadius = 0.6; // Far peripheral vision
+        maxRadius = farPeriMaxRadius; // Far peripheral vision
     }
 
     // Calculate the distance from the center in NDC space
@@ -81,10 +87,12 @@ void main() {
         discard;
     }
 
+    
     // Calculate blur radius based on distance
-    float blurRadius = smoothstep(0.0, maxRadius, distance) * 5.0; // Adjust the multiplier for more/less blur
+    float blurRadius = smoothstep(centralToPeriVision, centralToFarPeriVision, abs(angle)) * 5.0; // Adjust the multiplier for more/less blur
+
     // Remap fragPosNDC.xy to UV coordinates in [0,1]
-    vec2 uv = fragPosNDC.xy * 0.5 + 0.5;
+    vec2 uv = fragPosNDC.xy;
     // Sample neighboring pixels for blurring
     vec3 blurredColor = sampleNeighbors(uv, blurRadius);
     
@@ -115,7 +123,7 @@ void main() {
         blinnTerm = pow(blinnTerm, 64.0); // higher values -> sharper highlights
         specularLight += intensity * blinnTerm;
     }
-    vec3 finalColor = mix(fs_out_fragColor, blurredColor, smoothstep(0.0, maxRadius, distance));
+    vec3 finalColor = mix(fs_out_fragColor, blurredColor, smoothstep(centralToPeriVision, centralToFarPeriVision, distance));
 
     // outColor = vec4(diffuseLight * fs_out_fragColor + specularLight * fs_out_fragColor, 1.0);
     outColor = vec4(diffuseLight * finalColor + specularLight * finalColor, 1.0);
