@@ -12,15 +12,15 @@
 
 namespace ud {
     class UDSwapChain {
-        public:
+    public:
         static constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
-        UDSwapChain(UDDevice &deviceRef, VkExtent2D windowExtent);
-        UDSwapChain(UDDevice &deviceRef, VkExtent2D windowExtent, std::shared_ptr<UDSwapChain> previous);
+        UDSwapChain(UDDevice& deviceRef, VkExtent2D windowExtent);
+        UDSwapChain(UDDevice& deviceRef, VkExtent2D windowExtent, std::shared_ptr<UDSwapChain> previous);
         ~UDSwapChain();
 
-        UDSwapChain(const UDSwapChain &) = delete;
-        UDSwapChain operator=(const UDSwapChain &) = delete;
+        UDSwapChain(const UDSwapChain&) = delete;
+        UDSwapChain operator=(const UDSwapChain&) = delete;
 
         VkFramebuffer getFrameBuffer(int index) { return swapChainFramebuffers[index]; }
         VkRenderPass getRenderPass() { return renderPass; }
@@ -32,16 +32,16 @@ namespace ud {
         uint32_t height() { return swapChainExtent.height; }
 
         float extentAspectRatio() {
-        return static_cast<float>(swapChainExtent.width) / static_cast<float>(swapChainExtent.height);
+            return static_cast<float>(swapChainExtent.width) / static_cast<float>(swapChainExtent.height);
         }
         VkFormat findDepthFormat();
 
-        VkResult acquireNextImage(uint32_t *imageIndex);
-        VkResult submitCommandBuffers(const VkCommandBuffer *buffers, uint32_t *imageIndex);
+        VkResult acquireNextImage(uint32_t* imageIndex);
+        VkResult submitCommandBuffers(const VkCommandBuffer* buffers, uint32_t* imageIndex);
 
-        bool compareSwapFormats(const UDSwapChain &swapChain) const {
+        bool compareSwapFormats(const UDSwapChain& swapChain) const {
             return swapChainDepthFormat == swapChain.swapChainDepthFormat &&
-                   swapChainImageFormat == swapChain.swapChainImageFormat;
+                swapChainImageFormat == swapChain.swapChainImageFormat;
         }
 
     private:
@@ -49,16 +49,17 @@ namespace ud {
         void createSwapChain();
         void createImageViews();
         void createDepthResources();
+        void createColorTexture();
         void createRenderPass();
         void createFramebuffers();
         void createSyncObjects();
 
         // Helper functions
         VkSurfaceFormatKHR chooseSwapSurfaceFormat(
-            const std::vector<VkSurfaceFormatKHR> &availableFormats);
+            const std::vector<VkSurfaceFormatKHR>& availableFormats);
         VkPresentModeKHR chooseSwapPresentMode(
-            const std::vector<VkPresentModeKHR> &availablePresentModes);
-        VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities);
+            const std::vector<VkPresentModeKHR>& availablePresentModes);
+        VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
 
         VkFormat swapChainImageFormat;
         VkFormat swapChainDepthFormat;
@@ -67,13 +68,21 @@ namespace ud {
         std::vector<VkFramebuffer> swapChainFramebuffers;
         VkRenderPass renderPass;
 
+        // Depth resources
         std::vector<VkImage> depthImages;
         std::vector<VkDeviceMemory> depthImageMemorys;
         std::vector<VkImageView> depthImageViews;
+        // Color resources
+        std::vector<VkImage> colorImages;
+        std::vector<VkDeviceMemory> colorImageMemorys;
+        std::vector<VkImageView> colorImageViews;
+        std::vector<VkSampler> colorSamplers;
+
+
         std::vector<VkImage> swapChainImages;
         std::vector<VkImageView> swapChainImageViews;
 
-        UDDevice &device;
+        UDDevice& device;
         VkExtent2D windowExtent;
 
         VkSwapchainKHR swapChain;
