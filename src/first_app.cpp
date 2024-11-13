@@ -127,8 +127,18 @@ namespace ud {
 
             float aspect = udRenderer.getAspectRatio();
             // Set the perspective projection for both cameras
-            leftEyeCamera.setPerspectiveProjection(glm::radians(50.0f), aspect, NEAR_PLANE, FAR_PLANE);
-            rightEyeCamera.setPerspectiveProjection(glm::radians(50.0f), aspect, NEAR_PLANE, FAR_PLANE);
+            leftEyeCamera.setPerspectiveProjection(
+                verticalFov,
+                aspect,
+                NEAR_PLANE,
+                FAR_PLANE
+            );
+            rightEyeCamera.setPerspectiveProjection(
+                verticalFov,
+                aspect,
+                NEAR_PLANE,
+                FAR_PLANE
+            );
 
             if (auto commandBuffer = udRenderer.beginFrame()) { // If nullptr, swapchain needs to be recreated
                 int frameIndex = udRenderer.getFrameIndex();

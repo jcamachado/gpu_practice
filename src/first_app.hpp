@@ -48,5 +48,9 @@ namespace ud {
         // 0.064 is the average interpupillary distance
         float eyeSeparation = 0.064f; // 6.4 cm
         float eyeToNose = eyeSeparation / 2.0f; // 3.2 cm
+
+        float horizontalFov = glm::radians(110.0f);  // 110° horizontal FoV in radians
+        float aspect = WIDTH / HEIGHT;  // Example aspect ratio of the display
+        float verticalFov = 2.0f * atan(tan(horizontalFov / 2.0f) / aspect);
     };
 };
