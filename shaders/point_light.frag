@@ -26,6 +26,7 @@ layout(push_constant) uniform Push {
 
 void main() {
     float distance = sqrt(dot(fragOffset, fragOffset));
+    
     if (distance >= 1.0) {
         discard;
     }
