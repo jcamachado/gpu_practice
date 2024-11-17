@@ -1,14 +1,15 @@
 #version 450
 
-// layout(location = 0) in vec3 fragColor;
-// layout(location = 1) in vec3 fragPosWorld;
-// layout(location = 2) in vec3 fragNormalWorld;
-// layout(location = 3) flat in int eyeIndex; // Receive the eye index as a flat variable
+/*
+    Received values from the vertex or geometry shader:
+
+    -fs_out_eyeIndex: Eye index as a flat variable (0 for left eye, 1 for right eye)
+*/
 
 layout(location = 0) in vec3 fs_out_fragColor;
 layout(location = 1) in vec3 fs_out_fragPosWorld;
 layout(location = 2) in vec3 fs_out_fragNormalWorld;
-layout(location = 3) flat in int fs_out_eyeIndex; // Receive the eye index as a flat variable
+layout(location = 3) flat in int fs_out_eyeIndex; 
 // layout(location = 4) in vec2 gsFragOffset; // Receive gsFragOffset from geometry shader
 
 layout(location = 0) out vec4 outColor;
@@ -75,7 +76,7 @@ void main() {
 
     // Convert the distance to degrees based on the horizontal field of view
     // Use the vertical FOV to convert the distance to degrees
-    float aspect = 800.0 / 600.0; // Example aspect ratio
+    float aspect = 1280.0 / 720.0; // Example aspect ratio
     float fovx = radians(110.0); // Assuming a 110-degree horizontal field of view
     float fovy = 2.0 * atan(tan(fovx / 2.0) / aspect); // Calculate vertical FOV from horizontal FOV
     float distanceDegrees = degrees(atan(distance * tan(fovy / 2.0)));
@@ -126,6 +127,16 @@ void main() {
 
     // Discard the fragment if it is outside the far peripheral vision
     if (distanceDegrees > farPeripheralVision) {
+        discard;
+    }
+
+    // Removing pixels from one eye
+    // Discard the fragment if it is between near peripheral and mid peripheral vision
+    if (
+        (distanceDegrees > nearPeripheralVision && distanceDegrees < midPeripheralVision)
+        && (fs_out_eyeIndex == 1)
+        ) 
+    {
         discard;
     }
 
