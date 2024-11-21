@@ -209,24 +209,45 @@ namespace ud {
         // Since I wont be modifying the models, I can use a shared pointer
         std::shared_ptr<UDModel> udModel = nullptr;
 
+        /*
+            scene
+        */
+        placeNewObject(udModel,
+            udDevice,
+            "models/scenes/main1_sponza/NewSponza_Main_glTF_003.gltf",
+            { 0.0f, 0.0f, 0.0f },
+            { 1.0f, 1.0f, 1.0f });
+
+        // placeNewObject(udModel,
+        //     udDevice,
+        //     "models/scenes/Sponza.gltf",
+        //     { 0.0f, 0.0f, 0.0f },
+        //     { 1.0f, 1.0f, 1.0f });
+
+        // placeNewObject(udModel,
+        //     udDevice,
+        //     "models/sponza.obj",
+        //     { 0.0f, 0.0f, 0.0f },
+        //     { 1.0f, 1.0f, 1.0f });
+
         // Solids
-        placeNewObject(udModel,
-            udDevice,
-            "models/flat_vase.obj",
-            { -0.5f, 0.5f, 0.0f },
-            { 3.0f, 1.5f, 3.0f });
+        // placeNewObject(udModel,
+        //     udDevice,
+        //     "models/flat_vase.obj",
+        //     { -0.5f, 0.5f, 0.0f },
+        //     { 3.0f, 1.5f, 3.0f });
 
-        placeNewObject(udModel,
-            udDevice,
-            "models/smooth_vase.obj",
-            { 0.5f, 0.5f, 0.0f },
-            { 3.0f, 1.5f, 3.0f });
+        // placeNewObject(udModel,
+        //     udDevice,
+        //     "models/smooth_vase.obj",
+        //     { 0.5f, 0.5f, 0.0f },
+        //     { 3.0f, 1.5f, 3.0f });
 
-        placeNewObject(udModel,
-            udDevice,
-            "models/quad.obj",
-            { 0.0f, 0.5f, 0.0f },
-            { 3.0f, 1.0f, 3.0f });
+        // placeNewObject(udModel,
+        //     udDevice,
+        //     "models/quad.obj",
+        //     { 0.0f, 0.5f, 0.0f },
+        //     { 3.0f, 1.0f, 3.0f });
 
         std::vector<glm::vec3> lightColors{
             {1.f, .1f, .1f},

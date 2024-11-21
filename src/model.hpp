@@ -7,13 +7,6 @@
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 
-#define TINYGLTF_IMPLEMENTATION
-#define STB_IMAGE_IMPLEMENTATION
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-// #define TINYGLTF_NOEXCEPTION // optional. disable exception handling.
-#include "lib/tinygltf/tiny_gltf.h"
-
-using namespace tinygltf;
 
 // std
 #include <memory>
@@ -55,10 +48,15 @@ namespace ud {
         };
 
         struct Builder { //This struct is used to load the model vertices and indices to be rendered
+            // output of .obj file loader
             std::vector<Vertex> vertices{};
             std::vector<uint32_t> indices{};
 
+            // output of .gltf file loader  
+            // tinygltf::Model model;
+
             void loadModelObj(const std::string& filepath);
+            void loadModelGltf(const std::string& filepath);
         };
 
         UDModel(UDDevice& device, const UDModel::Builder& builder);

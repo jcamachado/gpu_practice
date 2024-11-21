@@ -8,12 +8,20 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/hash.hpp>
 
+#define TINYGLTF_IMPLEMENTATION
+#define STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+// #define TINYGLTF_NOEXCEPTION // optional. disable exception handling.
+#include "lib/tinygltf/tiny_gltf.h"
+
 // std
 #include <cstring>
 #include <cassert>
 #include <unordered_map>
 
 #include <iostream>
+using namespace tinygltf;
+
 
 namespace std {
     /*
@@ -48,7 +56,15 @@ namespace ud {
         UDDevice& device, const std::string& filepath
     ) {
         Builder builder{};
-        builder.loadModelObj(filepath);
+        if (filepath.substr(filepath.find_last_of(".") + 1) == "obj") {
+            builder.loadModelObj(filepath);
+        }
+        else if (filepath.substr(filepath.find_last_of(".") + 1) == "gltf") {
+            builder.loadModelGltf(filepath);
+        }
+        else {
+            throw std::runtime_error("Unsupported file format: " + filepath);
+        }
         return std::make_unique<UDModel>(device, builder);
     }
     /*
@@ -235,6 +251,78 @@ namespace ud {
     }
 
 
+    void UDModel::Builder::loadModelGltf(const std::string& filepath) {
+        // .gltf file format
+        tinygltf::Model model;
+        tinygltf::TinyGLTF loader;
+        std::string err;
+        std::string warn;
+
+        bool ret = loader.LoadASCIIFromFile(&model, &err, &warn, filepath);
+
+        if (!warn.empty()) {
+            std::cout << "WARN: " << warn << std::endl;
+        }
+
+        if (!err.empty()) {
+            std::cout << "ERR: " << err << std::endl;
+        }
+
+        if (!ret)
+            std::cout << "Failed to load glTF: " << filepath << std::endl;
+        else
+            std::cout << "Loaded glTF: " << filepath << std::endl;
+
+        vertices.clear();
+        indices.clear();
+
+        // Load the model from the file using tinygltf
+        for (const auto& mesh : model.meshes) {
+            for (const auto& primitive : mesh.primitives) {
+                const tinygltf::Accessor& indexAccessor = model.accessors[primitive.indices];
+                const tinygltf::BufferView& indexBufferView = model.bufferViews[indexAccessor.bufferView];
+                const tinygltf::Buffer& indexBuffer = model.buffers[indexBufferView.buffer];
+
+                const uint16_t* indicesData = reinterpret_cast<const uint16_t*>(&indexBuffer.data[indexBufferView.byteOffset + indexAccessor.byteOffset]);
+                for (size_t i = 0; i < indexAccessor.count; ++i) {
+                    indices.push_back(indicesData[i]);
+                }
+
+                const tinygltf::Accessor& positionAccessor = model.accessors[primitive.attributes.find("POSITION")->second];
+                const tinygltf::BufferView& positionBufferView = model.bufferViews[positionAccessor.bufferView];
+                const tinygltf::Buffer& positionBuffer = model.buffers[positionBufferView.buffer];
+
+                const float* positionsData = reinterpret_cast<const float*>(&positionBuffer.data[positionBufferView.byteOffset + positionAccessor.byteOffset]);
+                for (size_t i = 0; i < positionAccessor.count; ++i) {
+                    Vertex vertex{};
+                    vertex.position = glm::vec3(positionsData[i * 3 + 0], positionsData[i * 3 + 1], positionsData[i * 3 + 2]);
+                    vertices.push_back(vertex);
+                }
+
+                if (primitive.attributes.find("NORMAL") != primitive.attributes.end()) {
+                    const tinygltf::Accessor& normalAccessor = model.accessors[primitive.attributes.find("NORMAL")->second];
+                    const tinygltf::BufferView& normalBufferView = model.bufferViews[normalAccessor.bufferView];
+                    const tinygltf::Buffer& normalBuffer = model.buffers[normalBufferView.buffer];
+
+                    const float* normalsData = reinterpret_cast<const float*>(&normalBuffer.data[normalBufferView.byteOffset + normalAccessor.byteOffset]);
+                    for (size_t i = 0; i < normalAccessor.count; ++i) {
+                        vertices[i].normal = glm::vec3(normalsData[i * 3 + 0], normalsData[i * 3 + 1], normalsData[i * 3 + 2]);
+                    }
+                }
+
+                if (primitive.attributes.find("TEXCOORD_0") != primitive.attributes.end()) {
+                    const tinygltf::Accessor& texcoordAccessor = model.accessors[primitive.attributes.find("TEXCOORD_0")->second];
+                    const tinygltf::BufferView& texcoordBufferView = model.bufferViews[texcoordAccessor.bufferView];
+                    const tinygltf::Buffer& texcoordBuffer = model.buffers[texcoordBufferView.buffer];
+
+                    const float* texcoordsData = reinterpret_cast<const float*>(&texcoordBuffer.data[texcoordBufferView.byteOffset + texcoordAccessor.byteOffset]);
+                    for (size_t i = 0; i < texcoordAccessor.count; ++i) {
+                        vertices[i].uv = glm::vec2(texcoordsData[i * 2 + 0], texcoordsData[i * 2 + 1]);
+                    }
+                }
+            }
+        }
+    }
 
 
 }
