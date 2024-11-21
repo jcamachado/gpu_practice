@@ -59,33 +59,37 @@ namespace ud {
             void loadModelGltf(const std::string& filepath);
         };
 
-        UDModel(UDDevice& device, const UDModel::Builder& builder);
+        // UDModel(UDDevice& device, const UDModel::Builder& builder);
+        UDModel(UDDevice& device, const std::string& filepath);
         ~UDModel();
 
         UDModel(const UDModel&) = delete;
         UDModel& operator=(const UDModel&) = delete;
 
-        static std::unique_ptr<UDModel> createModelFromFile(UDDevice& device, const std::string& filepath);
+        // static std::unique_ptr<UDModel> createModelFromFile(UDDevice& device, const std::string& filepath);
 
         void bind(VkCommandBuffer commandBuffer);
         void draw(VkCommandBuffer commandBuffer);
 
     private:
+        void loadData();
         void createVertexBuffers(const std::vector<Vertex>& vertices);
         void createIndexBuffers(const std::vector<uint32_t>& indices);
 
         UDDevice& device;
-
-        std::unique_ptr<UDBuffer> vertexBuffer;
-        uint32_t vertexCount;
+        std::string filepath;
+        bool dataLoaded{ false };
 
         /*
             Vulkan only allows one index buffer per model, so we cant use one index buffer
-            for each tipe of vertex attrib, such as vertex normal, texture and so one.
+            for each tipe of vertex attrib, such as vertex normal, texture and so on.
             All the vertex attribs must be stored in the same index buffer.
             To do this, we must have a way to know if a loaded vertex has already been loaded
             or if it is a new vertex. We will use a hash table to do this. Hence the ud_utils.hpp.
         */
+
+        std::unique_ptr<UDBuffer> vertexBuffer;
+        uint32_t vertexCount;
 
         bool hasIndexBuffer{ false };
         std::unique_ptr<UDBuffer> indexBuffer;

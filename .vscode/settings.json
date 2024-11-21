@@ -61,6 +61,7 @@
         "system_error": "cpp",
         "__nullptr": "cpp",
         "charconv": "cpp",
-        "stdfloat": "cpp"
+        "stdfloat": "cpp",
+        "filesystem": "cpp"
     } // Ensure this path is correct if using clang-tidy
 }

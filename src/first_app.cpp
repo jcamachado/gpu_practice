@@ -212,11 +212,11 @@ namespace ud {
         /*
             scene
         */
-        placeNewObject(udModel,
-            udDevice,
-            "models/scenes/main1_sponza/NewSponza_Main_glTF_003.gltf",
-            { 0.0f, 0.0f, 0.0f },
-            { 1.0f, 1.0f, 1.0f });
+        // placeNewObject(udModel,
+        //     udDevice,
+        //     "models/scenes/main1_sponza/NewSponza_Main_glTF_003.gltf",
+        //     { 0.0f, 0.0f, 0.0f },
+        //     { 1.0f, 1.0f, 1.0f });
 
         // placeNewObject(udModel,
         //     udDevice,
@@ -231,23 +231,23 @@ namespace ud {
         //     { 1.0f, 1.0f, 1.0f });
 
         // Solids
-        // placeNewObject(udModel,
-        //     udDevice,
-        //     "models/flat_vase.obj",
-        //     { -0.5f, 0.5f, 0.0f },
-        //     { 3.0f, 1.5f, 3.0f });
+        placeNewObject(udModel,
+            udDevice,
+            "models/flat_vase.obj",
+            { -0.5f, 0.5f, 0.0f },
+            { 3.0f, 1.5f, 3.0f });
 
-        // placeNewObject(udModel,
-        //     udDevice,
-        //     "models/smooth_vase.obj",
-        //     { 0.5f, 0.5f, 0.0f },
-        //     { 3.0f, 1.5f, 3.0f });
+        placeNewObject(udModel,
+            udDevice,
+            "models/smooth_vase.obj",
+            { 0.5f, 0.5f, 0.0f },
+            { 3.0f, 1.5f, 3.0f });
 
-        // placeNewObject(udModel,
-        //     udDevice,
-        //     "models/quad.obj",
-        //     { 0.0f, 0.5f, 0.0f },
-        //     { 3.0f, 1.0f, 3.0f });
+        placeNewObject(udModel,
+            udDevice,
+            "models/quad.obj",
+            { 0.0f, 0.5f, 0.0f },
+            { 3.0f, 1.0f, 3.0f });
 
         std::vector<glm::vec3> lightColors{
             {1.f, .1f, .1f},
@@ -278,7 +278,9 @@ namespace ud {
         glm::vec3 translation,
         glm::vec3 scale)
     {
-        udModel = UDModel::createModelFromFile(udDevice, objFilePath);
+        // udModel = UDModel::createModelFromFile(udDevice, objFilePath);
+        udModel = std::make_shared<UDModel>(udDevice, objFilePath); // Create the model with lazy loading
+
         auto newObj = UDGameObject::createGameObject();
         newObj.model = udModel;
         newObj.transform.translation = translation;

@@ -44,17 +44,34 @@ namespace std {
 }
 
 namespace ud {
-    UDModel::UDModel(UDDevice& device, const UDModel::Builder& builder) : device{ device } {
-        createVertexBuffers(builder.vertices);
-        createIndexBuffers(builder.indices);
-    }
+    // UDModel::UDModel(UDDevice& device, const UDModel::Builder& builder) : device{ device } {
+    //     createVertexBuffers(builder.vertices);
+    //     createIndexBuffers(builder.indices);
+    // }
+
+    UDModel::UDModel(UDDevice& device, const std::string& filepath) : device{ device }, filepath{ filepath } {}
 
     UDModel::~UDModel() {}
 
-    std::unique_ptr<UDModel> UDModel::createModelFromFile(
-        // The createModelFromFile function is a static method that creates a new model from a file
-        UDDevice& device, const std::string& filepath
-    ) {
+    // std::unique_ptr<UDModel> UDModel::createModelFromFile(
+    //     // The createModelFromFile function is a static method that creates a new model from a file
+    //     UDDevice& device, const std::string& filepath
+    // ) {
+    //     Builder builder{};
+    //     if (filepath.substr(filepath.find_last_of(".") + 1) == "obj") {
+    //         builder.loadModelObj(filepath);
+    //     }
+    //     else if (filepath.substr(filepath.find_last_of(".") + 1) == "gltf") {
+    //         builder.loadModelGltf(filepath);
+    //     }
+    //     else {
+    //         throw std::runtime_error("Unsupported file format: " + filepath);
+    //     }
+    //     return std::make_unique<UDModel>(device, builder);
+    // }
+    void UDModel::loadData() {
+        if (dataLoaded) return;
+
         Builder builder{};
         if (filepath.substr(filepath.find_last_of(".") + 1) == "obj") {
             builder.loadModelObj(filepath);
@@ -65,7 +82,11 @@ namespace ud {
         else {
             throw std::runtime_error("Unsupported file format: " + filepath);
         }
-        return std::make_unique<UDModel>(device, builder);
+
+        createVertexBuffers(builder.vertices);
+        createIndexBuffers(builder.indices);
+
+        dataLoaded = true;
     }
     /*
             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
@@ -166,6 +187,8 @@ namespace ud {
 
 
     void UDModel::bind(VkCommandBuffer commandBuffer) {
+        loadData();
+
         VkBuffer buffers[] = { vertexBuffer->getBuffer() };
         VkDeviceSize offsets[] = { 0 };
         vkCmdBindVertexBuffers(commandBuffer, 0, 1, buffers, offsets);
@@ -179,6 +202,7 @@ namespace ud {
     }
 
     void UDModel::draw(VkCommandBuffer commandBuffer) {
+        loadData(); // Load data on demand
         if (hasIndexBuffer) {
             vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);
         }
@@ -276,6 +300,7 @@ namespace ud {
         vertices.clear();
         indices.clear();
 
+        std::unordered_map<Vertex, uint32_t> uniqueVertices{};
         // Load the model from the file using tinygltf
         for (const auto& mesh : model.meshes) {
             for (const auto& primitive : mesh.primitives) {
@@ -296,6 +321,7 @@ namespace ud {
                 for (size_t i = 0; i < positionAccessor.count; ++i) {
                     Vertex vertex{};
                     vertex.position = glm::vec3(positionsData[i * 3 + 0], positionsData[i * 3 + 1], positionsData[i * 3 + 2]);
+                    uniqueVertices[vertex] = static_cast<uint32_t>(vertices.size());
                     vertices.push_back(vertex);
                 }
 
