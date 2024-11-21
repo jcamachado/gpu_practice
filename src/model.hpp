@@ -7,6 +7,14 @@
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 
+#define TINYGLTF_IMPLEMENTATION
+#define STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+// #define TINYGLTF_NOEXCEPTION // optional. disable exception handling.
+#include "lib/tinygltf/tiny_gltf.h"
+
+using namespace tinygltf;
+
 // std
 #include <memory>
 #include <vector>
@@ -50,7 +58,7 @@ namespace ud {
             std::vector<Vertex> vertices{};
             std::vector<uint32_t> indices{};
 
-            void loadModel(const std::string& filepath);
+            void loadModelObj(const std::string& filepath);
         };
 
         UDModel(UDDevice& device, const UDModel::Builder& builder);

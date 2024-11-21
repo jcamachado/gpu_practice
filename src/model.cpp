@@ -48,7 +48,7 @@ namespace ud {
         UDDevice& device, const std::string& filepath
     ) {
         Builder builder{};
-        builder.loadModel(filepath);
+        builder.loadModelObj(filepath);
         return std::make_unique<UDModel>(device, builder);
     }
     /*
@@ -171,8 +171,7 @@ namespace ud {
         }
     }
 
-
-    void UDModel::Builder::loadModel(const std::string& filepath) {
+    void UDModel::Builder::loadModelObj(const std::string& filepath) {
         // Load the model from the file using tinyobjloader
         tinyobj::attrib_t attrib; // Vertex attributes
         std::vector<tinyobj::shape_t> shapes;
@@ -234,5 +233,8 @@ namespace ud {
             }
         }
     }
+
+
+
 
 }
