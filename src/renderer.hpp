@@ -50,6 +50,9 @@ namespace ud {
         void endSwapChainRenderPass(VkCommandBuffer commandBuffer);
         void setViewport(VkCommandBuffer commandBuffer);
 
+        UDDevice& getDevice() { return udDevice; }
+        UDSwapChain& getSwapChain() { return *udSwapChain; }
+
     private:
         void createCommandBuffers();
         void freeCommandBuffers();

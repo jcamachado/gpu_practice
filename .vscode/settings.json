@@ -62,6 +62,19 @@
         "__nullptr": "cpp",
         "charconv": "cpp",
         "stdfloat": "cpp",
-        "filesystem": "cpp"
+        "filesystem": "cpp",
+        "cassert": "cpp",
+        "*.ipp": "cpp",
+        "bitset": "cpp",
+        "buffer": "cpp",
+        "valarray": "cpp",
+        "format": "cpp",
+        "__hash_table": "cpp",
+        "__split_buffer": "cpp",
+        "__tree": "cpp",
+        "deque": "cpp",
+        "queue": "cpp",
+        "stack": "cpp",
+        "unordered_set": "cpp"
     } // Ensure this path is correct if using clang-tidy
 }

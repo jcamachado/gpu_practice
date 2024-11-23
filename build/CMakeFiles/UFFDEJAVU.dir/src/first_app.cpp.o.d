@@ -184,7 +184,11 @@ CMakeFiles/UFFDEJAVU.dir/src/first_app.cpp.o: \
  /home/jaxe/Repositories/gpu_practice/src/game_object.hpp \
  /home/jaxe/Repositories/gpu_practice/src/model.hpp \
  /home/jaxe/Repositories/gpu_practice/src/buffer.hpp \
- /usr/include/glm/glm.hpp /usr/include/glm/detail/_fixes.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/renderer.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/swap_chain.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/lib/tinygltf/tiny_gltf.h \
+ /usr/include/c++/13/array /usr/include/c++/13/compare \
+ /usr/include/c++/13/cassert /usr/include/assert.h \
  /usr/include/c++/13/cmath /usr/include/math.h \
  /usr/include/x86_64-linux-gnu/bits/math-vector.h \
  /usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h \
@@ -207,10 +211,18 @@ CMakeFiles/UFFDEJAVU.dir/src/first_app.cpp.o: \
  /usr/include/c++/13/tr1/modified_bessel_func.tcc \
  /usr/include/c++/13/tr1/poly_hermite.tcc \
  /usr/include/c++/13/tr1/poly_laguerre.tcc \
- /usr/include/c++/13/tr1/riemann_zeta.tcc \
- /usr/include/glm/detail/setup.hpp /usr/include/c++/13/cassert \
- /usr/include/assert.h /usr/include/glm/simd/platform.h \
- /usr/include/c++/13/cstdint /usr/include/c++/13/climits \
+ /usr/include/c++/13/tr1/riemann_zeta.tcc /usr/include/c++/13/cstdint \
+ /usr/include/c++/13/cstring /usr/include/string.h /usr/include/strings.h \
+ /usr/include/c++/13/functional /usr/include/c++/13/bits/std_function.h \
+ /usr/include/c++/13/bits/stl_algo.h \
+ /usr/include/c++/13/bits/algorithmfwd.h \
+ /usr/include/c++/13/bits/stl_heap.h \
+ /usr/include/c++/13/bits/uniform_int_dist.h /usr/include/c++/13/map \
+ /usr/include/c++/13/bits/stl_tree.h /usr/include/c++/13/bits/stl_map.h \
+ /usr/include/c++/13/bits/stl_multimap.h /usr/include/c++/13/utility \
+ /usr/include/c++/13/bits/stl_relops.h /usr/include/glm/glm.hpp \
+ /usr/include/glm/detail/_fixes.hpp /usr/include/glm/detail/setup.hpp \
+ /usr/include/glm/simd/platform.h /usr/include/c++/13/climits \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/limits.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/syslimits.h \
  /usr/include/limits.h /usr/include/x86_64-linux-gnu/bits/posix1_lim.h \
@@ -343,8 +355,6 @@ CMakeFiles/UFFDEJAVU.dir/src/first_app.cpp.o: \
  /usr/include/glm/ext/matrix_transform.hpp \
  /usr/include/glm/ext/matrix_transform.inl \
  /usr/include/glm/gtc/matrix_transform.inl \
- /home/jaxe/Repositories/gpu_practice/src/renderer.hpp \
- /home/jaxe/Repositories/gpu_practice/src/swap_chain.hpp \
  /home/jaxe/Repositories/gpu_practice/src/camera.hpp \
  /home/jaxe/Repositories/gpu_practice/src/keyboard_movement_controller.hpp \
  /home/jaxe/Repositories/gpu_practice/src/systems/multiview_render_system.hpp \
@@ -353,10 +363,26 @@ CMakeFiles/UFFDEJAVU.dir/src/first_app.cpp.o: \
  /usr/include/c++/13/optional \
  /home/jaxe/Repositories/gpu_practice/src/systems/point_light_system.hpp \
  /home/jaxe/Repositories/gpu_practice/src/systems/simple_render_system.hpp \
- /usr/include/c++/13/array /usr/include/c++/13/compare \
  /usr/include/c++/13/chrono /usr/include/c++/13/bits/chrono.h \
  /usr/include/c++/13/ratio /usr/include/c++/13/ctime \
  /usr/include/c++/13/bits/parse_numbers.h /usr/include/c++/13/numeric \
  /usr/include/c++/13/bits/stl_numeric.h \
  /usr/include/c++/13/pstl/glue_numeric_defs.h \
- /usr/include/c++/13/stdexcept
+ /usr/include/c++/13/stdexcept /usr/include/c++/13/iostream \
+ /usr/include/c++/13/ostream /usr/include/c++/13/ios \
+ /usr/include/c++/13/bits/ios_base.h \
+ /usr/include/c++/13/bits/locale_classes.h \
+ /usr/include/c++/13/bits/locale_classes.tcc \
+ /usr/include/c++/13/system_error \
+ /usr/include/x86_64-linux-gnu/c++/13/bits/error_constants.h \
+ /usr/include/c++/13/streambuf /usr/include/c++/13/bits/streambuf.tcc \
+ /usr/include/c++/13/bits/basic_ios.h \
+ /usr/include/c++/13/bits/locale_facets.h /usr/include/c++/13/cwctype \
+ /usr/include/wctype.h /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h \
+ /usr/include/x86_64-linux-gnu/c++/13/bits/ctype_base.h \
+ /usr/include/c++/13/bits/streambuf_iterator.h \
+ /usr/include/x86_64-linux-gnu/c++/13/bits/ctype_inline.h \
+ /usr/include/c++/13/bits/locale_facets.tcc \
+ /usr/include/c++/13/bits/basic_ios.tcc \
+ /usr/include/c++/13/bits/ostream.tcc /usr/include/c++/13/istream \
+ /usr/include/c++/13/bits/istream.tcc

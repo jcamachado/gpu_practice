@@ -1,9 +1,13 @@
 #pragma once
 
+#include "buffer.hpp"
 #include "device.hpp"
 
 // vulkan headers
 #include <vulkan/vulkan.h>
+
+// tinygltf headers
+#include "lib/tinygltf/tiny_gltf.h"
 
 // std lib headers
 #include <string>
@@ -44,6 +48,9 @@ namespace ud {
                 swapChainImageFormat == swapChain.swapChainImageFormat;
         }
 
+        void loadTextureImage(const tinygltf::Image& image);
+        VkDescriptorImageInfo imageDescriptorInfo();
+
     private:
         void init();
         void createSwapChain();
@@ -53,6 +60,14 @@ namespace ud {
         void createRenderPass();
         void createFramebuffers();
         void createSyncObjects();
+        // VkImageCreateInfo createImage(
+        //     uint32_t width, uint32_t height,
+        //     VkFormat format,
+        //     VkImageTiling tiling,
+        //     VkImageUsageFlags usage,
+        //     VkMemoryPropertyFlags properties,
+        //     VkImage& image,
+        //     VkDeviceMemory& imageMemory);
 
         // Helper functions
         VkSurfaceFormatKHR chooseSwapSurfaceFormat(
@@ -77,6 +92,11 @@ namespace ud {
         std::vector<VkDeviceMemory> colorImageMemorys;
         std::vector<VkImageView> colorImageViews;
         std::vector<VkSampler> colorSamplers;
+
+        VkImage textureImage;
+        VkDeviceMemory textureImageMemory;
+        VkImageView textureImageView;
+        VkSampler textureSampler;
 
 
         std::vector<VkImage> swapChainImages;

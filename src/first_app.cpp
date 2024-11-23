@@ -17,6 +17,7 @@
 #include <chrono>
 #include <numeric>
 #include <stdexcept>
+#include <iostream>
 
 namespace ud {
     FirstApp::FirstApp() {
@@ -28,6 +29,7 @@ namespace ud {
         globalPool = UDDescriptorPool::Builder(udDevice)
             .setMaxSets(UDSwapChain::MAX_FRAMES_IN_FLIGHT) // 2 sets
             .addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, UDSwapChain::MAX_FRAMES_IN_FLIGHT) // 2 uniform descriptors
+            .addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, UDSwapChain::MAX_FRAMES_IN_FLIGHT) // Add image sampler pool size
             .build();
         loadObjects();
     }
@@ -53,14 +55,23 @@ namespace ud {
             .addBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT) // Add sampler binding
             .build();
 
+
         std::vector<VkDescriptorSet> globalDescriptorSets(UDSwapChain::MAX_FRAMES_IN_FLIGHT);
+        UDSwapChain& swapchain = udRenderer.getSwapChain();
         for (int i = 0; i < globalDescriptorSets.size(); i++) {
             auto bufferInfo = uboBuffers[i]->descriptorInfo();
-            UDDescriptorWriter(*globalSetLayout, *globalPool)
+            auto imageInfo = swapchain.imageDescriptorInfo();
+            // Debugging statements
+            std::cout << "Creating descriptor set " << i << std::endl;
+            if (!UDDescriptorWriter(*globalSetLayout, *globalPool)
                 .writeBuffer(0, &bufferInfo)
-                .build(globalDescriptorSets[i]);
+                .writeImage(1, &imageInfo)
+                .build(globalDescriptorSets[i])) {
+                throw std::runtime_error("Failed to build descriptor set " + std::to_string(i));
+            }
         }
 
+        std::cout << "Descriptor sets created successfully." << std::endl;
         /*
             Instance count is the number of frames to be rendered simultaneously
             This way we can safely write to a frames ubo without worrying about
@@ -218,6 +229,12 @@ namespace ud {
         //     { 0.0f, 0.0f, 0.0f },
         //     { 1.0f, 1.0f, 1.0f });
 
+        placeNewObject(udModel,
+            udRenderer,
+            "models/scenes/Sponza.glb",
+            { 0.0f, 0.0f, 0.0f },
+            { 1.0f, 1.0f, 1.0f });
+
         // placeNewObject(udModel,
         //     udDevice,
         //     "models/scenes/Sponza.gltf",
@@ -232,22 +249,22 @@ namespace ud {
 
         // Solids
         placeNewObject(udModel,
-            udDevice,
+            udRenderer,
             "models/flat_vase.obj",
             { -0.5f, 0.5f, 0.0f },
             { 3.0f, 1.5f, 3.0f });
 
-        placeNewObject(udModel,
-            udDevice,
-            "models/smooth_vase.obj",
-            { 0.5f, 0.5f, 0.0f },
-            { 3.0f, 1.5f, 3.0f });
+        // placeNewObject(udModel,
+        //     udDevice,
+        //     "models/smooth_vase.obj",
+        //     { 0.5f, 0.5f, 0.0f },
+        //     { 3.0f, 1.5f, 3.0f });
 
-        placeNewObject(udModel,
-            udDevice,
-            "models/quad.obj",
-            { 0.0f, 0.5f, 0.0f },
-            { 3.0f, 1.0f, 3.0f });
+        // placeNewObject(udModel,
+        //     udDevice,
+        //     "models/quad.obj",
+        //     { 0.0f, 0.5f, 0.0f },
+        //     { 3.0f, 1.0f, 3.0f });
 
         std::vector<glm::vec3> lightColors{
             {1.f, .1f, .1f},
@@ -273,13 +290,13 @@ namespace ud {
     }
 
     void FirstApp::placeNewObject(std::shared_ptr<UDModel> udModel,
-        UDDevice& udDevice,
+        UDRenderer& udRenderer,
         const std::string& objFilePath,
         glm::vec3 translation,
         glm::vec3 scale)
     {
         // udModel = UDModel::createModelFromFile(udDevice, objFilePath);
-        udModel = std::make_shared<UDModel>(udDevice, objFilePath); // Create the model with lazy loading
+        udModel = std::make_shared<UDModel>(udRenderer, objFilePath); // Create the model with lazy loading
 
         auto newObj = UDGameObject::createGameObject();
         newObj.model = udModel;

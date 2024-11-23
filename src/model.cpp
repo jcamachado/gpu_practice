@@ -8,11 +8,7 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/hash.hpp>
 
-#define TINYGLTF_IMPLEMENTATION
-#define STB_IMAGE_IMPLEMENTATION
-#define STB_IMAGE_WRITE_IMPLEMENTATION
 // #define TINYGLTF_NOEXCEPTION // optional. disable exception handling.
-#include "lib/tinygltf/tiny_gltf.h"
 
 // std
 #include <cstring>
@@ -49,7 +45,9 @@ namespace ud {
     //     createIndexBuffers(builder.indices);
     // }
 
-    UDModel::UDModel(UDDevice& device, const std::string& filepath) : device{ device }, filepath{ filepath } {}
+    UDModel::UDModel(UDRenderer& renderer, const std::string& filepath) :
+        renderer{ renderer }, filepath{ filepath }, device{ renderer.getDevice() } {
+    }
 
     UDModel::~UDModel() {}
 
@@ -72,11 +70,11 @@ namespace ud {
     void UDModel::loadData() {
         if (dataLoaded) return;
 
-        Builder builder{};
+        Builder builder{ device, renderer.getSwapChain() };
         if (filepath.substr(filepath.find_last_of(".") + 1) == "obj") {
             builder.loadModelObj(filepath);
         }
-        else if (filepath.substr(filepath.find_last_of(".") + 1) == "gltf") {
+        else if (filepath.substr(filepath.find_last_of(".") + 1) == "gltf" || filepath.substr(filepath.find_last_of(".") + 1) == "glb") {
             builder.loadModelGltf(filepath);
         }
         else {
@@ -211,6 +209,8 @@ namespace ud {
         }
     }
 
+
+
     void UDModel::Builder::loadModelObj(const std::string& filepath) {
         // Load the model from the file using tinyobjloader
         tinyobj::attrib_t attrib; // Vertex attributes
@@ -282,7 +282,13 @@ namespace ud {
         std::string err;
         std::string warn;
 
-        bool ret = loader.LoadASCIIFromFile(&model, &err, &warn, filepath);
+        bool ret;
+        if (filepath.substr(filepath.find_last_of(".") + 1) == "glb") {
+            ret = loader.LoadBinaryFromFile(&model, &err, &warn, filepath); // Load .glb file
+        }
+        else {
+            ret = loader.LoadASCIIFromFile(&model, &err, &warn, filepath); // Load .gltf file
+        }
 
         if (!warn.empty()) {
             std::cout << "WARN: " << warn << std::endl;
@@ -346,9 +352,17 @@ namespace ud {
                         vertices[i].uv = glm::vec2(texcoordsData[i * 2 + 0], texcoordsData[i * 2 + 1]);
                     }
                 }
+
+                if (primitive.material >= 0) {
+                    const tinygltf::Material& material = model.materials[primitive.material];
+                    if (material.pbrMetallicRoughness.baseColorTexture.index >= 0) {
+                        const tinygltf::Texture& texture = model.textures[material.pbrMetallicRoughness.baseColorTexture.index];
+                        const tinygltf::Image& image = model.images[texture.source];
+                        // Load textures using swap_chain.cpp code
+                        swapChain.loadTextureImage(image);
+                    }
+                }
             }
         }
     }
-
-
 }

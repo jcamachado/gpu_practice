@@ -7,7 +7,7 @@
 
 #include "buffer.hpp"
 
-// std
+ // std
 #include <cassert>
 #include <cstring>
 
@@ -28,23 +28,23 @@ namespace ud {
         return instanceSize;
     }
 
-    UDBuffer::UDBuffer(UDDevice &device,
+    UDBuffer::UDBuffer(UDDevice& device,
         VkDeviceSize instanceSize,
         uint32_t instanceCount,
         VkBufferUsageFlags usageFlags,
         VkMemoryPropertyFlags memoryPropertyFlags,
         VkDeviceSize minOffsetAlignment)
-        : udDevice{device},
-        instanceSize{instanceSize},
-        instanceCount{instanceCount},
-        usageFlags{usageFlags},
-        memoryPropertyFlags{memoryPropertyFlags} 
+        : udDevice{ device },
+        instanceSize{ instanceSize },
+        instanceCount{ instanceCount },
+        usageFlags{ usageFlags },
+        memoryPropertyFlags{ memoryPropertyFlags }
     {
         alignmentSize = getAlignment(instanceSize, minOffsetAlignment);
         bufferSize = alignmentSize * instanceCount;
         device.createBuffer(bufferSize, usageFlags, memoryPropertyFlags, buffer, memory);
     }
-    
+
     UDBuffer::~UDBuffer() {
         unmap();
         vkDestroyBuffer(udDevice.device(), buffer, nullptr);
@@ -85,16 +85,17 @@ namespace ud {
      * @param offset (Optional) Byte offset from beginning of mapped region
      *
      */
-    void UDBuffer::writeToBuffer(void *data, VkDeviceSize size, VkDeviceSize offset) {
-    assert(mapped && "Cannot copy to unmapped buffer");
+    void UDBuffer::writeToBuffer(void* data, VkDeviceSize size, VkDeviceSize offset) {
+        assert(mapped && "Cannot copy to unmapped buffer");
 
-    if (size == VK_WHOLE_SIZE) {
-        memcpy(mapped, data, bufferSize);
-    } else {
-        char *memOffset = (char *)mapped;
-        memOffset += offset;
-        memcpy(memOffset, data, size);
-    }
+        if (size == VK_WHOLE_SIZE) {
+            memcpy(mapped, data, bufferSize);
+        }
+        else {
+            char* memOffset = (char*)mapped;
+            memOffset += offset;
+            memcpy(memOffset, data, size);
+        }
     }
 
     /**
@@ -109,12 +110,12 @@ namespace ud {
      * @return VkResult of the flush call
      */
     VkResult UDBuffer::flush(VkDeviceSize size, VkDeviceSize offset) {
-    VkMappedMemoryRange mappedRange = {};
-    mappedRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
-    mappedRange.memory = memory;
-    mappedRange.offset = offset;
-    mappedRange.size = size;
-    return vkFlushMappedMemoryRanges(udDevice.device(), 1, &mappedRange);
+        VkMappedMemoryRange mappedRange = {};
+        mappedRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
+        mappedRange.memory = memory;
+        mappedRange.offset = offset;
+        mappedRange.size = size;
+        return vkFlushMappedMemoryRanges(udDevice.device(), 1, &mappedRange);
     }
 
     /**
@@ -129,12 +130,12 @@ namespace ud {
      * @return VkResult of the invalidate call
      */
     VkResult UDBuffer::invalidate(VkDeviceSize size, VkDeviceSize offset) {
-    VkMappedMemoryRange mappedRange = {};
-    mappedRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
-    mappedRange.memory = memory;
-    mappedRange.offset = offset;
-    mappedRange.size = size;
-    return vkInvalidateMappedMemoryRanges(udDevice.device(), 1, &mappedRange);
+        VkMappedMemoryRange mappedRange = {};
+        mappedRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
+        mappedRange.memory = memory;
+        mappedRange.offset = offset;
+        mappedRange.size = size;
+        return vkInvalidateMappedMemoryRanges(udDevice.device(), 1, &mappedRange);
     }
 
     /**
@@ -146,11 +147,11 @@ namespace ud {
      * @return VkDescriptorBufferInfo of specified offset and range
      */
     VkDescriptorBufferInfo UDBuffer::descriptorInfo(VkDeviceSize size, VkDeviceSize offset) {
-    return VkDescriptorBufferInfo{
-        buffer,
-        offset,
-        size,
-    };
+        return VkDescriptorBufferInfo{
+            buffer,
+            offset,
+            size,
+        };
     }
 
     /**
@@ -160,8 +161,8 @@ namespace ud {
      * @param index Used in offset calculation
      *
      */
-    void UDBuffer::writeToIndex(void *data, int index) {
-    writeToBuffer(data, instanceSize, index * alignmentSize);
+    void UDBuffer::writeToIndex(void* data, int index) {
+        writeToBuffer(data, instanceSize, index * alignmentSize);
     }
 
     /**
@@ -180,7 +181,7 @@ namespace ud {
      * @return VkDescriptorBufferInfo for instance at index
      */
     VkDescriptorBufferInfo UDBuffer::descriptorInfoForIndex(int index) {
-    return descriptorInfo(alignmentSize, index * alignmentSize);
+        return descriptorInfo(alignmentSize, index * alignmentSize);
     }
 
     /**
@@ -193,7 +194,7 @@ namespace ud {
      * @return VkResult of the invalidate call
      */
     VkResult UDBuffer::invalidateIndex(int index) {
-    return invalidate(alignmentSize, index * alignmentSize);
+        return invalidate(alignmentSize, index * alignmentSize);
     }
 
 }  // namespace ud

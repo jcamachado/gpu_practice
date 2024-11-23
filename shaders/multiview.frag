@@ -200,9 +200,12 @@ void main() {
         blinnTerm = pow(blinnTerm, 64.0); // higher values -> sharper highlights
         specularLight += intensity * blinnTerm;
     }
+    // test better txcolor
+    vec4 texColor = texture(textureSampler, fs_out_fragColor.xy);
     vec3 finalColor = mix(fs_out_fragColor, blurredColor, smoothstep(centralVision, farPeripheralVision, distanceDegrees));
     // outColor = vec4(diffuseLight * fs_out_fragColor + specularLight * fs_out_fragColor, 1.0);
-    outColor = vec4(diffuseLight * finalColor + specularLight * finalColor, 1.0);
+    
+    outColor = vec4((diffuseLight * finalColor + specularLight * finalColor)*texColor.rgb, 1.0);
 
 }
 

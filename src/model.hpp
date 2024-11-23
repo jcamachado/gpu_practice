@@ -1,7 +1,11 @@
 #pragma once
 
 #include "buffer.hpp"
-#include "device.hpp"
+// #include "device.hpp"
+#include "renderer.hpp"
+
+// tinygltf
+#include "lib/tinygltf/tiny_gltf.h"
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -49,18 +53,26 @@ namespace ud {
 
         struct Builder { //This struct is used to load the model vertices and indices to be rendered
             // output of .obj file loader
+            UDDevice& device; // Reference to the device
+            UDSwapChain& swapChain;
             std::vector<Vertex> vertices{};
             std::vector<uint32_t> indices{};
 
             // output of .gltf file loader  
             // tinygltf::Model model;
 
+            Builder(UDDevice& device, UDSwapChain& swapChain) :
+                device(device), swapChain(swapChain) {
+            }
+
             void loadModelObj(const std::string& filepath);
             void loadModelGltf(const std::string& filepath);
+            // Uses device, should it be here?
+            void loadTextureImage(const tinygltf::Image& image);
         };
 
         // UDModel(UDDevice& device, const UDModel::Builder& builder);
-        UDModel(UDDevice& device, const std::string& filepath);
+        UDModel(UDRenderer& renderer, const std::string& filepath);
         ~UDModel();
 
         UDModel(const UDModel&) = delete;
@@ -75,7 +87,9 @@ namespace ud {
         void loadData();
         void createVertexBuffers(const std::vector<Vertex>& vertices);
         void createIndexBuffers(const std::vector<uint32_t>& indices);
+        // texture loading
 
+        UDRenderer& renderer;
         UDDevice& device;
         std::string filepath;
         bool dataLoaded{ false };
@@ -94,5 +108,9 @@ namespace ud {
         bool hasIndexBuffer{ false };
         std::unique_ptr<UDBuffer> indexBuffer;
         uint32_t indexCount;
+
+        VkImage textureImage;
+        VkImageView textureImageView;
+        VkSampler textureSampler;
     };
 }

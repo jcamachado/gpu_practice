@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/jaxe/Repositories/gpu_practice/external -I/home/jaxe/Repositories/gpu_practice/src -I/home/jaxe/Repositories/gpu_practice/external/tinyobjloader
+CXX_INCLUDES = -I/home/jaxe/Repositories/gpu_practice/external -I/home/jaxe/Repositories/gpu_practice/src -I/home/jaxe/Repositories/gpu_practice/external/tinyobjloader -I/home/jaxe/Repositories/gpu_practice/src/lib/tinygltf
 
 CXX_FLAGS = 
 

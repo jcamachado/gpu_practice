@@ -32,7 +32,7 @@ namespace ud {
         void loadParticles();
         void loadGameObjects();
         void placeNewObject(std::shared_ptr<UDModel> udModel,
-            UDDevice& udDevice,
+            UDRenderer& udRenderer,
             const std::string& objFilePath,
             glm::vec3 translation,
             glm::vec3 scale);
