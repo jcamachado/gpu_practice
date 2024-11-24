@@ -356,7 +356,7 @@ namespace ud {
         }
     }
 
-    void transitionImageLayout(
+    void UDSwapChain::transitionImageLayout(
         VkDevice device,
         VkCommandPool commandPool,
         VkQueue graphicsQueue,

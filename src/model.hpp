@@ -19,26 +19,25 @@
 namespace ud {
     class UDModel {
     public:
+        /*
+            The binding description sets the rate to load data from memory throughout the vertices.
+            The attrib descriptions sets how to extract a vertex attrib from a chunk of
+            vertex data in memory.
+
+            Example of attribute descriptions:
+            - position: float32, 2 elements, offset 0
+            - color:    float32, 3 elements, offset 8
+
+            Example of binding descriptions:
+            - The rate at which data is loaded for vertices is per-vertex
+            - The rate at which data is loaded for instances is per-instance
+        */
         struct Vertex {
             glm::vec3 position{};
             glm::vec3 color{};
             glm::vec3 normal{};
             glm::vec2 uv{}; // 2D texture coordinates
 
-            /*
-                The binding description is used to describe at which rate to load data
-                from memory throughout the vertices. The attribute descriptions are
-                used to describe how to extract a vertex attribute from a chunk of
-                vertex data in memory.
-
-                Example of attribute descriptions:
-                - position: float32, 2 elements, offset 0
-                - color:    float32, 3 elements, offset 8
-
-                Example of binding descriptions:
-                - The rate at which data is loaded for vertices is per-vertex
-                - The rate at which data is loaded for instances is per-instance
-            */
             static std::vector<VkVertexInputBindingDescription> getBindingDescriptions();
             static std::vector<VkVertexInputAttributeDescription> getAttributeDescriptions();
 
@@ -51,15 +50,20 @@ namespace ud {
             }
         };
 
+        struct Material {
+            glm::vec4 baseColorFactor{ 1.0f };
+            int baseColorTextureIndex{ -1 };
+            // Add other material properties as needed
+        };
+
         struct Builder { //This struct is used to load the model vertices and indices to be rendered
-            // output of .obj file loader
             UDDevice& device; // Reference to the device
             UDSwapChain& swapChain;
             std::vector<Vertex> vertices{};
             std::vector<uint32_t> indices{};
-
-            // output of .gltf file loader  
-            // tinygltf::Model model;
+            std::vector<Material> materials{};
+            std::vector<tinygltf::Image> images{};
+            std::vector<tinygltf::Texture> textures{};
 
             Builder(UDDevice& device, UDSwapChain& swapChain) :
                 device(device), swapChain(swapChain) {
@@ -87,6 +91,11 @@ namespace ud {
         void loadData();
         void createVertexBuffers(const std::vector<Vertex>& vertices);
         void createIndexBuffers(const std::vector<uint32_t>& indices);
+        //here?
+        void createTextureImage(const tinygltf::Image& image);
+        void createTextureImageView();
+        void createTextureSampler();
+
         // texture loading
 
         UDRenderer& renderer;
@@ -110,6 +119,7 @@ namespace ud {
         uint32_t indexCount;
 
         VkImage textureImage;
+        VkDeviceMemory textureImageMemory;
         VkImageView textureImageView;
         VkSampler textureSampler;
     };

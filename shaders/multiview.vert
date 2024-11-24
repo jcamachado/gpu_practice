@@ -8,7 +8,8 @@ layout(location = 3) in vec2 uv; // texCoord
 layout(location = 0) out vec3 fragColor;
 layout(location = 1) out vec3 fragPosWorld;
 layout(location = 2) out vec3 fragNormalWorld;
-layout(location = 3) out flat int eyeIndex; // Pass the eye index as a flat variable
+layout(location = 3) out vec2 fragTexCoord;
+layout(location = 4) out flat int eyeIndex; // Pass the eye index as a flat variable
 
 struct PointLight {
     vec4 position; // ignore w
@@ -42,4 +43,5 @@ void main() {
     fragNormalWorld = normalize(mat3(push.normalMatrix) * normal);
     fragPosWorld = positionWorld.xyz;
     fragColor = color;
+    fragTexCoord = uv;
 }

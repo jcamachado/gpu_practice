@@ -9,7 +9,8 @@
 layout(location = 0) in vec3 fs_out_fragColor;
 layout(location = 1) in vec3 fs_out_fragPosWorld;
 layout(location = 2) in vec3 fs_out_fragNormalWorld;
-layout(location = 3) flat in int fs_out_eyeIndex; 
+layout(location = 3) in vec2 fs_out_fragTexCoord;
+layout(location = 4) flat in int fs_out_eyeIndex; 
 // layout(location = 4) in vec2 gsFragOffset; // Receive gsFragOffset from geometry shader
 
 layout(location = 0) out vec4 outColor;
@@ -200,12 +201,20 @@ void main() {
         blinnTerm = pow(blinnTerm, 64.0); // higher values -> sharper highlights
         specularLight += intensity * blinnTerm;
     }
-    // test better txcolor
-    vec4 texColor = texture(textureSampler, fs_out_fragColor.xy);
-    vec3 finalColor = mix(fs_out_fragColor, blurredColor, smoothstep(centralVision, farPeripheralVision, distanceDegrees));
-    // outColor = vec4(diffuseLight * fs_out_fragColor + specularLight * fs_out_fragColor, 1.0);
-    
-    outColor = vec4((diffuseLight * finalColor + specularLight * finalColor)*texColor.rgb, 1.0);
+    // Sample the texture color
+    vec3 textureColor = texture(textureSampler, fs_out_fragTexCoord).rgb;
+
+    // if no texture color, use the fragment color
+    if (textureColor == vec3(0.0)) {
+        textureColor = fs_out_fragColor;
+    }
+    // Apply lighting to the texture color
+    vec3 litColor = textureColor * (diffuseLight + specularLight);
+
+    // Apply foveal blurred color change
+    vec3 fovealColor = mix(litColor, blurredColor, smoothstep(centralVision, farPeripheralVision, distanceDegrees));
+
+    outColor = vec4(fovealColor, 1.0);
 
 }
 

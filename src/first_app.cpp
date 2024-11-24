@@ -45,7 +45,7 @@ namespace ud {
                 sizeof(GlobalUBO),
                 1, // Only one instance per buffer
                 VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-                VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
+                VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
             );
             uboBuffers[i]->map();
         }
@@ -60,12 +60,10 @@ namespace ud {
         UDSwapChain& swapchain = udRenderer.getSwapChain();
         for (int i = 0; i < globalDescriptorSets.size(); i++) {
             auto bufferInfo = uboBuffers[i]->descriptorInfo();
-            auto imageInfo = swapchain.imageDescriptorInfo();
             // Debugging statements
             std::cout << "Creating descriptor set " << i << std::endl;
             if (!UDDescriptorWriter(*globalSetLayout, *globalPool)
                 .writeBuffer(0, &bufferInfo)
-                .writeImage(1, &imageInfo)
                 .build(globalDescriptorSets[i])) {
                 throw std::runtime_error("Failed to build descriptor set " + std::to_string(i));
             }
@@ -173,12 +171,10 @@ namespace ud {
                 ubo.inverseView[1] = glm::inverse(rightEyeCamera.getView());
                 pointLightSystem.update(frameInfo, ubo);
                 uboBuffers[frameIndex]->writeToBuffer(&ubo);
-                uboBuffers[frameIndex]->flush();
+                // uboBuffers[frameIndex]->flush();
 
                 // render (draw calls)
                 udRenderer.beginSwapChainRenderPass(commandBuffer);
-                // // Set viewports and scissors
-
                 // Set both viewports and scissors
                 udRenderer.setViewport(frameInfo.commandBuffer);
 

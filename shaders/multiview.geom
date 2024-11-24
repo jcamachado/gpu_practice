@@ -6,11 +6,13 @@ layout(triangle_strip, max_vertices = 6) out;
 layout(location = 0) in vec3 gs_in_fragColor[];
 layout(location = 1) in vec3 gs_in_fragPosWorld[];
 layout(location = 2) in vec3 gs_in_fragNormalWorld[];
+layout(location = 3) in vec2 gs_in_fragTexCoord[];
 
 layout(location = 0) out vec3 fs_out_fragColor;
 layout(location = 1) out vec3 fs_out_fragPosWorld;
 layout(location = 2) out vec3 fs_out_fragNormalWorld;
-layout(location = 3) flat out int fs_out_eyeIndex;
+layout(location = 3) out vec2 fs_out_fragTexCoord;
+layout(location = 4) flat out int fs_out_eyeIndex;
 // layout(location = 4) out vec2 gsFragOffset;
 
 struct PointLight {
@@ -40,6 +42,7 @@ void main() {
             fs_out_fragColor = gs_in_fragColor[i];
             fs_out_fragPosWorld = gs_in_fragPosWorld[i];
             fs_out_fragNormalWorld = gs_in_fragNormalWorld[i];
+            fs_out_fragTexCoord = gs_in_fragTexCoord[i];
             // gsFragOffset = ndcPos.xy; // Calculate and pass gsFragOffset based on NDC
             EmitVertex();
         }

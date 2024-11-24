@@ -21,12 +21,8 @@ using namespace tinygltf;
 
 namespace std {
     /*
-        With this we can take an instance of the Vertex struct and hash it to a
-        single value of type size_t. This is useful for the unordered_map to use
-        it as a key.
-
-        It allows the use of the Vertex struct as a key in an unordered_map.
-        So this is allowed:
+        With this we can take an instance of the Vertex struct and hash it to a value of type size_t.
+        This is useful for the unordered_map to use it as a key. So this is allowed:
         std::unordered_map<Vertex, int> uniqueVertices{};
     */
     template<>
@@ -40,16 +36,16 @@ namespace std {
 }
 
 namespace ud {
-    // UDModel::UDModel(UDDevice& device, const UDModel::Builder& builder) : device{ device } {
-    //     createVertexBuffers(builder.vertices);
-    //     createIndexBuffers(builder.indices);
-    // }
-
     UDModel::UDModel(UDRenderer& renderer, const std::string& filepath) :
         renderer{ renderer }, filepath{ filepath }, device{ renderer.getDevice() } {
     }
 
-    UDModel::~UDModel() {}
+    UDModel::~UDModel() {
+        vkDestroySampler(device.device(), textureSampler, nullptr);
+        vkDestroyImageView(device.device(), textureImageView, nullptr);
+        vkDestroyImage(device.device(), textureImage, nullptr);
+        vkFreeMemory(device.device(), textureImageMemory, nullptr);
+    }
 
     // std::unique_ptr<UDModel> UDModel::createModelFromFile(
     //     // The createModelFromFile function is a static method that creates a new model from a file
@@ -74,7 +70,8 @@ namespace ud {
         if (filepath.substr(filepath.find_last_of(".") + 1) == "obj") {
             builder.loadModelObj(filepath);
         }
-        else if (filepath.substr(filepath.find_last_of(".") + 1) == "gltf" || filepath.substr(filepath.find_last_of(".") + 1) == "glb") {
+        else if (filepath.substr(filepath.find_last_of(".") + 1) == "gltf"
+            || filepath.substr(filepath.find_last_of(".") + 1) == "glb") {
             builder.loadModelGltf(filepath);
         }
         else {
@@ -84,22 +81,28 @@ namespace ud {
         createVertexBuffers(builder.vertices);
         createIndexBuffers(builder.indices);
 
+        if (!builder.images.empty()) {
+            createTextureImage(builder.images[0]);
+            createTextureImageView();
+            createTextureSampler();
+        }
+
         dataLoaded = true;
     }
+
     /*
-            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
-            This means that the memory is mappable by the CPU and is coherent, so CPU
-            writes are immediately visible to the GPU without having to flush the cache.
-            This is not the as fast as it could be. It is for learning purposes.
+        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
+        This means that the memory is mappable by the CPU and is coherent, so CPU
+        writes are immediately visible to the GPU without having to flush the cache.
+        This is not the as fast as it could be. It is for learning purposes.
 
-            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT is the fastest memory type, but it is not mappable by the CPU.
-            To use device local memory, we must have a staging buffer, which is a buffer in host visible memory
-            that we copy the data to, and then copy the data to the device local memory.
+        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT is the fastest memory type, but it is not mappable by the CPU.
+        To use device local memory, we must have a staging buffer, which is a buffer in host visible memory
+        that we copy the data to, and then copy the data to the device local memory.
 
-            STAGING BUFFER IS RECOMMENDED FOR STATIC DATA, THOSE THAT ARE LOADED ONCE IN THE BEGINNING
-            AND NEVER CHANGED
-        */
-
+        STAGING BUFFER IS RECOMMENDED FOR STATIC DATA, THOSE THAT ARE LOADED ONCE IN THE BEGINNING
+        AND NEVER CHANGED
+    */
     void UDModel::createVertexBuffers(const std::vector<Vertex>& vertices) {
         vertexCount = static_cast<uint32_t>(vertices.size());
         assert(vertexCount >= 3 && "Vertex count must be at least 3");
@@ -123,15 +126,13 @@ namespace ud {
             VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
         );
-
-        // Copies the data from the staging buffer to the vertex buffer
+        // Copies data: staging buffer -> vertex buffer
         device.copyBuffer(stagingBuffer.getBuffer(), vertexBuffer->getBuffer(), bufferSize);
-        // No need to clear memory. stagingBuffer is a stack variable, so it will be cleaned up
-        // when createVertexBuffers ends
+        // StagingBuffer is a stack variable, so it will be cleaned up when createVertexBuffers ends
     }
 
+    // Same as createVertexBuffers but for the index buffer
     void UDModel::createIndexBuffers(const std::vector<uint32_t>& indices) {
-        // Same as createVertexBuffers but for the index buffer
         indexCount = static_cast<uint32_t>(indices.size());
         hasIndexBuffer = indexCount > 0;
 
@@ -164,21 +165,29 @@ namespace ud {
         bindingDescriptions[0].binding = 0;
         bindingDescriptions[0].stride = sizeof(Vertex);
         bindingDescriptions[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
-
         return bindingDescriptions; // Same as {{0, sizeof(Vertex), VK_VERTEX_INPUT_RATE_VERTEX}}
     }
 
-    // Attribute descriptions define how to extract a vertex attribute from a chunk of vertex data originating from a binding description
-    // As an example of attribute description, we have the position and color of the vertex
+
     std::vector<VkVertexInputAttributeDescription> UDModel::Vertex::getAttributeDescriptions() {
         std::vector<VkVertexInputAttributeDescription> attributeDescriptions{};
 
-        // params(location, binding, format, offset)
-        // Similar to OpenGLs glVertexAttribPointer
-        attributeDescriptions.push_back({ 0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, position) }); // rgb because 3 floats x, y, z
-        attributeDescriptions.push_back({ 1, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, color) });
-        attributeDescriptions.push_back({ 2, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, normal) });
-        attributeDescriptions.push_back({ 3, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, uv) });
+        /*
+            params(location, binding, format, offset), Similar to OpenGLs glVertexAttribPointer
+            rgb because 3 floats x, y, z
+        */
+        attributeDescriptions.push_back(
+            { 0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, position) }
+        );
+        attributeDescriptions.push_back(
+            { 1, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, color) }
+        );
+        attributeDescriptions.push_back(
+            { 2, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, normal) }
+        );
+        attributeDescriptions.push_back(
+            { 3, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, uv) }
+        );
 
         return attributeDescriptions;
     }
@@ -193,8 +202,7 @@ namespace ud {
 
         if (hasIndexBuffer) {
             // Index type must be the same as the indices vector type
-            // For small projects, we could use 16 bits (uint16_t). But for general purposes, we will use 32 bits
-            // 16 bits= 65535 vertices, 32 bits= 4,294,967,295 vertices
+            // For general purposes, uses 32 bits. 16bits = 65535 vertices, 32bits= 4,294,967,295 vertices
             vkCmdBindIndexBuffer(commandBuffer, indexBuffer->getBuffer(), 0, VK_INDEX_TYPE_UINT32);
         }
     }
@@ -210,6 +218,102 @@ namespace ud {
     }
 
 
+    void UDModel::createTextureImage(const tinygltf::Image& image) {
+        VkDeviceSize imageSize = image.width * image.height * 4; // Assuming 4 bytes per pixel (RGBA)
+
+        UDBuffer stagingBuffer{
+            device,
+            imageSize,
+            1,
+            VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
+        };
+        stagingBuffer.map();
+        stagingBuffer.writeToBuffer(reinterpret_cast<void*>(const_cast<unsigned char*>(image.image.data())));
+
+        VkImageCreateInfo imageCreateInfo{};
+        imageCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+        imageCreateInfo.imageType = VK_IMAGE_TYPE_2D;
+        imageCreateInfo.extent.width = static_cast<uint32_t>(image.width);
+        imageCreateInfo.extent.height = static_cast<uint32_t>(image.height);
+        imageCreateInfo.extent.depth = 1;
+        imageCreateInfo.mipLevels = 1;
+        imageCreateInfo.arrayLayers = 1;
+        imageCreateInfo.format = VK_FORMAT_R8G8B8A8_SRGB;
+        imageCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+        imageCreateInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+        imageCreateInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+        imageCreateInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+        imageCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+        device.createImageWithInfo(imageCreateInfo,
+            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+            textureImage,
+            textureImageMemory);
+
+        renderer.getSwapChain().transitionImageLayout(
+            device.device(),
+            device.getCommandPool(),
+            device.graphicsQueue(),
+            textureImage,
+            VK_FORMAT_R8G8B8A8_SRGB,
+            VK_IMAGE_LAYOUT_UNDEFINED,
+            VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL
+        );
+        device.copyBufferToImage(
+            stagingBuffer.getBuffer(),
+            textureImage,
+            static_cast<uint32_t>(image.width),
+            static_cast<uint32_t>(image.height),
+            1
+        );
+        renderer.getSwapChain().transitionImageLayout(
+            device.device(),
+            device.getCommandPool(),
+            device.graphicsQueue(),
+            textureImage,
+            VK_FORMAT_R8G8B8A8_SRGB,
+            VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+            VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
+        );
+    }
+
+    void UDModel::createTextureImageView() {
+        VkImageViewCreateInfo viewInfo{};
+        viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+        viewInfo.image = textureImage;
+        viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+        viewInfo.format = VK_FORMAT_R8G8B8A8_SRGB;
+        viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        viewInfo.subresourceRange.baseMipLevel = 0;
+        viewInfo.subresourceRange.levelCount = 1;
+        viewInfo.subresourceRange.baseArrayLayer = 0;
+        viewInfo.subresourceRange.layerCount = 1;
+
+        if (vkCreateImageView(device.device(), &viewInfo, nullptr, &textureImageView) != VK_SUCCESS) {
+            throw std::runtime_error("failed to create texture image view!");
+        }
+    }
+
+    void UDModel::createTextureSampler() {
+        VkSamplerCreateInfo samplerInfo{};
+        samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+        samplerInfo.magFilter = VK_FILTER_LINEAR;
+        samplerInfo.minFilter = VK_FILTER_LINEAR;
+        samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+        samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+        samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+        samplerInfo.anisotropyEnable = VK_TRUE;
+        samplerInfo.maxAnisotropy = 16.0f;
+        samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
+        samplerInfo.unnormalizedCoordinates = VK_FALSE;
+        samplerInfo.compareEnable = VK_FALSE;
+        samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
+        samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+
+        if (vkCreateSampler(device.device(), &samplerInfo, nullptr, &textureSampler) != VK_SUCCESS) {
+            throw std::runtime_error("failed to create texture sampler!");
+        }
+    }
 
     void UDModel::Builder::loadModelObj(const std::string& filepath) {
         // Load the model from the file using tinyobjloader
@@ -319,11 +423,16 @@ namespace ud {
                     indices.push_back(indicesData[i]);
                 }
 
-                const tinygltf::Accessor& positionAccessor = model.accessors[primitive.attributes.find("POSITION")->second];
-                const tinygltf::BufferView& positionBufferView = model.bufferViews[positionAccessor.bufferView];
-                const tinygltf::Buffer& positionBuffer = model.buffers[positionBufferView.buffer];
+                // load vertices 
+                const tinygltf::Accessor& positionAccessor =
+                    model.accessors[primitive.attributes.find("POSITION")->second];
+                const tinygltf::BufferView& positionBufferView =
+                    model.bufferViews[positionAccessor.bufferView];
+                const tinygltf::Buffer& positionBuffer =
+                    model.buffers[positionBufferView.buffer];
 
-                const float* positionsData = reinterpret_cast<const float*>(&positionBuffer.data[positionBufferView.byteOffset + positionAccessor.byteOffset]);
+                const float* positionsData =
+                    reinterpret_cast<const float*>(&positionBuffer.data[positionBufferView.byteOffset + positionAccessor.byteOffset]);
                 for (size_t i = 0; i < positionAccessor.count; ++i) {
                     Vertex vertex{};
                     vertex.position = glm::vec3(positionsData[i * 3 + 0], positionsData[i * 3 + 1], positionsData[i * 3 + 2]);
@@ -331,6 +440,7 @@ namespace ud {
                     vertices.push_back(vertex);
                 }
 
+                // load normals
                 if (primitive.attributes.find("NORMAL") != primitive.attributes.end()) {
                     const tinygltf::Accessor& normalAccessor = model.accessors[primitive.attributes.find("NORMAL")->second];
                     const tinygltf::BufferView& normalBufferView = model.bufferViews[normalAccessor.bufferView];
@@ -342,26 +452,28 @@ namespace ud {
                     }
                 }
 
-                if (primitive.attributes.find("TEXCOORD_0") != primitive.attributes.end()) {
-                    const tinygltf::Accessor& texcoordAccessor = model.accessors[primitive.attributes.find("TEXCOORD_0")->second];
-                    const tinygltf::BufferView& texcoordBufferView = model.bufferViews[texcoordAccessor.bufferView];
-                    const tinygltf::Buffer& texcoordBuffer = model.buffers[texcoordBufferView.buffer];
+                // // load texture coordinates
+                // if (primitive.attributes.find("TEXCOORD_0") != primitive.attributes.end()) {
+                //     const tinygltf::Accessor& texcoordAccessor = model.accessors[primitive.attributes.find("TEXCOORD_0")->second];
+                //     const tinygltf::BufferView& texcoordBufferView = model.bufferViews[texcoordAccessor.bufferView];
+                //     const tinygltf::Buffer& texcoordBuffer = model.buffers[texcoordBufferView.buffer];
 
-                    const float* texcoordsData = reinterpret_cast<const float*>(&texcoordBuffer.data[texcoordBufferView.byteOffset + texcoordAccessor.byteOffset]);
-                    for (size_t i = 0; i < texcoordAccessor.count; ++i) {
-                        vertices[i].uv = glm::vec2(texcoordsData[i * 2 + 0], texcoordsData[i * 2 + 1]);
-                    }
-                }
+                //     const float* texcoordsData = reinterpret_cast<const float*>(&texcoordBuffer.data[texcoordBufferView.byteOffset + texcoordAccessor.byteOffset]);
+                //     for (size_t i = 0; i < texcoordAccessor.count; ++i) {
+                //         vertices[i].uv = glm::vec2(texcoordsData[i * 2 + 0], texcoordsData[i * 2 + 1]);
+                //     }
+                // }
 
-                if (primitive.material >= 0) {
-                    const tinygltf::Material& material = model.materials[primitive.material];
-                    if (material.pbrMetallicRoughness.baseColorTexture.index >= 0) {
-                        const tinygltf::Texture& texture = model.textures[material.pbrMetallicRoughness.baseColorTexture.index];
-                        const tinygltf::Image& image = model.images[texture.source];
-                        // Load textures using swap_chain.cpp code
-                        swapChain.loadTextureImage(image);
-                    }
-                }
+                // // load colors
+                // if (primitive.material >= 0) {
+                //     const tinygltf::Material& material = model.materials[primitive.material];
+                //     if (material.pbrMetallicRoughness.baseColorTexture.index >= 0) {
+                //         const tinygltf::Texture& texture = model.textures[material.pbrMetallicRoughness.baseColorTexture.index];
+                //         const tinygltf::Image& image = model.images[texture.source];
+                //         // Load textures using swap_chain.cpp code
+                //         images.push_back(image);
+                //     }
+                // }
             }
         }
     }
