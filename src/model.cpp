@@ -452,28 +452,28 @@ namespace ud {
                     }
                 }
 
-                // // load texture coordinates
-                // if (primitive.attributes.find("TEXCOORD_0") != primitive.attributes.end()) {
-                //     const tinygltf::Accessor& texcoordAccessor = model.accessors[primitive.attributes.find("TEXCOORD_0")->second];
-                //     const tinygltf::BufferView& texcoordBufferView = model.bufferViews[texcoordAccessor.bufferView];
-                //     const tinygltf::Buffer& texcoordBuffer = model.buffers[texcoordBufferView.buffer];
+                // load texture coordinates
+                if (primitive.attributes.find("TEXCOORD_0") != primitive.attributes.end()) {
+                    const tinygltf::Accessor& texcoordAccessor = model.accessors[primitive.attributes.find("TEXCOORD_0")->second];
+                    const tinygltf::BufferView& texcoordBufferView = model.bufferViews[texcoordAccessor.bufferView];
+                    const tinygltf::Buffer& texcoordBuffer = model.buffers[texcoordBufferView.buffer];
 
-                //     const float* texcoordsData = reinterpret_cast<const float*>(&texcoordBuffer.data[texcoordBufferView.byteOffset + texcoordAccessor.byteOffset]);
-                //     for (size_t i = 0; i < texcoordAccessor.count; ++i) {
-                //         vertices[i].uv = glm::vec2(texcoordsData[i * 2 + 0], texcoordsData[i * 2 + 1]);
-                //     }
-                // }
+                    const float* texcoordsData = reinterpret_cast<const float*>(&texcoordBuffer.data[texcoordBufferView.byteOffset + texcoordAccessor.byteOffset]);
+                    for (size_t i = 0; i < texcoordAccessor.count; ++i) {
+                        vertices[i].uv = glm::vec2(texcoordsData[i * 2 + 0], texcoordsData[i * 2 + 1]);
+                    }
+                }
 
-                // // load colors
-                // if (primitive.material >= 0) {
-                //     const tinygltf::Material& material = model.materials[primitive.material];
-                //     if (material.pbrMetallicRoughness.baseColorTexture.index >= 0) {
-                //         const tinygltf::Texture& texture = model.textures[material.pbrMetallicRoughness.baseColorTexture.index];
-                //         const tinygltf::Image& image = model.images[texture.source];
-                //         // Load textures using swap_chain.cpp code
-                //         images.push_back(image);
-                //     }
-                // }
+                // load colors
+                if (primitive.material >= 0) {
+                    const tinygltf::Material& material = model.materials[primitive.material];
+                    if (material.pbrMetallicRoughness.baseColorTexture.index >= 0) {
+                        const tinygltf::Texture& texture = model.textures[material.pbrMetallicRoughness.baseColorTexture.index];
+                        const tinygltf::Image& image = model.images[texture.source];
+                        // Load textures using swap_chain.cpp code
+                        images.push_back(image);
+                    }
+                }
             }
         }
     }
