@@ -45,3 +45,22 @@ void main() {
     fragColor = color;
     fragTexCoord = uv;
 }
+
+// layout(set = 0, binding = 0) uniform GlobalUbo {
+//     mat4 projection[2]; 
+//     mat4 view[2];
+//     mat4 inverseView[2];
+//     vec4 ambientLightColor;
+//     PointLight pointLights[10]; 
+//     int numLights;
+// } ubo;
+
+// layout(location = 0) in vec2 inPosition;
+// layout(location = 1) in vec3 inColor;
+
+// layout(location = 0) out vec3 fragColor;
+
+// void main() {
+//     gl_Position = ubo.proj * ubo.view * ubo.model * vec4(inPosition, 0.0, 1.0);
+//     fragColor = inColor;
+// }

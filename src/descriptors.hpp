@@ -15,7 +15,7 @@ namespace ud {
         public:
             Builder(UDDevice& udDevice) : udDevice{ udDevice } {}
 
-            Builder& addBinding(    // <--- This is the Builder pattern, tells vulkan what kind of data will be in the descriptor
+            Builder& addBinding(
                 uint32_t binding,
                 VkDescriptorType descriptorType,
                 VkShaderStageFlags stageFlags,

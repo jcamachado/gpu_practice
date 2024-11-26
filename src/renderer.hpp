@@ -1,5 +1,6 @@
 #pragma once
 
+#include "camera.hpp"
 #include "device.hpp"
 #include "swap_chain.hpp"
 #include "window.hpp"
@@ -31,8 +32,12 @@ namespace ud {
             assert(isFrameStarted && "Cannot get frame index when frame not in progress.");
             return currentFrameIndex;
         }
-        void createUniformBuffers(std::vector<std::unique_ptr<UDBuffer>>& uboBuffers); // this should not be here (should be in the renderer)
-
+        void createUniformBuffers(std::vector<std::unique_ptr<UDBuffer>>& uboBuffers); //right place?
+        // void updateUniformBuffer(
+        //     uint32_t currentImage,
+        //     std::vector<std::unique_ptr<UDBuffer>>& uboBuffers,
+        //     UDCamera camera
+        // );
 
 
         /*

@@ -94,7 +94,8 @@ namespace ud {
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
         This means that the memory is mappable by the CPU and is coherent, so CPU
         writes are immediately visible to the GPU without having to flush the cache.
-        This is not the as fast as it could be. It is for learning purposes.
+
+        -*> This is not the as fast as it could be. It is for learning purposes.<*-
 
         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT is the fastest memory type, but it is not mappable by the CPU.
         To use device local memory, we must have a staging buffer, which is a buffer in host visible memory
@@ -108,6 +109,7 @@ namespace ud {
         assert(vertexCount >= 3 && "Vertex count must be at least 3");
         VkDeviceSize bufferSize = sizeof(vertices[0]) * vertexCount;
         uint32_t vertexSize = sizeof(vertices[0]);
+
         UDBuffer stagingBuffer{
             device,
             vertexSize,
@@ -158,6 +160,7 @@ namespace ud {
             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
         );
         device.copyBuffer(stagingBuffer.getBuffer(), indexBuffer->getBuffer(), bufferSize);
+        stagingBuffer.unmap();
     }
 
     std::vector<VkVertexInputBindingDescription> UDModel::Vertex::getBindingDescriptions() {

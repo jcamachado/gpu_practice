@@ -164,7 +164,9 @@ namespace ud {
                     gameObjects
                 };
 
-                // update
+                /*
+                    Update the global UBO (updateUniformBuffer in tutorial)
+                */
                 GlobalUBO ubo{};
                 ubo.projection[0] = leftEyeCamera.getProjection();
                 ubo.view[0] = leftEyeCamera.getView();
@@ -174,8 +176,9 @@ namespace ud {
                 ubo.inverseView[0] = glm::inverse(leftEyeCamera.getView());
                 ubo.inverseView[1] = glm::inverse(rightEyeCamera.getView());
                 pointLightSystem.update(frameInfo, ubo);
+
                 uboBuffers[frameIndex]->writeToBuffer(&ubo);
-                // uboBuffers[frameIndex]->flush();
+                uboBuffers[frameIndex]->flush();
 
                 // render (draw calls)
                 udRenderer.beginSwapChainRenderPass(commandBuffer);
@@ -223,11 +226,6 @@ namespace ud {
         /*
             scene
         */
-        // placeNewObject(udModel,
-        //     udDevice,
-        //     "models/scenes/main1_sponza/NewSponza_Main_glTF_003.gltf",
-        //     { 0.0f, 0.0f, 0.0f },
-        //     { 1.0f, 1.0f, 1.0f });
 
         placeNewObject(udModel,
             udRenderer,
@@ -254,11 +252,11 @@ namespace ud {
             { -0.5f, 0.5f, 0.0f },
             { 3.0f, 1.5f, 3.0f });
 
-        // placeNewObject(udModel,
-        //     udDevice,
-        //     "models/smooth_vase.obj",
-        //     { 0.5f, 0.5f, 0.0f },
-        //     { 3.0f, 1.5f, 3.0f });
+        placeNewObject(udModel,
+            udRenderer,
+            "models/smooth_vase.obj",
+            { 0.5f, 0.5f, 0.0f },
+            { 3.0f, 1.5f, 3.0f });
 
         placeNewObject(udModel,
             udRenderer,

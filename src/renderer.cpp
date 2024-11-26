@@ -188,4 +188,12 @@ namespace ud {
             uboBuffers[i]->map();
         }
     }
+
+    // void UDRenderer::updateUniformBuffer(
+    //     uint32_t currentImage,
+    //     std::vector<std::unique_ptr<UDBuffer>>& uboBuffers,
+    //     UDCamera camera
+    // ) {
+
+    // }
 }

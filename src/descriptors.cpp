@@ -7,8 +7,11 @@
 namespace ud
 {
 
-    // *************** Descriptor Set Layout Builder *********************
-
+    /*  ************** Descriptor Set Layout Builder *********************
+        createDescriptorSetLayout in tutorial
+        The definition of descriptor is: "A descriptor is a way to tell the shader where to find the data"
+        This is the Builder pattern, tells vulkan what kind of data will be in the descriptor
+    */
     UDDescriptorSetLayout::Builder& UDDescriptorSetLayout::Builder::addBinding(
         uint32_t binding,
         VkDescriptorType descriptorType,
@@ -21,10 +24,12 @@ namespace ud
         layoutBinding.descriptorType = descriptorType;
         layoutBinding.descriptorCount = count;
         layoutBinding.stageFlags = stageFlags;
+        layoutBinding.pImmutableSamplers = nullptr; // Optional, added later without use for now
         bindings[binding] = layoutBinding;
         return *this;
     }
 
+    // Creates a new UDDescriptorSetLayout object for the added bindings
     std::unique_ptr<UDDescriptorSetLayout> UDDescriptorSetLayout::Builder::build() const
     {
         return std::make_unique<UDDescriptorSetLayout>(udDevice, bindings);
@@ -42,10 +47,10 @@ namespace ud
             setLayoutBindings.push_back(kv.second);
         }
 
-        VkDescriptorSetLayoutCreateInfo descriptorSetLayoutInfo{};
+        VkDescriptorSetLayoutCreateInfo descriptorSetLayoutInfo{}; // layoutInfo in tutorial
         descriptorSetLayoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-        descriptorSetLayoutInfo.bindingCount = static_cast<uint32_t>(setLayoutBindings.size());
-        descriptorSetLayoutInfo.pBindings = setLayoutBindings.data();
+        descriptorSetLayoutInfo.bindingCount = static_cast<uint32_t>(setLayoutBindings.size()); // nr bindings
+        descriptorSetLayoutInfo.pBindings = setLayoutBindings.data(); // Pointer to the bindings
 
         if (vkCreateDescriptorSetLayout(
             udDevice.device(),
@@ -153,7 +158,8 @@ namespace ud
     // *************** Descriptor Writer *********************
 
     UDDescriptorWriter::UDDescriptorWriter(UDDescriptorSetLayout& setLayout, UDDescriptorPool& pool)
-        : setLayout{ setLayout }, pool{ pool } {}
+        : setLayout{ setLayout }, pool{ pool } {
+    }
 
     UDDescriptorWriter& UDDescriptorWriter::writeBuffer(
         uint32_t binding, VkDescriptorBufferInfo* bufferInfo)

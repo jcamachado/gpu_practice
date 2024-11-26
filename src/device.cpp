@@ -132,7 +132,7 @@ namespace ud {
     }
 
     vkGetPhysicalDeviceProperties(physicalDevice, &properties);
-    // std::cout << "physical device: " << properties.deviceName << std::endl;
+    std::cout << "Physical device: " << properties.deviceName << std::endl;
   }
 
   void UDDevice::createLogicalDevice() {
