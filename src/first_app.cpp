@@ -27,8 +27,8 @@ namespace ud {
         // One set can have all the descriptors, but then the pool cannot provide more sets
         // could add more descriptor to the pool using chain call .addPoolSize(..).addPoolSize(..
         globalPool = UDDescriptorPool::Builder(udDevice)
-            .setMaxSets(UDSwapChain::MAX_FRAMES_IN_FLIGHT) // 2 sets
-            .addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, UDSwapChain::MAX_FRAMES_IN_FLIGHT) // 2 uniform descriptors
+            .setMaxSets(UDSwapChain::MAX_FRAMES_IN_FLIGHT) // 2 descriptor sets
+            .addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, UDSwapChain::MAX_FRAMES_IN_FLIGHT)
             .addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, UDSwapChain::MAX_FRAMES_IN_FLIGHT) // Add image sampler pool size
             .build();
         loadObjects();
@@ -55,11 +55,17 @@ namespace ud {
 
         auto globalSetLayout = UDDescriptorSetLayout::Builder(udDevice)
             // .addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT)
-            .addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS) // Add binding for both vertex and fragment shaders
+            .addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS) // Add binding for all shaders
             .addBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT) // Add sampler binding
             .build();
 
 
+        /*
+            The number of descriptor sets must match the number of frames in flight
+            No need to reference the second descriptor set in the shader because
+            each index look for a frame. (Meio confuso ainda, 2 descriptos, mas 2 frames, entao
+            cada descriptor set eh para um frame)
+        */
         std::vector<VkDescriptorSet> globalDescriptorSets(UDSwapChain::MAX_FRAMES_IN_FLIGHT);
         UDSwapChain& swapchain = udRenderer.getSwapChain();
         for (int i = 0; i < globalDescriptorSets.size(); i++) {

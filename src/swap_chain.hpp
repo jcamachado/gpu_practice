@@ -48,17 +48,6 @@ namespace ud {
                 swapChainImageFormat == swapChain.swapChainImageFormat;
         }
 
-        void loadTextureImage(const tinygltf::Image& image);
-        VkDescriptorImageInfo imageDescriptorInfo();
-        void transitionImageLayout(
-            VkDevice device,
-            VkCommandPool commandPool,
-            VkQueue graphicsQueue,
-            VkImage image,
-            VkFormat format,
-            VkImageLayout oldLayout,
-            VkImageLayout newLayout
-        );
 
     private:
         void init();

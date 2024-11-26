@@ -32,12 +32,14 @@ namespace ud {
 
     // for 2 cameras
     struct GlobalUBO { // total of bits = 16 * 4 * 4 = 256 bits = 32 bytes
-        glm::mat4 projection[2] = { glm::mat4(1.0f), glm::mat4(1.0f) }; // Projection matrices for left and right eyes
-        glm::mat4 view[2] = { glm::mat4(1.0f), glm::mat4(1.0f) };       // View matrices for left and right eyes
-        glm::mat4 inverseView[2] = { glm::mat4(1.0f), glm::mat4(1.0f) }; // Inverse view matrices for left and right eyes
-        glm::vec4 ambientLightColor{ 1.0f, 1.0f, 1.0f, 0.02f };
-        PointLight pointLights[MAX_LIGHTS];
-        int numLights;
+        alignas(16) glm::mat4 projection[2] = { glm::mat4(1.0f), glm::mat4(1.0f) }; // Projection matrices for left and right eyes
+        alignas(16) glm::mat4 view[2] = { glm::mat4(1.0f), glm::mat4(1.0f) };       // View matrices for left and right eyes
+        alignas(16) glm::mat4 inverseView[2] = { glm::mat4(1.0f), glm::mat4(1.0f) }; // Inverse view matrices for left and right eyes
+        alignas(16) glm::vec4 ambientLightColor{ 1.0f, 1.0f, 1.0f, 0.02f };
+        alignas(16) PointLight pointLights[MAX_LIGHTS];
+        alignas(4) int numLights;
+        // Padding to align the struct to 16 bytes
+        alignas(16) int padding[3];
     };
 
 

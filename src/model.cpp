@@ -9,6 +9,11 @@
 #include <glm/gtx/hash.hpp>
 
 // #define TINYGLTF_NOEXCEPTION // optional. disable exception handling.
+#define TINYGLTF_IMPLEMENTATION
+#define STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "lib/tinygltf/tiny_gltf.h"
+// #include "lib/tinygltf/stb_image.h"
 
 // std
 #include <cstring>
@@ -66,7 +71,7 @@ namespace ud {
     void UDModel::loadData() {
         if (dataLoaded) return;
 
-        Builder builder{ device, renderer.getSwapChain() };
+        Builder builder{ device };
         if (filepath.substr(filepath.find_last_of(".") + 1) == "obj") {
             builder.loadModelObj(filepath);
         }
@@ -82,7 +87,8 @@ namespace ud {
         createIndexBuffers(builder.indices);
 
         if (!builder.images.empty()) {
-            createTextureImage(builder.images[0]);
+            // createTextureImage(builder.images[0]);
+            createTextureImage();
             createTextureImageView();
             createTextureSampler();
         }
@@ -221,8 +227,18 @@ namespace ud {
     }
 
 
-    void UDModel::createTextureImage(const tinygltf::Image& image) {
-        VkDeviceSize imageSize = image.width * image.height * 4; // Assuming 4 bytes per pixel (RGBA)
+    /*
+        Parte desse codigo esta em src/swap_chain.cpp e src/device.cpp. O ideal seria
+        colocar esses metodos juntos em um arquivo chamado texture.cpp ou algo do tipo. ou aqui mesmo
+    */
+    void UDModel::createTextureImage() {
+        int texWidth, texHeight, texChannels;
+        stbi_uc* pixels = stbi_load("textures/texture.jpg", &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+        VkDeviceSize imageSize = texWidth * texHeight * 4;
+
+        if (!pixels) {
+            throw std::runtime_error("failed to load texture image!");
+        }
 
         UDBuffer stagingBuffer{
             device,
@@ -232,53 +248,51 @@ namespace ud {
             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
         };
         stagingBuffer.map();
-        stagingBuffer.writeToBuffer(reinterpret_cast<void*>(const_cast<unsigned char*>(image.image.data())));
+        stagingBuffer.writeToBuffer(reinterpret_cast<void*>(const_cast<unsigned char*>(pixels)));
 
-        VkImageCreateInfo imageCreateInfo{};
-        imageCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-        imageCreateInfo.imageType = VK_IMAGE_TYPE_2D;
-        imageCreateInfo.extent.width = static_cast<uint32_t>(image.width);
-        imageCreateInfo.extent.height = static_cast<uint32_t>(image.height);
-        imageCreateInfo.extent.depth = 1;
-        imageCreateInfo.mipLevels = 1;
-        imageCreateInfo.arrayLayers = 1;
-        imageCreateInfo.format = VK_FORMAT_R8G8B8A8_SRGB;
-        imageCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
-        imageCreateInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-        imageCreateInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
-        imageCreateInfo.samples = VK_SAMPLE_COUNT_1_BIT;
-        imageCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-        device.createImageWithInfo(imageCreateInfo,
+        stbi_image_free(pixels);
+
+        VkImageCreateInfo imageInfo{};
+        imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+        imageInfo.imageType = VK_IMAGE_TYPE_2D;
+        imageInfo.extent.width = texWidth;
+        imageInfo.extent.height = texHeight;
+        imageInfo.extent.depth = 1;
+        imageInfo.mipLevels = 1;
+        imageInfo.arrayLayers = 1;
+        imageInfo.format = VK_FORMAT_R8G8B8A8_SRGB;
+        imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+        imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+        imageInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+        imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+        imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+        device.createImageWithInfo(
+            imageInfo,
             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
             textureImage,
-            textureImageMemory);
+            textureImageMemory
+        );
 
-        renderer.getSwapChain().transitionImageLayout(
-            device.device(),
-            device.getCommandPool(),
-            device.graphicsQueue(),
+        device.transitionImageLayout(
             textureImage,
             VK_FORMAT_R8G8B8A8_SRGB,
-            VK_IMAGE_LAYOUT_UNDEFINED,
+            VK_IMAGE_LAYOUT_UNDEFINED, // For now we don't care about the its contents
             VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL
         );
-        device.copyBufferToImage(
-            stagingBuffer.getBuffer(),
+        device.copyBufferToImage(stagingBuffer.getBuffer(),
             textureImage,
-            static_cast<uint32_t>(image.width),
-            static_cast<uint32_t>(image.height),
-            1
+            static_cast<uint32_t>(texWidth),
+            static_cast<uint32_t>(texHeight)
         );
-        renderer.getSwapChain().transitionImageLayout(
-            device.device(),
-            device.getCommandPool(),
-            device.graphicsQueue(),
+        device.transitionImageLayout(
             textureImage,
             VK_FORMAT_R8G8B8A8_SRGB,
             VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
             VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
         );
     }
+
 
     void UDModel::createTextureImageView() {
         VkImageViewCreateInfo viewInfo{};

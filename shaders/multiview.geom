@@ -27,6 +27,8 @@ layout(set = 0, binding = 0) uniform GlobalUbo {
     vec4 ambientLightColor;
     PointLight pointLights[10]; 
     int numLights;
+    // Padding to align the struct to 16 bytes
+    int padding[3];
 } ubo;
 
 void main() {

@@ -1345,6 +1345,7 @@ CMakeFiles/UFFDEJAVU.dir/src/first_app.cpp.o
 CMakeFiles/UFFDEJAVU.dir/src/game_object.cpp.o
  /home/jaxe/Repositories/gpu_practice/src/game_object.cpp
  /home/jaxe/Repositories/gpu_practice/src/buffer.hpp
+ /home/jaxe/Repositories/gpu_practice/src/camera.hpp
  /home/jaxe/Repositories/gpu_practice/src/device.hpp
  /home/jaxe/Repositories/gpu_practice/src/game_object.hpp
  /home/jaxe/Repositories/gpu_practice/src/lib/tinygltf/tiny_gltf.h
@@ -1767,6 +1768,7 @@ CMakeFiles/UFFDEJAVU.dir/src/game_object.cpp.o
 CMakeFiles/UFFDEJAVU.dir/src/keyboard_movement_controller.cpp.o
  /home/jaxe/Repositories/gpu_practice/src/keyboard_movement_controller.cpp
  /home/jaxe/Repositories/gpu_practice/src/buffer.hpp
+ /home/jaxe/Repositories/gpu_practice/src/camera.hpp
  /home/jaxe/Repositories/gpu_practice/src/device.hpp
  /home/jaxe/Repositories/gpu_practice/src/game_object.hpp
  /home/jaxe/Repositories/gpu_practice/src/keyboard_movement_controller.hpp
@@ -2190,6 +2192,7 @@ CMakeFiles/UFFDEJAVU.dir/src/keyboard_movement_controller.cpp.o
 CMakeFiles/UFFDEJAVU.dir/src/main.cpp.o
  /home/jaxe/Repositories/gpu_practice/src/main.cpp
  /home/jaxe/Repositories/gpu_practice/src/buffer.hpp
+ /home/jaxe/Repositories/gpu_practice/src/camera.hpp
  /home/jaxe/Repositories/gpu_practice/src/descriptors.hpp
  /home/jaxe/Repositories/gpu_practice/src/device.hpp
  /home/jaxe/Repositories/gpu_practice/src/first_app.hpp
@@ -2638,7 +2641,11 @@ CMakeFiles/UFFDEJAVU.dir/src/main.cpp.o
 CMakeFiles/UFFDEJAVU.dir/src/model.cpp.o
  /home/jaxe/Repositories/gpu_practice/src/model.cpp
  /home/jaxe/Repositories/gpu_practice/src/buffer.hpp
+ /home/jaxe/Repositories/gpu_practice/src/camera.hpp
  /home/jaxe/Repositories/gpu_practice/src/device.hpp
+ /home/jaxe/Repositories/gpu_practice/src/lib/tinygltf/json.hpp
+ /home/jaxe/Repositories/gpu_practice/src/lib/tinygltf/stb_image.h
+ /home/jaxe/Repositories/gpu_practice/src/lib/tinygltf/stb_image_write.h
  /home/jaxe/Repositories/gpu_practice/src/lib/tinygltf/tiny_gltf.h
  /home/jaxe/Repositories/gpu_practice/src/model.hpp
  /home/jaxe/Repositories/gpu_practice/src/renderer.hpp
@@ -2650,9 +2657,14 @@ CMakeFiles/UFFDEJAVU.dir/src/model.cpp.o
  /usr/include/GLFW/glfw3.h
  /usr/include/KHR/khrplatform.h
  /usr/include/alloca.h
+ /usr/include/asm-generic/bitsperlong.h
  /usr/include/asm-generic/errno-base.h
  /usr/include/asm-generic/errno.h
+ /usr/include/asm-generic/int-ll64.h
+ /usr/include/asm-generic/posix_types.h
+ /usr/include/asm-generic/types.h
  /usr/include/assert.h
+ /usr/include/c++/13/algorithm
  /usr/include/c++/13/array
  /usr/include/c++/13/backward/auto_ptr.h
  /usr/include/c++/13/backward/binders.h
@@ -2670,6 +2682,7 @@ CMakeFiles/UFFDEJAVU.dir/src/model.cpp.o
  /usr/include/c++/13/bits/basic_string.tcc
  /usr/include/c++/13/bits/char_traits.h
  /usr/include/c++/13/bits/charconv.h
+ /usr/include/c++/13/bits/chrono.h
  /usr/include/c++/13/bits/codecvt.h
  /usr/include/c++/13/bits/concept_check.h
  /usr/include/c++/13/bits/cpp_type_traits.h
@@ -2680,20 +2693,33 @@ CMakeFiles/UFFDEJAVU.dir/src/model.cpp.o
  /usr/include/c++/13/bits/exception.h
  /usr/include/c++/13/bits/exception_defines.h
  /usr/include/c++/13/bits/exception_ptr.h
+ /usr/include/c++/13/bits/forward_list.h
+ /usr/include/c++/13/bits/forward_list.tcc
+ /usr/include/c++/13/bits/fs_dir.h
+ /usr/include/c++/13/bits/fs_fwd.h
+ /usr/include/c++/13/bits/fs_ops.h
+ /usr/include/c++/13/bits/fs_path.h
  /usr/include/c++/13/bits/fstream.tcc
  /usr/include/c++/13/bits/functexcept.h
  /usr/include/c++/13/bits/functional_hash.h
+ /usr/include/c++/13/bits/gslice.h
+ /usr/include/c++/13/bits/gslice_array.h
  /usr/include/c++/13/bits/hash_bytes.h
  /usr/include/c++/13/bits/hashtable.h
  /usr/include/c++/13/bits/hashtable_policy.h
+ /usr/include/c++/13/bits/indirect_array.h
  /usr/include/c++/13/bits/invoke.h
  /usr/include/c++/13/bits/ios_base.h
  /usr/include/c++/13/bits/istream.tcc
  /usr/include/c++/13/bits/locale_classes.h
  /usr/include/c++/13/bits/locale_classes.tcc
+ /usr/include/c++/13/bits/locale_conv.h
  /usr/include/c++/13/bits/locale_facets.h
  /usr/include/c++/13/bits/locale_facets.tcc
+ /usr/include/c++/13/bits/locale_facets_nonio.h
+ /usr/include/c++/13/bits/locale_facets_nonio.tcc
  /usr/include/c++/13/bits/localefwd.h
+ /usr/include/c++/13/bits/mask_array.h
  /usr/include/c++/13/bits/memory_resource.h
  /usr/include/c++/13/bits/memoryfwd.h
  /usr/include/c++/13/bits/move.h
@@ -2702,15 +2728,18 @@ CMakeFiles/UFFDEJAVU.dir/src/model.cpp.o
  /usr/include/c++/13/bits/node_handle.h
  /usr/include/c++/13/bits/ostream.tcc
  /usr/include/c++/13/bits/ostream_insert.h
+ /usr/include/c++/13/bits/parse_numbers.h
  /usr/include/c++/13/bits/postypes.h
  /usr/include/c++/13/bits/predefined_ops.h
  /usr/include/c++/13/bits/ptr_traits.h
+ /usr/include/c++/13/bits/quoted_string.h
  /usr/include/c++/13/bits/range_access.h
  /usr/include/c++/13/bits/refwrap.h
  /usr/include/c++/13/bits/requires_hosted.h
  /usr/include/c++/13/bits/shared_ptr.h
  /usr/include/c++/13/bits/shared_ptr_atomic.h
  /usr/include/c++/13/bits/shared_ptr_base.h
+ /usr/include/c++/13/bits/slice_array.h
  /usr/include/c++/13/bits/specfun.h
  /usr/include/c++/13/bits/sstream.tcc
  /usr/include/c++/13/bits/std_abs.h
@@ -2727,6 +2756,7 @@ CMakeFiles/UFFDEJAVU.dir/src/model.cpp.o
  /usr/include/c++/13/bits/stl_map.h
  /usr/include/c++/13/bits/stl_multimap.h
  /usr/include/c++/13/bits/stl_multiset.h
+ /usr/include/c++/13/bits/stl_numeric.h
  /usr/include/c++/13/bits/stl_pair.h
  /usr/include/c++/13/bits/stl_raw_storage_iter.h
  /usr/include/c++/13/bits/stl_relops.h
@@ -2735,6 +2765,7 @@ CMakeFiles/UFFDEJAVU.dir/src/model.cpp.o
  /usr/include/c++/13/bits/stl_tree.h
  /usr/include/c++/13/bits/stl_uninitialized.h
  /usr/include/c++/13/bits/stl_vector.h
+ /usr/include/c++/13/bits/stream_iterator.h
  /usr/include/c++/13/bits/streambuf.tcc
  /usr/include/c++/13/bits/streambuf_iterator.h
  /usr/include/c++/13/bits/string_view.tcc
@@ -2745,6 +2776,10 @@ CMakeFiles/UFFDEJAVU.dir/src/model.cpp.o
  /usr/include/c++/13/bits/uses_allocator.h
  /usr/include/c++/13/bits/uses_allocator_args.h
  /usr/include/c++/13/bits/utility.h
+ /usr/include/c++/13/bits/valarray_after.h
+ /usr/include/c++/13/bits/valarray_array.h
+ /usr/include/c++/13/bits/valarray_array.tcc
+ /usr/include/c++/13/bits/valarray_before.h
  /usr/include/c++/13/bits/vector.tcc
  /usr/include/c++/13/cassert
  /usr/include/c++/13/cctype
@@ -2753,12 +2788,14 @@ CMakeFiles/UFFDEJAVU.dir/src/model.cpp.o
  /usr/include/c++/13/climits
  /usr/include/c++/13/clocale
  /usr/include/c++/13/cmath
+ /usr/include/c++/13/codecvt
  /usr/include/c++/13/compare
  /usr/include/c++/13/cstddef
  /usr/include/c++/13/cstdint
  /usr/include/c++/13/cstdio
  /usr/include/c++/13/cstdlib
  /usr/include/c++/13/cstring
+ /usr/include/c++/13/ctime
  /usr/include/c++/13/cwchar
  /usr/include/c++/13/cwctype
  /usr/include/c++/13/debug/assertions.h
@@ -2771,24 +2808,35 @@ CMakeFiles/UFFDEJAVU.dir/src/model.cpp.o
  /usr/include/c++/13/ext/numeric_traits.h
  /usr/include/c++/13/ext/string_conversions.h
  /usr/include/c++/13/ext/type_traits.h
+ /usr/include/c++/13/filesystem
+ /usr/include/c++/13/forward_list
  /usr/include/c++/13/fstream
  /usr/include/c++/13/functional
  /usr/include/c++/13/initializer_list
+ /usr/include/c++/13/iomanip
  /usr/include/c++/13/ios
  /usr/include/c++/13/iosfwd
  /usr/include/c++/13/iostream
  /usr/include/c++/13/istream
+ /usr/include/c++/13/iterator
  /usr/include/c++/13/limits
+ /usr/include/c++/13/locale
  /usr/include/c++/13/map
+ /usr/include/c++/13/math.h
  /usr/include/c++/13/memory
  /usr/include/c++/13/new
+ /usr/include/c++/13/numeric
  /usr/include/c++/13/ostream
  /usr/include/c++/13/pstl/execution_defs.h
+ /usr/include/c++/13/pstl/glue_algorithm_defs.h
  /usr/include/c++/13/pstl/glue_memory_defs.h
+ /usr/include/c++/13/pstl/glue_numeric_defs.h
  /usr/include/c++/13/pstl/pstl_config.h
+ /usr/include/c++/13/ratio
  /usr/include/c++/13/set
  /usr/include/c++/13/sstream
  /usr/include/c++/13/stdexcept
+ /usr/include/c++/13/stdlib.h
  /usr/include/c++/13/streambuf
  /usr/include/c++/13/string
  /usr/include/c++/13/string_view
@@ -2810,6 +2858,7 @@ CMakeFiles/UFFDEJAVU.dir/src/model.cpp.o
  /usr/include/c++/13/typeinfo
  /usr/include/c++/13/unordered_map
  /usr/include/c++/13/utility
+ /usr/include/c++/13/valarray
  /usr/include/c++/13/vector
  /usr/include/ctype.h
  /usr/include/endian.h
@@ -2999,9 +3048,14 @@ CMakeFiles/UFFDEJAVU.dir/src/model.cpp.o
  /usr/include/glm/vec3.hpp
  /usr/include/glm/vec4.hpp
  /usr/include/glm/vector_relational.hpp
+ /usr/include/libintl.h
  /usr/include/limits.h
  /usr/include/linux/errno.h
  /usr/include/linux/limits.h
+ /usr/include/linux/posix_types.h
+ /usr/include/linux/stat.h
+ /usr/include/linux/stddef.h
+ /usr/include/linux/types.h
  /usr/include/locale.h
  /usr/include/math.h
  /usr/include/pthread.h
@@ -3027,7 +3081,11 @@ CMakeFiles/UFFDEJAVU.dir/src/model.cpp.o
  /usr/include/vulkan/vulkan_core.h
  /usr/include/wchar.h
  /usr/include/wctype.h
+ /usr/include/x86_64-linux-gnu/asm/bitsperlong.h
  /usr/include/x86_64-linux-gnu/asm/errno.h
+ /usr/include/x86_64-linux-gnu/asm/posix_types.h
+ /usr/include/x86_64-linux-gnu/asm/posix_types_64.h
+ /usr/include/x86_64-linux-gnu/asm/types.h
  /usr/include/x86_64-linux-gnu/bits/atomic_wide_counter.h
  /usr/include/x86_64-linux-gnu/bits/byteswap.h
  /usr/include/x86_64-linux-gnu/bits/cpu-set.h
@@ -3057,6 +3115,9 @@ CMakeFiles/UFFDEJAVU.dir/src/model.cpp.o
  /usr/include/x86_64-linux-gnu/bits/sched.h
  /usr/include/x86_64-linux-gnu/bits/select.h
  /usr/include/x86_64-linux-gnu/bits/setjmp.h
+ /usr/include/x86_64-linux-gnu/bits/stat.h
+ /usr/include/x86_64-linux-gnu/bits/statx-generic.h
+ /usr/include/x86_64-linux-gnu/bits/statx.h
  /usr/include/x86_64-linux-gnu/bits/stdint-intn.h
  /usr/include/x86_64-linux-gnu/bits/stdint-least.h
  /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h
@@ -3064,6 +3125,7 @@ CMakeFiles/UFFDEJAVU.dir/src/model.cpp.o
  /usr/include/x86_64-linux-gnu/bits/stdlib-float.h
  /usr/include/x86_64-linux-gnu/bits/struct_mutex.h
  /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h
+ /usr/include/x86_64-linux-gnu/bits/struct_stat.h
  /usr/include/x86_64-linux-gnu/bits/thread-shared-types.h
  /usr/include/x86_64-linux-gnu/bits/time.h
  /usr/include/x86_64-linux-gnu/bits/time64.h
@@ -3088,6 +3150,8 @@ CMakeFiles/UFFDEJAVU.dir/src/model.cpp.o
  /usr/include/x86_64-linux-gnu/bits/types/struct___jmp_buf_tag.h
  /usr/include/x86_64-linux-gnu/bits/types/struct_itimerspec.h
  /usr/include/x86_64-linux-gnu/bits/types/struct_sched_param.h
+ /usr/include/x86_64-linux-gnu/bits/types/struct_statx.h
+ /usr/include/x86_64-linux-gnu/bits/types/struct_statx_timestamp.h
  /usr/include/x86_64-linux-gnu/bits/types/struct_timespec.h
  /usr/include/x86_64-linux-gnu/bits/types/struct_timeval.h
  /usr/include/x86_64-linux-gnu/bits/types/struct_tm.h
@@ -3115,24 +3179,32 @@ CMakeFiles/UFFDEJAVU.dir/src/model.cpp.o
  /usr/include/x86_64-linux-gnu/c++/13/bits/error_constants.h
  /usr/include/x86_64-linux-gnu/c++/13/bits/gthr-default.h
  /usr/include/x86_64-linux-gnu/c++/13/bits/gthr.h
+ /usr/include/x86_64-linux-gnu/c++/13/bits/messages_members.h
  /usr/include/x86_64-linux-gnu/c++/13/bits/os_defines.h
+ /usr/include/x86_64-linux-gnu/c++/13/bits/time_members.h
  /usr/include/x86_64-linux-gnu/gnu/stubs-64.h
  /usr/include/x86_64-linux-gnu/gnu/stubs.h
  /usr/include/x86_64-linux-gnu/sys/cdefs.h
  /usr/include/x86_64-linux-gnu/sys/select.h
  /usr/include/x86_64-linux-gnu/sys/single_threaded.h
+ /usr/include/x86_64-linux-gnu/sys/stat.h
  /usr/include/x86_64-linux-gnu/sys/types.h
+ /usr/lib/gcc/x86_64-linux-gnu/13/include/emmintrin.h
  /usr/lib/gcc/x86_64-linux-gnu/13/include/float.h
  /usr/lib/gcc/x86_64-linux-gnu/13/include/limits.h
+ /usr/lib/gcc/x86_64-linux-gnu/13/include/mm_malloc.h
+ /usr/lib/gcc/x86_64-linux-gnu/13/include/mmintrin.h
  /usr/lib/gcc/x86_64-linux-gnu/13/include/stdarg.h
  /usr/lib/gcc/x86_64-linux-gnu/13/include/stddef.h
  /usr/lib/gcc/x86_64-linux-gnu/13/include/stdint.h
  /usr/lib/gcc/x86_64-linux-gnu/13/include/syslimits.h
+ /usr/lib/gcc/x86_64-linux-gnu/13/include/xmmintrin.h
  /usr/local/include/tinyobjloader/tiny_obj_loader.h
 
 CMakeFiles/UFFDEJAVU.dir/src/pipeline.cpp.o
  /home/jaxe/Repositories/gpu_practice/src/pipeline.cpp
  /home/jaxe/Repositories/gpu_practice/src/buffer.hpp
+ /home/jaxe/Repositories/gpu_practice/src/camera.hpp
  /home/jaxe/Repositories/gpu_practice/src/device.hpp
  /home/jaxe/Repositories/gpu_practice/src/lib/tinygltf/tiny_gltf.h
  /home/jaxe/Repositories/gpu_practice/src/model.hpp
@@ -3999,9 +4071,6 @@ CMakeFiles/UFFDEJAVU.dir/src/swap_chain.cpp.o
  /home/jaxe/Repositories/gpu_practice/src/swap_chain.cpp
  /home/jaxe/Repositories/gpu_practice/src/buffer.hpp
  /home/jaxe/Repositories/gpu_practice/src/device.hpp
- /home/jaxe/Repositories/gpu_practice/src/lib/tinygltf/json.hpp
- /home/jaxe/Repositories/gpu_practice/src/lib/tinygltf/stb_image.h
- /home/jaxe/Repositories/gpu_practice/src/lib/tinygltf/stb_image_write.h
  /home/jaxe/Repositories/gpu_practice/src/lib/tinygltf/tiny_gltf.h
  /home/jaxe/Repositories/gpu_practice/src/swap_chain.hpp
  /home/jaxe/Repositories/gpu_practice/src/window.hpp
@@ -4010,14 +4079,9 @@ CMakeFiles/UFFDEJAVU.dir/src/swap_chain.cpp.o
  /usr/include/GLFW/glfw3.h
  /usr/include/KHR/khrplatform.h
  /usr/include/alloca.h
- /usr/include/asm-generic/bitsperlong.h
  /usr/include/asm-generic/errno-base.h
  /usr/include/asm-generic/errno.h
- /usr/include/asm-generic/int-ll64.h
- /usr/include/asm-generic/posix_types.h
- /usr/include/asm-generic/types.h
  /usr/include/assert.h
- /usr/include/c++/13/algorithm
  /usr/include/c++/13/array
  /usr/include/c++/13/backward/auto_ptr.h
  /usr/include/c++/13/backward/binders.h
@@ -4035,8 +4099,6 @@ CMakeFiles/UFFDEJAVU.dir/src/swap_chain.cpp.o
  /usr/include/c++/13/bits/basic_string.tcc
  /usr/include/c++/13/bits/char_traits.h
  /usr/include/c++/13/bits/charconv.h
- /usr/include/c++/13/bits/chrono.h
- /usr/include/c++/13/bits/codecvt.h
  /usr/include/c++/13/bits/concept_check.h
  /usr/include/c++/13/bits/cpp_type_traits.h
  /usr/include/c++/13/bits/cxxabi_forced.h
@@ -4046,33 +4108,19 @@ CMakeFiles/UFFDEJAVU.dir/src/swap_chain.cpp.o
  /usr/include/c++/13/bits/exception.h
  /usr/include/c++/13/bits/exception_defines.h
  /usr/include/c++/13/bits/exception_ptr.h
- /usr/include/c++/13/bits/forward_list.h
- /usr/include/c++/13/bits/forward_list.tcc
- /usr/include/c++/13/bits/fs_dir.h
- /usr/include/c++/13/bits/fs_fwd.h
- /usr/include/c++/13/bits/fs_ops.h
- /usr/include/c++/13/bits/fs_path.h
- /usr/include/c++/13/bits/fstream.tcc
  /usr/include/c++/13/bits/functexcept.h
  /usr/include/c++/13/bits/functional_hash.h
- /usr/include/c++/13/bits/gslice.h
- /usr/include/c++/13/bits/gslice_array.h
  /usr/include/c++/13/bits/hash_bytes.h
  /usr/include/c++/13/bits/hashtable.h
  /usr/include/c++/13/bits/hashtable_policy.h
- /usr/include/c++/13/bits/indirect_array.h
  /usr/include/c++/13/bits/invoke.h
  /usr/include/c++/13/bits/ios_base.h
  /usr/include/c++/13/bits/istream.tcc
  /usr/include/c++/13/bits/locale_classes.h
  /usr/include/c++/13/bits/locale_classes.tcc
- /usr/include/c++/13/bits/locale_conv.h
  /usr/include/c++/13/bits/locale_facets.h
  /usr/include/c++/13/bits/locale_facets.tcc
- /usr/include/c++/13/bits/locale_facets_nonio.h
- /usr/include/c++/13/bits/locale_facets_nonio.tcc
  /usr/include/c++/13/bits/localefwd.h
- /usr/include/c++/13/bits/mask_array.h
  /usr/include/c++/13/bits/memory_resource.h
  /usr/include/c++/13/bits/memoryfwd.h
  /usr/include/c++/13/bits/move.h
@@ -4081,20 +4129,16 @@ CMakeFiles/UFFDEJAVU.dir/src/swap_chain.cpp.o
  /usr/include/c++/13/bits/node_handle.h
  /usr/include/c++/13/bits/ostream.tcc
  /usr/include/c++/13/bits/ostream_insert.h
- /usr/include/c++/13/bits/parse_numbers.h
  /usr/include/c++/13/bits/postypes.h
  /usr/include/c++/13/bits/predefined_ops.h
  /usr/include/c++/13/bits/ptr_traits.h
- /usr/include/c++/13/bits/quoted_string.h
  /usr/include/c++/13/bits/range_access.h
  /usr/include/c++/13/bits/refwrap.h
  /usr/include/c++/13/bits/requires_hosted.h
  /usr/include/c++/13/bits/shared_ptr.h
  /usr/include/c++/13/bits/shared_ptr_atomic.h
  /usr/include/c++/13/bits/shared_ptr_base.h
- /usr/include/c++/13/bits/slice_array.h
  /usr/include/c++/13/bits/specfun.h
- /usr/include/c++/13/bits/sstream.tcc
  /usr/include/c++/13/bits/std_abs.h
  /usr/include/c++/13/bits/std_function.h
  /usr/include/c++/13/bits/stl_algo.h
@@ -4109,7 +4153,6 @@ CMakeFiles/UFFDEJAVU.dir/src/swap_chain.cpp.o
  /usr/include/c++/13/bits/stl_map.h
  /usr/include/c++/13/bits/stl_multimap.h
  /usr/include/c++/13/bits/stl_multiset.h
- /usr/include/c++/13/bits/stl_numeric.h
  /usr/include/c++/13/bits/stl_pair.h
  /usr/include/c++/13/bits/stl_raw_storage_iter.h
  /usr/include/c++/13/bits/stl_relops.h
@@ -4118,7 +4161,6 @@ CMakeFiles/UFFDEJAVU.dir/src/swap_chain.cpp.o
  /usr/include/c++/13/bits/stl_tree.h
  /usr/include/c++/13/bits/stl_uninitialized.h
  /usr/include/c++/13/bits/stl_vector.h
- /usr/include/c++/13/bits/stream_iterator.h
  /usr/include/c++/13/bits/streambuf.tcc
  /usr/include/c++/13/bits/streambuf_iterator.h
  /usr/include/c++/13/bits/string_view.tcc
@@ -4129,24 +4171,18 @@ CMakeFiles/UFFDEJAVU.dir/src/swap_chain.cpp.o
  /usr/include/c++/13/bits/uses_allocator.h
  /usr/include/c++/13/bits/uses_allocator_args.h
  /usr/include/c++/13/bits/utility.h
- /usr/include/c++/13/bits/valarray_after.h
- /usr/include/c++/13/bits/valarray_array.h
- /usr/include/c++/13/bits/valarray_array.tcc
- /usr/include/c++/13/bits/valarray_before.h
  /usr/include/c++/13/bits/vector.tcc
  /usr/include/c++/13/cassert
  /usr/include/c++/13/cctype
  /usr/include/c++/13/cerrno
  /usr/include/c++/13/clocale
  /usr/include/c++/13/cmath
- /usr/include/c++/13/codecvt
  /usr/include/c++/13/compare
  /usr/include/c++/13/cstddef
  /usr/include/c++/13/cstdint
  /usr/include/c++/13/cstdio
  /usr/include/c++/13/cstdlib
  /usr/include/c++/13/cstring
- /usr/include/c++/13/ctime
  /usr/include/c++/13/cwchar
  /usr/include/c++/13/cwctype
  /usr/include/c++/13/debug/assertions.h
@@ -4159,35 +4195,22 @@ CMakeFiles/UFFDEJAVU.dir/src/swap_chain.cpp.o
  /usr/include/c++/13/ext/numeric_traits.h
  /usr/include/c++/13/ext/string_conversions.h
  /usr/include/c++/13/ext/type_traits.h
- /usr/include/c++/13/filesystem
- /usr/include/c++/13/forward_list
- /usr/include/c++/13/fstream
  /usr/include/c++/13/functional
  /usr/include/c++/13/initializer_list
- /usr/include/c++/13/iomanip
  /usr/include/c++/13/ios
  /usr/include/c++/13/iosfwd
  /usr/include/c++/13/iostream
  /usr/include/c++/13/istream
- /usr/include/c++/13/iterator
  /usr/include/c++/13/limits
- /usr/include/c++/13/locale
  /usr/include/c++/13/map
- /usr/include/c++/13/math.h
  /usr/include/c++/13/memory
  /usr/include/c++/13/new
- /usr/include/c++/13/numeric
  /usr/include/c++/13/ostream
  /usr/include/c++/13/pstl/execution_defs.h
- /usr/include/c++/13/pstl/glue_algorithm_defs.h
  /usr/include/c++/13/pstl/glue_memory_defs.h
- /usr/include/c++/13/pstl/glue_numeric_defs.h
  /usr/include/c++/13/pstl/pstl_config.h
- /usr/include/c++/13/ratio
  /usr/include/c++/13/set
- /usr/include/c++/13/sstream
  /usr/include/c++/13/stdexcept
- /usr/include/c++/13/stdlib.h
  /usr/include/c++/13/streambuf
  /usr/include/c++/13/string
  /usr/include/c++/13/string_view
@@ -4209,21 +4232,13 @@ CMakeFiles/UFFDEJAVU.dir/src/swap_chain.cpp.o
  /usr/include/c++/13/typeinfo
  /usr/include/c++/13/unordered_map
  /usr/include/c++/13/utility
- /usr/include/c++/13/valarray
  /usr/include/c++/13/vector
  /usr/include/ctype.h
  /usr/include/endian.h
  /usr/include/errno.h
  /usr/include/features-time64.h
  /usr/include/features.h
- /usr/include/libintl.h
- /usr/include/limits.h
  /usr/include/linux/errno.h
- /usr/include/linux/limits.h
- /usr/include/linux/posix_types.h
- /usr/include/linux/stat.h
- /usr/include/linux/stddef.h
- /usr/include/linux/types.h
  /usr/include/locale.h
  /usr/include/math.h
  /usr/include/pthread.h
@@ -4249,11 +4264,7 @@ CMakeFiles/UFFDEJAVU.dir/src/swap_chain.cpp.o
  /usr/include/vulkan/vulkan_core.h
  /usr/include/wchar.h
  /usr/include/wctype.h
- /usr/include/x86_64-linux-gnu/asm/bitsperlong.h
  /usr/include/x86_64-linux-gnu/asm/errno.h
- /usr/include/x86_64-linux-gnu/asm/posix_types.h
- /usr/include/x86_64-linux-gnu/asm/posix_types_64.h
- /usr/include/x86_64-linux-gnu/asm/types.h
  /usr/include/x86_64-linux-gnu/bits/atomic_wide_counter.h
  /usr/include/x86_64-linux-gnu/bits/byteswap.h
  /usr/include/x86_64-linux-gnu/bits/cpu-set.h
@@ -4268,24 +4279,18 @@ CMakeFiles/UFFDEJAVU.dir/src/swap_chain.cpp.o
  /usr/include/x86_64-linux-gnu/bits/iscanonical.h
  /usr/include/x86_64-linux-gnu/bits/libc-header-start.h
  /usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h
- /usr/include/x86_64-linux-gnu/bits/local_lim.h
  /usr/include/x86_64-linux-gnu/bits/locale.h
  /usr/include/x86_64-linux-gnu/bits/long-double.h
  /usr/include/x86_64-linux-gnu/bits/math-vector.h
  /usr/include/x86_64-linux-gnu/bits/mathcalls-helper-functions.h
  /usr/include/x86_64-linux-gnu/bits/mathcalls-narrow.h
  /usr/include/x86_64-linux-gnu/bits/mathcalls.h
- /usr/include/x86_64-linux-gnu/bits/posix1_lim.h
- /usr/include/x86_64-linux-gnu/bits/posix2_lim.h
  /usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h
  /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h
  /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h
  /usr/include/x86_64-linux-gnu/bits/sched.h
  /usr/include/x86_64-linux-gnu/bits/select.h
  /usr/include/x86_64-linux-gnu/bits/setjmp.h
- /usr/include/x86_64-linux-gnu/bits/stat.h
- /usr/include/x86_64-linux-gnu/bits/statx-generic.h
- /usr/include/x86_64-linux-gnu/bits/statx.h
  /usr/include/x86_64-linux-gnu/bits/stdint-intn.h
  /usr/include/x86_64-linux-gnu/bits/stdint-least.h
  /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h
@@ -4293,7 +4298,6 @@ CMakeFiles/UFFDEJAVU.dir/src/swap_chain.cpp.o
  /usr/include/x86_64-linux-gnu/bits/stdlib-float.h
  /usr/include/x86_64-linux-gnu/bits/struct_mutex.h
  /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h
- /usr/include/x86_64-linux-gnu/bits/struct_stat.h
  /usr/include/x86_64-linux-gnu/bits/thread-shared-types.h
  /usr/include/x86_64-linux-gnu/bits/time.h
  /usr/include/x86_64-linux-gnu/bits/time64.h
@@ -4318,8 +4322,6 @@ CMakeFiles/UFFDEJAVU.dir/src/swap_chain.cpp.o
  /usr/include/x86_64-linux-gnu/bits/types/struct___jmp_buf_tag.h
  /usr/include/x86_64-linux-gnu/bits/types/struct_itimerspec.h
  /usr/include/x86_64-linux-gnu/bits/types/struct_sched_param.h
- /usr/include/x86_64-linux-gnu/bits/types/struct_statx.h
- /usr/include/x86_64-linux-gnu/bits/types/struct_statx_timestamp.h
  /usr/include/x86_64-linux-gnu/bits/types/struct_timespec.h
  /usr/include/x86_64-linux-gnu/bits/types/struct_timeval.h
  /usr/include/x86_64-linux-gnu/bits/types/struct_tm.h
@@ -4328,18 +4330,14 @@ CMakeFiles/UFFDEJAVU.dir/src/swap_chain.cpp.o
  /usr/include/x86_64-linux-gnu/bits/types/wint_t.h
  /usr/include/x86_64-linux-gnu/bits/typesizes.h
  /usr/include/x86_64-linux-gnu/bits/uintn-identity.h
- /usr/include/x86_64-linux-gnu/bits/uio_lim.h
  /usr/include/x86_64-linux-gnu/bits/waitflags.h
  /usr/include/x86_64-linux-gnu/bits/waitstatus.h
  /usr/include/x86_64-linux-gnu/bits/wchar.h
  /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h
  /usr/include/x86_64-linux-gnu/bits/wordsize.h
- /usr/include/x86_64-linux-gnu/bits/xopen_lim.h
  /usr/include/x86_64-linux-gnu/c++/13/bits/atomic_word.h
- /usr/include/x86_64-linux-gnu/c++/13/bits/basic_file.h
  /usr/include/x86_64-linux-gnu/c++/13/bits/c++allocator.h
  /usr/include/x86_64-linux-gnu/c++/13/bits/c++config.h
- /usr/include/x86_64-linux-gnu/c++/13/bits/c++io.h
  /usr/include/x86_64-linux-gnu/c++/13/bits/c++locale.h
  /usr/include/x86_64-linux-gnu/c++/13/bits/cpu_defines.h
  /usr/include/x86_64-linux-gnu/c++/13/bits/ctype_base.h
@@ -4347,25 +4345,16 @@ CMakeFiles/UFFDEJAVU.dir/src/swap_chain.cpp.o
  /usr/include/x86_64-linux-gnu/c++/13/bits/error_constants.h
  /usr/include/x86_64-linux-gnu/c++/13/bits/gthr-default.h
  /usr/include/x86_64-linux-gnu/c++/13/bits/gthr.h
- /usr/include/x86_64-linux-gnu/c++/13/bits/messages_members.h
  /usr/include/x86_64-linux-gnu/c++/13/bits/os_defines.h
- /usr/include/x86_64-linux-gnu/c++/13/bits/time_members.h
  /usr/include/x86_64-linux-gnu/gnu/stubs-64.h
  /usr/include/x86_64-linux-gnu/gnu/stubs.h
  /usr/include/x86_64-linux-gnu/sys/cdefs.h
  /usr/include/x86_64-linux-gnu/sys/select.h
  /usr/include/x86_64-linux-gnu/sys/single_threaded.h
- /usr/include/x86_64-linux-gnu/sys/stat.h
  /usr/include/x86_64-linux-gnu/sys/types.h
- /usr/lib/gcc/x86_64-linux-gnu/13/include/emmintrin.h
- /usr/lib/gcc/x86_64-linux-gnu/13/include/limits.h
- /usr/lib/gcc/x86_64-linux-gnu/13/include/mm_malloc.h
- /usr/lib/gcc/x86_64-linux-gnu/13/include/mmintrin.h
  /usr/lib/gcc/x86_64-linux-gnu/13/include/stdarg.h
  /usr/lib/gcc/x86_64-linux-gnu/13/include/stddef.h
  /usr/lib/gcc/x86_64-linux-gnu/13/include/stdint.h
- /usr/lib/gcc/x86_64-linux-gnu/13/include/syslimits.h
- /usr/lib/gcc/x86_64-linux-gnu/13/include/xmmintrin.h
 
 CMakeFiles/UFFDEJAVU.dir/src/systems/multiview_render_system.cpp.o
  /home/jaxe/Repositories/gpu_practice/src/systems/multiview_render_system.cpp

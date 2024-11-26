@@ -199,11 +199,12 @@ namespace ud {
         configInfo.rasterizationInfo.polygonMode = VK_POLYGON_MODE_FILL;
         configInfo.rasterizationInfo.lineWidth = 1.0f;
         // The cullMode is used to specify which faces of a triangle are not drawn. 
-        // None means that all faces are drawn. VK_CULL_MODE_BACK_BIT means that the back faces are not drawn. 
+        // None means that all faces are drawn. VK_CULL_MODE_BACK_BIT means that the front face
+        // considers the triangle to be front-facing if it is drawn counterclockwise.
         // It is desirable when we are drawing front faces clockwise. 
-        // configInfo.rasterizationInfo.cullMode = VK_CULL_MODE_BACK_BIT;
-        configInfo.rasterizationInfo.cullMode = VK_CULL_MODE_NONE;
-        configInfo.rasterizationInfo.frontFace = VK_FRONT_FACE_CLOCKWISE;
+        configInfo.rasterizationInfo.cullMode = VK_CULL_MODE_BACK_BIT;
+        // configInfo.rasterizationInfo.cullMode = VK_CULL_MODE_NONE; // Good for transparent objects
+        configInfo.rasterizationInfo.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
         configInfo.rasterizationInfo.depthBiasEnable = VK_FALSE;
         configInfo.rasterizationInfo.depthBiasConstantFactor = 0.0f;
         configInfo.rasterizationInfo.depthBiasClamp = 0.0f;

@@ -128,7 +128,7 @@ namespace ud
         VkDescriptorSetAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
         allocInfo.descriptorPool = descriptorPool;
-        allocInfo.pSetLayouts = &descriptorSetLayout;
+        allocInfo.pSetLayouts = &descriptorSetLayout; // Pointer to the descriptor set layout
         allocInfo.descriptorSetCount = 1;
 
         // Might want to create a "DescriptorPoolManager" class that handles this case, and builds
@@ -178,6 +178,8 @@ namespace ud
         write.dstBinding = binding;
         write.pBufferInfo = bufferInfo;
         write.descriptorCount = 1;
+        write.pImageInfo = nullptr;
+        write.pTexelBufferView = nullptr;
 
         writes.push_back(write);
         return *this;
@@ -200,6 +202,8 @@ namespace ud
         write.dstBinding = binding;
         write.pImageInfo = imageInfo;
         write.descriptorCount = 1;
+        write.pBufferInfo = nullptr;
+        write.pTexelBufferView = nullptr;
 
         writes.push_back(write);
         return *this;

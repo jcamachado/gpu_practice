@@ -58,21 +58,20 @@ namespace ud {
 
         struct Builder { //This struct is used to load the model vertices and indices to be rendered
             UDDevice& device; // Reference to the device
-            UDSwapChain& swapChain;
             std::vector<Vertex> vertices{};
             std::vector<uint32_t> indices{};
             std::vector<Material> materials{};
             std::vector<tinygltf::Image> images{};
             std::vector<tinygltf::Texture> textures{};
 
-            Builder(UDDevice& device, UDSwapChain& swapChain) :
-                device(device), swapChain(swapChain) {
+            Builder(UDDevice& device) :
+                device(device) {
             }
 
             void loadModelObj(const std::string& filepath);
             void loadModelGltf(const std::string& filepath);
             // Uses device, should it be here?
-            void loadTextureImage(const tinygltf::Image& image);
+            // void loadTextureImage(const tinygltf::Image& image);
         };
 
         // UDModel(UDDevice& device, const UDModel::Builder& builder);
@@ -92,7 +91,17 @@ namespace ud {
         void createVertexBuffers(const std::vector<Vertex>& vertices);
         void createIndexBuffers(const std::vector<uint32_t>& indices);
         //here?
-        void createTextureImage(const tinygltf::Image& image);
+        // void createTextureImage(const tinygltf::Image& image);
+        void createTextureImage();
+        void createImage(
+            uint32_t width,
+            uint32_t height,
+            VkFormat format,
+            VkImageTiling tiling,
+            VkImageUsageFlags usage,
+            VkMemoryPropertyFlags properties,
+            VkImage& image,
+            VkDeviceMemory& imageMemory);
         void createTextureImageView();
         void createTextureSampler();
 
