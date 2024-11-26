@@ -20,7 +20,7 @@ configure:
 	cd $(BUILD_DIR) && cmake $(SRC_DIR)
 
 # Build the project using make
-build: configure
+build: configure compile_shaders
 	cd $(BUILD_DIR) && make
 	
 # Compile shaders
