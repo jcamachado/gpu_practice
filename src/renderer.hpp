@@ -31,6 +31,9 @@ namespace ud {
             assert(isFrameStarted && "Cannot get frame index when frame not in progress.");
             return currentFrameIndex;
         }
+        void createUniformBuffers(std::vector<std::unique_ptr<UDBuffer>>& uboBuffers); // this should not be here (should be in the renderer)
+
+
 
         /*
             Since drawframe will be called outside of the class, it will have to be public.

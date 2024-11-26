@@ -1,4 +1,5 @@
 #include "renderer.hpp"
+#include "frame_info.hpp"
 
 
 // std
@@ -172,5 +173,19 @@ namespace ud {
             "Can't end render pass on command buffer from a different frame"
         );
         vkCmdEndRenderPass(commandBuffer);
+    }
+
+    void UDRenderer::createUniformBuffers(std::vector<std::unique_ptr<UDBuffer>>& uboBuffers) {
+        // This property is used to align the offset of the uniform buffer object
+        for (int i = 0; i < uboBuffers.size(); i++) {
+            uboBuffers[i] = std::make_unique<UDBuffer>(
+                udDevice,
+                sizeof(GlobalUBO),
+                1, // Only one instance per buffer
+                VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+                VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
+            );
+            uboBuffers[i]->map();
+        }
     }
 }

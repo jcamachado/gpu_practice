@@ -37,21 +37,25 @@ namespace ud {
     FirstApp::~FirstApp() {}
 
     void FirstApp::run() {  // The main loop
+
+        // Create a uniform buffer object for the global UBO
         // This property is used to align the offset of the uniform buffer object
         std::vector<std::unique_ptr<UDBuffer>> uboBuffers(UDSwapChain::MAX_FRAMES_IN_FLIGHT);
-        for (int i = 0; i < uboBuffers.size(); i++) {
-            uboBuffers[i] = std::make_unique<UDBuffer>(
-                udDevice,
-                sizeof(GlobalUBO),
-                1, // Only one instance per buffer
-                VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-                VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
-            );
-            uboBuffers[i]->map();
-        }
+        // for (int i = 0; i < uboBuffers.size(); i++) {
+        //     uboBuffers[i] = std::make_unique<UDBuffer>(
+        //         udDevice,
+        //         sizeof(GlobalUBO),
+        //         1, // Only one instance per buffer
+        //         VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+        //         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
+        //     );
+        //     uboBuffers[i]->map();
+        // }
+        udRenderer.createUniformBuffers(uboBuffers);
 
         auto globalSetLayout = UDDescriptorSetLayout::Builder(udDevice)
-            .addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS)
+            // .addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT)
+            .addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS) // Add binding for both vertex and fragment shaders
             .addBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT) // Add sampler binding
             .build();
 
@@ -256,11 +260,11 @@ namespace ud {
         //     { 0.5f, 0.5f, 0.0f },
         //     { 3.0f, 1.5f, 3.0f });
 
-        // placeNewObject(udModel,
-        //     udDevice,
-        //     "models/quad.obj",
-        //     { 0.0f, 0.5f, 0.0f },
-        //     { 3.0f, 1.0f, 3.0f });
+        placeNewObject(udModel,
+            udRenderer,
+            "models/quad.obj",
+            { 0.0f, 0.5f, 0.0f },
+            { 3.0f, 1.0f, 3.0f });
 
         std::vector<glm::vec3> lightColors{
             {1.f, .1f, .1f},
