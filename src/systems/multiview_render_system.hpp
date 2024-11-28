@@ -53,7 +53,11 @@ namespace ud {
         //     glm::vec4 lightPos = glm::vec4(-2.5f, -3.5f, 0.0f, 1.0f);
         //     float distortionAlpha = 0.2f;
         // } uniformData;
-        MultiViewRenderSystem(UDDevice& device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout);
+        MultiViewRenderSystem(
+            UDDevice& device,
+            VkRenderPass renderPass,
+            VkDescriptorSetLayout globalSetLayout
+        );
         ~MultiViewRenderSystem();
 
         MultiViewRenderSystem(const MultiViewRenderSystem&) = delete;

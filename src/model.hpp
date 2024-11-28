@@ -86,24 +86,28 @@ namespace ud {
         void bind(VkCommandBuffer commandBuffer);
         void draw(VkCommandBuffer commandBuffer);
 
+        VkImageView getTextureImageView() const { return textureImageView; }
+        VkSampler getTextureSampler() const { return textureSampler; }
+        // void createTextureImage(const tinygltf::Image& image);
+        void createTextureImage();
+        // void createImage(
+        //     uint32_t width,
+        //     uint32_t height,
+        //     VkFormat format,
+        //     VkImageTiling tiling,
+        //     VkImageUsageFlags usage,
+        //     VkMemoryPropertyFlags properties,
+        //     VkImage& image,
+        //     VkDeviceMemory& imageMemory);
+        void createTextureImageView();
+        void createTextureSampler();
+
+
     private:
         void loadData();
         void createVertexBuffers(const std::vector<Vertex>& vertices);
         void createIndexBuffers(const std::vector<uint32_t>& indices);
         //here?
-        // void createTextureImage(const tinygltf::Image& image);
-        void createTextureImage();
-        void createImage(
-            uint32_t width,
-            uint32_t height,
-            VkFormat format,
-            VkImageTiling tiling,
-            VkImageUsageFlags usage,
-            VkMemoryPropertyFlags properties,
-            VkImage& image,
-            VkDeviceMemory& imageMemory);
-        void createTextureImageView();
-        void createTextureSampler();
 
         // texture loading
 

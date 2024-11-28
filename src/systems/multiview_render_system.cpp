@@ -16,9 +16,11 @@ namespace ud {
         glm::mat4 normalMatrix{ 1.0f };    //
     };
 
-    MultiViewRenderSystem::MultiViewRenderSystem(UDDevice& device,
+    MultiViewRenderSystem::MultiViewRenderSystem(
+        UDDevice& device,
         VkRenderPass renderPass,
-        VkDescriptorSetLayout globalSetLayout) : udDevice(device)
+        VkDescriptorSetLayout globalSetLayout
+    ) : udDevice(device)
     {
         createPipelineLayout(globalSetLayout);
         createPipeline(renderPass);
@@ -42,8 +44,8 @@ namespace ud {
         pipelineLayoutInfo.pSetLayouts = descriptorSetLayouts.data();
         pipelineLayoutInfo.pushConstantRangeCount = 1;  // Related to pushConstantRange above
         pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
-        if (vkCreatePipelineLayout(udDevice.device(), &pipelineLayoutInfo, nullptr, &pipelineLayout) !=
-            VK_SUCCESS) {
+
+        if (vkCreatePipelineLayout(udDevice.device(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
             throw std::runtime_error("failed to create pipeline layout!");
         }
     }
@@ -91,7 +93,6 @@ namespace ud {
             0,
             nullptr
         );
-
         render(frameInfo);
     }
 

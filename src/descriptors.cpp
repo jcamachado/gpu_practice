@@ -22,7 +22,7 @@ namespace ud
         VkDescriptorSetLayoutBinding layoutBinding{};
         layoutBinding.binding = binding;
         layoutBinding.descriptorType = descriptorType;
-        layoutBinding.descriptorCount = count;
+        layoutBinding.descriptorCount = count; // Number of descriptors in the binding
         layoutBinding.stageFlags = stageFlags;
         layoutBinding.pImmutableSamplers = nullptr; // Optional, added later without use for now
         bindings[binding] = layoutBinding;

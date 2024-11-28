@@ -185,6 +185,20 @@ namespace ud {
             params(location, binding, format, offset), Similar to OpenGLs glVertexAttribPointer
             rgb because 3 floats x, y, z
         */
+
+        // attributeDescriptions.push_back(
+        //     { 0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, position) }
+        // );
+        // attributeDescriptions.push_back(
+        //     { 0, 1, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, color) }
+        // );
+        // attributeDescriptions.push_back(
+        //     { 0, 2, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, normal) }
+        // );
+        // attributeDescriptions.push_back(
+        //     { 0, 3, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, uv) }
+        // );
+
         attributeDescriptions.push_back(
             { 0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, position) }
         );
@@ -197,6 +211,7 @@ namespace ud {
         attributeDescriptions.push_back(
             { 3, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, uv) }
         );
+
 
         return attributeDescriptions;
     }
@@ -212,16 +227,26 @@ namespace ud {
         if (hasIndexBuffer) {
             // Index type must be the same as the indices vector type
             // For general purposes, uses 32 bits. 16bits = 65535 vertices, 32bits= 4,294,967,295 vertices
+            if (!indexBuffer) {
+                throw std::runtime_error("Index buffer not created");
+            }
             vkCmdBindIndexBuffer(commandBuffer, indexBuffer->getBuffer(), 0, VK_INDEX_TYPE_UINT32);
         }
     }
 
     void UDModel::draw(VkCommandBuffer commandBuffer) {
         loadData(); // Load data on demand
+
         if (hasIndexBuffer) {
+            if (indexCount == 0) {
+                throw std::runtime_error("Index count is zero");
+            }
             vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);
         }
         else {
+            if (vertexCount == 0) {
+                throw std::runtime_error("Vertex count is zero");
+            }
             vkCmdDraw(commandBuffer, vertexCount, 1, 0, 0);
         }
     }
@@ -295,20 +320,7 @@ namespace ud {
 
 
     void UDModel::createTextureImageView() {
-        VkImageViewCreateInfo viewInfo{};
-        viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-        viewInfo.image = textureImage;
-        viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-        viewInfo.format = VK_FORMAT_R8G8B8A8_SRGB;
-        viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        viewInfo.subresourceRange.baseMipLevel = 0;
-        viewInfo.subresourceRange.levelCount = 1;
-        viewInfo.subresourceRange.baseArrayLayer = 0;
-        viewInfo.subresourceRange.layerCount = 1;
-
-        if (vkCreateImageView(device.device(), &viewInfo, nullptr, &textureImageView) != VK_SUCCESS) {
-            throw std::runtime_error("failed to create texture image view!");
-        }
+        textureImageView = device.createImageView(textureImage, VK_FORMAT_R8G8B8A8_SRGB);
     }
 
     void UDModel::createTextureSampler() {
@@ -320,12 +332,16 @@ namespace ud {
         samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
         samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
         samplerInfo.anisotropyEnable = VK_TRUE;
-        samplerInfo.maxAnisotropy = 16.0f;
+        samplerInfo.maxAnisotropy = device.properties.limits.maxSamplerAnisotropy;
+
         samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
         samplerInfo.unnormalizedCoordinates = VK_FALSE;
         samplerInfo.compareEnable = VK_FALSE;
         samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
         samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+        samplerInfo.mipLodBias = 0.0f;
+        samplerInfo.minLod = 0.0f;
+        samplerInfo.maxLod = 0.0f;
 
         if (vkCreateSampler(device.device(), &samplerInfo, nullptr, &textureSampler) != VK_SUCCESS) {
             throw std::runtime_error("failed to create texture sampler!");

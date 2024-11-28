@@ -76,6 +76,8 @@ namespace ud {
             VkMemoryPropertyFlags properties,
             VkImage& image,
             VkDeviceMemory& imageMemory);
+        VkImageView createImageView(VkImage image, VkFormat format);
+
 
         VkPhysicalDeviceProperties properties;
 

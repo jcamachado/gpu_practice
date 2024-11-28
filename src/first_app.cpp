@@ -29,8 +29,14 @@ namespace ud {
         globalPool = UDDescriptorPool::Builder(udDevice)
             .setMaxSets(UDSwapChain::MAX_FRAMES_IN_FLIGHT) // 2 descriptor sets
             .addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, UDSwapChain::MAX_FRAMES_IN_FLIGHT)
-            .addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, UDSwapChain::MAX_FRAMES_IN_FLIGHT) // Add image sampler pool size
+            // .addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, UDSwapChain::MAX_FRAMES_IN_FLIGHT) // Add image sampler pool size
             .build();
+
+        texturePool = UDDescriptorPool::Builder(udDevice)
+            .setMaxSets(UDSwapChain::MAX_FRAMES_IN_FLIGHT)
+            .addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, UDSwapChain::MAX_FRAMES_IN_FLIGHT)
+            .build();
+
         loadObjects();
     }
 
@@ -54,10 +60,13 @@ namespace ud {
         udRenderer.createUniformBuffers(uboBuffers);
 
         auto globalSetLayout = UDDescriptorSetLayout::Builder(udDevice)
-            // .addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT)
             .addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS) // Add binding for all shaders
-            .addBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT) // Add sampler binding
+            .addBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT) // Add sampler combined image binding
             .build();
+
+        // auto textureSetLayout = UDDescriptorSetLayout::Builder(udDevice)
+        //     .addBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT)
+        //     .build();
 
 
         /*
@@ -67,17 +76,53 @@ namespace ud {
             cada descriptor set eh para um frame)
         */
         std::vector<VkDescriptorSet> globalDescriptorSets(UDSwapChain::MAX_FRAMES_IN_FLIGHT);
-        UDSwapChain& swapchain = udRenderer.getSwapChain();
+        std::vector<VkDescriptorSet> textureDescriptorSets(UDSwapChain::MAX_FRAMES_IN_FLIGHT);
+
+        // create sponza model object
+        UDModel sponzaModel = UDModel(udRenderer, "models/scenes/Sponza.glb");
+        sponzaModel.createTextureImage();
+        sponzaModel.createTextureImageView();
+        sponzaModel.createTextureSampler();
+
+        // Create global descriptor sets
         for (int i = 0; i < globalDescriptorSets.size(); i++) {
             auto bufferInfo = uboBuffers[i]->descriptorInfo();
-            // Debugging statements
-            std::cout << "Creating descriptor set " << i << std::endl;
+            VkDescriptorImageInfo textureImageInfo{};
+            textureImageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+            textureImageInfo.imageView = sponzaModel.getTextureImageView();
+            textureImageInfo.sampler = sponzaModel.getTextureSampler();
+
             if (!UDDescriptorWriter(*globalSetLayout, *globalPool)
                 .writeBuffer(0, &bufferInfo)
+                .writeImage(1, &textureImageInfo)
                 .build(globalDescriptorSets[i])) {
-                throw std::runtime_error("Failed to build descriptor set " + std::to_string(i));
+                throw std::runtime_error("Failed to build global descriptor set " + std::to_string(i));
             }
         }
+
+        // VkDescriptorImageInfo textureImageInfo{};
+        // textureImageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        // textureImageInfo.imageView = sponzaModel.getTextureImageView();
+        // textureImageInfo.sampler = sponzaModel.getTextureSampler();
+
+        // // Create global descriptor sets
+        // for (int i = 0; i < globalDescriptorSets.size(); i++) {
+        //     auto bufferInfo = uboBuffers[i]->descriptorInfo();
+        //     if (!UDDescriptorWriter(*globalSetLayout, *globalPool)
+        //         .writeBuffer(0, &bufferInfo)
+        //         .build(globalDescriptorSets[i])) {
+        //         throw std::runtime_error("Failed to build global descriptor set " + std::to_string(i));
+        //     }
+        // }
+
+        // // Create texture descriptor sets
+        // for (int i = 0; i < textureDescriptorSets.size(); i++) {
+        //     if (!UDDescriptorWriter(*textureSetLayout, *texturePool)
+        //         .writeImage(0, &textureImageInfo)
+        //         .build(textureDescriptorSets[i])) {
+        //         throw std::runtime_error("Failed to build texture descriptor set " + std::to_string(i));
+        //     }
+        // }
 
         std::cout << "Descriptor sets created successfully." << std::endl;
         /*
@@ -106,7 +151,8 @@ namespace ud {
         MultiViewRenderSystem multiviewRenderSystem{
             udDevice,
             udRenderer.getSwapChainRenderPass(),
-            globalSetLayout->getDescriptorSetLayout()
+            globalSetLayout->getDescriptorSetLayout(),
+            // textureSetLayout->getDescriptorSetLayout()
         };
 
 
