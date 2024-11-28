@@ -36,7 +36,7 @@ layout(push_constant) uniform Push {    // Limit is 128 bytes to make it compati
     mat4 normalMatrix;   // is 3x3 but we pass it as a 4x4 to be aligned to 16 bytes.                              
 } push;
 
-layout(set = 0, binding = 1) uniform sampler2D textureSampler; // Add a sampler2D uniform
+layout(set = 1, binding = 0) uniform sampler2D textureSampler; // Add a sampler2D uniform
 
 // Function to sample neighboring pixels for blurring
 vec3 sampleNeighbors(vec2 uv, float blurRadius) {

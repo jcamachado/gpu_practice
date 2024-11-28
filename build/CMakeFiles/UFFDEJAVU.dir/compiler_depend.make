@@ -1340,6 +1340,7 @@ CMakeFiles/UFFDEJAVU.dir/src/first_app.cpp.o: /home/jaxe/Repositories/gpu_practi
 CMakeFiles/UFFDEJAVU.dir/src/game_object.cpp.o: /home/jaxe/Repositories/gpu_practice/src/game_object.cpp \
   /home/jaxe/Repositories/gpu_practice/src/buffer.hpp \
   /home/jaxe/Repositories/gpu_practice/src/camera.hpp \
+  /home/jaxe/Repositories/gpu_practice/src/descriptors.hpp \
   /home/jaxe/Repositories/gpu_practice/src/device.hpp \
   /home/jaxe/Repositories/gpu_practice/src/game_object.hpp \
   /home/jaxe/Repositories/gpu_practice/src/lib/tinygltf/tiny_gltf.h \
@@ -1762,6 +1763,7 @@ CMakeFiles/UFFDEJAVU.dir/src/game_object.cpp.o: /home/jaxe/Repositories/gpu_prac
 CMakeFiles/UFFDEJAVU.dir/src/keyboard_movement_controller.cpp.o: /home/jaxe/Repositories/gpu_practice/src/keyboard_movement_controller.cpp \
   /home/jaxe/Repositories/gpu_practice/src/buffer.hpp \
   /home/jaxe/Repositories/gpu_practice/src/camera.hpp \
+  /home/jaxe/Repositories/gpu_practice/src/descriptors.hpp \
   /home/jaxe/Repositories/gpu_practice/src/device.hpp \
   /home/jaxe/Repositories/gpu_practice/src/game_object.hpp \
   /home/jaxe/Repositories/gpu_practice/src/keyboard_movement_controller.hpp \
@@ -2633,6 +2635,7 @@ CMakeFiles/UFFDEJAVU.dir/src/main.cpp.o: /home/jaxe/Repositories/gpu_practice/sr
 CMakeFiles/UFFDEJAVU.dir/src/model.cpp.o: /home/jaxe/Repositories/gpu_practice/src/model.cpp \
   /home/jaxe/Repositories/gpu_practice/src/buffer.hpp \
   /home/jaxe/Repositories/gpu_practice/src/camera.hpp \
+  /home/jaxe/Repositories/gpu_practice/src/descriptors.hpp \
   /home/jaxe/Repositories/gpu_practice/src/device.hpp \
   /home/jaxe/Repositories/gpu_practice/src/lib/tinygltf/json.hpp \
   /home/jaxe/Repositories/gpu_practice/src/lib/tinygltf/stb_image.h \
@@ -3195,6 +3198,7 @@ CMakeFiles/UFFDEJAVU.dir/src/model.cpp.o: /home/jaxe/Repositories/gpu_practice/s
 CMakeFiles/UFFDEJAVU.dir/src/pipeline.cpp.o: /home/jaxe/Repositories/gpu_practice/src/pipeline.cpp \
   /home/jaxe/Repositories/gpu_practice/src/buffer.hpp \
   /home/jaxe/Repositories/gpu_practice/src/camera.hpp \
+  /home/jaxe/Repositories/gpu_practice/src/descriptors.hpp \
   /home/jaxe/Repositories/gpu_practice/src/device.hpp \
   /home/jaxe/Repositories/gpu_practice/src/lib/tinygltf/tiny_gltf.h \
   /home/jaxe/Repositories/gpu_practice/src/model.hpp \
@@ -3635,6 +3639,7 @@ CMakeFiles/UFFDEJAVU.dir/src/pipeline.cpp.o: /home/jaxe/Repositories/gpu_practic
 CMakeFiles/UFFDEJAVU.dir/src/renderer.cpp.o: /home/jaxe/Repositories/gpu_practice/src/renderer.cpp \
   /home/jaxe/Repositories/gpu_practice/src/buffer.hpp \
   /home/jaxe/Repositories/gpu_practice/src/camera.hpp \
+  /home/jaxe/Repositories/gpu_practice/src/descriptors.hpp \
   /home/jaxe/Repositories/gpu_practice/src/device.hpp \
   /home/jaxe/Repositories/gpu_practice/src/frame_info.hpp \
   /home/jaxe/Repositories/gpu_practice/src/game_object.hpp \
@@ -4347,6 +4352,7 @@ CMakeFiles/UFFDEJAVU.dir/src/swap_chain.cpp.o: /home/jaxe/Repositories/gpu_pract
 CMakeFiles/UFFDEJAVU.dir/src/systems/multiview_render_system.cpp.o: /home/jaxe/Repositories/gpu_practice/src/systems/multiview_render_system.cpp \
   /home/jaxe/Repositories/gpu_practice/src/buffer.hpp \
   /home/jaxe/Repositories/gpu_practice/src/camera.hpp \
+  /home/jaxe/Repositories/gpu_practice/src/descriptors.hpp \
   /home/jaxe/Repositories/gpu_practice/src/device.hpp \
   /home/jaxe/Repositories/gpu_practice/src/frame_info.hpp \
   /home/jaxe/Repositories/gpu_practice/src/game_object.hpp \
@@ -4774,6 +4780,7 @@ CMakeFiles/UFFDEJAVU.dir/src/systems/multiview_render_system.cpp.o: /home/jaxe/R
 CMakeFiles/UFFDEJAVU.dir/src/systems/point_light_system.cpp.o: /home/jaxe/Repositories/gpu_practice/src/systems/point_light_system.cpp \
   /home/jaxe/Repositories/gpu_practice/src/buffer.hpp \
   /home/jaxe/Repositories/gpu_practice/src/camera.hpp \
+  /home/jaxe/Repositories/gpu_practice/src/descriptors.hpp \
   /home/jaxe/Repositories/gpu_practice/src/device.hpp \
   /home/jaxe/Repositories/gpu_practice/src/frame_info.hpp \
   /home/jaxe/Repositories/gpu_practice/src/game_object.hpp \
@@ -5201,6 +5208,7 @@ CMakeFiles/UFFDEJAVU.dir/src/systems/point_light_system.cpp.o: /home/jaxe/Reposi
 CMakeFiles/UFFDEJAVU.dir/src/systems/simple_render_system.cpp.o: /home/jaxe/Repositories/gpu_practice/src/systems/simple_render_system.cpp \
   /home/jaxe/Repositories/gpu_practice/src/buffer.hpp \
   /home/jaxe/Repositories/gpu_practice/src/camera.hpp \
+  /home/jaxe/Repositories/gpu_practice/src/descriptors.hpp \
   /home/jaxe/Repositories/gpu_practice/src/device.hpp \
   /home/jaxe/Repositories/gpu_practice/src/frame_info.hpp \
   /home/jaxe/Repositories/gpu_practice/src/game_object.hpp \
