@@ -80,7 +80,7 @@ namespace ud {
 
         // create sponza model object
         UDModel sponzaModel = UDModel(udRenderer, "models/scenes/Sponza.glb");
-        sponzaModel.createTextureImage();
+        sponzaModel.createTextureImage("textures/texture.jpg");
         sponzaModel.createTextureImageView();
         sponzaModel.createTextureSampler();
 

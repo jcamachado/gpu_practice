@@ -342,6 +342,7 @@ CMakeFiles/UFFDEJAVU.dir/src/renderer.cpp.o: \
  /home/jaxe/Repositories/gpu_practice/src/frame_info.hpp \
  /home/jaxe/Repositories/gpu_practice/src/game_object.hpp \
  /home/jaxe/Repositories/gpu_practice/src/model.hpp \
+ /home/jaxe/Repositories/gpu_practice/src/descriptors.hpp \
  /usr/include/glm/gtc/matrix_transform.hpp \
  /usr/include/glm/ext/matrix_projection.hpp \
  /usr/include/glm/gtc/constants.hpp \

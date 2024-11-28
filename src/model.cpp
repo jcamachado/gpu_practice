@@ -88,7 +88,7 @@ namespace ud {
 
         if (!builder.images.empty()) {
             // createTextureImage(builder.images[0]);
-            createTextureImage();
+            createTextureImage(builder.images[0]);
             createTextureImageView();
             createTextureSampler();
         }
@@ -252,18 +252,95 @@ namespace ud {
     }
 
 
+    void UDModel::createTextureImage(const std::string& filepath) {
+        int texWidth, texHeight, texChannels;
+        stbi_uc* pixels = stbi_load(filepath.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+        if (!pixels) {
+            throw std::runtime_error("failed to load texture image!");
+        }
+        createTextureImageFromPixels(pixels, texWidth, texHeight);
+        stbi_image_free(pixels);
+    }
+
+    void UDModel::createTextureImage(const tinygltf::Image& image) {
+        int texWidth = image.width;
+        int texHeight = image.height;
+        int texChannels = image.component;
+        const unsigned char* pixels = image.image.data();
+        if (!pixels) {
+            throw std::runtime_error("failed to load texture image from GLTF!");
+        }
+        createTextureImageFromPixels(pixels, texWidth, texHeight);
+    }
+
     /*
         Parte desse codigo esta em src/swap_chain.cpp e src/device.cpp. O ideal seria
         colocar esses metodos juntos em um arquivo chamado texture.cpp ou algo do tipo. ou aqui mesmo
     */
-    void UDModel::createTextureImage() {
-        int texWidth, texHeight, texChannels;
-        stbi_uc* pixels = stbi_load("textures/texture.jpg", &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
-        VkDeviceSize imageSize = texWidth * texHeight * 4;
+    // void UDModel::createTextureImage() {
+    //     int texWidth, texHeight, texChannels;
+    //     stbi_uc* pixels = stbi_load("textures/texture.jpg", &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+    //     VkDeviceSize imageSize = texWidth * texHeight * 4;
 
-        if (!pixels) {
-            throw std::runtime_error("failed to load texture image!");
-        }
+    //     if (!pixels) {
+    //         throw std::runtime_error("failed to load texture image!");
+    //     }
+
+    //     UDBuffer stagingBuffer{
+    //         device,
+    //         imageSize,
+    //         1,
+    //         VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+    //         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
+    //     };
+    //     stagingBuffer.map();
+    // stagingBuffer.writeToBuffer(reinterpret_cast<void*>(const_cast<unsigned char*>(pixels)));
+
+    //     stbi_image_free(pixels);
+
+    //     VkImageCreateInfo imageInfo{};
+    //     imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+    //     imageInfo.imageType = VK_IMAGE_TYPE_2D;
+    //     imageInfo.extent.width = texWidth;
+    //     imageInfo.extent.height = texHeight;
+    //     imageInfo.extent.depth = 1;
+    //     imageInfo.mipLevels = 1;
+    //     imageInfo.arrayLayers = 1;
+    //     imageInfo.format = VK_FORMAT_R8G8B8A8_SRGB;
+    //     imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+    //     imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    //     imageInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+    //     imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+    //     imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+    //     device.createImageWithInfo(
+    //         imageInfo,
+    //         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+    //         textureImage,
+    //         textureImageMemory
+    //     );
+
+    //     device.transitionImageLayout(
+    //         textureImage,
+    //         VK_FORMAT_R8G8B8A8_SRGB,
+    //         VK_IMAGE_LAYOUT_UNDEFINED, // For now we don't care about the its contents
+    //         VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL
+    //     );
+    //     device.copyBufferToImage(stagingBuffer.getBuffer(),
+    //         textureImage,
+    //         static_cast<uint32_t>(texWidth),
+    //         static_cast<uint32_t>(texHeight)
+    //     );
+    //     device.transitionImageLayout(
+    //         textureImage,
+    //         VK_FORMAT_R8G8B8A8_SRGB,
+    //         VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+    //         VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
+    //     );
+    // }
+
+    void UDModel::createTextureImageFromPixels(const unsigned char* pixels, int texWidth, int texHeight) {
+        VkDeviceSize imageSize = texWidth * texHeight * 4;
 
         UDBuffer stagingBuffer{
             device,
@@ -273,9 +350,9 @@ namespace ud {
             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
         };
         stagingBuffer.map();
+        // stagingBuffer.writeToBuffer(reinterpret_cast<void*>(const_cast<unsigned char*>(pixels)));
         stagingBuffer.writeToBuffer(reinterpret_cast<void*>(const_cast<unsigned char*>(pixels)));
 
-        stbi_image_free(pixels);
 
         VkImageCreateInfo imageInfo{};
         imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
@@ -302,7 +379,7 @@ namespace ud {
         device.transitionImageLayout(
             textureImage,
             VK_FORMAT_R8G8B8A8_SRGB,
-            VK_IMAGE_LAYOUT_UNDEFINED, // For now we don't care about the its contents
+            VK_IMAGE_LAYOUT_UNDEFINED,
             VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL
         );
         device.copyBufferToImage(stagingBuffer.getBuffer(),
@@ -507,6 +584,40 @@ namespace ud {
                         images.push_back(image);
                     }
                 }
+            }
+        }
+    }
+    void UDModel::updateDescriptorSets(
+        std::vector<std::unique_ptr<UDBuffer>>& uboBuffers,
+        std::vector<std::unique_ptr<UDBuffer>>& hasTextureBuffers,
+        std::vector<VkDescriptorSet>& descriptorSets,
+        UDDescriptorSetLayout& globalSetLayout, UDDescriptorPool& globalPool) {
+        for (int i = 0; i < descriptorSets.size(); i++) {
+            auto bufferInfo = uboBuffers[i]->descriptorInfo();
+            auto hasTextureInfo = hasTextureBuffers[i]->descriptorInfo();
+
+            UDDescriptorWriter writer(globalSetLayout, globalPool);
+            writer.writeBuffer(0, &bufferInfo);
+
+            if (hasBoundTexture()) { // Check if the model has a texture
+                VkDescriptorImageInfo textureImageInfo{};
+                textureImageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+                textureImageInfo.imageView = getTextureImageView();
+                textureImageInfo.sampler = getTextureSampler();
+                writer.writeImage(1, &textureImageInfo);
+
+                bool hasTexture = true;
+                hasTextureBuffers[i]->writeToBuffer(&hasTexture);
+            }
+            else {
+                bool hasTexture = false;
+                hasTextureBuffers[i]->writeToBuffer(&hasTexture);
+            }
+
+            writer.writeBuffer(2, &hasTextureInfo);
+
+            if (!writer.build(descriptorSets[i])) {
+                throw std::runtime_error("Failed to build descriptor set " + std::to_string(i));
             }
         }
     }

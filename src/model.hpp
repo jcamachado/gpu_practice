@@ -1,6 +1,7 @@
 #pragma once
 
 #include "buffer.hpp"
+#include "descriptors.hpp"
 // #include "device.hpp"
 #include "renderer.hpp"
 
@@ -89,7 +90,10 @@ namespace ud {
         VkImageView getTextureImageView() const { return textureImageView; }
         VkSampler getTextureSampler() const { return textureSampler; }
         // void createTextureImage(const tinygltf::Image& image);
-        void createTextureImage();
+        // void createTextureImage();
+        void createTextureImage(const tinygltf::Image& image);
+        void createTextureImage(const std::string& filepath);
+        void createTextureImageFromPixels(const unsigned char* pixels, int texWidth, int texHeight);
         // void createImage(
         //     uint32_t width,
         //     uint32_t height,
@@ -101,7 +105,8 @@ namespace ud {
         //     VkDeviceMemory& imageMemory);
         void createTextureImageView();
         void createTextureSampler();
-
+        bool hasBoundTexture() const { return hasTexture; }
+        void updateDescriptorSets(std::vector<std::unique_ptr<UDBuffer>>& uboBuffers, std::vector<std::unique_ptr<UDBuffer>>& hasTextureBuffers, std::vector<VkDescriptorSet>& descriptorSets, UDDescriptorSetLayout& globalSetLayout, UDDescriptorPool& globalPool);
 
     private:
         void loadData();
@@ -131,6 +136,7 @@ namespace ud {
         std::unique_ptr<UDBuffer> indexBuffer;
         uint32_t indexCount;
 
+        bool hasTexture{ false };
         VkImage textureImage;
         VkDeviceMemory textureImageMemory;
         VkImageView textureImageView;
