@@ -307,11 +307,11 @@ namespace ud {
         //     { 0.5f, 0.5f, 0.0f },
         //     { 3.0f, 1.5f, 3.0f });
 
-        // placeNewObject(udModel,
-        //     udRenderer,
-        //     "models/quad.obj",
-        //     { 0.0f, 0.5f, 0.0f },
-        //     { 3.0f, 1.0f, 3.0f });
+        placeNewObject(udModel,
+            udRenderer,
+            "models/quad.obj",
+            { 0.0f, 0.5f, 0.0f },
+            { 3.0f, 1.0f, 3.0f });
 
         std::vector<glm::vec3> lightColors{
             {1.f, .1f, .1f},

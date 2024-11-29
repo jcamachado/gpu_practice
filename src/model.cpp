@@ -89,18 +89,18 @@ namespace ud {
         createVertexBuffers(builder.vertices);
         createIndexBuffers(builder.indices);
 
-        if (!builder.images.empty()) {
-            createTextureImage(builder.images[0]);
-            createTextureImageView();
-            createTextureSampler();
-        }
-        else if (!texturePath.empty()) {
+        if (!texturePath.empty()) {
+            std::cout << "Loading texture from external image" << std::endl;
             createTextureImage();
             createTextureImageView();
             createTextureSampler();
         }
-
-        dataLoaded = true;
+        else if (!builder.images.empty()) {
+            std::cout << "Loading texture from GLTF" << std::endl;
+            createTextureImage(builder.images[0]);
+            createTextureImageView();
+            createTextureSampler();
+        }
 
         dataLoaded = true;
     }
