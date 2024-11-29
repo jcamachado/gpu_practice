@@ -80,9 +80,6 @@ namespace ud {
 
         // create sponza model object
         UDModel sponzaModel = UDModel(udRenderer, "models/scenes/Sponza.glb");
-        sponzaModel.createTextureImage();
-        sponzaModel.createTextureImageView();
-        sponzaModel.createTextureSampler();
 
         // Create global descriptor sets
         for (int i = 0; i < globalDescriptorSets.size(); i++) {
@@ -291,30 +288,30 @@ namespace ud {
         //     { 0.0f, 0.0f, 0.0f },
         //     { 1.0f, 1.0f, 1.0f });
 
-        placeNewObject(udModel,
-            udRenderer,
-            "models/scenes/sponza.obj",
-            { 0.0f, 0.0f, 0.0f },
-            { 1.0f, 1.0f, 1.0f });
+        // placeNewObject(udModel,
+        //     udRenderer,
+        //     "models/scenes/sponza.obj",
+        //     { 0.0f, 0.0f, 0.0f },
+        //     { 1.0f, 1.0f, 1.0f });
 
-        // Solids
-        placeNewObject(udModel,
-            udRenderer,
-            "models/flat_vase.obj",
-            { -0.5f, 0.5f, 0.0f },
-            { 3.0f, 1.5f, 3.0f });
+        // // Solids
+        // placeNewObject(udModel,
+        //     udRenderer,
+        //     "models/flat_vase.obj",
+        //     { -0.5f, 0.5f, 0.0f },
+        //     { 3.0f, 1.5f, 3.0f });
 
-        placeNewObject(udModel,
-            udRenderer,
-            "models/smooth_vase.obj",
-            { 0.5f, 0.5f, 0.0f },
-            { 3.0f, 1.5f, 3.0f });
+        // placeNewObject(udModel,
+        //     udRenderer,
+        //     "models/smooth_vase.obj",
+        //     { 0.5f, 0.5f, 0.0f },
+        //     { 3.0f, 1.5f, 3.0f });
 
-        placeNewObject(udModel,
-            udRenderer,
-            "models/quad.obj",
-            { 0.0f, 0.5f, 0.0f },
-            { 3.0f, 1.0f, 3.0f });
+        // placeNewObject(udModel,
+        //     udRenderer,
+        //     "models/quad.obj",
+        //     { 0.0f, 0.5f, 0.0f },
+        //     { 3.0f, 1.0f, 3.0f });
 
         std::vector<glm::vec3> lightColors{
             {1.f, .1f, .1f},

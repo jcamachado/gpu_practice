@@ -45,6 +45,7 @@ namespace ud {
         renderer{ renderer }, filepath{ filepath }, texturePath{ texturePath }, device{
         renderer.getDevice()
         } {
+        loadData();
     }
 
     UDModel::~UDModel() {
