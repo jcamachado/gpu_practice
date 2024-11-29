@@ -357,6 +357,7 @@ CMakeFiles/UFFDEJAVU.dir/src/first_app.cpp.o: \
  /usr/include/glm/ext/matrix_transform.hpp \
  /usr/include/glm/ext/matrix_transform.inl \
  /usr/include/glm/gtc/matrix_transform.inl \
+ /home/jaxe/Repositories/gpu_practice/src/descriptors_manager.hpp \
  /home/jaxe/Repositories/gpu_practice/src/keyboard_movement_controller.hpp \
  /home/jaxe/Repositories/gpu_practice/src/systems/multiview_render_system.hpp \
  /home/jaxe/Repositories/gpu_practice/src/frame_info.hpp \

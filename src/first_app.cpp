@@ -2,6 +2,7 @@
 
 #include "buffer.hpp"
 #include "camera.hpp"
+#include "descriptors_manager.hpp"
 #include "keyboard_movement_controller.hpp"
 #include "systems/multiview_render_system.hpp"
 #include "systems/point_light_system.hpp"
@@ -26,16 +27,7 @@ namespace ud {
         // Cant have more descriptors than those specified in the pool
         // One set can have all the descriptors, but then the pool cannot provide more sets
         // could add more descriptor to the pool using chain call .addPoolSize(..).addPoolSize(..
-        globalPool = UDDescriptorPool::Builder(udDevice)
-            .setMaxSets(UDSwapChain::MAX_FRAMES_IN_FLIGHT) // 2 descriptor sets
-            .addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, UDSwapChain::MAX_FRAMES_IN_FLIGHT)
-            // .addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, UDSwapChain::MAX_FRAMES_IN_FLIGHT) // Add image sampler pool size
-            .build();
-
-        texturePool = UDDescriptorPool::Builder(udDevice)
-            .setMaxSets(UDSwapChain::MAX_FRAMES_IN_FLIGHT)
-            .addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, UDSwapChain::MAX_FRAMES_IN_FLIGHT)
-            .build();
+        DescriptorManager::getInstance().initialize(udDevice);
 
         loadObjects();
     }
@@ -59,13 +51,8 @@ namespace ud {
         // }
         udRenderer.createUniformBuffers(uboBuffers);
 
-        auto globalSetLayout = UDDescriptorSetLayout::Builder(udDevice)
-            .addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS) // Add binding for all shaders
-            .build();
-
-        auto textureSetLayout = UDDescriptorSetLayout::Builder(udDevice)
-            .addBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT)
-            .build();
+        auto& globalSetLayout = DescriptorManager::getInstance().getGlobalSetLayout(udDevice);
+        auto& textureSetLayout = DescriptorManager::getInstance().getTextureSetLayout(udDevice);
 
         /*
             The number of descriptor sets must match the number of frames in flight
@@ -79,9 +66,8 @@ namespace ud {
         // Create global descriptor sets
         for (int i = 0; i < globalDescriptorSets.size(); i++) {
             auto bufferInfo = uboBuffers[i]->descriptorInfo();
-            if (!UDDescriptorWriter(*globalSetLayout, *globalPool)
+            if (!UDDescriptorWriter(globalSetLayout, DescriptorManager::getInstance().getGlobalPool())
                 .writeBuffer(0, &bufferInfo)
-                // .writeImage(1, &textureImageInfo)
                 .build(globalDescriptorSets[i])) {
                 throw std::runtime_error("Failed to build global descriptor set " + std::to_string(i));
             }
@@ -91,15 +77,14 @@ namespace ud {
         // create sponza model object
         UDModel sponzaModel = UDModel(udRenderer, "models/scenes/Sponza.glb");
 
-        VkDescriptorImageInfo textureImageInfo{};
-        textureImageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-        textureImageInfo.imageView = sponzaModel.getTextureImageView();
-        textureImageInfo.sampler = sponzaModel.getTextureSampler();
-
-
-        // Create texture descriptor sets
+        // Create texture descriptor sets for each texture
         for (int i = 0; i < textureDescriptorSets.size(); i++) {
-            if (!UDDescriptorWriter(*textureSetLayout, *texturePool)
+            VkDescriptorImageInfo textureImageInfo{};
+            textureImageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+            textureImageInfo.imageView = sponzaModel.getTextureImageView();
+            textureImageInfo.sampler = sponzaModel.getTextureSampler();
+
+            if (!UDDescriptorWriter(textureSetLayout, DescriptorManager::getInstance().getTexturePool())
                 .writeImage(0, &textureImageInfo)
                 .build(textureDescriptorSets[i])) {
                 throw std::runtime_error("Failed to build texture descriptor set " + std::to_string(i));
@@ -128,13 +113,13 @@ namespace ud {
         PointLightSystem pointLightSystem{
             udDevice,
             udRenderer.getSwapChainRenderPass(),
-            globalSetLayout->getDescriptorSetLayout()
+            globalSetLayout.getDescriptorSetLayout(),
         };
         MultiViewRenderSystem multiviewRenderSystem{
             udDevice,
             udRenderer.getSwapChainRenderPass(),
-            globalSetLayout->getDescriptorSetLayout(),
-            textureSetLayout->getDescriptorSetLayout()
+            globalSetLayout.getDescriptorSetLayout(),
+            textureSetLayout.getDescriptorSetLayout()
         };
 
 
