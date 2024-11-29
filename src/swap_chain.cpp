@@ -246,9 +246,9 @@ namespace ud {
         VkSubpassDependency dependency = {};
         dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
         dependency.srcAccessMask = 0;
+        dependency.dstSubpass = 0;
         dependency.srcStageMask =
             VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
-        dependency.dstSubpass = 0;
         dependency.dstStageMask =
             VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
         dependency.dstAccessMask =
@@ -274,7 +274,7 @@ namespace ud {
         for (size_t i = 0; i < imageCount(); i++) {
             std::array<VkImageView, 2> attachments = { swapChainImageViews[i], depthImageViews[i] };
 
-            VkExtent2D swapChainExtent = getSwapChainExtent();
+            // VkExtent2D swapChainExtent = getSwapChainExtent();
             VkFramebufferCreateInfo framebufferInfo = {};
             framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
             framebufferInfo.renderPass = renderPass;
@@ -340,6 +340,12 @@ namespace ud {
             if (vkCreateImageView(device.device(), &viewInfo, nullptr, &depthImageViews[i]) != VK_SUCCESS) {
                 throw std::runtime_error("failed to create texture image view!");
             }
+
+            device.transitionImageLayout(
+                depthImages[i],
+                depthFormat,
+                VK_IMAGE_LAYOUT_UNDEFINED,
+                VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
         }
     }
 

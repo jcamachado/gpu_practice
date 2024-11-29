@@ -379,7 +379,10 @@ namespace ud {
   }
 
   VkFormat UDDevice::findSupportedFormat(
-    const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features) {
+    const std::vector<VkFormat>& candidates,
+    VkImageTiling tiling,
+    VkFormatFeatureFlags features
+  ) {
     for (VkFormat format : candidates) {
       VkFormatProperties props;
       vkGetPhysicalDeviceFormatProperties(physicalDevice, format, &props);
@@ -543,6 +546,18 @@ namespace ud {
     // // 3. Set up the source and destination stages based on old and new layouts
     VkPipelineStageFlags sourceStage;
     VkPipelineStageFlags destinationStage;
+
+    if (newLayout == VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL) {
+      barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+
+      if (hasStencilComponent(format)) {
+        barrier.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
+      }
+    }
+    else {
+      barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    }
+
     if (oldLayout == VK_IMAGE_LAYOUT_UNDEFINED && newLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL) {
       barrier.srcAccessMask = 0;
       barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
@@ -556,6 +571,13 @@ namespace ud {
 
       sourceStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
       destinationStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+    }
+    else if (oldLayout == VK_IMAGE_LAYOUT_UNDEFINED && newLayout == VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL) {
+      barrier.srcAccessMask = 0;
+      barrier.dstAccessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+
+      sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+      destinationStage = VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
     }
     else {
       throw std::invalid_argument("unsupported layout transition!");
