@@ -61,13 +61,11 @@ namespace ud {
 
         auto globalSetLayout = UDDescriptorSetLayout::Builder(udDevice)
             .addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS) // Add binding for all shaders
-            .addBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT) // Add sampler combined image binding
             .build();
 
-        // auto textureSetLayout = UDDescriptorSetLayout::Builder(udDevice)
-        //     .addBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT)
-        //     .build();
-
+        auto textureSetLayout = UDDescriptorSetLayout::Builder(udDevice)
+            .addBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT)
+            .build();
 
         /*
             The number of descriptor sets must match the number of frames in flight
@@ -78,48 +76,35 @@ namespace ud {
         std::vector<VkDescriptorSet> globalDescriptorSets(UDSwapChain::MAX_FRAMES_IN_FLIGHT);
         std::vector<VkDescriptorSet> textureDescriptorSets(UDSwapChain::MAX_FRAMES_IN_FLIGHT);
 
-        // create sponza model object
-        UDModel sponzaModel = UDModel(udRenderer, "models/scenes/Sponza.glb");
-
         // Create global descriptor sets
         for (int i = 0; i < globalDescriptorSets.size(); i++) {
             auto bufferInfo = uboBuffers[i]->descriptorInfo();
-            VkDescriptorImageInfo textureImageInfo{};
-            textureImageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-            textureImageInfo.imageView = sponzaModel.getTextureImageView();
-            textureImageInfo.sampler = sponzaModel.getTextureSampler();
-
             if (!UDDescriptorWriter(*globalSetLayout, *globalPool)
                 .writeBuffer(0, &bufferInfo)
-                .writeImage(1, &textureImageInfo)
+                // .writeImage(1, &textureImageInfo)
                 .build(globalDescriptorSets[i])) {
                 throw std::runtime_error("Failed to build global descriptor set " + std::to_string(i));
             }
         }
 
-        // VkDescriptorImageInfo textureImageInfo{};
-        // textureImageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-        // textureImageInfo.imageView = sponzaModel.getTextureImageView();
-        // textureImageInfo.sampler = sponzaModel.getTextureSampler();
 
-        // // Create global descriptor sets
-        // for (int i = 0; i < globalDescriptorSets.size(); i++) {
-        //     auto bufferInfo = uboBuffers[i]->descriptorInfo();
-        //     if (!UDDescriptorWriter(*globalSetLayout, *globalPool)
-        //         .writeBuffer(0, &bufferInfo)
-        //         .build(globalDescriptorSets[i])) {
-        //         throw std::runtime_error("Failed to build global descriptor set " + std::to_string(i));
-        //     }
-        // }
+        // create sponza model object
+        UDModel sponzaModel = UDModel(udRenderer, "models/scenes/Sponza.glb");
 
-        // // Create texture descriptor sets
-        // for (int i = 0; i < textureDescriptorSets.size(); i++) {
-        //     if (!UDDescriptorWriter(*textureSetLayout, *texturePool)
-        //         .writeImage(0, &textureImageInfo)
-        //         .build(textureDescriptorSets[i])) {
-        //         throw std::runtime_error("Failed to build texture descriptor set " + std::to_string(i));
-        //     }
-        // }
+        VkDescriptorImageInfo textureImageInfo{};
+        textureImageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        textureImageInfo.imageView = sponzaModel.getTextureImageView();
+        textureImageInfo.sampler = sponzaModel.getTextureSampler();
+
+
+        // Create texture descriptor sets
+        for (int i = 0; i < textureDescriptorSets.size(); i++) {
+            if (!UDDescriptorWriter(*textureSetLayout, *texturePool)
+                .writeImage(0, &textureImageInfo)
+                .build(textureDescriptorSets[i])) {
+                throw std::runtime_error("Failed to build texture descriptor set " + std::to_string(i));
+            }
+        }
 
         std::cout << "Descriptor sets created successfully." << std::endl;
         /*
@@ -149,7 +134,7 @@ namespace ud {
             udDevice,
             udRenderer.getSwapChainRenderPass(),
             globalSetLayout->getDescriptorSetLayout(),
-            // textureSetLayout->getDescriptorSetLayout()
+            textureSetLayout->getDescriptorSetLayout()
         };
 
 
@@ -210,6 +195,7 @@ namespace ud {
                     // &leftEyeCamera, // Use pointer to left eye camera
                     // &rightEyeCamera,
                     globalDescriptorSets[frameIndex],
+                    textureDescriptorSets[frameIndex],
                     gameObjects
                 };
 

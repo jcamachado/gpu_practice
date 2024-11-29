@@ -60,6 +60,7 @@ namespace ud {
         // const UDCamera* leftEyeCamera;
         // const UDCamera* rightEyeCamera;
         VkDescriptorSet globalDescriptorSet;
+        VkDescriptorSet textureDescriptorSet;
         UDGameObject::Map& gameObjects;
     };
 }

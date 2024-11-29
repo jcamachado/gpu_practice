@@ -56,7 +56,8 @@ namespace ud {
         MultiViewRenderSystem(
             UDDevice& device,
             VkRenderPass renderPass,
-            VkDescriptorSetLayout globalSetLayout
+            VkDescriptorSetLayout globalSetLayout,
+            VkDescriptorSetLayout textureSetLayout
         );
         ~MultiViewRenderSystem();
 
@@ -67,7 +68,7 @@ namespace ud {
         void render(FrameInfo& frameInfo);
 
     private:
-        void createPipelineLayout(VkDescriptorSetLayout globalSetLayout);
+        void createPipelineLayout(VkDescriptorSetLayout globalSetLayout, VkDescriptorSetLayout textureSetLayout);
         void createPipeline(VkRenderPass renderPass);
 
         UDDevice& udDevice;
