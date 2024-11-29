@@ -75,14 +75,17 @@ namespace ud {
 
 
         // create sponza model object
-        UDModel sponzaModel = UDModel(udRenderer, "models/scenes/Sponza.glb");
+        std::shared_ptr<UDModel> sponzaModel = nullptr;
+
+        sponzaModel = std::make_shared<UDModel>(udRenderer, "models/scenes/Sponza.glb");
+
 
         // Create texture descriptor sets for each texture
         for (int i = 0; i < textureDescriptorSets.size(); i++) {
             VkDescriptorImageInfo textureImageInfo{};
             textureImageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-            textureImageInfo.imageView = sponzaModel.getTextureImageView();
-            textureImageInfo.sampler = sponzaModel.getTextureSampler();
+            textureImageInfo.imageView = sponzaModel->getTextureImageView();
+            textureImageInfo.sampler = sponzaModel->getTextureSampler();
 
             if (!UDDescriptorWriter(textureSetLayout, DescriptorManager::getInstance().getTexturePool())
                 .writeImage(0, &textureImageInfo)
@@ -90,6 +93,11 @@ namespace ud {
                 throw std::runtime_error("Failed to build texture descriptor set " + std::to_string(i));
             }
         }
+        auto sponzaObject = UDGameObject::createGameObject();
+        sponzaObject.model = sponzaModel;
+        sponzaObject.transform.translation = { 0.0f, 0.0f, 0.0f };
+        sponzaObject.transform.scale = { 1.0f, 1.0f, 1.0f };
+        gameObjects.emplace(sponzaObject.getId(), std::move(sponzaObject));
 
         std::cout << "Descriptor sets created successfully." << std::endl;
         /*
@@ -278,11 +286,12 @@ namespace ud {
         //     { 0.5f, 0.5f, 0.0f },
         //     { 3.0f, 1.5f, 3.0f });
 
-        placeNewObject(udModel,
-            udRenderer,
-            "models/quad.obj",
-            { 0.0f, 0.5f, 0.0f },
-            { 3.0f, 1.0f, 3.0f });
+        // placeNewObject(udModel,
+        //     udRenderer,
+        //     "models/quad.obj",
+        //     { 0.0f, 0.5f, 0.0f },
+        //     { 3.0f, 1.0f, 3.0f });
+
 
         std::vector<glm::vec3> lightColors{
             {1.f, .1f, .1f},
@@ -323,4 +332,5 @@ namespace ud {
 
         gameObjects.emplace(newObj.getId(), std::move(newObj));
     }
+
 }

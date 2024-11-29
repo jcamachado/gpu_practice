@@ -55,22 +55,6 @@ namespace ud {
         vkFreeMemory(device.device(), textureImageMemory, nullptr);
     }
 
-    // std::unique_ptr<UDModel> UDModel::createModelFromFile(
-    //     // The createModelFromFile function is a static method that creates a new model from a file
-    //     UDDevice& device, const std::string& filepath
-    // ) {
-    //     Builder builder{};
-    //     if (filepath.substr(filepath.find_last_of(".") + 1) == "obj") {
-    //         builder.loadModelObj(filepath);
-    //     }
-    //     else if (filepath.substr(filepath.find_last_of(".") + 1) == "gltf") {
-    //         builder.loadModelGltf(filepath);
-    //     }
-    //     else {
-    //         throw std::runtime_error("Unsupported file format: " + filepath);
-    //     }
-    //     return std::make_unique<UDModel>(device, builder);
-    // }
     void UDModel::loadData() {
         if (dataLoaded) return;
 

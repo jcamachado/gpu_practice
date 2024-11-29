@@ -878,6 +878,7 @@ CMakeFiles/UFFDEJAVU.dir/src/first_app.cpp.o: /home/jaxe/Repositories/gpu_practi
   /home/jaxe/Repositories/gpu_practice/src/buffer.hpp \
   /home/jaxe/Repositories/gpu_practice/src/camera.hpp \
   /home/jaxe/Repositories/gpu_practice/src/descriptors.hpp \
+  /home/jaxe/Repositories/gpu_practice/src/descriptors_manager.hpp \
   /home/jaxe/Repositories/gpu_practice/src/device.hpp \
   /home/jaxe/Repositories/gpu_practice/src/first_app.hpp \
   /home/jaxe/Repositories/gpu_practice/src/frame_info.hpp \
@@ -5861,6 +5862,8 @@ CMakeFiles/UFFDEJAVU.dir/src/window.cpp.o: /home/jaxe/Repositories/gpu_practice/
 
 /usr/include/glm/ext/vector_float1_precision.hpp:
 
+/usr/include/glm/ext/vector_float1.hpp:
+
 /usr/include/glm/ext/matrix_float2x3.hpp:
 
 /usr/include/stdc-predef.h:
@@ -6843,6 +6846,8 @@ CMakeFiles/UFFDEJAVU.dir/src/window.cpp.o: /home/jaxe/Repositories/gpu_practice/
 
 /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h:
 
+/home/jaxe/Repositories/gpu_practice/src/descriptors_manager.hpp:
+
 /usr/lib/gcc/x86_64-linux-gnu/13/include/xmmintrin.h:
 
 /home/jaxe/Repositories/gpu_practice/src/game_object.hpp:
@@ -6976,5 +6981,3 @@ CMakeFiles/UFFDEJAVU.dir/src/window.cpp.o: /home/jaxe/Repositories/gpu_practice/
 /usr/include/glm/ext/vector_bool1.hpp:
 
 /usr/include/glm/ext/vector_bool1_precision.hpp:
-
-/usr/include/glm/ext/vector_float1.hpp:
