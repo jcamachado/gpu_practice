@@ -80,7 +80,7 @@ namespace ud {
 
         // create sponza model object
         UDModel sponzaModel = UDModel(udRenderer, "models/scenes/Sponza.glb");
-        sponzaModel.createTextureImage("textures/texture.jpg");
+        sponzaModel.createTextureImage();
         sponzaModel.createTextureImageView();
         sponzaModel.createTextureSampler();
 
@@ -279,11 +279,11 @@ namespace ud {
             scene
         */
 
-        placeNewObject(udModel,
-            udRenderer,
-            "models/scenes/Sponza.glb",
-            { 0.0f, 0.0f, 0.0f },
-            { 1.0f, 1.0f, 1.0f });
+        // placeNewObject(udModel,
+        //     udRenderer,
+        //     "models/scenes/Sponza.glb",
+        //     { 0.0f, 0.0f, 0.0f },
+        //     { 1.0f, 1.0f, 1.0f });
 
         // placeNewObject(udModel,
         //     udDevice,
@@ -291,11 +291,11 @@ namespace ud {
         //     { 0.0f, 0.0f, 0.0f },
         //     { 1.0f, 1.0f, 1.0f });
 
-        // placeNewObject(udModel,
-        //     udDevice,
-        //     "models/sponza.obj",
-        //     { 0.0f, 0.0f, 0.0f },
-        //     { 1.0f, 1.0f, 1.0f });
+        placeNewObject(udModel,
+            udRenderer,
+            "models/scenes/sponza.obj",
+            { 0.0f, 0.0f, 0.0f },
+            { 1.0f, 1.0f, 1.0f });
 
         // Solids
         placeNewObject(udModel,

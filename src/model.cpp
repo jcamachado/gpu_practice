@@ -41,8 +41,10 @@ namespace std {
 }
 
 namespace ud {
-    UDModel::UDModel(UDRenderer& renderer, const std::string& filepath) :
-        renderer{ renderer }, filepath{ filepath }, device{ renderer.getDevice() } {
+    UDModel::UDModel(UDRenderer& renderer, const std::string& filepath, const std::string& texturePath) :
+        renderer{ renderer }, filepath{ filepath }, texturePath{ texturePath }, device{
+        renderer.getDevice()
+        } {
     }
 
     UDModel::~UDModel() {
@@ -87,11 +89,17 @@ namespace ud {
         createIndexBuffers(builder.indices);
 
         if (!builder.images.empty()) {
-            // createTextureImage(builder.images[0]);
             createTextureImage(builder.images[0]);
             createTextureImageView();
             createTextureSampler();
         }
+        else if (!texturePath.empty()) {
+            createTextureImage();
+            createTextureImageView();
+            createTextureSampler();
+        }
+
+        dataLoaded = true;
 
         dataLoaded = true;
     }
@@ -252,9 +260,9 @@ namespace ud {
     }
 
 
-    void UDModel::createTextureImage(const std::string& filepath) {
+    void UDModel::createTextureImage() {
         int texWidth, texHeight, texChannels;
-        stbi_uc* pixels = stbi_load(filepath.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+        stbi_uc* pixels = stbi_load(texturePath.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
         if (!pixels) {
             throw std::runtime_error("failed to load texture image!");
         }
@@ -473,7 +481,7 @@ namespace ud {
                 if (index.texcoord_index >= 0) {
                     vertex.uv = {
                         attrib.texcoords[2 * index.texcoord_index + 0],
-                        attrib.texcoords[2 * index.texcoord_index + 1]
+                        1.0f - attrib.texcoords[2 * index.texcoord_index + 1] // Flip the y-axis
                     };
                 }
 
@@ -589,12 +597,10 @@ namespace ud {
     }
     void UDModel::updateDescriptorSets(
         std::vector<std::unique_ptr<UDBuffer>>& uboBuffers,
-        std::vector<std::unique_ptr<UDBuffer>>& hasTextureBuffers,
         std::vector<VkDescriptorSet>& descriptorSets,
         UDDescriptorSetLayout& globalSetLayout, UDDescriptorPool& globalPool) {
         for (int i = 0; i < descriptorSets.size(); i++) {
             auto bufferInfo = uboBuffers[i]->descriptorInfo();
-            auto hasTextureInfo = hasTextureBuffers[i]->descriptorInfo();
 
             UDDescriptorWriter writer(globalSetLayout, globalPool);
             writer.writeBuffer(0, &bufferInfo);
@@ -605,16 +611,7 @@ namespace ud {
                 textureImageInfo.imageView = getTextureImageView();
                 textureImageInfo.sampler = getTextureSampler();
                 writer.writeImage(1, &textureImageInfo);
-
-                bool hasTexture = true;
-                hasTextureBuffers[i]->writeToBuffer(&hasTexture);
             }
-            else {
-                bool hasTexture = false;
-                hasTextureBuffers[i]->writeToBuffer(&hasTexture);
-            }
-
-            writer.writeBuffer(2, &hasTextureInfo);
 
             if (!writer.build(descriptorSets[i])) {
                 throw std::runtime_error("Failed to build descriptor set " + std::to_string(i));

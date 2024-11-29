@@ -17,6 +17,9 @@
 #include <memory>
 #include <vector>
 
+
+
+
 namespace ud {
     class UDModel {
     public:
@@ -51,6 +54,8 @@ namespace ud {
             }
         };
 
+
+
         struct Material {
             glm::vec4 baseColorFactor{ 1.0f };
             int baseColorTextureIndex{ -1 };
@@ -76,7 +81,7 @@ namespace ud {
         };
 
         // UDModel(UDDevice& device, const UDModel::Builder& builder);
-        UDModel(UDRenderer& renderer, const std::string& filepath);
+        UDModel(UDRenderer& renderer, const std::string& modelPath, const std::string& texturePath = "");
         ~UDModel();
 
         UDModel(const UDModel&) = delete;
@@ -91,23 +96,16 @@ namespace ud {
         VkSampler getTextureSampler() const { return textureSampler; }
         // void createTextureImage(const tinygltf::Image& image);
         // void createTextureImage();
+        void createTextureImage();
         void createTextureImage(const tinygltf::Image& image);
-        void createTextureImage(const std::string& filepath);
         void createTextureImageFromPixels(const unsigned char* pixels, int texWidth, int texHeight);
-        // void createImage(
-        //     uint32_t width,
-        //     uint32_t height,
-        //     VkFormat format,
-        //     VkImageTiling tiling,
-        //     VkImageUsageFlags usage,
-        //     VkMemoryPropertyFlags properties,
-        //     VkImage& image,
-        //     VkDeviceMemory& imageMemory);
         void createTextureImageView();
         void createTextureSampler();
         bool hasBoundTexture() const { return hasTexture; }
-        void updateDescriptorSets(std::vector<std::unique_ptr<UDBuffer>>& uboBuffers, std::vector<std::unique_ptr<UDBuffer>>& hasTextureBuffers, std::vector<VkDescriptorSet>& descriptorSets, UDDescriptorSetLayout& globalSetLayout, UDDescriptorPool& globalPool);
-
+        void updateDescriptorSets(
+            std::vector<std::unique_ptr<UDBuffer>>& uboBuffers,
+            std::vector<VkDescriptorSet>& descriptorSets,
+            UDDescriptorSetLayout& globalSetLayout, UDDescriptorPool& globalPool);
     private:
         void loadData();
         void createVertexBuffers(const std::vector<Vertex>& vertices);
@@ -119,6 +117,7 @@ namespace ud {
         UDRenderer& renderer;
         UDDevice& device;
         std::string filepath;
+        std::string texturePath;
         bool dataLoaded{ false };
 
         /*
@@ -130,6 +129,7 @@ namespace ud {
         */
 
         std::unique_ptr<UDBuffer> vertexBuffer;
+
         uint32_t vertexCount;
 
         bool hasIndexBuffer{ false };
