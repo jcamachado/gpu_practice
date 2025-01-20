@@ -1,4 +1,5 @@
 #include "octree.h"
+#include "avl.h"
 #include "../graphics/models/box.hpp"
 
 // For each octant, a new bounding region is calculated and stored in out
@@ -42,9 +43,9 @@ Octree::node::node(BoundingRegion bounds, std::vector<BoundingRegion> objectList
         objects.insert(objects.end(), objectList.begin(), objectList.end());
 }
 
-void Octree::node::addToPending(RigidBody* instance, trie::Trie<Model*> models){
+void Octree::node::addToPending(RigidBody* instance, Model *model){
     // Get all the bounding regions of the models
-    for (BoundingRegion br : models[instance->modelId]->boundingRegions){
+    for (BoundingRegion br : model->boundingRegions){
         br.instance = instance;
         br.transform();
         queue.push(br);
@@ -261,6 +262,7 @@ void Octree::node::update(Box &box){    //build and update seems to be having se
                 current = current->parent;
                 current->checkCollisionsSelf(movedObj);
             }
+
         }
     }
     else {
@@ -379,20 +381,113 @@ bool Octree::node::insert(BoundingRegion obj){
     return true;
 }
 
-void Octree::node::checkCollisionsSelf(BoundingRegion obj){
+/*
+    Collisions of objects in the node
+
+    -Coarse check: Check if bounding regions intersect
+    -Fine check: Check with actual mesh face (where they collided and how)
+
+    4 cases of collision of objects A and B:
+    - A and B dont have CollisionMesh
+    - A has CollisionMesh, B doesnt
+    - B has CollisionMesh, A doesnt
+    - Both A and B have CollisionMesh
+*/
+
+
+void Octree::node::checkCollisionsSelf(BoundingRegion obj){ // CUDABLE?
     for (BoundingRegion br : objects){
+        // Coarse check for bounding region intersection
+        // Coarse  significa bruto, amarrotado, grosso, logo, uma verificação rápida
+        if (br.instance == obj.instance) {
+            continue; // Skip if same instance
+        }
+
         if (br.intersectsWith(obj)){
-            if(br.instance->instanceId != obj.instance->instanceId){
-                // Different instances collide
-                std::cout << "Instance " << "(" << br.instance->modelId << ")" << br.instance->instanceId << " collided with " << obj.instance->instanceId << "(" << obj.instance->modelId << ")" << std::endl;
-                br.intersectsWith(obj);
+            // Coarse check passed
+
+            unsigned int nFacesBr = br.collisionMesh==nullptr ? br.collisionMesh->faces.size() : 0;
+            unsigned int nFacesObj = obj.collisionMesh==nullptr ? obj.collisionMesh->faces.size() : 0;
+
+            glm::vec3 norm;     // For handleCollision
+            
+            if(nFacesBr){
+                if(obj.collisionMesh){      // Both have collision meshes
+                    // Check all faces in br against all faces in obj. Quadratic hell O(n^2)
+                    bool collisionFound = false;
+                    for (unsigned int i = 0; i < nFacesBr && !collisionFound; i++){
+                        for (unsigned int j = 0; j < nFacesObj && !collisionFound; j++){  //Cubic hell O(n^3)
+                            if (br.collisionMesh->faces[i].collidesWithFace(
+                                br.instance,
+                                obj.collisionMesh->faces[j],
+                                obj.instance,
+                                norm
+                            )){
+                                std::cout << "Case 1: Instance " << br.instance->instanceId << 
+                                "(" << br.instance->modelId << ") collided with instance " << obj.instance->instanceId << 
+                                "(" << obj.instance->modelId << ")" << std::endl;
+                                // collisionFound = true;
+                                obj.instance->handleCollision(br.instance, norm);
+                                break;
+                            }
+                        }
+                    }
+                }
+                else {
+                    // Br has collision mesh, obj doesnt
+                    // Check all faces in br against objs sphere
+                    for (unsigned int i = 0; i < nFacesBr; i++){
+                        if (br.collisionMesh->faces[i].collidesWithSphere(
+                            br.instance,
+                            obj,
+                            norm
+                        )){
+                            std::cout << "Case 2: Instance " << br.instance->instanceId << 
+                            "(" << br.instance->modelId << ") collided with instance " << obj.instance->instanceId << 
+                            "(" << obj.instance->modelId << ")" << std::endl;
+                            obj.instance->handleCollision(br.instance, norm);
+                            break;
+                        }
+                    }
+                }
+            }
+            else {
+                if (nFacesObj) {
+                    // Obj has collision mesh, br doesnt
+                    // Check all faces in obj against brs sphere
+                    for (int i = 0; i < nFacesObj; i++){
+                        if (obj.collisionMesh->faces[i].collidesWithSphere(
+                            obj.instance,
+                            br,
+                            norm
+                        )){
+                            std::cout << "Case 3: Instance " << br.instance->instanceId << 
+                            "(" << br.instance->modelId << ") collided with instance " << obj.instance->instanceId << 
+                            "(" << obj.instance->modelId << ")" << std::endl;
+                            obj.instance->handleCollision(br.instance, norm);
+                            break;
+                        }
+                    }
+                }
+                else {
+                    // Neither have collision mesh
+                    // Coarse check passed (Teste collision between spheres)
+                    // Check if spheres intersect
+                    if (br.intersectsWith(obj)){
+                        std::cout << "Case 4: Instance " << br.instance->instanceId << 
+                        "(" << br.instance->modelId << ") collided with instance " << obj.instance->instanceId << 
+                        "(" << obj.instance->modelId << ")" << std::endl;
+                    }
+                    norm = obj.center - br.center;
+                    obj.instance->handleCollision(br.instance, norm);
+                }
             }
         }
     }
 }
 
 void Octree::node::checkCollisionsChildren(BoundingRegion obj){
-    if(children){
+    if(children != nullptr){
         for (int flags = activeOctants, i = 0;
             flags > 0;
             flags >>= 1, i++){
